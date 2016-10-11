@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: operator[]
+# key: op
+# group: operator overloading
+# --
+${1:return_type} & ${2:type::}operator[](${3:uint32_t index})${4: const}${5:$$(yas-choose-value '(";" "
+{
+    $0
+}"))}

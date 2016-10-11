@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: fun_declaration
+# key: f
+# --
+${1:virtual }${2:void} ${3:name}(${4:args})${5: const}${1:$(unless
+yas-modified-p " override")}${6:${1:$(unless yas-modified-p " final")}}${7: noexcept};

@@ -1,0 +1,32 @@
+# -*- mode: snippet -*-
+# name: class
+# key: class
+# group: c++11
+# --
+class ${1:name}${2: final}
+${3:    : ${4:$$(yas-choose-value '("public" "protected" "private"))} ${5:base}}
+{
+public:
+${6:  ${7://! Default constructor
+  }${1:$(yas-c++-class-name yas-text)}()${8:;$(yas-c++-class-method-declare-choice)}
+
+}${9:  ${10://! Copy constructor
+  }${1:$(yas-c++-class-name yas-text)}(const ${1:$(yas-c++-class-name yas-text)} &other)${11:;$(yas-c++-class-method-declare-choice)}
+
+}${12:  ${13://! Move constructor
+  }${1:$(yas-c++-class-name yas-text)}(${1:$(yas-c++-class-name yas-text)} && other)${14: noexcept}${15:;$(yas-c++-class-method-declare-choice)}
+
+}${16:  ${17://! Destructor
+  }${18:virtual }~${1:$(yas-c++-class-name yas-text)}()${19:;$(yas-c++-class-method-declare-choice)}
+
+}${20:  ${21://! Copy assignment operator
+  }${1:$(yas-c++-class-name yas-text)}& operator=(const ${1:$(yas-c++-class-name yas-text)} & other)${22:;$(yas-c++-class-method-declare-choice)}
+
+}${23:  ${24://! Move assignment operator
+  }${1:$(yas-c++-class-name yas-text)}& operator=(${1:$(yas-c++-class-name yas-text)} && other)${25: noexcept}${26:;$(yas-c++-class-method-declare-choice)}
+
+}$0
+
+protected:
+private:
+};

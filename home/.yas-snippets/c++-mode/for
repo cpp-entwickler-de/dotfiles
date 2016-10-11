@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: for iterator
+# key: for
+# --
+for (auto ${1:currentItem} = std::begin(${2:container}); $1 != std:end($2); ++$1)
+{
+    $0
+}

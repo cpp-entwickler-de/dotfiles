@@ -1,0 +1,161 @@
+[include]
+# Read user-specific data from separate file
+path = ~/.gitconfig.user
+
+
+[user]
+# Do not try to gess user information
+useConfigOnly = true
+
+
+[core]
+# Do not modify line endings
+autocrlf = input
+
+# Honor executable bit
+filemode = true
+
+# Handle whitespace
+whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol,space-before-tab,tab-in-indent,tabwidth=4
+
+# Use custom ignore patterns
+excludesfile = ~/.gitignore
+
+# Use emacs for editing
+editor = "emacsclient -a \"\""
+
+
+[color]
+# Detect color availability
+ui = auto
+
+
+[status]
+# Show paths from project root
+relativePaths = false
+
+# Use short format
+short = true
+
+# Show all untracked files 
+showUntrackedFiles = all
+
+
+[log]
+# Use short commit IDs
+abbrevCommit = true
+
+# Use relative date
+date = relative
+
+# Print ref names
+decorate = short
+
+
+[grep]
+# Show line numbers
+lineNumber = true
+
+# Allow extended Regexps
+extendedRegexp=true
+
+
+[help]
+# Correct misspellings of commands automatically
+autocorrect=1
+
+# Use HTML help
+format=web
+
+
+[web]
+# Use Firefox as browser
+browser = firefox
+
+
+[versionsort]
+# Proper sorting of version suffixes
+prereleaseSuffix=-alpha
+prereleaseSuffix=-beta
+prereleaseSuffix=-pre
+prereleaseSuffix=-rc
+prereleaseSuffix=-demo
+
+
+[branch]
+# Setup tracking
+autosetupmerge=true
+
+# Always rebase when pulling
+autosetuprebase=always
+
+
+[rebase]
+# Apply fixups automatically
+autosquash = true
+
+# Allow rebase on dirty working copy
+autoStash = true
+
+# Do not apply rebase if commits were removed via line removal (force drop to remove)
+missingCommitsCheck=error
+
+
+[diff]
+tool = meld
+
+# Detect renames, including copies
+renames=copies
+
+# do not show a/b prefixes in diffs
+noprefix=true
+
+# Use histogram diff algorithm
+algorithm=histogram
+
+
+[merge]
+tool = meld
+
+
+[commit]
+# Show diff in commit editor
+verbose = true
+
+
+[push]
+# Push without target refspec
+default=simple
+# Check if all submodules are pushed
+recurseSubmodules=check
+
+
+[url "https://github.com/"]
+insteadOf = github:
+
+[url "https://github.com/cpp-entwickler-de/"]
+insteadOf = cpped:
+
+
+[alias]
+root = rev-parse --show-toplevel
+
+markers = log --decorate --oneline --simplify-by-decoration --all
+branch-info = branch -av
+
+last-commit = log -n1 -p --format=fuller
+file-log = log -p
+commit-log = log --oneline --graph --decorate
+changed-files = git diff-tree --no-commit-id --name-only -r
+
+find-change = log -p -S
+unpushed = log --branches --not --remotes
+
+# Clone submodules
+clone-recursive=clone --recursive
+
+# Mark commit as fix for given revision
+fixup=commit --fixup
+
+# Safe forced push
+force-push = push --force-with-lease

@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: operator <type>
+# key: op
+# group: operator overloading
+# --
+${1:explicit} operator ${2:type}()${3: const}${4: noexcept}${5:$$(yas-choose-value '(";" "
+{
+    return $0;
+}"))}

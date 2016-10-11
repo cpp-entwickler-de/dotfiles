@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: Q_PROPERTY
+# key: qprop
+# --
+Q_PROPERTY(${1:type} ${2:name} ${3:READ ${2:$(concat "get" (upcase-initials yas-text))}} ${4:WRITE ${2:$(concat "set" (upcase-initials yas-text))}} ${5:RESET ${2:$(concat "reset" (upcase-initials yas-text))}} ${6:NOTIFY $2Changed} ${7:REVISION ${8:0}} ${9:DESIGNABLE ${10:$$(yas-choose-value '("true" "false"))}} ${11:SCRIPTABLE ${12:$$(yas-choose-value '("true" "false"))}} ${13:STORED ${14:$$(yas-choose-value '("true" "false"))}} ${15:USER ${16:$$(yas-choose-value '("true" "false"))}} ${17:CONSTANT} ${18:FINAL})
+
+${19:${3:$(when (yas-text) (concat "const " (yas-field-value 1) " & " (replace-regexp-in-string (regexp-quote "READ ") "" yas-text nil 'literal) "() const noexcept;"))}
+${4:$(when (yas-text) (concat "void " (replace-regexp-in-string (regexp-quote "WRITE ") "" yas-text nil 'literal) "(const " (yas-field-value 1)  " & new" (upcase-initials (yas-field-value 2))  ");"))}
+${5:$(when (yas-text) (concat "void " (replace-regexp-in-string (regexp-quote "RESET ") "" yas-text nil 'literal) "();"))}
+${6:$(when (yas-text) (concat "void " (replace-regexp-in-string (regexp-quote "NOTIFY ") "" yas-text nil 'literal) "(const " (yas-field-value 1)  " & " (yas-field-value 2) ");"))}}

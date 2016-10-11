@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: class header
+# key: inc
+# --
+#include "`(file-name-nondirectory (file-name-sans-extension (buffer-file-name)))`.h"

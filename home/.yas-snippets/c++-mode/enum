@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: enum
+# key: enum
+# --
+enum ${1:class} ${2:name}${3: :${4:uint32_t}}
+{
+    $0
+};

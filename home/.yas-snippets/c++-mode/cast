@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: cast
+# key: cast
+# --
+${1:$$(yas-choose-value '("static" "dynamic" "const" "reinterpret"))}_cast<${2:type}>(`yas/selected-text`$0);

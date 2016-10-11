@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: cache
+# key: set
+# --
+set(${1:var} ${2:value} CACHE ${3:type} "{4:desc}")

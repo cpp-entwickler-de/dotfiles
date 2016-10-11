@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name : begin()
+# key: beg
+# --
+std::begin(${1:name})

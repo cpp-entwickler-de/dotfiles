@@ -1,0 +1,2498 @@
+#+TITLE: Emacs config
+#+TODO: BROKEN DISABLED VERIFY TODO
+
+* Custom configuration
+#+BEGIN_SRC emacs-lisp
+(load "~/.emacs.user" t t)
+#+END_SRC
+
+* External Packages
+** Programs
+*** Developement
+- rtags
+- clang
+- cppcheck
+- gcc
+- sloccount
+- uncrustify
+*** PDF
+- epdfinfo
+- mupdf
+- poppler-dev
+- poppler-glib-dev
+*** XML
+- xmlstarlet
+- xmllint
+*** Shell
+- autojump-zsh
+- imagemagick
+- links
+- PackageKit-command-not-found
+- recode
+- the_silver_searcher
+- util-linux-user
+- zsh
+** Fonts
+- Source Code Pro
+- [[https://github.com/domtronn/all-the-icons.el/tree/master/fonts][all-the-icons fonts]]
+
+* Package Management
+** [[https://github.com/tarsius/auto-compile][Automatically compile packages]]
+Do not load outdated byte code
+#+BEGIN_SRC emacs-lisp
+(setq load-prefer-newer t)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package auto-compile
+  :config
+  (setq auto-compile-display-buffer nil)
+  (auto-compile-on-load-mode)
+  (auto-compile-on-save-mode))
+#+END_SRC
+
+** [[https://github.com/rranelli/auto-package-update.el][Automatically update packages]]
+#+BEGIN_SRC emacs-lisp 
+(use-package auto-package-update
+  :config
+  (setq auto-package-update-interval 14
+        auto-package-update-delete-old-versions t)
+  (auto-package-update-maybe))
+#+END_SRC
+
+** [[https://github.com/syohex/emacs-helm-package][Helm integration]]
+#+BEGIN_SRC emacs-lisp
+(use-package helm-package)
+#+END_SRC
+
+* User Interface
+** Startup
+*** Disable startup screen
+#+BEGIN_SRC emacs-lisp
+(setq inhibit-startup-screen t)
+#+END_SRC
+
+*** Disable startup message
+#+BEGIN_SRC emacs-lisp
+(when (boundp 'username)
+  (setq inhibit-startup-echo-area-message username))
+#+END_SRC
+
+*** Fullscreen
+#+BEGIN_SRC emacs-lisp
+(set-frame-parameter nil 'fullscreen 'fullboth)
+#+END_SRC
+
+*** Start with empty scratch buffer (no message)
+#+BEGIN_SRC emacs-lisp
+(setq initial-scratch-message nil)
+#+END_SRC
+** GTK+ interface
+*** Disable Menus, Toolbars and Dialogs
+#+BEGIN_SRC emacs-lisp
+(when (window-system)
+  (menu-bar-mode -1)
+  (tool-bar-mode -1)
+  (setq use-file-dialog nil
+        use-dialog-box nil))
+#+END_SRC
+
+*** Use GTK+ Tooltips
+#+BEGIN_SRC emacs-lisp
+(when (window-system)
+  (setq x-gtk-use-system-tooltips t))
+#+END_SRC
+
+*** Show scrollbar on the left side
+#+BEGIN_SRC emacs-lisp
+(set-scroll-bar-mode 'left)
+#+end_src
+
+** Disable bell
+#+begin_src emacs-lisp
+(setq ring-bell-function 'ignore)
+#+end_src
+
+** Use y/n instead of yes/no
+#+BEGIN_SRC emacs-lisp
+(fset 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+
+** Colors
+*** [[https://github.com/atomontage/xterm-color][Show ANSI colors]]
+#+BEGIN_SRC emacs-lisp
+(use-package xterm-color)
+#+END_SRC
+
+** Fonts
+*** Default font
+#+BEGIN_SRC emacs-lisp
+(set-frame-font "source code pro semibold 11" )
+#+END_SRC
+
+*** [[https://github.com/iqbalansari/emacs-emojify][Display emojis]]
+#+BEGIN_SRC emacs-lisp
+(use-package emojify
+  :config
+  (add-hook 'after-init-hook #'global-emojify-mode))
+#+END_SRC
+
+*** Show pretty symbols
+Disable prettification if cursor is at edge of expression
+#+BEGIN_SRC emacs-lisp
+(setq prettify-symbols-unprettify-at-point 'right-edge)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(global-prettify-symbols-mode)
+#+END_SRC
+
+** Icons
+*** [[https://github.com/domtronn/all-the-icons.el][Show icons]]
+#+BEGIN_SRC emacs-lisp
+(use-package font-lock+)
+(use-package all-the-icons)
+#+END_SRC
+
+** Theme
+#+BEGIN_SRC emacs-lisp
+(load-theme 'cpp-entwickler.de t)
+#+END_SRC
+
+** Mode Line
+*** Project
+#+BEGIN_SRC emacs-lisp
+(defun powerline-project-id (icon-face)
+  (when buffer-file-name
+    (let ((project-name (if (and (ignore-errors (projectile-project-p))
+                                 (fboundp 'projectile-project-name)
+                                 (projectile-project-name))
+                            (projectile-project-name)
+                          (let ((backend (vc-deduce-backend)))
+                            (when backend
+                              (file-name-nondirectory (directory-file-name (file-name-directory (ignore-errors (vc-call-backend backend 'root default-directory))))))))))
+      (when (not (= 0 (length project-name)))
+        (concat (propertize (all-the-icons-faicon "suitcase")
+                                'face (list ':family (all-the-icons-faicon-family)
+                                            ':background (face-attribute icon-face :background))
+                                'display '(raise -0.0))
+                    " "
+                    (propertize project-name
+                                'help-echo "Switch Project"
+                                'local-map (make-mode-line-mouse-map
+                                            'mouse-1 (lambda ()
+                                                       (interactive)
+                                                       (projectile-switch-project)))))))))
+#+END_SRC
+
+*** Major mode icon
+#+BEGIN_SRC emacs-lisp
+(defun powerline-mode-icon ()
+  (let ((icon (all-the-icons-icon-for-buffer)))
+    (unless (symbolp icon)
+      (propertize icon
+                  'face `(:family ,(all-the-icons-icon-family-for-buffer))
+                  'display '(raise -0.0)
+                  'help-echo (format "%s" major-mode)))))
+#+END_SRC
+
+*** Buffer name
+Helper function to figure out version control root directory
+#+BEGIN_SRC emacs-lisp
+(defun project-dir ()
+  (when buffer-file-name
+    (or (when (and (ignore-errors (projectile-project-p))
+                   (fboundp 'projectile-project-name))
+          (projectile-project-name)
+          (projectile-project-root))
+        (let ((backend (vc-deduce-backend)))
+          (when backend
+            (ignore-errors (vc-call-backend backend 'root default-directory)))))))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun powerline-buffer-id ()
+  (propertize (if buffer-file-name
+                  (let ((project-root (project-dir)))
+                    (if project-root
+                        (file-relative-name (file-truename buffer-file-name) project-root)
+                        buffer-file-name))
+                  (format-mode-line "%b"))
+              'help-echo (format "%s" major-mode)
+              'local-map (make-mode-line-mouse-map
+                          'mouse-1 (lambda ()
+                                     (interactive)
+                                     (helm-omnibuffer)))))
+#+END_SRC
+
+*** Git Info
+#+BEGIN_SRC emacs-lisp
+(defun powerline-version-control ()
+  (when vc-mode
+    (concat
+     "· "
+     (propertize (all-the-icons-octicon "git-branch")
+                 'face `(:family ,(all-the-icons-octicon-family))
+                 'display '(raise -0.1))
+     " "
+     (mapconcat 'concat (cdr (split-string vc-mode "[:-]")) "-")
+     (when buffer-file-name
+       (format " · %s"  (magit-get-shortname (vc-git-working-revision buffer-file-name)))))))
+#+END_SRC
+
+*** Show if file is remote
+#+BEGIN_SRC emacs-lisp
+(defun powerline-remote (icon-face)
+  (when (file-remote-p default-directory)
+    (propertize (all-the-icons-faicon "cloud")
+                'face (list ':family (all-the-icons-faicon-family)
+                            ':background (face-attribute icon-face :background))
+                'display '(raise -0.0))))
+#+END_SRC
+
+*** Show if file is opened in su-mode
+#+BEGIN_SRC emacs-lisp
+(defun powerline-su (icon-face)
+  (when (string-match "^/su\\(do\\)?:" default-directory)
+    (propertize (all-the-icons-faicon "user-plus")
+                'face (list ':family (all-the-icons-faicon-family) 
+                            ':foreground (face-attribute 'warning :foreground)
+                            ':background (face-attribute icon-face :background))
+                'display '(raise -0.0))))
+#+END_SRC
+
+*** Modification
+#+BEGIN_SRC emacs-lisp
+(defun powerline-modified (icon-face)
+  (propertize (pcase (format-mode-line "%*")
+                (`"*" (all-the-icons-faicon "pencil"))
+                (`"-"  
+                 (if (and buffer-file-name
+                          vc-mode
+                          (string-equal (vc-state buffer-file-name) 'edited))
+                     (all-the-icons-faicon "cloud-upload")
+                   (all-the-icons-faicon "floppy-o")))
+                (`"%" (all-the-icons-faicon "lock"))
+                (_ (all-the-icons-faicon "question")))
+              'face (list ':family (all-the-icons-faicon-family)
+                          ':background (face-attribute icon-face :background))
+              'display '(raise -0.0)))
+#+END_SRC
+
+*** Cursor position
+#+BEGIN_SRC emacs-lisp
+(defun powerline-position-info (icon-face)
+  (concat
+   (propertize (all-the-icons-faicon "arrows-v")
+               'face (list ':family (all-the-icons-faicon-family)
+                           ':background (face-attribute icon-face :background))
+               'display '(raise -0.0))
+   (format-mode-line "%4l")
+   (propertize (format " %s" (all-the-icons-faicon "arrows-h"))
+               'face (list :family (all-the-icons-faicon-family)
+                           ':background (face-attribute icon-face :background))
+               'display '(raise -0.0))
+   (format-mode-line "%3c")))
+#+END_SRC
+
+*** Selected region
+#+BEGIN_SRC emacs-lisp
+(defun powerline-region-info (icon-face)
+  (when mark-active
+    (format "%s %s/%s/%s"
+            (propertize (all-the-icons-faicon "crop")
+                        'face (list ':family (all-the-icons-faicon-family)
+                                    ':background (face-attribute icon-face :background))
+                        'display '(raise -0.0))
+            (count-lines (region-beginning) (region-end))
+            (count-words (region-end) (region-beginning))
+            (- (region-end) (region-beginning)))))
+#+END_SRC
+
+*** Buffer size (characters/lines)
+#+BEGIN_SRC emacs-lisp
+(defun powerline-buffersize ()
+  (concat
+   (propertize (all-the-icons-faicon "archive")
+               'face `(:family ,(all-the-icons-faicon-family))
+               'display '(raise -0.0))
+   (format-mode-line " %I/")
+   (save-excursion
+     (goto-char (point-max))
+     (format-mode-line "%l"))))
+#+END_SRC
+
+*** File encoding
+#+BEGIN_SRC emacs-lisp
+(defun powerline-encoding ()
+       (concat
+        (propertize (all-the-icons-faicon "file-code-o")
+                    'face `(:family ,(all-the-icons-faicon-family))
+                    'display '(raise -0.0))
+        " "
+        (symbol-name (coding-system-type buffer-file-coding-system))
+        " "
+        (propertize (pcase (coding-system-eol-type buffer-file-coding-system)
+                           (`0  (all-the-icons-faicon "linux"))
+                           (`1  (all-the-icons-faicon "windows"))
+                           (`2 (all-the-icons-faicon "apple"))
+                           (_ (all-the-icons-faicon "question"))) 
+                    'face `(:family ,(all-the-icons-faicon-family))
+                    'display '(raise -0.0))))
+#+END_SRC
+
+*** Current function
+Find path of current position in XML docuement
+#+BEGIN_SRC emacs-lisp
+(defun nxml-where ()
+  "Display the hierarchy of XML elements the point is on as a path."
+  (interactive)
+  (let ((path nil))
+    (save-excursion
+      (save-restriction
+        (widen)
+        (while (and (< (point-min) (point))
+                    (condition-case nil
+                        (progn
+                          (nxml-backward-up-element)
+                          t)
+                      (error nil)))
+          (setq path (cons (xmltok-start-tag-local-name) path)))
+        (if (called-interactively-p t)
+            (message "/%s" (mapconcat 'identity path "/"))
+          (format "/%s" (mapconcat 'identity path "/")))))))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun powerline-which-function (icon-face)
+  (when which-function-mode
+    (let ((current-function (if (equal major-mode 'nxml-mode)
+                                (nxml-where)
+                                (which-function))))
+      (unless (= 0 (length current-function))
+        (concat
+         (propertize (all-the-icons-faicon "puzzle-piece")
+                     'face (list ':family (all-the-icons-faicon-family)
+                                 ':background (face-attribute icon-face :background))
+                     'display '(raise -0.0))
+         " "
+         current-function)))))
+#+END_SRC
+
+*** Syntax Check
+#+BEGIN_SRC emacs-lisp
+(defun powerline-flycheck-status (icon-face)
+  (when (and (boundp 'flycheck-last-status-change)
+             (not (equal flycheck-last-status-change 'no-checker)))
+    (let* ((issues (if (and (equal flycheck-last-status-change 'finished)
+                            flycheck-current-errors)
+                       (let-alist (flycheck-count-errors flycheck-current-errors)
+                         (+ (or .warning 0) (or .error 0)))
+                     0))
+           (show-warning (or (> issues 0)
+                             (pcase flycheck-last-status-change
+                               (`errored t)
+                               (`interrupted t)
+                               (`suspicious t)
+                               (_ nil)))))
+      (concat
+       (propertize (all-the-icons-faicon (pcase flycheck-last-status-change
+                                           (`finished (if (> issues 0) "exclamation-triangle" "check"))
+                                           (`running "refresh")
+                                           (`not-checked "power-off")
+                                           (`errored "exclamation-triangle")
+                                           (`interrupted "flash")
+                                           (`suspicious "exclamation-triangle")
+                                           (_ "power-off")))
+                   'face (list ':family (all-the-icons-faicon-family)
+                               ':foreground (face-attribute (if show-warning
+                                                                'warning
+                                                              icon-face) :foreground)
+                               ':background (face-attribute icon-face :background))
+                   'display '(raise -0.0))
+       " "
+       (propertize (pcase flycheck-last-status-change
+                     (`finished (if (> issues 0)
+                                    (format "%s Issue%s" issues (unless (= 1 issues)
+                                                                  "s"))
+                                  "No Issues"))
+                     (`running "Running")
+                     (`not-checked "Not checked")
+                     (`errored "Error")
+                     (`interrupted "Interrupted")
+                     (`suspicious "Error")
+                     (_ "Disabled"))
+                   'help-echo "Show Flycheck Errors"
+                   'local-map (make-mode-line-mouse-map
+                               'mouse-1 (lambda ()
+                                          (interactive)
+                                          (flycheck-list-errors))))))))
+#+END_SRC
+
+*** Time
+#+BEGIN_SRC emacs-lisp
+(defun powerline-time ()
+  (let* ((hour (string-to-number (format-time-string "%I")))
+         (icon (all-the-icons-wicon (format "time-%s" hour))))
+    (concat
+     (propertize icon
+                 'face `(:family ,(all-the-icons-wicon-family))
+                 'display '(raise -0.0))
+     (format-time-string " %H:%M"))))
+#+END_SRC
+
+*** Powerline
+#+BEGIN_SRC emacs-lisp
+(use-package powerline)
+
+(setq powerline-default-separator 'slant
+      powerline-display-hud nil)
+(defun powerline-cpp-entwickler-theme ()
+  "Setup the default mode-line."
+  (interactive)
+  (setq-default mode-line-format
+                '("%e"
+                  (:eval
+                   (let* ((active (powerline-selected-window-active))
+                          (mode-line (if active 
+                                         'mode-line 
+                                       'mode-line-inactive))
+                          (face1 (if active 
+                                     'powerline-active1 
+                                   'powerline-inactive1))
+                          (face2 (if active 
+                                     'powerline-active2 
+                                   'powerline-inactive2))
+                          (separator-left (intern (format "powerline-%s-%s"
+                                                          (powerline-current-separator)
+                                                          (cdr powerline-default-separator-dir))))
+                          (separator-right (intern (format "powerline-%s-%s"
+                                                           (powerline-current-separator)
+                                                           (car powerline-default-separator-dir))))
+                          (project-id (powerline-project-id (symbol-value 'face1)))
+                          (show-project (not (= 0 (length project-id))))
+                          (current-function (powerline-which-function (symbol-value 'face1)))
+                          (show-function (not (= 0 (length current-function))))
+                          (check-status (powerline-flycheck-status (symbol-value 'face2)))
+                          (show-check-status (not (= 0 (length check-status))))
+                          (lhs (list 
+                                (when show-project
+                                  (powerline-raw project-id face1))
+                                (when show-project
+                                  (funcall separator-left face1 mode-line))
+                                (powerline-raw (powerline-mode-icon) mode-line)
+                                (powerline-raw (powerline-buffer-id) mode-line)
+                                (powerline-raw (powerline-version-control) mode-line 'l)
+                                (funcall separator-left mode-line face2)
+                                (powerline-raw (powerline-remote (symbol-value 'face2)) face2)
+                                (powerline-raw (powerline-su (symbol-value 'face2)) face2 'r)
+                                (powerline-raw (powerline-modified (symbol-value 'face2)) face2)
+                                (powerline-raw (powerline-position-info (symbol-value 'face2)) face2 'l)
+                                (powerline-raw (powerline-region-info (symbol-value 'face2)) face2 'l)
+                                (funcall separator-left face2 mode-line)
+                                (powerline-raw (powerline-buffersize) mode-line)
+                                (powerline-raw (powerline-encoding) mode-line 'l)
+                                (when show-function
+                                  (funcall separator-left mode-line face1))
+                                (when show-function
+                                  (powerline-raw current-function face1))
+                                (when show-function
+                                  (funcall separator-left face1 mode-line))
+                                (powerline-raw (format-mode-line 'global-mode-string) mode-line)))
+                          (rhs (list 
+                                (when show-check-status
+                                  (funcall separator-right mode-line face2))
+                                (when show-check-status
+                                  (powerline-raw check-status face2))
+                                (when show-check-status
+                                  (funcall separator-right face2 mode-line))
+                                (powerline-raw (powerline-time) mode-line 'r))))
+                     (concat (powerline-render lhs)
+                             (powerline-fill mode-line (powerline-width rhs))
+                             (powerline-render rhs)))))))
+(powerline-cpp-entwickler-theme)
+#+END_SRC
+
+** Helm UI
+#+BEGIN_SRC emacs-lisp
+(use-package helm
+  :bind
+  (("C-c h" . helm-command-prefix)
+   ("M-x" . helm-M-x)
+   ("M-y" . helm-show-kill-ring)
+   ("C-x C-f" . helm-find-files)
+   ("C-x C-b" . helm-buffers-list))
+  :config
+  (setq helm-buffer-max-length nil
+        helm-buffers-fuzzy-matching t
+        helm-candidate-number-limit 200
+        helm-case-fold-search t
+        helm-comp-read-case-fold-search 'Ignore\ case
+        helm-grep-ignored-directories '("SCCS" "RCS" "CVS" "MCVS" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" ".gvfs" "branches" "tags")
+        helm-input-idle-delay 0.1
+        helm-recentf-fuzzy-match t
+        helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
+        helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
+        helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
+        helm-ff-search-library-in-sexp t        ; search for library in `require' and `declare-function' sexp.
+        helm-ff-file-name-history-use-recentf t)
+  (when (executable-find "curl")
+    (setq helm-google-suggest-use-curl-p t))
+  (add-hook 'helm-before-initialize-hook '(lambda () (linum-mode 0)))
+  (advice-add 'helm-ff-filter-candidate-one-by-one
+              :around (lambda (fcn file)
+                        (unless (string-match "\\(?:/\\|\\`\\)\\.\\{1,2\\}\\'" file)
+                          (funcall fcn file)))) ;; hide current directory/parent directory in file list
+  (helm-mode 1))
+(require 'helm-config)
+#+END_SRC
+
+*** Fuzzy Matching
+#+BEGIN_SRC emacs-lisp
+(use-package helm-flx
+  :config
+  (helm-flx-mode +1))
+
+(use-package helm-fuzzier
+  :config
+  (helm-fuzzier-mode 1))
+#+END_SRC
+
+*** Buffer switching
+#+BEGIN_SRC emacs-lisp
+(defun helm-omnibuffer ()
+  (interactive)
+  (helm-other-buffer
+   (append
+    (if (ignore-errors (projectile-project-p))
+        '(helm-source-projectile-buffers-list)
+        '(helm-source-buffers-list))
+    '(helm-source-recentf)
+    '(helm-source-buffer-not-found)) "*helm-buffers*"))
+(global-set-key (kbd "C-x b") 'helm-omnibuffer)
+#+END_SRC
+
+*** Interactive search in buffer
+#+BEGIN_SRC emacs-lisp
+(use-package helm-swoop
+        :bind
+        ("C-r" . helm-resume))
+#+END_SRC
+
+*** Grep
+#+BEGIN_SRC emacs-lisp
+(use-package helm-ag
+        :config
+        (setq helm-ag-use-grep-ignore-list t
+              helm-ag-insert-at-point 'symbol))
+#+END_SRC
+
+*** Popwin Fix
+#+BEGIN_SRC emacs-lisp
+(defun *-popwin-help-mode-off ()
+       "Turn `popwin-mode' off for *Help* buffers."
+       (when (boundp 'popwin:special-display-config)
+             (customize-set-variable 'popwin:special-display-config
+                                     (delq 'help-mode popwin:special-display-config))))
+
+(defun *-popwin-help-mode-on ()
+       "Turn `popwin-mode' on for *Help* buffers."
+       (when (boundp 'popwin:special-display-config)
+             (customize-set-variable 'popwin:special-display-config
+                                     (add-to-list 'popwin:special-display-config 'help-mode nil #'eq))))
+
+(add-hook 'helm-minibuffer-set-up-hook #'*-popwin-help-mode-off)
+(add-hook 'helm-cleanup-hook #'*-popwin-help-mode-on)
+#+END_SRC
+** Buffers
+*** Popup Windows
+#+BEGIN_SRC emacs-lisp
+(use-package popwin
+  :config
+  (setq popwin:special-display-config '((help-mode
+                                         ("*Miniedit Help*" :noselect t)
+                                         (completion-list-mode :noselect t)
+                                         (compilation-mode :noselect t)
+                                         (grep-mode :noselect t)
+                                         (occur-mode :noselect t)
+                                         ("*Pp Macroexpand Output*" :noselect t)
+                                         "*Shell Command Output*" "*vc-diff*" "*vc-change-log*"
+                                         (" *undo-tree*" :width 60 :position right)
+                                         ("^\\*anything.*\\*$" :regexp t)
+                                         "*slime-apropos*" "*slime-macroexpansion*" "*slime-description*"
+                                         ("*slime-compilation*" :noselect t)
+                                         "*slime-xref*"
+                                         (sldb-mode :stick t)
+                                         slime-repl-mode slime-connection-list-mode)))
+  (popwin-mode 1))
+#+END_SRC
+
+*** Maximum size of buffer menu
+#+BEGIN_SRC emacs-lisp
+(setq buffers-menu-max-size 60)
+#+END_SRC
+
+*** Add path if required to make buffer name unique
+#+BEGIN_SRC emacs-lisp
+(setq uniquify-buffer-name-style 'forward
+      uniquify-separator "/"
+      uniquify-after-kill-buffer-p t
+      uniquify-ignore-buffers-re "^\\*")
+#+END_SRC
+
+*** [[https://github.com/dimitri/switch-window][Use smarter window switching (numbered windows)]]
+#+BEGIN_SRC emacs-lisp
+(use-package switch-window
+        :config
+        (global-set-key (kbd "C-<tab>") 'switch-window))
+#+END_SRC
+
+*** Do not show buffer boundaries in fringe
+#+BEGIN_SRC emacs-lisp
+(setq-default indicate-buffer-boundaries nil)
+#+END_SRC
+
+*** [[https://github.com/mina86/auto-dim-other-buffers.el][Dim inactive buffers]]
+#+BEGIN_SRC emacs-lisp
+(use-package auto-dim-other-buffers
+        :config
+        (add-hook 'after-init-hook (lambda () (auto-dim-other-buffers-mode t))))
+#+END_SRC
+
+*** Highlight minibuffer when in use
+#+BEGIN_SRC emacs-lisp
+(add-hook 'minibuffer-setup-hook
+          (lambda ()
+                  (make-local-variable 'face-remapping-alist)
+                  (add-to-list 'face-remapping-alist '(default (:background "tomato")))))
+#+END_SRC
+
+*** Kill current buffer by default
+#+BEGIN_SRC emacs-lisp
+(defun kill-default-buffer ()
+       "Kill the currently active buffer -- set to C-x k so that users are not asked which buffer they want to kill."
+       (interactive)
+       (let (kill-buffer-query-functions) (kill-buffer)))
+(global-set-key (kbd "C-x k") 'kill-default-buffer)
+#+END_SRC
+
+*** Do not ask before killing buffer with running processes
+#+BEGIN_SRC emacs-lisp
+(setq kill-buffer-query-functions
+      (remq 'process-kill-buffer-query-function
+            kill-buffer-query-functions))
+#+END_SRC
+
+*** Multi-buffer kill
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-x C-k") 'clean-buffer-list)
+(defvar clean-buffer-list-delay-general 1)
+#+END_SRC
+*** Kill unused buffers automatically
+#+BEGIN_SRC emacs-lisp
+(defun clean-buffer-list-delay-3hours (name)
+  "Wrapper around clean-buffer-list-delay to allow delays in hours instead of days"
+  (or (assoc-default name clean-buffer-list-kill-buffer-names #'string=
+                     clean-buffer-list-delay-special)
+      (assoc-default name clean-buffer-list-kill-regexps
+                     (lambda (regex input)
+                       (if (functionp regex)
+                           (funcall regex input) (string-match regex input)))
+                     clean-buffer-list-delay-special)
+      (* 3 (* 60 60))))
+
+(fset 'clean-buffer-list-delay 'clean-buffer-list-delay-3hours)
+(run-with-timer 0 (* 3 (* 60 60)) 'clean-buffer-list)
+#+END_SRC
+
+*** [[https://github.com/Fanael/persistent-scratch][Save scratch buffers between sessions]]
+#+BEGIN_SRC emacs-lisp
+(use-package persistent-scratch
+        :config
+        (persistent-scratch-setup-default))
+#+END_SRC
+
+*** Lines
+**** Highlight current line
+#+BEGIN_SRC emacs-lisp
+(global-hl-line-mode)
+#+END_SRC
+
+**** Break long lines
+#+BEGIN_SRC emacs-lisp
+(setq global-visual-line-mode t
+      visual-line-fringe-indicators '(nil nil))
+(global-visual-line-mode 1)
+#+END_SRC
+
+**** [[https://github.com/purcell/page-break-lines][Show page breaks as line instead of '^L']]
+#+BEGIN_SRC emacs-lisp
+(use-package page-break-lines
+        :config
+        (global-page-break-lines-mode))
+#+END_SRC
+
+**** Show line numbers
+Always use a fixed width for line numbers (maximum number length)
+#+BEGIN_SRC emacs-lisp
+(defun fix-nlinum-width()
+       (when nlinum-mode
+             (setq nlinum--width
+                   (length (number-to-string
+                            (count-lines (point-min) (point-max)))))
+             (nlinum--flush)))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package linum-off)
+(use-package nlinum
+  :config
+        (global-linum-mode 1)
+        (setq global-nlinum-mode t)
+        (add-hook 'nlinum-mode-hook
+                  (lambda () (fix-nlinum-width))))
+#+END_SRC
+
+**** [[https://github.com/tom-tan/hlinum-mode][Highlight current line number]]
+#+BEGIN_SRC emacs-lisp
+(use-package hlinum
+        :config
+        (setq linum-highlight-in-all-buffersp t)
+        (hlinum-activate))
+#+END_SRC
+
+** Cursor
+*** Center Cursor
+#+BEGIN_SRC emacs-lisp
+(use-package centered-cursor-mode
+  :config
+  (global-centered-cursor-mode +1))
+#+END_SRC
+
+*** Show cursor as bar in insert mode and block in overwrite mode
+#+BEGIN_SRC emacs-lisp
+(use-package bar-cursor
+  :config
+  (bar-cursor-mode 1))
+#+END_SRC
+
+** [[https://www.emacswiki.org/emacs/UndoTree][Undo]]
+#+BEGIN_SRC emacs-lisp
+(use-package undo-tree
+        :config
+        (global-undo-tree-mode)
+        (setq undo-tree-visualizer-timestamps t
+              undo-tree-visualizer-diff t)
+        (global-set-key (kbd "C-z") 'undo-tree-undo)
+        (global-set-key (kbd "M-z") 'undo-tree-redo)
+        (global-set-key (kbd "C-M-z") 'undo-tree-visualize))
+#+END_SRC
+
+** Shell
+*** [[https://github.com/jerryxgh/smartwin][Group shell buffers]]
+#+BEGIN_SRC emacs-lisp
+(use-package smartwin
+  :bind
+  (:map smartwin-mode-map ("C-c s" . smartwin-switch-buffer))
+  :config
+  (smartwin-mode 1)
+  (setq smartwin-min-window-height (+ 25 window-min-height)))
+#+END_SRC
+
+*** [[https://github.com/mhayashi1120/Emacs-shelldoc][Show man page for shell commands]]
+#+BEGIN_SRC emacs-lisp
+(use-package shelldoc
+  :config
+  (setq shelldoc-keep-man-locale nil)
+  (add-hook 'eshell-mode-hook 'shelldoc-minor-mode-on)
+  (add-hook 'sh-mode-hook 'shelldoc-minor-mode-on)
+  (add-hook 'shell-mode-hook 'shelldoc-minor-mode-on))
+#+END_SRC
+
+*** Auto-completion
+**** Company (commands)
+#+BEGIN_SRC emacs-lisp
+(add-hook 'eshell-mode-hook (lambda()
+                              (set (make-local-variable 'company-backends) '(company-shell company-keywords company-dabbrev-code company-yasnippet company-files company-capf))))
+#+END_SRC
+
+**** Helm (files/folders)
+#+BEGIN_SRC emacs-lisp
+(add-hook 'eshell-mode-hook (lambda ()
+                              (eshell-cmpl-initialize)
+                              (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)))
+#+END_SRC
+
+*** [[;; https://github.com/xuchunyang/eshell-did-you-mean][Suggestions for wrong commmands]]
+#+BEGIN_SRC emacs-lisp
+(use-package eshell-did-you-mean
+  :config
+  (eshell-did-you-mean-setup))
+#+END_SRC
+
+*** [[https://github.com/ryuslash/eshell-fringe-status][Show status of last command in fringe]]
+#+BEGIN_SRC emacs-lisp
+(use-package eshell-fringe-status)
+#+END_SRC  (add-hook 'eshell-mode-hook 'eshell-fringe-status-mode))
+
+*** History
+#+BEGIN_SRC emacs-lisp
+(add-hook 'eshell-mode-hook (lambda ()
+              (define-key eshell-mode-map "M-l" 'helm-eshell-history)))
+#+END_SRC
+
+** Help
+*** [[https://github.com/justbur/emacs-which-key][Show available keys after entering prefix]]
+#+BEGIN_SRC emacs-lisp
+(use-package which-key
+        :config
+        (which-key-mode +1))
+#+END_SRC
+
+*** Show unbound keys
+#+BEGIN_SRC emacs-lisp
+(use-package unbound)
+#+END_SRC
+
+* File Handling
+** Do not ask if file should be created
+#+BEGIN_SRC emacs-lisp
+(setq confirm-nonexistent-file-or-buffer nil)
+#+END_SRC
+
+** Save backup files to /tmp
+#+BEGIN_SRC emacs-lisp
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
+#+END_SRC
+
+** Move deleted files to trash instead of deleting
+#+BEGIN_SRC emacs-lisp
+(setq delete-by-moving-to-trash t)
+#+END_SRC
+
+** Automatically reload unmodified buffers when file has changed on disk
+#+BEGIN_SRC emacs-lisp
+(global-auto-revert-mode t)
+#+END_SRC
+
+** [[https://github.com/nflath/sudo-edit][Allow editing via sudo]]
+#+BEGIN_SRC emacs-lisp
+(use-package sudo-edit)
+#+END_SRC
+
+** Rename files and buffers
+#+BEGIN_SRC emacs-lisp
+(defun rename-file-and-buffer (new-name)
+  "Renames both current buffer and file it's visiting to NEW-NAME."
+  (interactive
+   (let* ((filename (buffer-file-name))
+          (basename (file-name-nondirectory filename)))
+     (progn
+       (when (not (buffer-file-name))
+           (error "Buffer '%s' is not visiting a file" (buffer-name)))
+       (list (read-file-name "Rename to: " (file-name-directory filename) basename nil basename)))
+     (when (equal new-name "")
+         (error "Aborted rename"))
+     (setq new-name (if (file-directory-p new-name)
+                        (expand-file-name basename)
+                      new-name)
+           (expand-file-name new-name)))
+   ;; If the file isn't saved yet, skip the file rename, but still update the
+   ;; buffer name and visited file.
+   (when (file-exists-p (buffer-file-name))
+       (cond
+        ((vc-backend filename) (vc-rename-file filename new-name))
+        (rename-file filename new-name 1)))
+   (let ((was-modified (buffer-modified-p)))
+     ;; This also renames the buffer, and works with uniquify
+     (set-visited-file-name new-name)
+     (if was-modified
+         (save-buffer)
+       ;; Clear buffer-modified flag caused by set-visited-file-name
+       (set-buffer-modified-p nil))
+     (message "Renamed to %s." new-name))))
+#+END_SRC
+
+** File type associations
+#+BEGIN_SRC emacs-lisp
+(setq auto-mode-alist
+      (mapcar 'purecopy
+              '(("\\.org$" . org-mode)
+                ("\\.emacs" . emacs-lisp-mode)
+                ("CMakeLists\\.txt$" . cmake-mode)
+                ("Makefile$" . makefile-mode)
+                ("\\.C$". c++-mode)
+                ("\\.a$" . c-mode)
+                ("\\.bib$" . bibtex-mode)
+                ("\\.c$" . c-mode)
+                ("\\.cc$". c++-mode)
+                ("\\.cmake$" . cmake-mode)
+                ("\\.cpp$". c++-mode)
+                ("\\.csh$" . csh-mode)
+                ("\\.cxx$". c++-mode)
+                ("\\.doc$" . text-mode)
+                ("\\.el$" . emacs-lisp-mode)
+                ("\\.h$" . c++-mode)
+                ("\\.hh$" . c++-mode)
+                ("\\.hpp$". c++-mode)
+                ("\\.html?$" . html-mode)
+                ("\\.lisp$" . lisp-mode)
+                ("\\.lsp$" . lisp-mode)
+                ("\\.log$" . syslog-mode)
+                ("\\.mak$" . makefile-mode)
+                ("\\.pdf$" . doc-view-mode)
+                ("\\.py$" . python-mode)
+                ("\\.qml$" . qml-mode)
+                ("\\.qrc$" . nxml-mode)
+                ("\\.sh$" . bash-mode)
+                ("\\.tcl$" . tcl-mode)
+                ("\\.tex$" . latex-mode)
+                ("\\.ts$" . nxml-mode)
+                ("\\.txi$" . Texinfo-mode)
+                ("\\.txt$" . text-mode)
+                ("\\.xml$" . nxml-mode)
+                ("\\.xslt?$" . nxml-mode)
+                ("\\.zsh" . sh-mode))))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package openwith
+  :config
+  (setq openwith-confirm-invocation t
+        openwith-associations '(("\\.\\(?:jp?g\\|png\\)\\'" "display" (file))
+                                ("\\.\\(xcf\\|psd\\)\\'" "gimp" ("-s" file))
+                                ("\\.qml\\'" "qtcreator" (file)))
+        openwith-mode t)
+  (openwith-mode))
+#+END_SRC
+
+** File Management
+*** [[https://www.emacswiki.org/emacs/RecentFiles][Recent files]]
+#+BEGIN_SRC emacs-lisp
+(use-package recentf
+        :bind ("C-x C-r" . helm-recentf)
+        :config
+        (recentf-mode t)
+        (setq recentf-max-saved-items 200
+              recentf-max-menu-items 15))
+#+END_SRC
+
+*** Dired
+**** Rename files in dired mode
+#+BEGIN_SRC emacs-lisp
+(use-package dired-efap
+        :bind (:map dired-mode-map
+                    ("[f2]" . dired-efap))
+        :config
+        (setq dired-efap-initial-filename-selection 'o-extension))
+#+END_SRC
+
+**** [[https://github.com/DamienCassou/dired-imenu][imenu Integration]]
+#+BEGIN_SRC emacs-lisp
+(use-package dired-imenu)
+#+END_SRC
+
+**** [[https://www.emacswiki.org/emacs/wdired.el][Editing]]
+#+BEGIN_SRC emacs-lisp
+(use-package wdired
+        :bind (:map dired-mode-map
+                    ("e" . wdired-change-to-wdired-mode)))
+#+END_SRC
+
+**** Coloring
+#+BEGIN_SRC emacs-lisp
+(use-package diredful
+        :config
+        (diredful-mode 1))
+#+END_SRC
+
+*** [[https://www.emacswiki.org/emacs/Sunrise_Commander][Sunrise Commander]]
+#+BEGIN_SRC emacs-lisp
+(use-package sunrise-commander)
+#+END_SRC
+
+*** [[https://github.com/jaypei/emacs-neotree][NeoTree]]
+#+BEGIN_SRC emacs-lisp
+(use-package neotree
+        :config
+        (setq neo-smart-open nil
+              neo-show-updir-line t
+              neo-window-fixed-size nil
+              neo-theme (if window-system
+                                'icons
+                                'arrow))
+        (add-hook 'projectile-after-switch-project-hook 'neotree-projectile-action)
+        (global-set-key [f1] 'neotree-toggle))
+#+END_SRC
+
+* Text Options
+** Encoding
+#+BEGIN_SRC emacs-lisp
+(set-language-environment 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(setq locale-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-selection-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
+#+END_SRC
+
+** Highlighting
+*** Highlight edited areas shortly
+#+BEGIN_SRC emacs-lisp
+(use-package volatile-highlights
+        :config
+        (setq Vhl/highlight-zero-width-ranges t
+              vhl/use-etags-extension-p nil
+              vhl/use-hideshow-extension-p t
+              vhl/use-nonincremental-search-extension-p nil
+              vhl/use-occur-extension-p nil)
+        (volatile-highlights-mode t))
+#+END_SRC
+
+*** Highlight current symbol
+#+BEGIN_SRC emacs-lisp
+(use-package auto-highlight-symbol
+        :config
+        (global-auto-highlight-symbol-mode t))
+#+END_SRC
+
+*** [[- rainbow-mode][Show hex color definitions as color]]
+#+BEGIN_SRC emacs-lisp
+(use-package rainbow-mode
+        :config
+        (rainbow-mode 1))
+#+END_SRC
+
+*** Highlight number packs 
+#+BEGIN_SRC emacs-lisp
+(use-package num3-mode
+        :config
+        (setq global-num3-mode t))
+#+END_SRC
+
+*** Highlight last screen content when navigating
+#+BEGIN_SRC emacs-lisp
+(use-package on-screen
+        :config
+        (on-screen-global-mode +1)
+        (setq on-screen-auto-update nil
+              on-screen-delay 0.4
+              on-screen-drawing-threshold 20
+              on-screen-highlight-method 'shadow
+              on-screen-remove-when-edit t))
+#+END_SRC
+
+*** Highlight log files
+#+BEGIN_SRC emacs-lisp
+(use-package syslog-mode)
+#+END_SRC
+
+*** [[https://github.com/bnbeckwith/writegood-mode][Mark common language issues]]
+#+BEGIN_SRC emacs-lisp
+(use-package writegood-mode
+  :config
+  (add-hook 'find-file-hook (lambda ()
+                              (writegood-mode))))
+#+END_SRC
+
+** Navigation
+*** Go to line
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "M-g l") 'goto-line)
+#+END_SRC
+
+*** Jump to first non-whitespace character or beginning of line
+#+BEGIN_SRC emacs-lisp
+(defun back-to-indentation-or-beginning()
+       (interactive)
+       "If at the begining of line go to begining of buffer.
+   If at the indention go to begining of line.
+   Go to indention otherwise."
+         (if (bolp) (beginning-of-buffer)
+             (skip-chars-backward " \t")
+             (unless (bolp) (back-to-indentation))))
+  (global-set-key (kbd "<home>") 'back-to-indentation-or-beginning)
+#+END_SRC
+
+*** Jump to last non-whitespace character or end of line
+#+BEGIN_SRC emacs-lisp
+  (defun end-of-code-or-line (arg)
+         "Move to end of line, or before start of comments depending on situation.
+   Toggle back and forth positions if we are already at one.
+   Comments are recognized in any mode that sets syntax-ppss
+   properly."
+         (interactive "P")
+         (when (catch 'bol
+                      (let ((start (point))
+                            (bol (save-excursion
+                                         (beginning-of-line)
+                                         (point)))
+                            (eol (progn (move-end-of-line arg) (point))))
+                           (while (point-in-comment)
+                                  (backward-char)
+                                  (when (= (point) bol)
+                                        (throw 'bol t)))
+                           (throw 'bol (and (not (= eol start)) (>= start (point))))))
+               (move-end-of-line arg)))
+  (global-set-key (kbd "<end>") 'end-of-code-or-line)
+#+END_SRC
+
+*** Jump to other instances of symbol
+#+BEGIN_SRC emacs-lisp
+(use-package smartscan
+        :config
+        (global-smartscan-mode 1)
+        (global-set-key (kbd "M-g n") 'smartscan-symbol-go-forward)
+        (global-set-key (kbd "M-g p") 'smartscan-symbol-go-backward))
+#+END_SRC
+
+*** [[https://github.com/tam17aki/ace-isearch][Jump to any symbol]]
+#+BEGIN_SRC emacs-lisp
+(use-package avy)
+(use-package ace-isearch
+        :config
+        (setq ace-isearch-function 'avy-goto-subword-1)
+        (setq ace-isearch-input-length 2)
+        (global-ace-isearch-mode +1))
+#+END_SRC
+
+*** [[https://github.com/camdez/goto-last-change.el][Jump to last change]]
+#+BEGIN_SRC emacs-lisp
+(use-package goto-last-change
+        :config
+        (global-set-key (kbd "M-g e") 'goto-last-change))
+#+END_SRC
+
+*** URIs
+**** Allow clicking on URIs
+#+BEGIN_SRC emacs-lisp
+(goto-address-mode 1)
+#+END_SRC
+
+**** [[https://github.com/abo-abo/ace-link][Jump to link address via keys]]
+#+BEGIN_SRC emacs-lisp
+(defun jump-to-url ()
+  (let ((url (url-get-url-at-point)))
+    (if url
+        (browse-url url)
+      (ace-link-addr))))
+
+(use-package ace-link
+  :bind
+  (("M-g w" . jump-to-url))
+  :config
+  (ace-link-setup-default))
+#+END_SRC
+
+*** Find in project
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "M-g g") 'helm-projectile-ag)
+#+END_SRC
+
+*** Find with google
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "M-g i") 'helm-google-suggest)
+#+END_SRC
+
+** Editing
+*** Indentation
+#+BEGIN_SRC emacs-lisp
+(setq-default indent-tabs-mode nil)
+(setq comment-empty-lines t
+      electric-indent-mode t
+      electric-layout-mode t
+      electric-pair-mode t
+      fill-column 120
+      show-trailing-whitespace t
+      tab-always-indent 'complete
+      text-mode-hook '(turn-on-auto-fill text-mode-hook-identify)
+      require-final-newline nil)
+(show-paren-mode)
+
+(defvar autopair-skip-whitespace t)
+(defvar electric-spacing-double-space-docs nil)
+(defvar whitespace-action '(cleanup))
+(defvar whitespace-global-modes t)
+(defvar whitespace-line-column nil)
+(defvar whitespace-style '(face))
+#+END_SRC
+
+*** Indent new lines
+#+BEGIN_SRC emacs-lips
+(global-set-key (kbd "RET") 'newline-and-indent)
+#+END_SRC
+
+*** Upper/lower case
+#+BEGIN_SRC emacs-lisp
+(use-package fix-word
+  :bind
+  (("M-u" . fix-word-upcase)
+   ("M-l" . fix-word-downcase)
+   ("M-c" . fix-word-capitalize)))
+#+END_SRC
+
+*** [[https://github.com/davidshepherd7/aggressive-fill-paragraph-mode][Auto-fill paragraphs]]
+#+BEGIN_SRC emacs-lisp
+(use-package aggressive-fill-paragraph
+  :config
+  (afp-setup-recommended-hooks))
+#+END_SRC
+
+*** Expand selection
+#+BEGIN_SRC emacs-lisp
+(use-package expand-region
+             :bind
+             ("C-S-e" . er/expand-region))
+#+END_SRC
+
+*** Do not delete selected text when inserting characters
+#+BEGIN_SRC emacs-lisp
+(delete-selection-mode nil)
+#+END_SRC
+
+*** Move text
+#+BEGIN_SRC emacs-lisp
+(use-package smart-shift
+        :config
+        (global-smart-shift-mode 1)
+        (global-set-key [S-M-up] 'smart-shift-up)
+        (global-set-key [S-M-down] 'smart-shift-down)
+        (global-set-key [S-M-left] 'smart-shift-left)
+        (global-set-key [S-M-right] 'smart-shift-right))
+#+END_SRC
+
+*** [[https://github.com/nflath/hungry-delete][Delete adjoining whitespaces in all major modes]]
+#+BEGIN_SRC emacs-lisp
+(use-package hungry-delete
+        :config
+        (global-hungry-delete-mode))
+#+END_SRC
+
+*** [[https://github.com/lewang/ws-butler][Remove trailing whitespace in changed lines]]
+#+BEGIN_SRC emacs-lisp
+(use-package ws-butler
+  :config
+  (setq ws-butler-global-mode t
+        ws-butler-keep-whitespace-before-point nil)
+  (ws-butler-global-mode))
+#+END_SRC
+
+*** [[https://github.com/ongaeshi/duplicate-thing][Duplicate lines/regions]]
+#+BEGIN_SRC emacs-lisp
+(use-package duplicate-thing
+        :config
+        (global-set-key (kbd "C-x d") 'duplicate-thing))
+#+END_SRC
+*** Case-insensitive line sorting
+#+BEGIN_SRC emacs-lisp
+(defun sort-lines-case-insensitive ()
+       (interactive)
+       (let ((sort-fold-case t))
+            (call-interactively 'sort-lines)))
+#+END_SRC
+
+*** Sort words
+#+BEGIN_SRC emacs-lisp
+(use-package sort-words)
+#+END_SRC
+
+*** Automatic insert
+**** Abbreviations
+#+BEGIN_SRC emacs-lisp
+;;(define-abbrev-table 'global-abbrev-table '(("" "")))
+#+END_SRC
+
+**** [[https://github.com/joaotavora/yasnippet][Templates]]
+#+BEGIN_SRC emacs-lisp
+(use-package yasnippet
+        :config
+        (setq yas-snippet-dirs '("~/.yas-snippets"))
+        (yas-global-mode 1)
+        (setq yas-use-menu nil))
+#+END_SRC
+
+*** Utilities
+**** [[https://github.com/mhayashi1120/Emacs-wgrep][Edit grep buffers]]
+#+BEGIN_SRC emacs-lisp
+(use-package wgrep
+        :config
+        (setq wgrep-enable-key "e"))
+(use-package wgrep-ag
+        :config
+        (add-hook 'ag-mode-hook 'wgrep-ag-setup))
+(use-package wgrep-helm)
+#+END_SRC
+
+**** [[https://github.com/lateau/charmap][Unicode table]]
+
+#+BEGIN_SRC emacs-lisp
+(use-package charmap)
+#+END_SRC
+
+** [[http://www-sop.inria.fr/members/Manuel.Serrano/flyspell/flyspell.html][Spell checking]]
+#+BEGIN_SRC emacs-lisp
+(use-package flyspell
+        :config
+        (setq flyspell-issue-welcome-flag nil
+              flyspell-issue-message-flag nil
+              flyspell-sort-corrections t)
+        (add-hook 'text-mode-hook 'flyspell-mode)
+        (add-hook 'org-mode-hook 'flyspell-mode)
+        (add-hook 'prog-mode-hook 'flyspell-prog-mode))
+
+(use-package helm-flyspell
+        :bind
+        ("C-c s" . helm-flyspell-correct))
+#+END_SRC
+
+** [[https://github.com/bastibe/annotate.el][Annotations]]
+#+BEGIN_SRC emacs-lisp
+(use-package annotate
+        :config
+        (setq annotate-file "~/.emacs.d/annotations"))
+#+END_SRC
+
+** Utilities
+*** [[https://github.com/akicho8/string-inflection][Change lower/upper case]]
+#+BEGIN_SRC emacs-lisp
+(use-package string-inflection)
+#+END_SRC
+
+*** [[https://github.com/netromdk/describe-number][Convert numbers]]
+#+BEGIN_SRC emacs-lisp
+  (use-package describe-number
+          :config
+          (global-set-key (kbd "M-?") 'describe-number-at-point))
+#+END_SRC
+
+*** [[https://github.com/cqql/dictcc.el][Translate text]]
+#+BEGIN_SRC emacs-lisp
+(use-package dictcc
+        :config
+        (global-set-key (kbd "M-g t") 'dictcc))
+#+END_SRC
+* Programming
+** Projects
+*** Projectile 
+#+BEGIN_SRC emacs-lisp
+(use-package projectile
+  :bind (("C-x C-p" . projectile-find-file-dwim))
+  :config
+  (setq projectile-enable-caching t
+        projectile-completion-system 'helm
+        projectile-switch-project-action 'helm-projectile)
+  (projectile-global-mode))
+
+(use-package helm-projectile
+  :bind
+  ("M-g g" . helm-projectile-ag)
+  :config
+  (helm-projectile-on))
+#+END_SRC
+
+**** Open shell in project directory
+#+BEGIN_SRC emacs-lisp
+(defun eshell-project-dir ()
+  (interactive)
+  (let ((default-directory (project-dir)))
+    (if default-directory
+        (eshell))))
+#+END_SRC
+
+*** CMake
+#+BEGIN_SRC emacs-lisp
+(use-package cmake-ide
+        :config
+        (setq cmake-ide-rdm-executable "/usr/local/bin/rdm"
+              cmake-ide-build-pool-dir "~/build")
+        (cmake-ide-setup))
+#+END_SRC
+
+**** Re-/Configure CMake
+Handler to close buffer after quitting ccmake.
+#+BEGIN_SRC emacs-lisp
+(add-hook 'term-exec-hook (lambda ()
+                            (when (equal (buffer-name (current-buffer)) "*CMake Cache*")
+                              (progn
+                                (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix)
+                                (term-char-mode)
+                                (let* ((buff (current-buffer))
+                                       (proc (get-buffer-process buff)))
+                                  (set-process-sentinel proc `(lambda (process event)
+                                                                (if (string= event "finished\n")
+                                                                    (progn
+                                                                      (kill-buffer ,buff)
+                                                                      (cmake-ide--on-cmake-finished))))))))))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun cmake-configure (source-dir build-dir)
+  (interactive (let ((source-directory (if (and (boundp 'source-dir)
+                                                source-dir
+                                                (file-directory-p source-dir))
+                                           source-dir
+                                           (read-directory-name "Source Directory: "
+                                                                default-directory))))
+                 (list source-directory
+                       (if (and (boundp 'build-dir)
+                                build-dir)
+                           build-dir
+                           (read-directory-name "Build-directory: "
+                                                (concat (file-name-as-directory cmake-ide-build-pool-dir) "build-" (file-name-nondirectory (directory-file-name (file-name-directory source-directory)))))))))
+  (if (executable-find "ccmake")
+      (when (and build-dir
+                 source-dir)
+        (if (file-directory-p source-dir)
+          (if (cmake-source-directory-p source-dir)
+              (progn
+                (when (not (file-directory-p build-dir))
+                  (make-directory build-dir t))
+                (setq cmake-ide-build-dir build-dir)
+                (projectile-discover-projects-in-directory source-dir)
+                (let ((default-directory build-dir))
+                  (ansi-term (getenv "SHELL") "CMake Cache")
+                  (term-exec (current-buffer) "ccmake" "ccmake" nil (list "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON" source-dir))))
+            (error "`%s' does not contain a CMake project" source-dir))
+          (error "`%s' is not a directory" source-dir)))
+    (error "Please install ccmake")))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun cmake-reconfigure (build-dir)
+  (interactive (list (if (and build-dir
+                              (file-directory-p build-dir))
+                         build-dir
+                       (or cmake-ide-build-dir
+                           (read-directory-name "Build-directory: "
+                                                cmake-ide-build-pool-dir)))))
+  (if (executable-find "ccmake")
+      (when (and build-dir
+                 (file-directory-p build-dir))
+        (if (cmake-build-directory-p build-dir)
+            (progn
+              (setq cmake-ide-build-dir build-dir)
+              (projectile-discover-projects-in-directory (cmake-source-dir build-dir)))
+          (let ((default-directory build-dir))
+            (ansi-term (getenv "SHELL") "CMake Cache")
+            (term-exec (current-buffer) "ccmake" "ccmake" nil (list ".")))
+          (error "`%s' is not a CMake build directory" build-dir))
+        (error "`%s' is not a directory" build-dir))
+    (error "Please install ccmake")))
+#+END_SRC
+
+**** Clear CMake Cache
+#+BEGIN_SRC emacs-lisp
+(defun cmake-reset (build-dir)
+  (interactive (list (or cmake-ide-build-dir
+                         (read-directory-name "Build-directory: "
+                                              (file-name-as-directory cmake-ide-build-pool-dir)))))
+  (if (executable-find "cmake")
+      (if (and build-dir
+               (file-directory-p build-dir))
+          (let ((cache-file (concat (file-name-as-directory build-dir) "CMakeCache.txt")))
+            (if (file-exists-p cache-file)
+                (let ((source-dir (cmake-source-dir build-dir)))
+                  (if (file-exists-p (concat (file-name-as-directory source-dir) "CMakeLists.txt"))
+                      (progn (delete-file cache-file)
+                             (cmake-configure source-dir build-dir))
+                    (error "`%s' does not contain a CMake project" source-dir)))
+              (error "`%s' is not a CMake build directory" build-dir)))
+        (error "`%s' is not a directory" build-dir))
+    (error "Please install cmake")))
+#+END_SRC
+
+**** Open Project
+#+BEGIN_SRC emacs-lisp
+(defun load-project (build-dir)
+  (interactive (list (read-directory-name "Build-directory: "
+                                          (file-name-as-directory cmake-ide-build-pool-dir))))
+  (if (cmake-build-directory-p build-dir)
+      (progn 
+	(setq cmake-ide-build-dir build-dir)
+	(cmake-ide--on-cmake-finished))
+    (error "`%s' is not a CMake build directory" build-dir)))
+#+END_SRC
+
+**** Open shell in build directory
+#+BEGIN_SRC emacs-lisp
+(defun eshell-build-dir ()
+  (interactive)
+  (if cmake-ide-build-dir
+      (let ((default-directory cmake-ide-build-dir))
+        (eshell))))
+#+END_SRC
+
+**** List targets
+#+BEGIN_SRC emacs-lisp
+(defvar cmake-current-target nil "The currently selected build target.")
+
+(defun cmake-select-target (build-dir)
+  (interactive (list (or cmake-ide-build-dir
+                         (read-directory-name "Build-directory: "
+                                              (file-name-as-directory cmake-ide-build-pool-dir)))))
+  (if (cmake-build-directory-p build-dir)
+      (progn
+        (setq cmake-current-target (helm :sources (helm-build-sync-source "CMake Targets"
+                                                    :candidates
+                                                    (save-match-data
+                                                      (let ((output (shell-command-to-string (concat "cmake --build " build-dir " --target help")))
+                                                            (position 0)
+                                                            targets)
+                                                        (while (string-match "\\.\\.\\.[[:space:]]+\\([a-zA-Z0-9_-]+\\)" output position)
+                                                          (push (match-string 1 output) targets)
+                                                          (setq position (match-end 0)))
+                                                        targets)))
+                                         :prompt "Target: "
+                                         :preselect cmake-current-target
+                                         :buffer "*helm target*"))
+        cmake-current-target)
+    (error "`%s' is not a CMake build directory" build-dir)))
+#+END_SRC
+
+**** Utilities
+***** Find source directory
+#+BEGIN_SRC emacs-lisp
+(defun cmake-source-dir (build-dir)
+  (interactive (list (read-directory-name "Build-directory: "
+                                          (file-name-as-directory cmake-ide-build-pool-dir))))
+  (let ((cache-file (concat (file-name-as-directory build-dir) "CMakeCache.txt")))
+    (if (file-exists-p cache-file)
+        (let ((source-dir (with-temp-buffer
+                            (insert-file-contents cache-file)
+                            (beginning-of-buffer)
+                            (save-match-data
+                              (and
+                               (search-forward-regexp "CMAKE_HOME_DIRECTORY[^=]*=[:blank:]*\\(.*\\)[:blank:]*$"
+                                                      (point-max) nil 1)
+                               (match-string 1))))))
+          (if source-dir
+              (if (called-interactively-p 'any)
+                  (message (format "The source directory for `%s' is `%s'." build-dir source-dir))
+                source-dir)
+            (error "Source directory information not found in cache")))
+      (error "`%s' is not a CMake build directory" build-dir))))
+#+END_SRC
+
+***** Check if directory is source directory
+#+BEGIN_SRC emacs-lisp
+(defun cmake-source-directory-p (source-dir)
+  (file-exists-p (concat (file-name-as-directory source-dir) "CMakeLists.txt")))
+#+END_SRC
+
+***** Check if directory is build directory
+#+BEGIN_SRC emacs-lisp
+(defun cmake-build-directory-p (build-dir)
+  (file-exists-p (concat (file-name-as-directory build-dir) "CMakeCache.txt")))
+#+END_SRC
+
+*** Build
+#+BEGIN_SRC emacs-lisp
+(defun build-target (target)
+  (interactive (list (or cmake-current-target
+                         (call-interactively 'cmake-select-target))))
+  (when target
+    (compile (concat "cmake --build " cmake-ide-build-dir " --target " target))
+    (cmake-ide--run-rc)))
+
+(global-set-key (kbd "<f8>") 'build-target)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun clean-build-directory ()
+  (interactive)
+  (build-target "clean"))
+#+END_SRC
+
+** Languages
+*** Common
+**** Highlighting
+***** Scopes
+****** [[https://github.com/Fanael/highlight-blocks][Scope background]]
+#+BEGIN_SRC emacs-lisp
+(use-package highlight-blocks
+        :config
+        (add-hook 'prog-mode-hook 'highlight-blocks-mode))
+#+END_SRC
+
+****** [[https://github.com/ikirill/hl-indent][Begin/end of scoped line]]
+#+BEGIN_SRC emacs-lisp
+(use-package hl-indent
+        :config
+        (add-hook 'prog-mode-hook 'hl-indent-mode-blocks))
+#+END_SRC
+
+***** [[https://github.com/ikirill/hl-indent][Unique colors for identifiers]]
+#+BEGIN_SRC emacs-lisp
+(use-package color-identifiers-mode
+        :config
+        (add-hook 'prog-mode-hook #'color-identifiers-mode))
+#+END_SRC
+
+***** [[https://github.com/Fanael/rainbow-delimiters][Unique colors for parentheses]]
+#+BEGIN_SRC emacs-lisp
+(use-package rainbow-delimiters
+        :config
+        (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+#+END_SRC
+
+***** [[https://github.com/tarsius/hl-todo][Highlight TODO/FIXME/...]]
+#+BEGIN_SRC emacs-lisp
+(use-package hl-todo
+        :config
+        (setq global-hl-todo-mode t)
+        (define-key hl-todo-mode-map (kbd "M-g i") 'hl-todo-next))
+#+END_SRC
+***** Show current function in mode-line
+#+BEGIN_SRC emacs-lisp
+(use-package which-func
+        :config
+        (add-to-list 'which-func-modes 'prog-mode)
+        (setq which-func-unknown "n/a")
+        (which-function-mode 1))
+#+END_SRC
+
+**** Navigation
+***** [[https://github.com/gregsexton/origami.el][Folding]]
+#+BEGIN_SRC emacs-lisp
+(use-package origami
+  :bind
+  (("M-f" . origami-forward-toggle-node)
+   ("M-F" . origami-recursively-toggle-node))
+  :config
+  (add-hook 'prog-mode-hook 'origami-mode)
+  (add-hook 'origami-mode-hook (lambda ()
+                                 (origami-close-all-nodes (current-buffer)))))
+#+END_SRC
+
+***** Subword-navigation in camelCase words
+#+BEGIN_SRC emacs-lisp
+(add-hook 'prog-mode-hook '(lambda () (subword-mode 1)))
+#+END_SRC
+
+***** S-EXPR
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "M-g <left>") 'backward-sexp)
+(global-set-key (kbd "M-g <right>") 'forward-sexp)
+#+END_SRC
+
+***** [[https://github.com/magnars/smart-forward.el][Smart forward/backward]]
+#+BEGIN_SRC emacs-lisp
+(use-package smart-forward
+        :config
+        (global-set-key (kbd "M-<up>") 'smart-up)
+        (global-set-key (kbd "M-<down>") 'smart-down)
+        (global-set-key (kbd "M-<left>") 'smart-backward)
+        (global-set-key (kbd "M-<right>") 'smart-forward))
+#+END_SRC
+
+**** Editing
+***** [[https://github.com/mattfidler/auto-indent-mode.el][Auto-indent]]
+#+BEGIN_SRC emacs-lisp
+(use-package auto-indent-mode
+        :config
+        (add-hook 'prog-mode-hook 'auto-indent-mode))
+#+END_SRC
+
+If under version control, only indent changed area
+#+BEGIN_SRC emacs-lisp
+(setq auto-indent-indent-style 'conservative)
+#+END_SRC
+
+***** [[https://github.com/remyferre/comment-dwim-2][Smarter commenting]]
+#+BEGIN_SRC emacs-lisp
+(use-package comment-dwim-2
+        :config
+        (global-set-key (kbd "C-c c") 'comment-dwim-2))
+#+END_SRC
+
+***** [[https://github.com/victorhge/iedit][Edit all occurences within function]]
+#+BEGIN_SRC emacs-lisp
+(use-package iedit)
+
+(defun iedit-dwim (arg)
+  "Starts iedit but uses \\[narrow-to-defun] to limit its scope."
+  (interactive "P")
+  (if arg
+      (iedit-mode)
+    (save-excursion
+      (save-restriction
+        (widen)
+        (if iedit-mode
+            (iedit-done)
+          (narrow-to-defun)
+          (iedit-start (current-word) (point-min) (point-max)))))))
+#+END_SRC
+
+***** Spell checking
+#+BEGIN_SRC emacs-lisp
+(add-hook 'prog-mode-hook 'flyspell-prog-mode)
+#+END_SRC
+
+***** Auto-completion
+#+BEGIN_SRC emacs-lisp
+(use-package company
+        :config
+        (setq company-auto-complete nil
+              company-auto-complete-chars '(32 95 41 119 46)
+              company-frontends '(company-preview-if-just-one-frontend company-pseudo-tooltip-unless-just-one-frontend)
+              company-idle-delay 0
+              company-selection-wrap-around t
+              company-show-numbers
+              company-tooltip-align-annotations 
+              company-tooltip-flip-when-above nil
+              company-transformers '(company-sort-by-backend-importance)
+              company-tooltip-limit 20
+              company-tooltip-minimum-width 50
+              company-tooltip-offset-display 'scrollbar)
+        (add-hook 'after-init-hook 'global-company-mode))
+
+(use-package helm-company
+        :config
+        (eval-after-load 'company
+                '(progn
+                         (define-key company-mode-map (kbd "C-:") 'helm-company)
+                         (define-key company-active-map (kbd "C-:") 'helm-company))))
+#+END_SRC
+***** Automatic spacing
+#+BEGIN_SRC emacs-lisp
+(use-package electric-spacing
+        :config
+        (add-hook 'prog-mode-hook #'electric-spacing-mode)
+        (add-hook 'prog-mode-hook #'electric-layout-mode))
+#+END_SRC
+
+***** [[https://github.com/snosov1/dummyparens][Automatic parens]]
+#+BEGIN_SRC emacs-lisp
+(use-package dummyparens
+  :config
+  (global-dummyparens-mode))
+#+END_SRC
+
+***** [[http://www.flycheck.org/en/latest/][Syntax check]]
+#+BEGIN_SRC emacs-lisp
+(use-package flycheck
+        :config
+        (setq flycheck-display-errors-delay 0.2
+              flycheck-indication-mode nil
+              flycheck-check-syntax-automatically '(mode-enabled save idle-change))
+        (define-key flycheck-mode-map (kbd "C-c ! h") 'helm-flycheck)
+        (add-hook 'after-init-hook #'global-flycheck-mode))
+
+(use-package flycheck-pos-tip
+        :config
+        (flycheck-pos-tip-mode))
+#+END_SRC
+
+****** Helm Integration
+#+BEGIN_SRC emacs-lisp
+(use-package helm-flycheck)
+#+END_SRC
+**** Compilation
+***** [[https://github.com/abo-abo/helm-make][Select make target with helm]]
+#+BEGIN_SRC emacs-lisp
+(use-package helm-make)
+#+END_SRC
+***** Always kill running compilation when starting another
+#+BEGIN_SRC emacs-lisp
+(setq compilation-always-kill t)
+#+END_SRC
+
+***** Do not ask to save unsaved buffers
+#+BEGIN_SRC emacs-lisp
+(setq compilation-ask-about-save nil)
+#+END_SRC
+
+***** Jump to first error/Move to errors
+#+BEGIN_SRC emacs-lisp
+(setq compilation-auto-jump-to-first-error t
+      compilation-scroll-output 'first-error
+      compilation-skip-threshold 2)
+#+END_SRC
+
+***** [[https://github.com/EricCrosson/bury-successful-compilation][Hide compilation buffer if successful]]
+#+BEGIN_SRC emacs-lisp
+(use-package bury-successful-compilation
+        :config
+        (bury-successful-compilation 1))
+#+END_SRC
+**** Documentation
+#+BEGIN_SRC emacs-lisp
+(use-package helm-dash
+        :bind
+        ("M-g d" . helm-dash-at-point)        
+        :config
+        (setq helm-dash-browser-func 'browse-url
+              helm-dash-docsets-url "https://api.github.com/repos/Kapeli/feeds/contents/"))
+#+END_SRC
+**** Comments
+***** Comment style
+#+BEGIN_SRC emacs-lisp
+(defvar c-doc-comment-style '((c-mode . gtkdoc)
+                              (c++-mode . javadoc)))
+#+END_SRC
+
+***** Insert comment characters in new line when pressing enter inside a comment
+#+BEGIN_SRC emacs-lisp
+(add-hook 'c-mode-common-hook (lambda() 
+                                      (local-set-key (kbd "RET") 'c-indent-new-comment-line)))
+#+END_SRC
+
+***** TODO Insert license comment
+#+BEGIN_SRC emacs-lisp
+(use-package legalese
+  :config
+  (setq legalese-templates '((emacs-lisp-mode (nil ";;; " legalese-file-name " --- " _ "\n;;\n"
+                                                   ";; Copyright © " legalese-year "  " legalese-copyright "\n;;\n"
+                                                   ";; Author: " legalese-author "\n;;\n"
+                                                   ";; Keywords: " ((legalese-elisp-keyword)
+                                                                    str ", ")
+                                                   & -2 "\n"
+                                                   ";; Created: " legalese-date "\n"
+                                                   @
+                                                   '(legalese-license)
+                                                   @ ";;\n;;\n"
+                                                   ";;; Commentary: \n;;\n"
+                                                   ";;; Code: \n\n"
+                                                   "(provide '" legalese-file ")\n\n"
+                                                   ";;; " legalese-file-name " ends here\n"))
+                             (default (nil @ legalese-file-name "\n\n"
+                                             "Copyright © " legalese-year " " legalese-copyright "\n\n"
+                                             "Author: "
+                                             legalese-author "\n\n"
+                                             '(legalese-license)
+                                             @ "\n"))))
+  (add-hook 'prog-mode-hook  (lambda ()
+                               (when (= (buffer-size (current-buffer)) 0)
+                                 (legalese nil)))))
+#+END_SRC
+
+**** Braces
+#+BEGIN_SRC emacs-lisp
+(defvar c-hanging-braces-alist '((defun-open before after)
+                                 (defun-close before after)
+                                 (class-open before after)
+                                 (class-close before)
+                                 (inline-open before after)
+                                 (inline-close before after)
+                                 (block-open before after)
+                                 (block-close . c-snug-do-while)
+                                 (statement-cont before after)
+                                 (substatement-open before after)
+                                 (statement-case-open before after)
+                                 (brace-list-open)
+                                 (brace-entry-open)
+                                 (extern-lang-open after)
+                                 (namespace-open before after)
+                                 (namespace-close before after)
+                                 (module-open after)
+                                 (composition-open after)
+                                 (inexpr-class-open after)
+                                 (inexpr-class-close before)
+                                 (arglist-cont-nonempty)))
+(defvar c-hanging-colons-alist '((case-label after) (label after)))
+(defvar c-hanging-semi&comma-criteria '(c-semi&comma-inside-parenlist))
+#+END_SRC
+
+**** LOC counting/Metrics
+#+BEGIN_SRC emacs-lisp
+(defun sloccount (argument)
+  "Count lines of code in file or project (with prefix argument)."
+  (interactive "P")
+  (if (executable-find "sloccount")
+      (let* ((project-root (project-dir))
+             (thing-to-process (if (and project-root
+                                        argument)
+                                   project-root
+                                 (when buffer-file-name 
+                                   (file-truename buffer-file-name)))))
+      (when thing-to-process
+        (with-output-to-temp-buffer "*SLOCCount*" (print (shell-command-to-string (concat  "sloccount " thing-to-process))))))
+    (error "Please install sloccount")))
+#+END_SRC
+
+*** C/C++
+**** Highlighting
+***** [[https://github.com/ludwigpacifici/modern-cpp-font-lock][Additional font lock settings for C++-11+]]
+#+BEGIN_SRC emacs-lisp
+(use-package modern-cpp-font-lock
+        :config
+        (add-hook 'c++-mode-hook #'modern-c++-font-lock-mode))
+#+END_SRC
+
+***** [[https://github.com/Lindydancer/preproc-font-lock][Highlight macros]]
+#+BEGIN_SRC emacs-lisp
+(use-package preproc-font-lock
+        :config
+        (preproc-font-lock-global-mode 1))
+#+END_SRC
+
+***** [[https://github.com/To1ne/never-comment][Dim '#if 0' blocks]]
+#+BEGIN_SRC emacs-lisp
+(use-package never-comment
+        :config
+        (never-comment-init))
+#+END_SRC
+
+***** Pretty symbols
+#+BEGIN_SRC emacs-lisp
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            (push '("!=" . ?≠) prettify-symbols-alist)
+            (push '("==" . ?⩵) prettify-symbols-alist)
+            (push '(">=" . ?≧) prettify-symbols-alist)
+            (push '("<=" . ?≦) prettify-symbols-alist)
+            (push '("->" . ?➝) prettify-symbols-alist)))
+#+END_SRC
+
+**** Navigation
+***** [[https://github.com/Andersbakken/rtags][RTags]]
+#+BEGIN_SRC emacs-lisp
+(use-package rtags
+        :config
+        (add-hook 'c-mode-common-hook 'rtags-start-process-unless-running)
+        (setq rtags-use-helm t
+              rtags-autostart-diagnostics nil
+              rtags-completions-enabled t))
+#+END_SRC
+***** Jump to function
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "M-g f") 'rtags-find-file)
+(global-set-key (kbd "M-g m") 'helm-imenu)
+#+END_SRC
+
+***** Jump to declaration
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "M-g s") 'rtags-find-symbol-at-point)
+#+END_SRC
+
+***** Find references
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "M-g r") 'rtags-find-references-at-point)
+#+END_SRC
+
+**** Editing
+***** Auto-newline after ';'
+#+BEGIN_SRC emacs-lisp
+(add-hook 'c-mode-common-hook '(lambda () 
+                                       (c-toggle-auto-state 1)))
+#+END_SRC
+
+***** [[https://www.gnu.org/software/emacs/manual/html_node/ccmode/Clean_002dups.html][Auto-clean whitespace]]
+#+BEGIN_SRC emacs-lisp
+(defvar c-cleanup-list '(scope-operator empty-defun-braces defun-close-semi list-close-comma comment-close-slash))
+#+END_SRC
+
+***** Hungry delete
+#+BEGIN_SRC emacs-lisp
+(add-hook 'c-mode-common-hook '(lambda () (c-toggle-hungry-state 1)))
+#+END_SRC
+
+***** Indentation
+****** Basic indentation
+#+BEGIN_SRC emacs-lisp
+(defvar c-basic-offset 8)
+#+END_SRC
+
+****** Default Offsets
+#+BEGIN_SRC emacs-lisp
+(defun my-c++-mode-hook ()
+       (c-set-offset 'brace-list-open 0)
+       (c-set-offset 'substatement-open 0))
+(add-hook 'c++-mode-hook 'my-c++-mode-hook)
+#+END_SRC
+
+****** Left-aligned preprocessor directives
+#+BEGIN_SRC emacs-lisp
+(defvar c-electric-pound-behavior '(alignleft))
+#+END_SRC
+
+***** Auto-completion
+#+BEGIN_SRC emacs-lisp
+(add-hook 'c-mode-common-hook (lambda() 
+                                (set (make-local-variable 'company-backends) '(company-rtags company-c-headers company-keywords company-dabbrev-code company-yasnippet company-files company-capf))))
+#+END_SRC
+***** Abbreviations
+#+BEGIN_SRC emacs-lisp
+(define-abbrev-table 'c++-mode-abbrev-table '(
+                                              ("breif" "brief")
+                                              ("cosnt" "const")
+                                              ("endi " "#endif")
+                                              ("fallt " "// fall-through")
+                                              ("ifn " "#ifndef ")
+                                              ("inc " "#include")
+                                              ("pr " "protected:")
+                                              ("pra " "#pragma once")
+                                              ("prs " "protected slots:")
+                                              ("pu " "public:")
+                                              ("pus " "public slots:")
+                                              ("pv " "private:")
+                                              ("vi " "virtual")
+                                              ("ov " "overwrite")
+                                              ("fin " "final")
+                                              ("nx " "noexcept")
+                                              ("QSrting" "QString")
+                                              ("qstr " "QString")
+                                              ("sig " "signals:")
+                                              ("std " "std::")
+                                              ("v " "void")
+                                              ))
+#+END_SRC
+***** Automatically change dash to underscore in identifiers
+#+BEGIN_SRC emacs-lisp
+(use-package smart-dash
+  :config
+  (add-hook 'c-mode-common-hook 'smart-dash-mode))
+#+END_SRC
+
+***** Formatting
+****** Clang
+#+BEGIN_SRC emacs-lisp
+  (use-package clang-format
+    :bind
+    (("C-c f c" . clang-format)
+     ("C-c f C" . clang-format-buffer))
+    :config
+    (setq clang-format-executable "clang-format-4.0"))
+#+END_SRC
+
+****** [[https://github.com/koko1000ban/emacs-uncrustify-mode][Uncrustify]]
+#+BEGIN_SRC emacs-lisp
+  (use-package uncrustify-mode
+    :bind
+    (("C-c f u" . uncrustify)
+     ("C-c f U" . uncrustify-buffer)))
+#+END_SRC
+
+***** Syntax checkers
+****** RTags
+#+BEGIN_SRC emacs-lisp
+(require 'flycheck-rtags)
+(add-hook 'c-mode-common-hook (lambda ()
+                                 (flycheck-select-checker 'rtags)))
+#+END_SRC
+
+****** Clang
+#+BEGIN_SRC emacs-lisp
+(setq flycheck-clang-pedantic t
+      flycheck-clang-warnings '("all" "extra" "ctor-dtor-privacy" "effc++" "old-style-cast" "overloaded-virtual" "format=2" "null-dereference" "missing-include-dirs" "switch-default" "switch-enum" "unused-parameter" "uninitialized" "float-equal" "shadow" "cast-qual" "conversion" "extra-tokens" "ambiguous-member-template" "bind-to-temporary-copy"))
+(flycheck-add-next-checker 'rtags '(t . c/c++-clang))
+(add-hook 'c++-mode-hook (lambda ()
+                           (setq flycheck-clang-language-standard "c++11")))
+#+END_SRC
+
+clang-check
+#+BEGIN_SRC emacs-lisp
+(use-package flycheck-clangcheck
+    :config
+    (flycheck-add-next-checker 'c/c++-clang '(t . c/c++-clangcheck)))
+#+END_SRC
+
+****** GCC
+#+BEGIN_SRC emacs-lisp
+(setq flycheck-gcc-pedantic t
+      flycheck-gcc-pedantic-errors nil
+      flycheck-gcc-warnings '("all" "extra" "ctor-dtor-privacy" "effc++" "old-style-cast" "overloaded-virtual" "format=2" "missing-include-dirs" "switch-default" "switch-enum" "unused-parameter" "uninitialized" "float-equal" "shadow" "cast-qual" "conversion" "double-promotion" "zero-as-null-pointer-constant" "useless-cast" "logical-op"))
+(flycheck-add-next-checker 'c/c++-clangcheck '(t . c/c++-gcc))
+(add-hook 'c++-mode-hook (lambda ()
+                           (setq flycheck-gcc-language-standard "c++11")))
+#+END_SRC
+
+****** CPPCheck
+#+BEGIN_SRC emacs-lisp
+(setq flycheck-cppcheck-checks '("warning" "style" "performance" "portability" "information" "missingInclude"))
+(flycheck-add-next-checker 'c/c++-gcc '(t . c/c++-cppcheck))
+(add-hook 'c++-mode-hook (lambda ()
+                           (setq flycheck-cppcheck-language-standard "c++11")))
+#+END_SRC
+**** Documentation
+***** ELDoc
+#+BEGIN_SRC emacs-lisp
+(add-hook 'c-mode-common-hook (lambda()
+                                (set (make-local-variable 'eldoc-documentation-function) 'rtags-eldoc)
+                                (eldoc-mode)))
+#+END_SRC
+
+***** DASH
+#+BEGIN_SRC emacs-lisp
+(add-hook 'c-mode-common-hook (lambda()
+                                (set (make-local-variable 'helm-dash-docsets) '("C" "GLib" "OpenGL4"))))
+(add-hook 'c++-mode-hook (lambda()
+                           (set (make-local-variable 'helm-dash-docsets) '("C++" "C" "Boost" "GLib" "Qt" "OpenGL4"))))
+#+END_SRC
+
+*** QML
+#+BEGIN_SRC emacs-lisp
+(use-package qml-mode)
+#+END_SRC
+
+**** Auto-completion
+#+BEGIN_SRC emacs-lisp
+(add-hook 'qml-mode-hook (lambda()
+                                 (set (make-local-variable 'company-backends '(company-qml company-keywords company-dabbrev-code company-yasnippet company-files company-capf)))))
+#+END_SRC
+
+**** Documentation
+#+BEGIN_SRC emacs-lisp
+(add-hook 'qml-mode-hook (lambda()
+                           (set (make-local-variable 'helm-dash-docsets) '("Qt"))))
+#+END_SRC
+
+*** CMake
+**** CMake Mode
+#+BEGIN_SRC emacs-lisp
+(use-package cmake-mode
+        :config
+        (setq cmake-tab-width 4))
+#+END_SRC
+
+**** [[https://github.com/Lindydancer/cmake-font-lock][Highlighting]]
+#+BEGIN_SRC emacs-lisp
+(use-package cmake-font-lock
+        :config
+        (add-hook 'cmake-mode-hook 'cmake-font-lock-activate))
+#+END_SRC
+
+**** Autocompletion
+#+BEGIN_SRC emacs-lisp
+(add-hook 'cmake-mode-hook (lambda() 
+                                   (set (make-local-variable 'company-backends) '(company-cmake company-dabbrev-code company-yasnippet company-files company-capf))))
+#+END_SRC
+
+**** Auto-completion
+#+BEGIN_SRC emacs-lisp
+(add-hook 'cmake-mode-hook (lambda()
+                                   (set (make-local-variable 'company-backends '(company-cmake company-keywords company-dabbrev-code company-yasnippet company-files company-capf)))))
+#+END_SRC
+
+**** Documentation
+#+BEGIN_SRC emacs-lisp
+(add-hook 'cmake-mode-hook (lambda()
+                             (set (make-local-variable 'helm-dash-docsets) '("CMake"))))
+#+END_SRC
+
+*** Lisp
+**** Highlight current S-EXP
+#+BEGIN_SRC emacs-lisp
+(use-package hl-sexp
+        :config
+        (add-hook 'lisp-mode-hook 'hl-sexp-mode)
+        (add-hook 'emacs-lisp-mode-hook 'hl-sexp-mode))
+#+END_SRC
+**** Auto-completion
+#+BEGIN_SRC emacs-lisp
+(add-hook 'elisp-mode-hook (lambda() 
+                                   (set (make-local-variable 'company-backends) '(company-elisp company-keywords company-dabbrev-code company-yasnippet company-files company-capf))))
+#+END_SRC
+
+**** Documentation
+#+BEGIN_SRC emacs-lisp
+(add-hook 'elisp-mode-hook (lambda()
+                             (set (make-local-variable 'helm-dash-docsets) '("Emacs Lisp"))))
+#+END_SRC
+
+*** XML
+**** Editing
+***** Always add XML declaration
+#+BEGIN_SRC emacs-lisp
+(defvar nxml-auto-insert-xml-declaration-flag t)
+#+END_SRC
+
+***** Autocompletion
+#+BEGIN_SRC emacs-lisp
+(add-hook 'nxml-mode-hook (lambda() 
+                                  (set (make-local-variable 'company-backends) '(company-nxml company-dabbrev-code company-yasnippet company-files company-capf))))
+#+END_SRC
+
+**** Documentation
+#+BEGIN_SRC emacs-lisp
+(add-hook 'nxml-mode-hook (lambda()
+                            (set (make-local-variable 'helm-dash-docsets) '("HTML" "SVG" "XSLT"))))
+#+END_SRC
+
+*** Shell
+**** ZSH
+#+BEGIN_SRC emacs-lisp
+(add-hook 'sh-mode-hook (lambda ()
+                          (if (string-match "\\.zsh$" buffer-file-name)
+                              (sh-set-shell "zsh"))))
+#+END_SRC
+
+**** Documentation
+#+BEGIN_SRC emacs-lisp
+(add-hook 'sh-mode-hook (lambda()
+                          (set (make-local-variable 'helm-dash-docsets) '("Bash" "Man Pages"))))
+#+END_SRC
+
+** Debugging
+#+BEGIN_SRC emacs-lisp
+(defvar gdb-many-windows t)
+(defvar gdb-show-main nil)
+(setq gud-tooltip-mode t)
+
+(use-package realgud)
+#+END_SRC
+
+*** Show symbols of ELF files
+#+BEGIN_SRC emacs-lisp
+(use-package elf-mode
+  :config
+  (elf-setup-default))
+#+END_SRC
+
+**** [[https://github.com/liblit/demangle-mode][Demangle symbols in ELF files]]
+#+BEGIN_SRC emacs-lisp
+(use-package demangle-mode
+  :config
+  (advice-add 'elf-mode :after 'demangle-mode))
+#+END_SRC
+
+*** Syntax highlighting for strace
+#+BEGIN_SRC emacs-lisp
+(use-package strace-mode)
+#+END_SRC
+
+** Diff/Merge
+*** Split windows horizontally
+#+BEGIN_SRC emacs-lisp
+(defvar ediff-merge-split-window-function 'split-window-horizontally)
+(defvar ediff-split-window-function 'split-window-horizontally)
+#+END_SRC
+
+*** [[https://github.com/mgalgs/diffview-mode][Show unified diff as normal diff]]
+#+BEGIN_SRC emacs-lisp
+(use-package diffview)
+#+END_SRC
+
+** Version Control
+*** Common
+**** Always open actual file under source control when visited through a symbolic link
+#+BEGIN_SRC emacs-lisp
+(setq vc-follow-symlinks t)
+#+END_SRC
+
+**** [[https://github.com/dgutov/diff-hl][Show uncommitted lines in the fringe]]
+#+BEGIN_SRC emacs-lisp
+(use-package diff-hl
+  :config
+  (global-diff-hl-mode))
+#+END_SRC
+
+When using Magit >= 2.4.0
+#+BEGIN_SRC emacs-lisp
+(add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
+#+END_SRC
+
+*** Git
+**** [[https://github.com/magit/magit][Magit]]
+#+BEGIN_SRC emacs-lisp
+(use-package magit
+        :bind ("C-c g" . magit-status)
+        :config
+        (define-key magit-status-mode-map (kbd "q") 'magit-quit-session))
+#+END_SRC
+
+***** Full screen magit-status
+#+BEGIN_SRC emacs-lisp
+(defadvice magit-status (around magit-fullscreen activate)
+        (window-configuration-to-register :magit-fullscreen)
+        ad-do-it
+        (delete-other-windows))
+#+END_SRC
+
+***** Restore previous window configuration on quit
+#+BEGIN_SRC emacs-lisp
+(defun magit-quit-session ()
+       "Restores the previous window configuration and kills the magit buffer"
+       (interactive)
+       (kill-buffer)
+       (jump-to-register :magit-fullscreen))
+#+END_SRC
+
+***** [[https://github.com/magit/with-editor][Use emacs as editor]]
+#+BEGIN_SRC emacs-lisp
+(use-package with-editor
+  :config
+  (define-key (current-global-map)
+    [remap async-shell-command] 'with-editor-async-shell-command)
+  (define-key (current-global-map)
+    [remap shell-command] 'with-editor-shell-command)
+  (add-hook 'shell-mode-hook  'with-editor-export-editor)
+  (add-hook 'term-exec-hook   'with-editor-export-editor)
+  (add-hook 'eshell-mode-hook 'with-editor-export-editor))
+#+END_SRC
+
+***** [[https://github.com/vermiculus/magithub][Github integration]]
+#+BEGIN_SRC emacs-lisp
+(use-package magithub
+  :after magit)
+#+END_SRC
+
+**** [[https://github.com/tarsius/magit-rockstar][Change commit author and date]]
+#+BEGIN_SRC emacs-lisp
+(use-package magit-rockstar
+          :config
+          (magit-define-popup-action 'magit-rebase-popup
+                  ?R "Rockstar" 'magit-rockstar)
+          (magit-define-popup-action 'magit-commit-popup
+                  ?n "Reshelve" 'magit-reshelve))
+#+END_SRC
+
+**** [[https://github.com/syohex/emacs-git-messenger][Show commit message of line on request]]
+#+BEGIN_SRC emacs-lisp
+(use-package git-messenger
+        :config
+        (global-set-key (kbd "C-x v p") 'git-messenger:popup-message))
+#+END_SRC
+
+**** [[https://github.com/pidu/git-timemachine][Switch to previous version]]
+#+BEGIN_SRC emacs-lisp
+(use-package git-timemachine)
+#+END_SRC
+**** [[https://github.com/emacs-helm/helm-ls-git][Browse other git projects with helm]]
+#+BEGIN_SRC emacs-lisp
+(use-package helm-ls-git
+        :bind
+        ("C-x C-g" . helm-browse-project))
+#+END_SRC
+
+* [[https://github.com/politza/pdf-tools][PDF Viewing]]
+#+BEGIN_SRC emacs-lisp
+(use-package pdf-tools
+        :config
+        (pdf-tools-install)
+        (setq doc-view-continuous t
+              doc-view-ghostscript-program "mudraw"
+              doc-view-pdf->png-converter-function 'doc-view-pdf->png-converter-mupdf))
+#+END_SRC
+* Org-Mode
+#+BEGIN_SRC emacs-lisp
+  (use-package org
+    :bind (("C-c l" . org-store-link)
+           ("C-c s" . org-capture)
+           ("C-c a" . org-agenda))
+    :config
+    (setq org-use-speed-commands t
+          org-support-shift-select t
+          org-src-fontify-natively t
+          org-src-window-setup 'current-window
+          org-src-strip-leading-and-trailing-blank-lines t
+          org-src-preserve-indentation t
+          org-src-tab-acts-natively t
+          org-image-actual-width 550
+          org-default-notes-file "~/.notes.org"
+          org-highlight-latex-and-related '(latex script entities)
+          org-ellipsis " ▼")
+    (add-hook 'org-mode-hook (lambda() (linum-mode -1))))
+#+END_SRC
+
+** Automatically create lists
+#+BEGIN_SRC emacs-lisp
+(use-package org-autolist
+  :config
+  (add-hook 'org-mode-hook (lambda () (org-autolist-mode t))))
+#+END_SRC
+
+** Show actual bullets for list items
+#+BEGIN_SRC emacs-lisp
+(use-package org-bullets
+  :config
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode t))))
+#+END_SRC
+
+** [[https://github.com/bard/org-dashboard/blob/master/org-dashboard.el][Progress bars]]
+#+BEGIN_SRC emacs-lisp
+(use-package org-dashboard)
+#+END_SRC
+
+** Inline code
+#+BEGIN_SRC emacs-lisp
+(defun my-org-confirm-babel-evaluate (lang body)
+       "Do not confirm evaluation for these languages."
+       (not (or (string= lang "C")
+                (string= lang "java")
+                (string= lang "python")
+                (string= lang "emacs-lisp")
+                (string= lang "plantuml")
+                (string= lang "sqlite"))))
+
+(defadvice org-edit-src-code (around set-buffer-file-name activate compile)
+        (let ((file-name (buffer-file-name)))
+             ad-do-it
+             (setq buffer-file-name file-name)))
+(use-package babel
+        :config
+        (org-babel-do-load-languages
+         'org-babel-load-languages
+         '((python . t)
+           (C . t)
+           (calc . t)
+           (latex . t)
+           (lisp . t)
+           (plantuml . t)
+           (sh . t)
+           (sqlite . t)
+           (js . t)))
+        (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate))
+#+END_SRC
+
+** Alert messages
+#+BEGIN_SRC emacs-lisp
+(use-package org-alert
+        :config
+        (setq alert-default-style 'libnotify)
+        (org-alert-enable))
+#+END_SRC
+* Calendar
+#+BEGIN_SRC emacs-lisp
+(use-package german-holidays
+        :config
+        (setq calendar-holidays holiday-german-HH-holidays))
+
+(setq calendar-date-style 'european
+      calendar-week-start-day 1
+      european-calendar-style t
+      mark-diary-entries-in-calendar t
+      mark-holidays-in-calendar t
+      calendar-mark-holidays-flag t
+      calendar-view-holidays-initially-flag t
+
+      calendar-time-display-form '(24-hours ":" minutes (and time-zone (concat " (" time-zone ")"))))
+#+END_SRC
+
+* Remote
+** Serial Devices
+#+BEGIN_SRC emacs-lisp
+(defvar serial-speed-history
+        '("115200" ;; Given twice because 115200 b/s is the most common speed
+          "1200" "2400" "4800" "9600" "14400" "19200" "28800" "38400" "57600" "115200"))
+
+(defun serial-terminal ()
+       (interactive)
+       (serial-term "/dev/ttyUSB0" 115200)
+       (rename-buffer "*Serial Terminal*")
+       (term-send-string (get-buffer-process (current-buffer))
+                         "export TERM=xterm-color\nclear\n"))
+
+(defun serial-command (command)
+       (interactive "MCommand:")
+       (serial-term "/dev/ttyUSB1" 115200)
+       (rename-buffer "*Serial Terminal*")
+       (term-send-string (get-buffer-process (current-buffer))
+                         (concat "unlock \n"))
+       (term-send-return)
+       (term-send-string (get-buffer-process (current-buffer))
+                         (concat command "\n"))
+       (term-send-return))
+#+END_SRC
+
+** [[https://www.emacswiki.org/emacs/TrampMode][Network Devices]]
+#+BEGIN_SRC emacs-lisp
+(use-package tramp
+        :config
+        (setq tramp-default-method "ssh"
+              tramp-default-host "device"
+              tramp-default-user "root"))
+#+END_SRC

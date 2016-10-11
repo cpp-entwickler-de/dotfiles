@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: using method
+# key: using
+# --
+using ${1:class}:${2:method};

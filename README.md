@@ -1,2 +1,2 @@
 # User config
-Custom development environment configuration
+Custom configurations for emacs, git, links2 and mc.

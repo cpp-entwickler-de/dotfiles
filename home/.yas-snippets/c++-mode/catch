@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: catch
+# key: catch
+# --
+catch (${1:type} & ${2:exception})
+{
+    $0
+}

@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+#name: member documentation
+#key: !<
+#group: doxygen
+# --
+//!< ${1:description}

@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: operator+
+# key: op
+# group: operator overloading
+# --
+${1:type} $1::operator+(const $1 & other)${2:$$(yas-choose-value '(";" "
+{
+    $1 result = *this;
+    result += other;
+    return result;
+}"))}
