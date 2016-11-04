@@ -1433,6 +1433,8 @@ Handler to close buffer after quitting ccmake.
                                   (set-process-sentinel proc `(lambda (process event)
                                                                 (if (string= event "finished\n")
                                                                     (progn
+                                                                      (when (not (boundp cmake-current-target))
+                                                                          (setq cmake-current-target 'all))
                                                                       (kill-buffer ,buff)
                                                                       (cmake-ide-maybe-start-rdm)
                                                                       (cmake-ide--on-cmake-finished))))))))))
