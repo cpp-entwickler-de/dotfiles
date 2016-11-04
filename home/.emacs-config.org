@@ -13,6 +13,7 @@
 - clang
 - cppcheck
 - gcc
+- ninja
 - sloccount
 - uncrustify
 *** PDF
@@ -1462,7 +1463,7 @@ Handler to close buffer after quitting ccmake.
                 (projectile-discover-projects-in-directory source-dir)
                 (let ((default-directory build-dir))
                   (ansi-term (getenv "SHELL") "CMake Cache")
-                  (term-exec (current-buffer) "ccmake" "ccmake" nil (list "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON" source-dir))))
+                  (term-exec (current-buffer) "ccmake" "ccmake" nil (list "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON" "-G" "Ninja" source-dir))))
             (error "`%s' does not contain a CMake project" source-dir))
           (error "`%s' is not a directory" source-dir)))
     (error "Please install ccmake")))
