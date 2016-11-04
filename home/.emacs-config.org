@@ -1549,8 +1549,8 @@ Handler to close buffer after quitting ccmake.
                                                     (save-match-data
                                                       (let ((output (shell-command-to-string (concat "cmake --build " build-dir " --target help")))
                                                             (position 0)
-                                                            targets)
-                                                        (while (string-match "\\.\\.\\.[[:space:]]+\\([a-zA-Z0-9_-]+\\)" output position)
+                                                            (targets (list "all")))
+                                                        (while (string-match "^[^a-zA-Z0-9_-]*\\([a-zA-Z0-9_-]+\\)" output position)
                                                           (push (match-string 1 output) targets)
                                                           (setq position (match-end 0)))
                                                         targets)))
