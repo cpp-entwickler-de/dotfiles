@@ -1434,6 +1434,7 @@ Handler to close buffer after quitting ccmake.
                                                                 (if (string= event "finished\n")
                                                                     (progn
                                                                       (kill-buffer ,buff)
+                                                                      (cmake-ide-maybe-start-rdm)
                                                                       (cmake-ide--on-cmake-finished))))))))))
 #+END_SRC
 
