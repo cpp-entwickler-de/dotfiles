@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 for ARGUMENT in "$@"; do
     case $ARGUMENT in
