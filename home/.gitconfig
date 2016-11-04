@@ -1,8 +1,3 @@
-[include]
-# Read user-specific data from separate file
-path = ~/.gitconfig.user
-
-
 [user]
 # Do not try to gess user information
 useConfigOnly = true
@@ -159,3 +154,8 @@ fixup=commit --fixup
 
 # Safe forced push
 force-push = push --force-with-lease
+
+
+[include]
+# Read user-specific data from separate file
+path = ~/.gitconfig.user
