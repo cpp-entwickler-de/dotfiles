@@ -48,6 +48,7 @@ if [ "$LINKS" = TRUE ]; then
                 mv "$LINK" "$BACKUP"
             fi
         fi
+        mkdir -p $(dirname "$LINK")
         echo "Creating $LINK -> $FILE"
         ln -s "$FILE" "$LINK"
     }
