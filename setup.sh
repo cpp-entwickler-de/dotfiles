@@ -149,7 +149,7 @@ fi
 # install oh-my-zsh
 OH_MY_ZSH_DIR=~/.oh-my-zsh
 if [ ! -d "$OH_MY_ZSH_DIR" ]; then
-    git clone git://github.com/robbyrussell/oh-my-zsh.git "$OH_MY_ZSH_DIR"
+    git clone https://github.com/robbyrussell/oh-my-zsh.git "$OH_MY_ZSH_DIR"
 fi
 
 chsh -s $(which zsh) 2> /dev/null
