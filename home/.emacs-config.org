@@ -1254,8 +1254,8 @@ Always use a fixed width for line numbers (maximum number length)
 *** Expand selection
 #+BEGIN_SRC emacs-lisp
 (use-package expand-region
-             :bind
-             ("C-S-e" . er/expand-region))
+  :bind
+  ("C-S-e" . er/expand-region))
 #+END_SRC
 
 *** Do not delete selected text when inserting characters
