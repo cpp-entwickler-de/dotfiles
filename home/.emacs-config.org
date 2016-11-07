@@ -1099,6 +1099,13 @@ Always use a fixed width for line numbers (maximum number length)
 (use-package syslog-mode)
 #+END_SRC
 
+*** [[https://github.com/sensorflo/adoc-mode][Highlight AsciiDoc files]]
+#+BEGIN_SRC emacs-lisp
+ (use-package adoc-mode
+  :config
+  (add-to-list 'auto-mode-alist '("\\.adoc$" . adoc-mode)))
+#+END_SRC
+
 *** [[https://github.com/bnbeckwith/writegood-mode][Mark common language issues]]
 #+BEGIN_SRC emacs-lisp
 (use-package writegood-mode
