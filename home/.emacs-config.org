@@ -2275,6 +2275,11 @@ clang-check
 #+END_SRC
 
 ** Diff/Merge
+*** Re-use current frame for all diff contents (including command frame)
+#+BEGIN_SRC emacs-lisp
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+#+END_SRC
+
 *** Split windows horizontally
 #+BEGIN_SRC emacs-lisp
 (defvar ediff-merge-split-window-function 'split-window-horizontally)
