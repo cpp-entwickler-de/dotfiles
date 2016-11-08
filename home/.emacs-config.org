@@ -1964,7 +1964,7 @@ If under version control, only indent changed area
             (push '("==" . ?⩵) prettify-symbols-alist)
             (push '(">=" . ?≧) prettify-symbols-alist)
             (push '("<=" . ?≦) prettify-symbols-alist)
-            (push '("->" . ?➝) prettify-symbols-alist)))
+            (push '("->" . ?➔) prettify-symbols-alist)))
 #+END_SRC
 
 **** Navigation
