@@ -337,7 +337,7 @@ git_info()
 function emoji-clock() {
     if [ -n "$DISPLAY" ]; then
         # Add 15 minutes to the current time and save the value as $minutes.
-        (( minutes = $(date '+%M') + 15 ))
+        (( minutes = $(date '+%_M') + 15 ))
         (( hour = $(date '+%_I') + $minutes / 60 ))
         # make sure minutes and hours don't exceed 60 nor 12 respectively
         (( minutes %= 60 ))
