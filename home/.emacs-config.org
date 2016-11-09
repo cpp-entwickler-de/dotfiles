@@ -1641,7 +1641,7 @@ Handler to close buffer after quitting ccmake.
 #+BEGIN_SRC emacs-lisp
 (use-package hl-indent
         :config
-        (add-hook 'prog-mode-hook 'hl-indent-mode-blocks))
+        (add-hook 'prog-mode-hook 'hl-indent-mode))
 #+END_SRC
 
 ***** [[https://github.com/ikirill/hl-indent][Unique colors for identifiers]]
