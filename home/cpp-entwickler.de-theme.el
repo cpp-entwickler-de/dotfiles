@@ -88,7 +88,6 @@
  '(helm-buffer-process ((t (:inherit shadow))))
  '(helm-buffer-size ((t (:inherit shadow))))
  '(helm-helper ((t (:inherit (helm-header)))))
- '(default ((t (:inherit nil :stipple nil :background "gray5" :foreground "white smoke" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight semi-bold :height 113 :width normal :foundry "ADBO" :family "Source Code Pro"))))
  '(hl-indent-block-face-1 ((t (:background "gray10"))))
  '(hl-indent-block-face-2 ((t (:background "gray13"))))
  '(hl-indent-block-face-3 ((t (:background "gray16"))))
@@ -97,6 +96,8 @@
  '(hl-indent-block-face-6 ((t (:background "gray25"))))
  '(writegood-duplicates-face ((t (:inherit (flyspell-duplicate)))))
  '(writegood-passive-voice-face ((t (:inherit (flyspell-duplicate)))))
- '(writegood-weasels-face ((t (:inherit (flyspell-incorrect))))))
+ '(writegood-weasels-face ((t (:inherit (flyspell-incorrect)))))
+ '(hl-line ((t (:inherit highlight))))
+ '(default ((t (:inherit nil :stipple nil :background "gray5" :foreground "white smoke" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight semi-bold :height 113 :width normal :foundry "ADBO" :family "Source Code Pro")))))
 
 (provide-theme 'cpp-entwickler.de)
