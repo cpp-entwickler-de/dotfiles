@@ -717,7 +717,10 @@ Find path of current position in XML docuement
 *** Lines
 **** Highlight current line
 #+BEGIN_SRC emacs-lisp
-(global-hl-line-mode)
+(use-package hl-line+
+  :config
+  (setq hl-line-overlay-priority 100)
+  (global-hl-line-mode))
 #+END_SRC
 
 **** Break long lines
