@@ -112,6 +112,10 @@ export HISTFILESIZE=1000
 export HISTFILE=~/.history
 export HISTIGNORE="ls:ll:cd:fg:j:jobs"
 
+# Use colorgcc
+export CC=/usr/bin/colorgcc
+export CXX=/usr/bin/colorgcc
+
 # Show sizes in human readable format
 BLOCK_SIZE=human-readable
 

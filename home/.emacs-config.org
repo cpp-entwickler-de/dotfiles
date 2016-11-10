@@ -11,6 +11,7 @@
 *** Developement
 - rtags
 - clang
+- colorgcc
 - cppcheck
 - gcc
 - ninja
