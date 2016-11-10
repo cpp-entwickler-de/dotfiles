@@ -1630,19 +1630,11 @@ Handler to close buffer after quitting ccmake.
 ** Languages
 *** Common
 **** Highlighting
-***** Scopes
-****** [[https://github.com/Fanael/highlight-blocks][Scope background]]
-#+BEGIN_SRC emacs-lisp
-(use-package highlight-blocks
-        :config
-        (add-hook 'prog-mode-hook 'highlight-blocks-mode))
-#+END_SRC
-
-****** [[https://github.com/ikirill/hl-indent][Begin/end of scoped line]]
+***** [[https://github.com/ikirill/hl-indent][Scope background]]
 #+BEGIN_SRC emacs-lisp
 (use-package hl-indent
-        :config
-        (add-hook 'prog-mode-hook 'hl-indent-mode))
+  :config
+  (add-hook 'prog-mode-hook 'hl-indent-mode-blocks))
 #+END_SRC
 
 ***** [[https://github.com/ikirill/hl-indent][Unique colors for identifiers]]
