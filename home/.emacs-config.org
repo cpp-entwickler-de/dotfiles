@@ -1222,11 +1222,11 @@ Always use a fixed width for line numbers (maximum number length)
 *** Indentation
 #+BEGIN_SRC emacs-lisp
 (setq-default indent-tabs-mode nil)
+(setq-default fill-column 160)
 (setq comment-empty-lines t
       electric-indent-mode t
       electric-layout-mode t
       electric-pair-mode t
-      fill-column 120
       show-trailing-whitespace t
       tab-always-indent 'complete
       text-mode-hook '(turn-on-auto-fill text-mode-hook-identify)
