@@ -1860,8 +1860,6 @@ If under version control, only indent changed area
   (setq legalese-templates '((emacs-lisp-mode (nil ";;; " legalese-file-name " --- " _ "\n;;\n"
                                                    ";; Copyright © " legalese-year "  " legalese-copyright "\n;;\n"
                                                    ";; Author: " legalese-author "\n;;\n"
-                                                   ";; Keywords: " ((legalese-elisp-keyword)
-                                                                    str ", ")
                                                    & -2 "\n"
                                                    ";; Created: " legalese-date "\n"
                                                    @
