@@ -1,5 +1,5 @@
 (deftheme cpp-entwickler.de
-  "Created 2016-10-13.")
+  "Created 2016-11-10.")
 
 (custom-theme-set-faces
  'cpp-entwickler.de
@@ -8,7 +8,7 @@
  '(variable-pitch ((((type w32)) (:font "-outline-Arial-normal-normal-normal-sans-*-*-*-*-p-*-iso8859-1")) (t (:family "Sans Serif"))))
  '(escape-glyph ((((background dark)) (:foreground "cyan")) (((type pc)) (:foreground "magenta")) (t (:foreground "brown"))))
  '(minibuffer-prompt ((t (:foreground "royal blue" :weight bold))))
- '(highlight ((t (:background "gray30"))))
+ '(highlight ((t (:background "gray80"))))
  '(region ((t (:background "gray20" :distant-foreground "white smoke"))))
  '(shadow ((((class color grayscale) (min-colors 88) (background light)) (:foreground "grey50")) (((class color grayscale) (min-colors 88) (background dark)) (:foreground "grey70")) (((class color) (min-colors 8) (background light)) (:foreground "green")) (((class color) (min-colors 8) (background dark)) (:foreground "yellow"))))
  '(secondary-selection ((((class color) (min-colors 88) (background light)) (:background "yellow1")) (((class color) (min-colors 88) (background dark)) (:background "SkyBlue4")) (((class color) (min-colors 16) (background light)) (:background "yellow")) (((class color) (min-colors 16) (background dark)) (:background "SkyBlue4")) (((class color) (min-colors 8)) (:foreground "black" :background "cyan")) (t (:inverse-video t))))
@@ -88,6 +88,15 @@
  '(helm-buffer-process ((t (:inherit shadow))))
  '(helm-buffer-size ((t (:inherit shadow))))
  '(helm-helper ((t (:inherit (helm-header)))))
- '(default ((t (:inherit nil :stipple nil :background "gray5" :foreground "white smoke" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight semi-bold :height 113 :width normal :foundry "ADBO" :family "Source Code Pro")))))
+ '(default ((t (:inherit nil :stipple nil :background "gray5" :foreground "white smoke" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight semi-bold :height 113 :width normal :foundry "ADBO" :family "Source Code Pro"))))
+ '(hl-indent-block-face-1 ((t (:background "gray10"))))
+ '(hl-indent-block-face-2 ((t (:background "gray13"))))
+ '(hl-indent-block-face-3 ((t (:background "gray16"))))
+ '(hl-indent-block-face-4 ((t (:background "gray19"))))
+ '(hl-indent-block-face-5 ((t (:background "gray22"))))
+ '(hl-indent-block-face-6 ((t (:background "gray25"))))
+ '(writegood-duplicates-face ((t (:inherit (flyspell-duplicate)))))
+ '(writegood-passive-voice-face ((t (:inherit (flyspell-duplicate)))))
+ '(writegood-weasels-face ((t (:inherit (flyspell-incorrect))))))
 
 (provide-theme 'cpp-entwickler.de)
