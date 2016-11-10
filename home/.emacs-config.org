@@ -149,6 +149,14 @@ Disable prettification if cursor is at edge of expression
 (global-prettify-symbols-mode)
 #+END_SRC
 
+** Faces
+*** Info
+#+BEGIN_SRC emacs-lisp
+(defface info '((t :inherit default))
+  "Face used for info text."
+  :group 'basic-faces)
+#+END_SRC
+
 ** Icons
 *** [[https://github.com/domtronn/all-the-icons.el][Show icons]]
 #+BEGIN_SRC emacs-lisp
@@ -1657,11 +1665,34 @@ Handler to close buffer after quitting ccmake.
 
 ***** [[https://github.com/tarsius/hl-todo][Highlight TODO/FIXME/...]]
 #+BEGIN_SRC emacs-lisp
+(defface hl-todo-info '((t :inherit info))
+  "Face used for info text."
+  :group 'hl-todo)
+
+(defface hl-todo-warning'((t :inherit warning))
+  "Face used for warning text."
+  :group 'hl-todo)
+
+(defface hl-todo-error'((t :inherit error))
+  "Face used for error text."
+  :group 'hl-todo)
+
 (use-package hl-todo
-        :config
-        (setq global-hl-todo-mode t)
-        (define-key hl-todo-mode-map (kbd "M-g i") 'hl-todo-next))
+  :config
+        (setq global-hl-todo-mode t
+              hl-todo-keyword-faces '(("???" . hl-todo-info)
+                                      ("FAIL" . hl-todo-error)
+                                      ("FIXME" . hl-todo-error)
+                                      ("HACK" . hl-todo-error)
+                                      ("INFO" . hl-todo-info)
+                                      ("NOTE" . hl-todo-info)
+                                      ("TODO" . hl-todo-warning)
+                                      ("XXX" . hl-todo-warning)))
+        (define-key hl-todo-mode-map (kbd "M-g i") 'hl-todo-next)
+        (add-hook 'prog-mode-hook (lambda ()
+                                    (hl-todo-mode 1))))
 #+END_SRC
+
 ***** Show current function in mode-line
 #+BEGIN_SRC emacs-lisp
 (use-package which-func

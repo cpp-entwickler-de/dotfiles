@@ -98,6 +98,10 @@
  '(writegood-passive-voice-face ((t (:inherit (flyspell-duplicate)))))
  '(writegood-weasels-face ((t (:inherit (flyspell-incorrect)))))
  '(hl-line ((t (:inherit highlight))))
- '(default ((t (:inherit nil :stipple nil :background "gray5" :foreground "white smoke" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight semi-bold :height 113 :width normal :foundry "ADBO" :family "Source Code Pro")))))
+ '(info ((t (:inherit warning :foreground "light green"))))
+ '(default ((t (:inherit nil :stipple nil :background "gray5" :foreground "white smoke" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight semi-bold :height 113 :width normal :foundry "ADBO" :family "Source Code Pro"))))
+ '(hl-todo-info ((t (:inherit info :inverse-video t :weight ultra-bold :height 1.3))))
+ '(hl-todo-warning ((t (:inherit warning :inverse-video t :weight ultra-bold :height 1.3))))
+ '(hl-todo-error ((t (:inherit error :inverse-video t :weight ultra-bold :height 1.3)))))
 
 (provide-theme 'cpp-entwickler.de)
