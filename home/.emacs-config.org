@@ -859,6 +859,7 @@ Always use a fixed width for line numbers (maximum number length)
 ** Do not ask if file should be created
 #+BEGIN_SRC emacs-lisp
 (setq confirm-nonexistent-file-or-buffer nil)
+(setq helm-ff-newfile-prompt-p nil)
 #+END_SRC
 
 ** Save backup files to /tmp
