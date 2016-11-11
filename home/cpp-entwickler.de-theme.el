@@ -1,5 +1,5 @@
 (deftheme cpp-entwickler.de
-  "Created 2016-11-10.")
+  "Created 2016-11-11.")
 
 (custom-theme-set-faces
  'cpp-entwickler.de
@@ -99,9 +99,17 @@
  '(writegood-weasels-face ((t (:inherit (flyspell-incorrect)))))
  '(hl-line ((t (:inherit highlight))))
  '(info ((t (:inherit warning :foreground "light green"))))
- '(default ((t (:inherit nil :stipple nil :background "gray5" :foreground "white smoke" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight semi-bold :height 113 :width normal :foundry "ADBO" :family "Source Code Pro"))))
  '(hl-todo-info ((t (:inherit info :inverse-video t :weight ultra-bold :height 1.3))))
  '(hl-todo-warning ((t (:inherit warning :inverse-video t :weight ultra-bold :height 1.3))))
- '(hl-todo-error ((t (:inherit error :inverse-video t :weight ultra-bold :height 1.3)))))
+ '(hl-todo-error ((t (:inherit error :inverse-video t :weight ultra-bold :height 1.3))))
+ '(outline-1 ((t (:inherit default :weight ultra-bold :height 1.4))))
+ '(outline-2 ((t (:inherit default :weight ultra-bold :height 1.4))))
+ '(outline-3 ((t (:inherit default :weight ultra-bold :height 1.4))))
+ '(outline-4 ((t (:inherit default :weight bold :height 1.2))))
+ '(outline-5 ((t (:weight bold :inherit default :height 1.2))))
+ '(outline-6 ((t (:weight bold :inherit default :height 1.2))))
+ '(outline-7 ((t (:weight bold :inherit default :height 1.1))))
+ '(outline-8 ((t (:weight bold :inherit default :height 1.1))))
+ '(default ((t (:inherit nil :stipple nil :background "gray5" :foreground "white smoke" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight semi-bold :height 113 :width normal :foundry "ADBO" :family "Source Code Pro")))))
 
 (provide-theme 'cpp-entwickler.de)
