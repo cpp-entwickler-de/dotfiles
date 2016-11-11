@@ -1279,8 +1279,8 @@ Always use a fixed width for line numbers (maximum number length)
 #+BEGIN_SRC emacs-lisp
 (use-package aggressive-fill-paragraph
   :config
-  (setq afp-fill-comments-only-mode-list '(emacs-lisp-mode sh-mode python-mode js-mode cc-mode))
-  (afp-setup-recommended-hooks))
+  (setq afp-fill-comments-only-mode-list '(prog-mode))
+  (add-hook 'prog-mode-hook #'aggressive-fill-paragraph-mode))
 #+END_SRC
 
 *** Expand selection
