@@ -1003,6 +1003,11 @@ Always use a fixed width for line numbers (maximum number length)
   (setq vlf-application 'dont-ask))
 #+END_SRC
 
+** Allow editing compressed files
+#+BEGIN_SRC emacs-lisp
+(auto-compression-mode 1)
+#+END_SRC
+
 ** File Management
 *** [[https://www.emacswiki.org/emacs/RecentFiles][Recent files]]
 #+BEGIN_SRC emacs-lisp
