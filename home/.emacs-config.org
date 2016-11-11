@@ -439,16 +439,26 @@ Find path of current position in XML docuement
                                           (flycheck-list-errors))))))))
 #+END_SRC
 
+*** Date
+#+BEGIN_SRC emacs-lisp
+(defun powerline-date ()
+  (concat
+   (propertize (all-the-icons-faicon "calendar")
+               'face `(:family ,(all-the-icons-faicon-family))
+               'display '(raise -0.0))
+   (format-time-string " %e.%m.%G [%W]")))
+#+END_SRC
+
 *** Time
 #+BEGIN_SRC emacs-lisp
-(defun powerline-time ()
+(defun powerline-time (icon-face)
   (let* ((hour (string-to-number (format-time-string "%I")))
          (icon (all-the-icons-wicon (format "time-%s" hour))))
     (concat
-     (propertize icon
-                 'face `(:family ,(all-the-icons-wicon-family))
-                 'display '(raise -0.0))
-     (format-time-string " %H:%M"))))
+     (propertize icon 'face (list ':family (all-the-icons-wicon-family)
+                                  ':background (face-attribute icon-face :background))
+                      'display '(raise -0.0))
+     (format-time-string " %H:%M "))))
 #+END_SRC
 
 *** Powerline
@@ -516,7 +526,9 @@ Find path of current position in XML docuement
                                   (powerline-raw check-status face2))
                                 (when show-check-status
                                   (funcall separator-right face2 mode-line))
-                                (powerline-raw (powerline-time) mode-line 'r))))
+                                (powerline-raw (powerline-date) mode-line 'l)
+                                (funcall separator-right mode-line face1)
+                               (powerline-raw (powerline-time face1) face1 'r))))
                      (concat (powerline-render lhs)
                              (powerline-fill mode-line (powerline-width rhs))
                              (powerline-render rhs)))))))
