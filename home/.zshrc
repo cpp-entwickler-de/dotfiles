@@ -373,4 +373,4 @@ $(user_host)%{$FX[bold]%}%{$BG[069]%}%{$FG[252]%}%8~%{$reset_colors%}%{$BG[235]%
 %{$PROMPT_COLOR%}$PROMPT_SYMBOL '
 PROMPT2='%{$PROMPT_COLOR%}$LINE_BREAK_SYMBOL '
 PROMPT3='%{$PROMPT_COLOR%}? '
-RPROMPT='%{$(echotc UP 1)%}%{$FX[bold]%}%{$BG[235]%}%{$FG[245]%}$CALENDAR_SYMBOL %D{%a, %x} $(emoji-clock) %T%{$reset_color%}%{$(echotc DO 1)%}'
+RPROMPT='%{$(echotc UP 1)%}%{$FX[bold]%}%{$BG[235]%}%{$FG[245]%}$CALENDAR_SYMBOL %D{%a, %x [%V]} $(emoji-clock) %T%{$reset_color%}%{$(echotc DO 1)%}'
