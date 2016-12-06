@@ -232,6 +232,11 @@ alias -s svg="display -antialias"
 export LSCOLORS="XXfxhxhxCxdxdxBXBXxxxx"
 export LS_COLORS="di=1;0;1:ln=35:so=37:pi=37:ex=1;32:bd=33:cd=33:su=1;31;1:sg=1;31;1:tw=0:ow=0"
 
+# Ninja-build
+export NINJA_STATUS="[%p] "
+alias ninja=ninja-build
+alias -s ninja=ninja-build
+
 # Theme
 if [[ $USER == "root" ]]; then
     PROMPT_COLOR=$fg[red]
