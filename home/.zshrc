@@ -68,6 +68,7 @@ zstyle ':completion:*' menu select=1
 zstyle ':completion:*' original true
 zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
 zstyle ':completion:*' squeeze-slashes true
+zstyle ':completion:*' special-dirs true
 zstyle :compinstall filename '/home/player/.zshrc'
 
 # Set language environment
