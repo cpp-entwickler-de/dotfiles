@@ -1572,9 +1572,11 @@ Handler to close buffer after quitting ccmake.
   (interactive (list (read-directory-name "Build-directory: "
                                           (file-name-as-directory cmake-ide-build-pool-dir))))
   (if (cmake-build-directory-p build-dir)
-      (progn 
-	(setq cmake-ide-build-dir build-dir)
-	(cmake-ide--on-cmake-finished))
+      (progn
+        (setq cmake-ide-build-dir build-dir)
+        (projectile-discover-projects-in-directory (cmake-source-dir build-dir))
+        (cmake-ide-maybe-start-rdm)
+        (cmake-ide--on-cmake-finished))
     (error "`%s' is not a CMake build directory" build-dir)))
 #+END_SRC
 
