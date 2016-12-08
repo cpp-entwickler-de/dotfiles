@@ -212,8 +212,7 @@ Helper function to figure out version control root directory
 (defun project-dir ()
   (when buffer-file-name
     (or (when (and (ignore-errors (projectile-project-p))
-                   (fboundp 'projectile-project-name))
-          (projectile-project-name)
+                   (fboundp 'projectile-project-root))
           (projectile-project-root))
         (let ((backend (vc-deduce-backend)))
           (when backend
@@ -222,17 +221,25 @@ Helper function to figure out version control root directory
 
 #+BEGIN_SRC emacs-lisp
 (defun powerline-buffer-id ()
-  (propertize (if buffer-file-name
-                  (let ((project-root (project-dir)))
-                    (if project-root
-                        (file-relative-name (file-truename buffer-file-name) project-root)
-                        buffer-file-name))
-                  (format-mode-line "%b"))
-              'help-echo (format "%s" major-mode)
-              'local-map (make-mode-line-mouse-map
-                          'mouse-1 (lambda ()
-                                     (interactive)
-                                     (helm-omnibuffer)))))
+  (let* ((home-dir (getenv "HOME"))
+         (filename (when buffer-file-name
+                     (file-truename buffer-file-name)))
+         (project-root (or (project-dir)
+                           (when (and filename
+                                      home-dir
+                                      (string-equal (substring filename 0 (length home-dir)) home-dir))
+                             home-dir)))
+         (relative-path (when filename
+                          (file-name-as-directory (file-name-directory (if project-root
+                                                                           (file-relative-name filename project-root)
+                                                                         filename)))))
+         (buffer-name (format-mode-line "%b")))
+    (concat
+     (when relative-path
+       (propertize relative-path
+                   'face (list ':weight 'light)))
+     (propertize buffer-name
+                 'face (list ':weight 'black)))))
 #+END_SRC
 
 *** Git Info
@@ -502,7 +509,7 @@ Find path of current position in XML docuement
                                 (when show-project
                                   (funcall separator-left face1 mode-line))
                                 (powerline-raw (powerline-mode-icon) mode-line)
-                                (powerline-raw (powerline-buffer-id) mode-line)
+                                (powerline-raw (powerline-buffer-id) mode-line 'l)
                                 (powerline-raw (powerline-version-control) mode-line 'l)
                                 (funcall separator-left mode-line face2)
                                 (powerline-raw (powerline-remote (symbol-value 'face2)) face2)
