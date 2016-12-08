@@ -110,6 +110,6 @@
  '(outline-6 ((t (:weight bold :inherit default :height 1.2))))
  '(outline-7 ((t (:weight bold :inherit default :height 1.1))))
  '(outline-8 ((t (:weight bold :inherit default :height 1.1))))
- '(default ((t (:inherit nil :stipple nil :background "gray5" :foreground "white smoke" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight semi-bold :height 113 :width normal :foundry "ADBO" :family "Source Code Pro")))))
+ '(default ((t (:inherit nil :stipple nil :background "gray5" :foreground "white smoke" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight semi-bold :height 100 :width normal :foundry "ADBO" :family "Source Code Pro")))))
 
 (provide-theme 'cpp-entwickler.de)
