@@ -2336,6 +2336,35 @@ clang-check
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 #+END_SRC
 
+*** Quit diff view without confirmation if buffer is unchanged
+#+BEGIN_SRC emacs-lisp
+(add-hook 'ediff-startup-hook
+          (lambda ()
+            (local-set-key (kbd "q") 'ediff-smart-quit)))
+
+(defun ediff-smart-quit ()
+  "Ask for confirmation only before quitting changed ediff buffers"
+  (interactive)
+  (ediff-barf-if-not-control-buffer)
+  (let* ((buffer-a ediff-buffer-A)
+         (buffer-b ediff-buffer-B)
+         (buffer-c ediff-buffer-C)
+         (buffer-control (current-buffer))
+         (modified-buffers (remove-if-not 'buffer-modified-p
+                                          (list buffer-a buffer-b buffer-c))))
+    (let ((save (if modified-buffers
+                    (yes-or-no-p "Save changes?")
+                  nil)))
+      (loop for buffer in modified-buffers do
+            (progn
+              (set-buffer buffer)
+              (if save
+                  (save-buffer)
+                (set-buffer-modified-p nil))))
+      (set-buffer buffer-control)
+      (ediff-really-quit nil))))
+#+END_SRC
+
 *** Split windows horizontally
 #+BEGIN_SRC emacs-lisp
 (defvar ediff-merge-split-window-function 'split-window-horizontally)
