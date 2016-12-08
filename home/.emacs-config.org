@@ -2085,9 +2085,12 @@ Handler to close buffer after quitting ccmake.
 
 ***** Auto-completion
 #+BEGIN_SRC emacs-lisp
+(use-package company-c-headers)
+
 (add-hook 'c-mode-common-hook (lambda() 
                                 (set (make-local-variable 'company-backends) '(company-rtags company-c-headers company-keywords company-dabbrev-code company-yasnippet company-files company-capf))))
 #+END_SRC
+
 ***** Abbreviations
 #+BEGIN_SRC emacs-lisp
 (define-abbrev-table 'c++-mode-abbrev-table '(
