@@ -1526,23 +1526,23 @@ Handler to close buffer after quitting ccmake.
 
 #+BEGIN_SRC emacs-lisp
 (defun cmake-reconfigure (build-dir)
-  (interactive (list (if (and build-dir
-                              (file-directory-p build-dir))
-                         build-dir
-                       (or cmake-ide-build-dir
-                           (read-directory-name "Build-directory: "
-                                                cmake-ide-build-pool-dir)))))
+  (interactive (list (or (when (and (boundp 'cmake-ide-build-dir)
+                                    (file-directory-p cmake-ide-build-dir))
+                           cmake-ide-build-dir)
+                         cmake-ide-build-dir)
+                     (read-directory-name "Build-directory: "
+                                          cmake-ide-build-pool-dir)))
   (if (executable-find "ccmake")
-      (when (and build-dir
-                 (file-directory-p build-dir))
-        (if (cmake-build-directory-p build-dir)
-            (progn
-              (setq cmake-ide-build-dir build-dir)
-              (projectile-discover-projects-in-directory (cmake-source-dir build-dir)))
-          (let ((default-directory build-dir))
-            (ansi-term (getenv "SHELL") "CMake Cache")
-            (term-exec (current-buffer) "ccmake" "ccmake" nil (list ".")))
-          (error "`%s' is not a CMake build directory" build-dir))
+      (if (and build-dir
+               (file-directory-p build-dir))
+          (if (cmake-build-directory-p build-dir)
+              (progn
+                (setq cmake-ide-build-dir build-dir)
+                (projectile-discover-projects-in-directory (cmake-source-dir build-dir))
+                (let ((default-directory build-dir))
+                  (ansi-term (getenv "SHELL") "CMake Cache")
+                  (term-exec (current-buffer) "ccmake" "ccmake" nil (list "."))))
+            (error "`%s' is not a CMake build directory" build-dir))
         (error "`%s' is not a directory" build-dir))
     (error "Please install ccmake")))
 #+END_SRC
@@ -1550,7 +1550,9 @@ Handler to close buffer after quitting ccmake.
 **** Clear CMake Cache
 #+BEGIN_SRC emacs-lisp
 (defun cmake-reset (build-dir)
-  (interactive (list (or cmake-ide-build-dir
+  (interactive (list (or (when (and (boundp 'cmake-ide-build-dir)
+                                    (file-directory-p cmake-ide-build-dir))
+                           cmake-ide-build-dir)
                          (read-directory-name "Build-directory: "
                                               (file-name-as-directory cmake-ide-build-pool-dir)))))
   (if (executable-find "cmake")
