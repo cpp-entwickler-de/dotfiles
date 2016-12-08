@@ -2400,9 +2400,14 @@ When using Magit >= 2.4.0
 **** [[https://github.com/magit/magit][Magit]]
 #+BEGIN_SRC emacs-lisp
 (use-package magit
-        :bind ("C-c g" . magit-status)
-        :config
-        (define-key magit-status-mode-map (kbd "q") 'magit-quit-session))
+  :bind (("C-c g" . magit-status)
+         :map magit-status-mode-map
+         ("q" . magit-quit-session))
+  :config
+  (setq magit-log-arguments '("--graph"
+                              "--color"
+                              "--decorate"
+                              "-n200")))
 #+END_SRC
 
 ***** Full screen magit-status
