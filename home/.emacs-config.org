@@ -92,17 +92,15 @@ Do not load outdated byte code
 ** GTK+ interface
 *** Disable Menus, Toolbars and Dialogs
 #+BEGIN_SRC emacs-lisp
-(when (window-system)
-  (menu-bar-mode -1)
-  (tool-bar-mode -1)
-  (setq use-file-dialog nil
-        use-dialog-box nil))
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(setq use-file-dialog nil
+      use-dialog-box nil)
 #+END_SRC
 
 *** Use GTK+ Tooltips
 #+BEGIN_SRC emacs-lisp
-(when (window-system)
-  (setq x-gtk-use-system-tooltips t))
+(setq x-gtk-use-system-tooltips t)
 #+END_SRC
 
 *** Show scrollbar on the left side
