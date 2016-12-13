@@ -2072,9 +2072,24 @@ Handler to close buffer after quitting ccmake.
 #+END_SRC
 
 ***** Indentation
+****** Style
+#+BEGIN_SRC emacs-lisp
+(defconst cpped-style
+  '("bsd"
+    (c-offsets-alist . ((innamespace . [0]) ; do not indent namespaces
+                        (cpp-macro . [0])))))
+
+(c-add-style "cpped-style" cpped-style)
+(setq c-default-style '((c-mode . "cpped-style")
+                        (c++-mode . "cpped-style")
+                        (java-mode . "java")
+                        (awk-mode . "awk")
+                        (other . "gnu")))
+#+END_SRC
+
 ****** Basic indentation
 #+BEGIN_SRC emacs-lisp
-(defvar c-basic-offset 8)
+(setq c-basic-offset 4)
 #+END_SRC
 
 ****** Default Offsets
