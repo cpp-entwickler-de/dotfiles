@@ -1929,7 +1929,8 @@ Handler to close buffer after quitting ccmake.
 #+BEGIN_SRC emacs-lisp
 (use-package legalese
   :config
-  (setq legalese-templates '((emacs-lisp-mode (nil ";;; " legalese-file-name " --- " _ "\n;;\n"
+  (setq legalese-date-format "%Y-%m-%d"
+        legalese-templates '((emacs-lisp-mode (nil ";;; " legalese-file-name " --- " _ "\n;;\n"
                                                    ";; Copyright © " legalese-year "  " legalese-copyright "\n;;\n"
                                                    ";; Author: " legalese-author "\n;;\n"
                                                    & -2 "\n"
