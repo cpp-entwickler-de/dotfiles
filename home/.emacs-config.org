@@ -182,17 +182,17 @@ Disable prettification if cursor is at edge of expression
                             (when backend
                               (file-name-nondirectory (directory-file-name (file-name-directory (ignore-errors (vc-call-backend backend 'root default-directory))))))))))
       (when (not (= 0 (length project-name)))
-        (concat (propertize (all-the-icons-faicon "suitcase")
-                                'face (list ':family (all-the-icons-faicon-family)
-                                            ':background (face-attribute icon-face :background))
-                                'display '(raise -0.0))
-                    " "
-                    (propertize project-name
-                                'help-echo "Switch Project"
-                                'local-map (make-mode-line-mouse-map
-                                            'mouse-1 (lambda ()
-                                                       (interactive)
-                                                       (projectile-switch-project)))))))))
+        (concat (propertize (all-the-icons-faicon "folder")
+                            'face (list ':family (all-the-icons-faicon-family)
+                                        ':background (face-attribute icon-face :background))
+                            'display '(raise -0.0))
+                " "
+                (propertize project-name
+                            'help-echo "Switch Project"
+                            'local-map (make-mode-line-mouse-map
+                                        'mouse-1 (lambda ()
+                                                   (interactive)
+                                                   (projectile-switch-project)))))))))
 #+END_SRC
 
 *** Major mode icon
@@ -498,7 +498,7 @@ Find path of current position in XML docuement
                           (show-check-status (not (= 0 (length check-status))))
                           (lhs (list 
                                 (when show-project
-                                  (powerline-raw project-id face1))
+                                  (powerline-raw project-id face1 'l))
                                 (when show-project
                                   (funcall separator-left face1 mode-line))
                                 (powerline-raw (powerline-mode-icon) mode-line)
