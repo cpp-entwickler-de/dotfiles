@@ -114,7 +114,8 @@ if [ "$LINKS" = TRUE ]; then
       user-mail-address \"$EMAIL\"
       calendar-latitude $LATITUDE
       calendar-longitude $LONGITUDE
-      calendar-location-name \"$CITY\")" > "$EMACS_USER_FILE"
+      calendar-location-name \"$CITY\")
+(define-abbrev-table 'global-abbrev-table '((\"$(whoami)\" \"$USER_NAME\")))" > "$EMACS_USER_FILE"
     fi
 fi
 
