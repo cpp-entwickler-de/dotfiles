@@ -1440,6 +1440,8 @@ Always use a fixed width for line numbers (maximum number length)
 ** Projects
 *** Projectile 
 #+BEGIN_SRC emacs-lisp
+(use-package ag)
+
 (use-package projectile
   :bind (("C-x C-p" . projectile-find-file-dwim))
   :config
