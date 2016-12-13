@@ -1,5 +1,20 @@
 #!/bin/bash
 
+function show_help
+{
+    echo "Usage:"
+    echo "    --links          Create links for configuration files from this repository to ~/ (CAUTION: removes old files!)"
+    echo "    --printers       Download and install pretty-printers for GDB"
+    echo "    --fonts          Download and install special fonts for emacs"
+    echo "    --documentation  Download and install DASH documentation files"
+    echo "    --all            Do all of the above"
+}
+
+if [ $# -eq 0 ]; then
+    show_help
+    exit 0
+fi
+
 for ARGUMENT in "$@"; do
     case $ARGUMENT in
         --links)
@@ -21,12 +36,7 @@ for ARGUMENT in "$@"; do
         DOCUMENTATION=TRUE
         ;;
         *)
-        echo "Usage:"
-        echo "    --links          Create links for configuration files from this repository to ~/ (CAUTION: removes old files!)"
-        echo "    --printers       Download and install pretty-printers for GDB"
-        echo "    --fonts          Download and install special fonts for emacs"
-        echo "    --documentation  Download and install DASH documentation files"
-        echo "    --all            Do all of the above"
+        show_help
         ;;
     esac
     shift
