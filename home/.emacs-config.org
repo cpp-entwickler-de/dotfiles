@@ -423,7 +423,8 @@ Find path of current position in XML docuement
        " "
        (propertize (pcase flycheck-last-status-change
                      (`finished (if (> issues 0)
-                                    (format "%s Issue%s" issues (unless (= 1 issues)
+                                    (format "%s Issue%s" issues (if (= 1 issues)
+                                                                    ""
                                                                   "s"))
                                   "No Issues"))
                      (`running "Running")
