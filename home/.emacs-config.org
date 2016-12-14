@@ -1630,12 +1630,16 @@ Handler to close buffer after quitting ccmake.
                                                       (let ((output (shell-command-to-string (concat "cmake --build " build-dir " --target help")))
                                                             (position 0)
                                                             (targets (list "all")))
-                                                        (while (string-match "^[^a-zA-Z0-9_-]*\\([a-zA-Z0-9_-]+\\)" output position)
-                                                          (push (match-string 1 output) targets)
-                                                          (setq position (match-end 0)))
-                                                        targets)))
+                                                        (while (string-match "^[\\. ]*\\([^\\[: ]+\\)" output position)
+                                                          (let ((target (match-string 1 output)))
+                                                            (unless (or (not target)
+                                                                        (string= target "edit_cache"))
+                                                              (push target targets))
+                                                            (setq position (match-end 0))))
+                                                        (remove-duplicates (sort targets #'string-lessp) :test 'string=))))
                                          :prompt "Target: "
-                                         :preselect cmake-current-target
+                                         :preselect (or cmake-current-target
+                                                        "all")
                                          :buffer "*helm target*"))
         cmake-current-target)
     (error "`%s' is not a CMake build directory" build-dir)))
