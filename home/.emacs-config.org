@@ -57,11 +57,14 @@ Do not load outdated byte code
 
 ** [[https://github.com/rranelli/auto-package-update.el][Automatically update packages]]
 #+BEGIN_SRC emacs-lisp 
-(use-package auto-package-update
-  :config
-  (setq auto-package-update-interval 14
-        auto-package-update-delete-old-versions t)
-  (auto-package-update-maybe))
+(defvar cpped-auto-update-packages t "Enable auto-updating of packages.")
+
+(if cpped-auto-update-packages
+    (use-package auto-package-update
+      :config
+      (setq auto-package-update-interval 14
+            auto-package-update-delete-old-versions t)
+      (auto-package-update-maybe)))
 #+END_SRC
 
 ** [[https://github.com/syohex/emacs-helm-package][Helm integration]]
