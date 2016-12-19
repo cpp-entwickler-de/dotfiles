@@ -1593,6 +1593,14 @@ Handler to close buffer after quitting ccmake.
 
 **** Open Project
 #+BEGIN_SRC emacs-lisp
+(defconst cpped-last-project-file (concat (file-name-as-directory user-emacs-directory) "last_project") "The last CMake project loaded.")
+
+(defun cpped-find-last-project-path ()
+  (with-temp-buffer
+    (when (file-exists-p cpped-last-project-file)
+      (insert-file-contents cpped-last-project-file)
+      (buffer-string))))
+
 (defun load-project (build-dir)
   (interactive (list (read-directory-name "Build-directory: "
                                           (file-name-as-directory cmake-ide-build-pool-dir))))
@@ -1601,8 +1609,15 @@ Handler to close buffer after quitting ccmake.
         (setq cmake-ide-build-dir build-dir)
         (projectile-discover-projects-in-directory (cmake-source-dir build-dir))
         (cmake-ide-maybe-start-rdm)
-        (cmake-ide--on-cmake-finished))
+        (cmake-ide--on-cmake-finished)
+        (with-temp-file cpped-last-project-file
+          (insert build-dir)))
     (error "`%s' is not a CMake build directory" build-dir)))
+
+(add-hook 'after-init-hook '(lambda()
+                              (let ((last-project (cpped-find-last-project-path)))
+                                (when last-project
+                                  (load-project last-project)))))
 #+END_SRC
 
 **** Open shell in build directory
