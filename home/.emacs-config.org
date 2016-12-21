@@ -2117,43 +2117,35 @@ Handler to close buffer after quitting ccmake.
 (defvar c-cleanup-list '(scope-operator empty-defun-braces defun-close-semi list-close-comma comment-close-slash))
 #+END_SRC
 
-***** Hungry delete
-#+BEGIN_SRC emacs-lisp
-(add-hook 'c-mode-common-hook '(lambda () (c-toggle-hungry-state 1)))
-#+END_SRC
-
 ***** Indentation
 ****** Style
 #+BEGIN_SRC emacs-lisp
-(defconst cpped-style
-  '("bsd"
-    (c-offsets-alist . ((innamespace . [0]) ; do not indent namespaces
-                        (cpp-macro . [0])))))
+(c-add-style "cpped-style"
+             '("bsd"
+               (c-progress-interval . nil)                   ; do not echo progress when indenting)
+               (c-basic-offset . 4)
+               (comment-empty-lines . t)
+               (c-electric-pound-behavior . '(alignleft))    ; do not indent macros
+               (c-auto-align-backslashes . t)                ; align line end escape characters
+               (c-offsets-alist . ((innamespace . [0])       ; do not indent namespaces
+                                   (brace-list-open . 0)
+                                   (substatement-open . 0)
+                                   (statement-cont . (add c-lineup-cascaded-calls
+                                                          c-lineup-string-cont
+                                                          c-lineup-streamop))
+                                   (arglist-cont-nonempty . (add c-lineup-argcont
+                                                                 c-lineup-cascaded-calls
+                                                                 c-linueup-string-cont))))))
 
-(c-add-style "cpped-style" cpped-style)
 (setq c-default-style '((c-mode . "cpped-style")
                         (c++-mode . "cpped-style")
                         (java-mode . "java")
                         (awk-mode . "awk")
-                        (other . "gnu")))
-#+END_SRC
+                        (other . "bsd")))
 
-****** Basic indentation
-#+BEGIN_SRC emacs-lisp
-(setq c-basic-offset 4)
-#+END_SRC
-
-****** Default Offsets
-#+BEGIN_SRC emacs-lisp
-(defun my-c++-mode-hook ()
-       (c-set-offset 'brace-list-open 0)
-       (c-set-offset 'substatement-open 0))
-(add-hook 'c++-mode-hook 'my-c++-mode-hook)
-#+END_SRC
-
-****** Left-aligned preprocessor directives
-#+BEGIN_SRC emacs-lisp
-(defvar c-electric-pound-behavior '(alignleft))
+(add-hook 'c-mode-common-hook '(lambda ()
+                                 (c-toggle-syntactic-indentation 1)
+                                 (c-toggle-electric-state 1)))
 #+END_SRC
 
 ***** Auto-completion
