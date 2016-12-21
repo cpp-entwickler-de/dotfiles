@@ -2106,10 +2106,10 @@ Handler to close buffer after quitting ccmake.
 #+END_SRC
 
 **** Editing
-***** Auto-newline after ';'
+***** Auto-newline
 #+BEGIN_SRC emacs-lisp
 (add-hook 'c-mode-common-hook '(lambda () 
-                                       (c-toggle-auto-state 1)))
+                                       (c-toggle-auto-newline 1)))
 #+END_SRC
 
 ***** [[https://www.gnu.org/software/emacs/manual/html_node/ccmode/Clean_002dups.html][Auto-clean whitespace]]
