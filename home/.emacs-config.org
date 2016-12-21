@@ -2558,23 +2558,26 @@ When using Magit >= 2.4.0
 #+END_SRC
 * Org-Mode
 #+BEGIN_SRC emacs-lisp
-  (use-package org
-    :bind (("C-c l" . org-store-link)
-           ("C-c s" . org-capture)
-           ("C-c a" . org-agenda))
-    :config
-    (setq org-use-speed-commands t
-          org-support-shift-select t
-          org-src-fontify-natively t
-          org-src-window-setup 'current-window
-          org-src-strip-leading-and-trailing-blank-lines t
-          org-src-preserve-indentation t
-          org-src-tab-acts-natively t
-          org-image-actual-width 550
-          org-default-notes-file "~/.notes.org"
-          org-highlight-latex-and-related '(latex script entities)
-          org-ellipsis " ▼")
-    (add-hook 'org-mode-hook (lambda() (nlinum-mode -1))))
+(use-package org
+  :bind (("C-c l" . org-store-link)
+         ("C-c s" . org-capture)
+         ("C-c a" . org-agenda))
+  :config
+  (setq org-use-speed-commands t
+        org-support-shift-select t
+        org-src-fontify-natively t
+        org-src-window-setup 'current-window
+        org-src-strip-leading-and-trailing-blank-lines t
+        org-src-preserve-indentation t
+        org-src-tab-acts-natively t
+        org-image-actual-width 550
+        org-indent-indentation-per-level 4
+        org-default-notes-file "~/.notes.org"
+        org-highlight-latex-and-related '(latex script entities)
+        org-ellipsis " ▼")
+  (add-hook 'org-mode-hook (lambda()
+                             (nlinum-mode -1)
+                             (org-indent-mode))))
 #+END_SRC
 
 ** Automatically create lists
