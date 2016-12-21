@@ -1970,7 +1970,7 @@ Handler to close buffer after quitting ccmake.
 ***** Insert comment characters in new line when pressing enter inside a comment
 #+BEGIN_SRC emacs-lisp
 (add-hook 'c-mode-common-hook (lambda() 
-                                      (local-set-key (kbd "RET") 'c-indent-new-comment-line)))
+                                      (local-set-key (kbd "RET") 'c-context-line-break)))
 #+END_SRC
 
 ***** TODO Insert license comment
