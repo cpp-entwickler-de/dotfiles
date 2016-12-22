@@ -212,6 +212,7 @@ Disable prettification if cursor is at edge of expression
 *** Buffer name
 Helper function to figure out version control root directory
 #+BEGIN_SRC emacs-lisp
+(with-eval-after-load "projectile"
 (defun project-dir ()
   (when buffer-file-name
     (or (when (and (ignore-errors (projectile-project-p))
@@ -220,9 +221,7 @@ Helper function to figure out version control root directory
         (let ((backend (vc-deduce-backend)))
           (when backend
             (ignore-errors (vc-call-backend backend 'root default-directory)))))))
-#+END_SRC
 
-#+BEGIN_SRC emacs-lisp
 (defun powerline-buffer-id ()
   (let* ((home-dir (getenv "HOME"))
          (filename (when buffer-file-name
@@ -242,7 +241,7 @@ Helper function to figure out version control root directory
        (propertize relative-path
                    'face (list ':weight 'light)))
      (propertize buffer-name
-                 'face (list ':weight 'black)))))
+                 'face (list ':weight 'black))))))
 #+END_SRC
 
 *** Git Info
