@@ -131,7 +131,7 @@ if [ "$PRINTERS" = TRUE ]; then
     mkdir -p $PRETTY_PRINTER_DIR/qt
     QT_PRINTER_FILES="helper.py kde.py qt.py"
     for FILE in $QT_PRINTER_FILES; do
-        wget --quiet --no-directories --output-document="$PRETTY_PRINTER_DIR/qt/$FILE" "http://quickgit.kde.org/?p=kdevelop.git&a=blob&f=debuggers%2Fgdb%2Fprinters%2F$FILE&o=plain"
+        wget --quiet --no-directories --output-document="$PRETTY_PRINTER_DIR/qt/$FILE" "https://cgit.kde.org/kdevelop.git/plain/debuggers/gdb/printers/$FILE"
     done
 fi
 
