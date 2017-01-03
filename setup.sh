@@ -107,7 +107,7 @@ if [ "$LINKS" = TRUE ]; then
         read -e -p "Please enter your location name: " -i "$CITY" CITY
         read -e -p "Please enter your latitude:      " -i "$LATITUDE" LATITUDE
         read -e -p "Please enter your longitude:     " -i "$LONGITUDE" LONGITUDE
-        
+
         rm -f "$EMACS_USER_FILE"
         echo "(defvar username \"$(whoami)\")
 (setq user-full-name \"$USER_NAME\"
@@ -117,6 +117,10 @@ if [ "$LINKS" = TRUE ]; then
       calendar-location-name \"$CITY\")
 (define-abbrev-table 'global-abbrev-table '((\"$(whoami)\" \"$USER_NAME\")))" > "$EMACS_USER_FILE"
     fi
+
+    make_link "$DOTFILES_DIRECTORY/home/emacs.service" "$(realpath ~)/.config/systemd/emacs.service"
+    systemctl enable --user emacs
+    systemctl start --user emacs
 fi
 
 if [ "$PRINTERS" = TRUE ]; then
