@@ -130,11 +130,6 @@ Do not load outdated byte code
 #+END_SRC
 
 ** Fonts
-*** Default font
-#+BEGIN_SRC emacs-lisp
-(set-frame-font "source code pro semibold 11" )
-#+END_SRC
-
 *** [[https://github.com/iqbalansari/emacs-emojify][Display emojis]]
 #+BEGIN_SRC emacs-lisp
 (use-package emojify
