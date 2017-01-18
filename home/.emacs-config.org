@@ -639,6 +639,12 @@ Find path of current position in XML docuement
              (customize-set-variable 'popwin:special-display-config
                                      (add-to-list 'popwin:special-display-config 'help-mode nil #'eq))))
 
+** Imenu
+*** Automatically rescan
+#+BEGIN_SRC emacs-lisp
+(set-default 'imenu-auto-rescan t)
+#+END_SRC
+
 (add-hook 'helm-minibuffer-set-up-hook #'*-popwin-help-mode-off)
 (add-hook 'helm-cleanup-hook #'*-popwin-help-mode-on)
 #+END_SRC
