@@ -72,6 +72,12 @@ Do not load outdated byte code
 (use-package helm-package)
 #+END_SRC
 
+* Internals
+** Reduce garbage collection frequency
+#+BEGIN_SRC emacs-lisp
+(setq gc-cons-threshold (* 100 1024 1024))
+#+END_SRC
+
 * User Interface
 ** Startup
 *** Disable startup screen
