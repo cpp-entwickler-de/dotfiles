@@ -1069,6 +1069,11 @@ Always use a fixed width for line numbers (maximum number length)
                     ("e" . wdired-change-to-wdired-mode)))
 #+END_SRC
 
+**** Use standard ls parameters for listing
+#+BEGIN_SRC emacs-lisp
+(setq dired-listing-switches "-aFhl")
+#+END_SRC
+
 **** Coloring
 #+BEGIN_SRC emacs-lisp
 (use-package diredful
