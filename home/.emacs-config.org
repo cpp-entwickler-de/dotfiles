@@ -96,10 +96,6 @@ Do not load outdated byte code
 (set-frame-parameter nil 'fullscreen 'fullboth)
 #+END_SRC
 
-*** Start with empty scratch buffer (no message)
-#+BEGIN_SRC emacs-lisp
-(setq initial-scratch-message nil)
-#+END_SRC
 ** GTK+ interface
 *** Disable Menus, Toolbars and Dialogs
 #+BEGIN_SRC emacs-lisp
@@ -551,6 +547,19 @@ Find path of current position in XML docuement
 (powerline-cpp-entwickler-theme)
 #+END_SRC
 
+** Projectile
+#+BEGIN_SRC emacs-lisp
+(use-package ag)
+
+(use-package projectile
+  :bind (("C-x C-p" . projectile-find-file-dwim))
+  :config
+  (setq projectile-enable-caching t
+        projectile-completion-system 'helm
+        projectile-switch-project-action 'helm-projectile)
+  (projectile-global-mode))
+#+END_SRC
+
 ** Helm UI
 #+BEGIN_SRC emacs-lisp
 (use-package helm
@@ -585,6 +594,16 @@ Find path of current position in XML docuement
 (require 'helm-config)
 #+END_SRC
 
+*** Projectile Integration
+#+BEGIN_SRC emacs-lisp
+(use-package helm-projectile
+  :demand
+  :bind
+  ("M-g g" . helm-projectile-ag)
+  :config
+  (helm-projectile-on))
+#+END_SRC
+
 *** Fuzzy Matching
 #+BEGIN_SRC emacs-lisp
 (use-package helm-flx
@@ -594,27 +613,6 @@ Find path of current position in XML docuement
 (use-package helm-fuzzier
   :config
   (helm-fuzzier-mode 1))
-#+END_SRC
-
-*** Buffer switching
-#+BEGIN_SRC emacs-lisp
-(defun helm-omnibuffer ()
-  (interactive)
-  (helm-other-buffer
-   (append
-    (if (ignore-errors (projectile-project-p))
-        '(helm-source-projectile-buffers-list)
-        '(helm-source-buffers-list))
-    '(helm-source-recentf)
-    '(helm-source-buffer-not-found)) "*helm-buffers*"))
-(global-set-key (kbd "C-x b") 'helm-omnibuffer)
-#+END_SRC
-
-*** Interactive search in buffer
-#+BEGIN_SRC emacs-lisp
-(use-package helm-swoop
-        :bind
-        ("C-r" . helm-resume))
 #+END_SRC
 
 *** Grep
@@ -639,16 +637,59 @@ Find path of current position in XML docuement
              (customize-set-variable 'popwin:special-display-config
                                      (add-to-list 'popwin:special-display-config 'help-mode nil #'eq))))
 
+(add-hook 'helm-minibuffer-set-up-hook #'*-popwin-help-mode-off)
+(add-hook 'helm-cleanup-hook #'*-popwin-help-mode-on)
+#+END_SRC
 ** Imenu
 *** Automatically rescan
 #+BEGIN_SRC emacs-lisp
 (set-default 'imenu-auto-rescan t)
 #+END_SRC
-
-(add-hook 'helm-minibuffer-set-up-hook #'*-popwin-help-mode-off)
-(add-hook 'helm-cleanup-hook #'*-popwin-help-mode-on)
-#+END_SRC
 ** Buffers
+*** Buffer switching
+#+BEGIN_SRC emacs-lisp
+(defun cpped-switch-buffer ()
+  (interactive)
+  (helm-other-buffer
+   (append
+    '(helm-source-buffers-list)
+    '(helm-source-recentf)
+    (when (ignore-errors (projectile-project-p))
+      '(helm-source-projectile-files-list))
+    '(helm-source-buffer-not-found)) "*helm-buffers*"))
+(global-set-key (kbd "C-x b") 'cpped-switch-buffer)
+#+END_SRC
+
+*** Switch to previous buffer
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-x p") (lambda ()
+                                (interactive)
+                                (other-window -1)))
+#+END_SRC
+*** Interactive search in buffer
+#+BEGIN_SRC emacs-lisp
+(use-package helm-swoop
+        :bind
+        ("C-r" . helm-resume))
+#+END_SRC
+*** Scratch Buffer
+**** Always use text mode
+
+#+BEGIN_SRC emacs-lisp
+(setq initial-major-mode 'text-mode)
+#+END_SRC
+
+**** Start with empty scratch buffer (no message)
+#+BEGIN_SRC emacs-lisp
+(setq initial-scratch-message nil)
+#+END_SRC
+**** [[https://github.com/Fanael/persistent-scratch][Save scratch buffers between sessions]]
+#+BEGIN_SRC emacs-lisp
+(use-package persistent-scratch
+        :config
+        (persistent-scratch-setup-default))
+#+END_SRC
+
 *** Popup Windows
 #+BEGIN_SRC emacs-lisp
 (use-package popwin
@@ -748,14 +789,6 @@ Find path of current position in XML docuement
 (fset 'clean-buffer-list-delay 'clean-buffer-list-delay-3hours)
 (run-with-timer 0 (* 3 (* 60 60)) 'clean-buffer-list)
 #+END_SRC
-
-*** [[https://github.com/Fanael/persistent-scratch][Save scratch buffers between sessions]]
-#+BEGIN_SRC emacs-lisp
-(use-package persistent-scratch
-        :config
-        (persistent-scratch-setup-default))
-#+END_SRC
-
 *** Lines
 **** Highlight current line
 #+BEGIN_SRC emacs-lisp
@@ -843,6 +876,14 @@ Always use a fixed width for line numbers (maximum number length)
 #+END_SRC
 
 ** Shell
+*** Open shell in project directory
+#+BEGIN_SRC emacs-lisp
+(defun eshell-project-dir ()
+  (interactive)
+  (let ((default-directory (project-dir)))
+    (if default-directory
+        (eshell))))
+#+END_SRC
 *** [[https://github.com/jerryxgh/smartwin][Group shell buffers]]
 #+BEGIN_SRC emacs-lisp
 (use-package smartwin
@@ -895,6 +936,16 @@ Always use a fixed width for line numbers (maximum number length)
               (define-key eshell-mode-map "M-l" 'helm-eshell-history)))
 #+END_SRC
 
+*** [[https://github.com/magit/with-editor][Use emacs as editor]]
+#+BEGIN_SRC emacs-lisp
+(use-package with-editor
+  :config
+  (define-key (current-global-map) [remap async-shell-command] 'with-editor-async-shell-command)
+  (define-key (current-global-map) [remap shell-command] 'with-editor-shell-command)
+  (add-hook 'shell-mode-hook  'with-editor-export-editor)
+  (add-hook 'term-exec-hook   'with-editor-export-editor)
+  (add-hook 'eshell-mode-hook 'with-editor-export-editor))
+#+END_SRC
 ** Help
 *** [[https://github.com/justbur/emacs-which-key][Show available keys after entering prefix]]
 #+BEGIN_SRC emacs-lisp
@@ -1502,34 +1553,6 @@ Always use a fixed width for line numbers (maximum number length)
 #+END_SRC
 * Programming
 ** Projects
-*** Projectile 
-#+BEGIN_SRC emacs-lisp
-(use-package ag)
-
-(use-package projectile
-  :bind (("C-x C-p" . projectile-find-file-dwim))
-  :config
-  (setq projectile-enable-caching t
-        projectile-completion-system 'helm
-        projectile-switch-project-action 'helm-projectile)
-  (projectile-global-mode))
-
-(use-package helm-projectile
-  :bind
-  ("M-g g" . helm-projectile-ag)
-  :config
-  (helm-projectile-on))
-#+END_SRC
-
-**** Open shell in project directory
-#+BEGIN_SRC emacs-lisp
-(defun eshell-project-dir ()
-  (interactive)
-  (let ((default-directory (project-dir)))
-    (if default-directory
-        (eshell))))
-#+END_SRC
-
 *** CMake
 #+BEGIN_SRC emacs-lisp
 (use-package cmake-ide
@@ -2556,19 +2579,6 @@ When using Magit >= 2.4.0
        (interactive)
        (kill-buffer)
        (jump-to-register :magit-fullscreen))
-#+END_SRC
-
-***** [[https://github.com/magit/with-editor][Use emacs as editor]]
-#+BEGIN_SRC emacs-lisp
-(use-package with-editor
-  :config
-  (define-key (current-global-map)
-    [remap async-shell-command] 'with-editor-async-shell-command)
-  (define-key (current-global-map)
-    [remap shell-command] 'with-editor-shell-command)
-  (add-hook 'shell-mode-hook  'with-editor-export-editor)
-  (add-hook 'term-exec-hook   'with-editor-export-editor)
-  (add-hook 'eshell-mode-hook 'with-editor-export-editor))
 #+END_SRC
 
 ***** [[https://github.com/vermiculus/magithub][Github integration]]
