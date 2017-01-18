@@ -199,7 +199,7 @@ alias unix2dos="recode lat1..ibmpc"
 alias unix2mac="recode lat1..mac"
 alias mac2unix="recode mac..lat1"
 
-function cdup
+function up
 {
     ARGUMENT=""
     ((LEVELS = ${1:=1} - 1))
