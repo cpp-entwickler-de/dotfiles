@@ -2356,6 +2356,12 @@ clang-check
                               (sh-set-shell "zsh"))))
 #+END_SRC
 
+**** DOS
+#+BEGIN_SRC emacs-lisp
+(use-package dos
+  :mode ("\\.bat\\'" . dos-mode))
+#+END_SRC
+
 **** Documentation
 #+BEGIN_SRC emacs-lisp
 (add-hook 'sh-mode-hook (lambda()
