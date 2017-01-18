@@ -2706,3 +2706,8 @@ When using Magit >= 2.4.0
               tramp-default-host "device"
               tramp-default-user "root"))
 #+END_SRC
+
+* Notify when loading is finished
+#+BEGIN_SRC emacs-lisp
+(notifications-notify :title "Emacs" :body "Emacs Server Started")
+#+END_SRC
