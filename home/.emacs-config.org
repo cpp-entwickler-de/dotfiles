@@ -8,7 +8,7 @@
 
 * External Packages
 ** Programs
-*** Developement
+*** Development
 - clang
 - colorgcc
 - cppcheck
