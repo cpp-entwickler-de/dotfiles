@@ -2464,6 +2464,11 @@ clang-check
 
 ** Version Control
 *** Common
+**** Limit version control systems to most used ones
+#+BEGIN_SRC emacs-lisp
+(setq vc-handled-backends '(git svn))
+#+END_SRC
+
 **** Always open actual file under source control when visited through a symbolic link
 #+BEGIN_SRC emacs-lisp
 (setq vc-follow-symlinks t)
