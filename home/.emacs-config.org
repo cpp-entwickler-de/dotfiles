@@ -711,12 +711,6 @@ Find path of current position in XML docuement
                                          slime-repl-mode slime-connection-list-mode)))
   (popwin-mode 1))
 #+END_SRC
-
-*** Maximum size of buffer menu
-#+BEGIN_SRC emacs-lisp
-(setq buffers-menu-max-size 60)
-#+END_SRC
-
 *** Add path if required to make buffer name unique
 #+BEGIN_SRC emacs-lisp
 (setq uniquify-buffer-name-style 'forward
