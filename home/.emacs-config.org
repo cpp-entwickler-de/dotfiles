@@ -1350,6 +1350,27 @@ Always use a fixed width for line numbers (maximum number length)
   ("C-S-e" . er/expand-region))
 #+END_SRC
 
+*** Clipboard
+**** Ignore duplicates
+#+BEGIN_SRC emacs-lisp
+(setq kill-do-not-save-duplicates t)
+#+END_SRC
+
+**** Use system clipboard
+#+BEGIN_SRC emacs-lisp
+(setq select-enable-clipboard t)
+#+END_SRC
+
+**** Automatically copy highlighted text to the kill ring
+#+BEGIN_SRC emacs-lisp
+(setq mouse-drag-copy-region t)
+#+END_SRC
+
+**** Save system clipboard contents to kill ring before killing
+#+BEGIN_SRC emacs-lisp
+(setq save-interprogram-paste-before-kill t)
+#+END_SRC
+
 *** Do not delete selected text when inserting characters
 #+BEGIN_SRC emacs-lisp
 (delete-selection-mode nil)
