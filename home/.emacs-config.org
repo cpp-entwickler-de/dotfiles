@@ -1931,6 +1931,12 @@ Handler to close buffer after quitting ccmake.
 #+BEGIN_SRC emacs-lisp
 (use-package helm-flycheck)
 #+END_SRC
+***** Flip booleans
+#+BEGIN_SRC emacs-lisp
+(use-package bool-flip
+  :bind ("C-c b" . bool-flip-do-flip))
+#+END_SRC
+
 **** Compilation
 ***** [[https://github.com/abo-abo/helm-make][Select make target with helm]]
 #+BEGIN_SRC emacs-lisp
