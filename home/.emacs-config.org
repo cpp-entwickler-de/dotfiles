@@ -762,6 +762,12 @@ Find path of current position in XML docuement
                   (add-to-list 'face-remapping-alist '(default (:background "tomato")))))
 #+END_SRC
 
+*** Silent Auto-Refresh
+#+BEGIN_SRC emacs-lisp
+(setq global-auto-revert-non-file-buffers t
+      auto-revert-verbose nil)
+#+END_SRC
+
 *** Kill current buffer by default
 #+BEGIN_SRC emacs-lisp
 (defun kill-default-buffer ()
