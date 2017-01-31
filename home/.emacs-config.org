@@ -1573,6 +1573,13 @@ Always use a fixed width for line numbers (maximum number length)
   (ws-butler-global-mode))
 #+END_SRC
 
+*** Cut/copy whole line if no region is active
+#+BEGIN_SRC emacs-lisp
+(use-package whole-line-or-region
+  :config
+  (whole-line-or-region-mode t))
+#+END_SRC
+
 *** [[https://github.com/ongaeshi/duplicate-thing][Duplicate lines/regions]]
 #+BEGIN_SRC emacs-lisp
 (use-package duplicate-thing
