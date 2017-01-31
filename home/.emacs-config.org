@@ -2756,6 +2756,11 @@ When using Magit >= 2.4.0
    "\\.gnuplot\\'"))
 #+END_SRC
 
+** STrace
+#+BEGIN_SRC emacs-lisp
+(use-package strace-mode)
+#+END_SRC
+
 * Remote
 ** Serial Devices
 #+BEGIN_SRC emacs-lisp
