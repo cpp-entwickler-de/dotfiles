@@ -1215,6 +1215,67 @@ Always use a fixed width for line numbers (maximum number length)
 #+END_SRC
 
 ** Highlighting
+*** Pretty symbols
+#+BEGIN_SRC emacs-lisp
+(add-hook 'text-mode-hook (lambda()
+                            (push '("=/=" . ?≠) prettify-symbols-alist)
+                            (push '(">=" . ?≧) prettify-symbols-alist)
+                            (push '("<=" . ?≦) prettify-symbols-alist)
+
+                            (push '("->" . ?→) prettify-symbols-alist)
+                            (push '("<-" . ?←) prettify-symbols-alist)
+                            (push '("<->" . ?↔) prettify-symbols-alist)
+                            (push '("<_->" . ?⇄) prettify-symbols-alist)
+                            (push '("<-_>" . ?⇆) prettify-symbols-alist)
+
+                            (push '("-->" . ?⤍) prettify-symbols-alist)
+                            (push '("<--" . ?⤌) prettify-symbols-alist)
+
+                            (push '("--->" . ?⤏) prettify-symbols-alist)
+                            (push '("<---" . ?⤎) prettify-symbols-alist)
+
+                            (push '("-|>" . ?⇾) prettify-symbols-alist)
+                            (push '("<|-" . ?⇽) prettify-symbols-alist)
+                            (push '("<|-|>" . ?⇿) prettify-symbols-alist)
+
+                            (push '("==>" . ?⇒) prettify-symbols-alist)
+                            (push '("<==" . ?⇐) prettify-symbols-alist)
+                            (push '("=/=>" . ?⇏) prettify-symbols-alist)
+                            (push '("<=/=" . ?⇍) prettify-symbols-alist)
+                            (push '("=|=>" . ?⤃) prettify-symbols-alist)
+                            (push '("<=|=" . ?⤂) prettify-symbols-alist)
+                            (push '("<=>" . ?⇔) prettify-symbols-alist)
+                            (push '("<=|=>" . ?⤄) prettify-symbols-alist)
+                            (push '("<=/=>" . ?↮) prettify-symbols-alist)
+
+                            (push '("..>" . ?⇢) prettify-symbols-alist)
+                            (push '("<.." . ?⇠) prettify-symbols-alist)
+                            (push '("^.." . ?⇡) prettify-symbols-alist)
+                            (push '("v.." . ?⇣) prettify-symbols-alist)
+
+                            (push '("->|" . ?⇥) prettify-symbols-alist)
+                            (push '("|<-" . ?⇤) prettify-symbols-alist)
+                            (push '("|<-_>|" . ?↹) prettify-symbols-alist)
+
+                            (push '("-|->" . ?⇸) prettify-symbols-alist)
+                            (push '("<-|-" . ?⇷) prettify-symbols-alist)
+                            (push '("<-|->" . ?⇹) prettify-symbols-alist)
+
+                            (push '("-||->" . ?⇻) prettify-symbols-alist)
+                            (push '("<-||-" . ?⇺) prettify-symbols-alist)
+                            (push '("<-||->" . ?⇼) prettify-symbols-alist)
+
+                            (push '("^||v" . ?⇅) prettify-symbols-alist)
+                            (push '("v||^" . ?⇵) prettify-symbols-alist)
+
+                            (push '("~>" . ?⤳) prettify-symbols-alist)
+                            (push '("<~>" . ?↭) prettify-symbols-alist)
+                            (push '("\/v" . ?↯) prettify-symbols-alist)
+
+                            (push '("|>" . ?▶) prettify-symbols-alist)
+                            (push '("<|" . ?◀) prettify-symbols-alist)))
+#+END_SRC
+
 *** Markdown
 #+BEGIN_SRC emacs-lisp
 (use-package markdown-mode
