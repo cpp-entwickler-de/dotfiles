@@ -1577,6 +1577,8 @@ Always use a fixed width for line numbers (maximum number length)
 *** Automatic insert
 **** Abbreviations
 #+BEGIN_SRC emacs-lisp
+(setq-default abbrev-mode t)
+(setq save-abbrevs t)
 ;;(define-abbrev-table 'global-abbrev-table '(("" "")))
 #+END_SRC
 
