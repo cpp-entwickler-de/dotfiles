@@ -2598,6 +2598,13 @@ clang-check
                           (set (make-local-variable 'helm-dash-docsets) '("Bash" "Man Pages"))))
 #+END_SRC
 
+*** Log
+**** Log highlight and filtering
+#+BEGIN_SRC emacs-lisp
+(use-package log4j-mode)
+#+END_SRC
+
+*** UML
 ** Debugging
 #+BEGIN_SRC emacs-lisp
 (defvar gdb-many-windows t)
