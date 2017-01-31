@@ -654,6 +654,7 @@ Find path of current position in XML docuement
    (append
     '(helm-source-buffers-list)
     '(helm-source-recentf)
+    '(helm-source-files-in-current-dir)
     (when (ignore-errors (projectile-project-p))
       '(helm-source-projectile-files-list))
     '(helm-source-buffer-not-found)) "*helm-buffers*"))
