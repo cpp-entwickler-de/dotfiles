@@ -768,12 +768,22 @@ Find path of current position in XML docuement
       auto-revert-verbose nil)
 #+END_SRC
 
+*** Auto-save buffers automatically
+#+BEGIN_SRC emacs-lisp
+(setq auto-save-visited-file-name t
+      buffer-save-without-query t)
+#+END_SRC
+
 *** Kill current buffer by default
 #+BEGIN_SRC emacs-lisp
 (defun kill-default-buffer ()
-       "Kill the currently active buffer -- set to C-x k so that users are not asked which buffer they want to kill."
-       (interactive)
-       (let (kill-buffer-query-functions) (kill-buffer)))
+  "Kill the currently active buffer -- set to C-x k so that users are not asked which buffer they want to kill."
+  (interactive)
+  (let (kill-buffer-query-functions)
+    (when (and buffer-file-name
+               (buffer-modified-p))
+      (save-buffer))
+    (kill-buffer)))
 (global-set-key (kbd "C-x k") 'kill-default-buffer)
 #+END_SRC
 
