@@ -1959,7 +1959,7 @@ Handler to close buffer after quitting ccmake.
   :config
   (add-hook 'prog-mode-hook 'origami-mode)
   (add-hook 'origami-mode-hook (lambda ()
-                                 (origami-close-all-nodes (current-buffer)))))
+                                 (origami-close-all-nodes))))
 #+END_SRC
 
 ***** Subword-navigation in camelCase words
