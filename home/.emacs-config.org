@@ -2734,6 +2734,13 @@ When using Magit >= 2.4.0
         :bind
         ("C-x C-g" . helm-browse-project))
 #+END_SRC
+* Man Page Viewing
+#+BEGIN_SRC emacs-lisp
+(setq woman-fill-frame t
+      woman-imenu t
+      woman-use-topic-at-point t
+      woman-use-topic-at-point-default t)
+#+END_SRC
 
 * [[https://github.com/politza/pdf-tools][PDF Viewing]]
 #+BEGIN_SRC emacs-lisp
