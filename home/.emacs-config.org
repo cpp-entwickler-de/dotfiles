@@ -1166,6 +1166,13 @@ Always use a fixed width for line numbers (maximum number length)
   :config
   (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 #+END_SRC
+**** Filtering
+#+BEGIN_SRC emacs-lisp
+(use-package dired-narrow
+  :bind (:map dired-mode-map
+              ("/" . dired-narrow)))
+#+END_SRC
+
 
 *** [[https://www.emacswiki.org/emacs/Sunrise_Commander][Sunrise Commander]]
 #+BEGIN_SRC emacs-lisp
