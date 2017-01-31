@@ -1055,59 +1055,6 @@ Always use a fixed width for line numbers (maximum number length)
 #+BEGIN_SRC emacs-lisp
 (use-package sudo-edit)
 #+END_SRC
-
-** File type associations
-#+BEGIN_SRC emacs-lisp
-(setq auto-mode-alist
-      (mapcar 'purecopy
-              '(("\\.org$" . org-mode)
-                ("\\.emacs" . emacs-lisp-mode)
-                ("CMakeLists\\.txt$" . cmake-mode)
-                ("Makefile$" . makefile-mode)
-                ("\\.C$". c++-mode)
-                ("\\.a$" . c-mode)
-                ("\\.bib$" . bibtex-mode)
-                ("\\.c$" . c-mode)
-                ("\\.cc$". c++-mode)
-                ("\\.cmake$" . cmake-mode)
-                ("\\.cpp$". c++-mode)
-                ("\\.csh$" . csh-mode)
-                ("\\.cxx$". c++-mode)
-                ("\\.doc$" . text-mode)
-                ("\\.el$" . emacs-lisp-mode)
-                ("\\.h$" . c++-mode)
-                ("\\.hh$" . c++-mode)
-                ("\\.hpp$". c++-mode)
-                ("\\.html?$" . html-mode)
-                ("\\.lisp$" . lisp-mode)
-                ("\\.lsp$" . lisp-mode)
-                ("\\.log$" . syslog-mode)
-                ("\\.mak$" . makefile-mode)
-                ("\\.pdf$" . doc-view-mode)
-                ("\\.py$" . python-mode)
-                ("\\.qml$" . qml-mode)
-                ("\\.qrc$" . nxml-mode)
-                ("\\.sh$" . bash-mode)
-                ("\\.tcl$" . tcl-mode)
-                ("\\.tex$" . latex-mode)
-                ("\\.ts$" . nxml-mode)
-                ("\\.txi$" . Texinfo-mode)
-                ("\\.txt$" . text-mode)
-                ("\\.xml$" . nxml-mode)
-                ("\\.xslt?$" . nxml-mode)
-                ("\\.zsh" . sh-mode))))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(use-package openwith
-  :config
-  (setq openwith-confirm-invocation t
-        openwith-associations '(("\\.\\(xcf\\|psd\\)\\'" "gimp" ("-s" file))
-                                ("\\.qml\\'" "qtcreator" (file)))
-        openwith-mode t)
-  (openwith-mode))
-#+END_SRC
-
 ** [[https://github.com/m00natic/vlfi][Allow opening large files]]
 #+BEGIN_SRC emacs-lisp
 (setq large-file-warning-threshold (* 25 1024 1024))
@@ -1208,6 +1155,11 @@ Always use a fixed width for line numbers (maximum number length)
 #+END_SRC
 
 * Text
+#+BEGIN_SRC emacs-lisp
+(push '("\\.doc\\'" . text-mode) auto-mode-alist)
+(push '("\\.txt\\'" . text-mode) auto-mode-alist)
+#+END_SRC
+
 ** Encoding
 #+BEGIN_SRC emacs-lisp
 (set-charset-priority 'unicode)
@@ -1302,16 +1254,16 @@ Always use a fixed width for line numbers (maximum number length)
 **** [[https://github.com/sensorflo/adoc-mode][AsciiDoc]]
 #+BEGIN_SRC emacs-lisp
 (use-package adoc-mode
-  :mode ("\\.adoc$" . adoc-mode))
+  :mode ("\\.adoc\\'" . adoc-mode))
 #+END_SRC
 
 **** Markdown
 #+BEGIN_SRC emacs-lisp
 (use-package markdown-mode
   :mode
-  (("README\\.md$" . gfm-mode)
-   ("\\.md$" . markdown-mode)
-   ("\\.markdown$" . markdown-mode))
+  (("README\\.md\\'" . gfm-mode)
+   ("\\.md\\'" . markdown-mode)
+   ("\\.markdown\\'" . markdown-mode))
   :config (setq markdown-command "multimarkdown"))
 #+END_SRC
 
@@ -2352,6 +2304,18 @@ Helm Integration
 #+END_SRC
 
 *** C/C++
+#+BEGIN_SRC emacs-lisp
+(push '("\\.a\\'" . c-mode) auto-mode-alist)
+(push '("\\.c\\'" . c-mode) auto-mode-alist)
+(push '("\\.C\\'". c++-mode) auto-mode-alist)
+(push '("\\.cc\\'". c++-mode) auto-mode-alist)
+(push '("\\.cpp\\'". c++-mode) auto-mode-alist)
+(push '("\\.cxx\\'". c++-mode) auto-mode-alist)
+(push '("\\.h\\'" . c++-mode) auto-mode-alist)
+(push '("\\.hh\\'" . c++-mode) auto-mode-alist)
+(push '("\\.hpp\\'". c++-mode) auto-mode-alist)
+#+END_SRC
+
 **** Highlighting
 ***** [[https://github.com/ludwigpacifici/modern-cpp-font-lock][Additional font lock settings for C++-11+]]
 #+BEGIN_SRC emacs-lisp
@@ -2569,13 +2533,21 @@ clang-check
 #+END_SRC
 
 **** Utilities
+***** Qt Support
+Resource Files
 #+BEGIN_SRC emacs-lisp
-  :config
+(push '("\\.qrc\\'" . nxml-mode) auto-mode-alist)
+#+END_SRC
+
+Translation Files
+#+BEGIN_SRC emacs-lisp
+(push '("\\.ts\\'" . nxml-mode) auto-mode-alist)
 #+END_SRC
 
 *** CMake
 #+BEGIN_SRC emacs-lisp
 (use-package cmake-mode
+  :mode "CMakeLists\\.txt\\'" "\\.cmake\\'"
   :config (setq cmake-tab-width 4))
 #+END_SRC
 
@@ -2599,7 +2571,7 @@ clang-check
 
 *** CSS
 #+BEGIN_SRC emacs-lisp
-(push '("\\.css$". css-mode) auto-mode-alist)
+(push '("\\.css\\'". css-mode) auto-mode-alist)
 #+END_SRC
 
 Documentation
@@ -2619,10 +2591,24 @@ Documentation
 
 *** HTML
 #+BEGIN_SRC emacs-lisp
-(push '("\\.html?$" . html-mode) auto-mode-alist)
+(push '("\\.x?html?\\'" . html-mode) auto-mode-alist)
+#+END_SRC
+
+*** Latex
+#+BEGIN_SRC emacs-lisp
+(push '("\\.tex\\'" . latex-mode) auto-mode-alist)
+(push '("\\.txi\\'" . Texinfo-mode) auto-mode-alist)
+(push '("\\.bib\\'" . bibtex-mode) auto-mode-alist)
 #+END_SRC
 
 *** Lisp
+#+BEGIN_SRC emacs-lisp
+(push '("\\.emacs\\'" . emacs-lisp-mode) auto-mode-alist)
+(push '("\\.el\\'" . emacs-lisp-mode) auto-mode-alist)
+(push '("\\.lisp\\'" . lisp-mode) auto-mode-alist)
+(push '("\\.lsp\\'" . lisp-mode) auto-mode-alist)
+#+END_SRC
+
 **** Highlight current S-EXP
 #+BEGIN_SRC emacs-lisp
 (use-package hl-sexp
@@ -2646,10 +2632,21 @@ Documentation
 #+BEGIN_SRC emacs-lisp
 #+END_SRC
 
+*** Make
+#+BEGIN_SRC emacs-lisp
+(push '("Makefile\\'" . makefile-mode) auto-mode-alist)
+(push '("\\.mak\\'" . makefile-mode) auto-mode-alist)
+#+END_SRC
+
+*** Python
+#+BEGIN_SRC emacs-lisp
+(push '("\\.py\\'" . python-mode) auto-mode-alist)
+#+END_SRC
+
 *** QML
 #+BEGIN_SRC emacs-lisp
 (use-package qml-mode
-  :mode "\\.qml$")
+  :mode "\\.qml\\'")
 #+END_SRC
 
 **** Auto-completion
@@ -2665,6 +2662,10 @@ Documentation
 #+END_SRC
 
 *** Shell
+#+BEGIN_SRC emacs-lisp
+(push '("\\.sh\\'" . sh-mode) auto-mode-alist)
+#+END_SRC
+
 **** Editing
 ***** Autocompletion
 #+BEGIN_SRC emacs-lisp
@@ -2674,7 +2675,28 @@ Documentation
                             (set (make-local-variable 'company-backends) '(company-shell company-keywords company-dabbrev-code company-yasnippet company-files company-capf)))))
 #+END_SRC
 
+**** BASH
+Set correct major mode
+#+BEGIN_SRC emacs-lisp
+(push '("#!/bin/bash" . bash-mode) magic-mode-alist)
+(push '("\\.bash\\'" . bash-mode) auto-mode-alist)
+#+END_SRC
+
+Set shell for buffer
+#+BEGIN_SRC emacs-lisp
+(add-hook 'sh-mode-hook (lambda ()
+                          (if (string-match "\\.bash$" buffer-file-name)
+                              (sh-set-shell "bash"))))
+#+END_SRC
+
 **** ZSH
+Set correct major mode
+#+BEGIN_SRC emacs-lisp
+(push '("#!/usr/bin/zsh" . sh-mode) magic-mode-alist)
+(push '("\\.zsh\\'" . sh-mode) auto-mode-alist)
+#+END_SRC
+
+Set shell for buffer
 #+BEGIN_SRC emacs-lisp
 (add-hook 'sh-mode-hook (lambda ()
                           (if (string-match "\\.zsh$" buffer-file-name)
@@ -2887,6 +2909,7 @@ When using Magit >= 2.4.0
 ** [[https://github.com/politza/pdf-tools][PDFs]]
 #+BEGIN_SRC emacs-lisp
 (use-package pdf-tools
+  :mode ("\\.pdf\\'" . doc-view-mode)
   :config
   ;(pdf-tools-install)
   (setq doc-view-continuous t
@@ -2897,7 +2920,7 @@ When using Magit >= 2.4.0
 ** System Logs
 #+BEGIN_SRC emacs-lisp
 (use-package syslog-mode
-  :mode ("\\.log$" . syslog-mode))
+  :mode ("\\.log\\'" . syslog-mode))
 
 (use-package log4j-mode)
 #+END_SRC
@@ -2910,6 +2933,7 @@ When using Magit >= 2.4.0
 * Org-Mode
 #+BEGIN_SRC emacs-lisp
 (use-package org
+  :mode ("\\.org\\'" . org-mode)
   :bind (("C-c l" . org-store-link)
          ("C-c s" . org-capture)
          ("C-c a" . org-agenda))
