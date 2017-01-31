@@ -1179,6 +1179,14 @@ Always use a fixed width for line numbers (maximum number length)
 (prefer-coding-system 'utf-8)
 (setq locale-coding-system 'utf-8)
 (setq default-process-coding-system '(utf-8-unix . utf-8-unix))
+
+(defun cpped-dos2unix ()
+  (interactive)
+  (set-buffer-file-coding-system 'utf-8-unix nil))
+
+(defun cpped-unix2dos ()
+  (interactive)
+  (set-buffer-file-coding-system 'utf-8-dos nil))
 #+END_SRC
 
 ** Highlighting
