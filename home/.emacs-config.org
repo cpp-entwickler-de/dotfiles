@@ -1540,10 +1540,13 @@ Always use a fixed width for line numbers (maximum number length)
 **** [[https://github.com/joaotavora/yasnippet][Templates]]
 #+BEGIN_SRC emacs-lisp
 (use-package yasnippet
-        :config
-        (setq yas-snippet-dirs '("~/.yas-snippets"))
-        (yas-global-mode 1)
-        (setq yas-use-menu nil))
+  :config
+  (setq yas-snippet-dirs '("~/.yas-snippets")
+        yas-wrap-around-region t)
+  (yas-global-mode 1)
+  (setq yas-use-menu nil))
+#+END_SRC
+
 #+END_SRC
 
 *** Utilities
