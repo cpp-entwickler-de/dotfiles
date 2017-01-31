@@ -1117,11 +1117,13 @@ Always use a fixed width for line numbers (maximum number length)
 *** [[https://www.emacswiki.org/emacs/RecentFiles][Recent files]]
 #+BEGIN_SRC emacs-lisp
 (use-package recentf
-        :bind ("C-x C-r" . helm-recentf)
-        :config
-        (recentf-mode t)
-        (setq recentf-max-saved-items 200
-              recentf-max-menu-items 15))
+  :bind ("C-x C-r" . helm-recentf)
+  :config
+  (recentf-mode t)
+  (setq recentf-max-saved-items 200
+        recentf-max-menu-items 15
+        recentf-auto-save-timer (run-with-idle-timer 600 t
+                                                     'recentf-save-list)))
 #+END_SRC
 
 *** Dired
