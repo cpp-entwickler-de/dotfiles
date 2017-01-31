@@ -2745,6 +2745,17 @@ When using Magit >= 2.4.0
   (setq wttrin-default-cities `(,calendar-location-name)))
 #+END_SRC
 
+** GNUPlot
+#+BEGIN_SRC emacs-lisp
+(use-package gnuplot-mode
+  :config
+  (add-hook 'gnuplot-mode-hook (lambda ()
+                                 (flyspell-prog-mode)))
+  :mode
+  ("\\.gp\\'"
+   "\\.gnuplot\\'"))
+#+END_SRC
+
 * Remote
 ** Serial Devices
 #+BEGIN_SRC emacs-lisp
