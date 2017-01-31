@@ -1215,6 +1215,19 @@ Always use a fixed width for line numbers (maximum number length)
 #+END_SRC
 
 ** Highlighting
+*** Markdown
+#+BEGIN_SRC emacs-lisp
+(use-package markdown-mode
+  :commands
+  (markdown-mode gfm-mode)
+  :mode
+  (("README\\.md\\'" . gfm-mode)
+   ("\\.md\\'" . markdown-mode)
+   ("\\.markdown\\'" . markdown-mode))
+  :init
+  (setq markdown-command "multimarkdown"))
+#+END_SRC
+
 *** Highlight edited areas shortly
 #+BEGIN_SRC emacs-lisp
 (use-package volatile-highlights
