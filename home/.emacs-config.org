@@ -1915,6 +1915,19 @@ Handler to close buffer after quitting ccmake.
           (iedit-start (current-word) (point-min) (point-max)))))))
 #+END_SRC
 
+***** Change numbers
+#+BEGIN_SRC emacs-lisp
+(use-package shift-number
+  :bind
+  ("M-+" . shift-number-up)
+  ("M--" . shift-number-down))
+#+END_SRC
+
+***** [[https://github.com/AdamNiederer/0xc][Convert number formats]]
+#+BEGIN_SRC emacs-lisp
+(use-package 0xc)
+#+END_SRC
+
 ***** Spell checking
 #+BEGIN_SRC emacs-lisp
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
