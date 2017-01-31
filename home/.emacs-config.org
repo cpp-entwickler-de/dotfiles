@@ -1539,6 +1539,14 @@ Always use a fixed width for line numbers (maximum number length)
         (global-hungry-delete-mode))
 #+END_SRC
 
+*** Smart backward delete
+#+BEGIN_SRC emacs-lisp
+(defun cpped-backward-kill-dwim (&optional argument)
+  (interactive "p")
+  (if (region-active-p)
+      (call-interactively #'kill-region)
+    (backward-kill-word argument)))
+#+END_SRC
 *** [[https://github.com/lewang/ws-butler][Remove trailing whitespace in changed lines]]
 #+BEGIN_SRC emacs-lisp
 (use-package ws-butler
