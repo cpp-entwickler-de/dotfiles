@@ -512,7 +512,7 @@ Find path of current position in XML docuement
                                   (powerline-raw project-id face1 'l))
                                 (when show-project
                                   (funcall separator-left face1 mode-line))
-                                (powerline-raw (powerline-mode-icon) mode-line)
+                                (powerline-raw (powerline-mode-icon) mode-line 'l)
                                 (powerline-raw (powerline-buffer-id) mode-line 'l)
                                 (powerline-raw (powerline-version-control) mode-line 'l)
                                 (funcall separator-left mode-line face2)
