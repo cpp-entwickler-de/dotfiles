@@ -125,6 +125,21 @@ Do not load outdated byte code
 (fset 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
 
+** History
+#+BEGIN_SRC emacs-lisp
+(use-package savehist
+  :config
+  (setq history-length 10000
+        history-delete-duplicates t
+        savehist-save-minibuffer-history t
+        savehist-additional-variables '(kill-ring
+                                        search-ring
+                                        regexp-search-ring
+                                        extended-command-history)
+        savehist-autosave-interval 180)
+  (savehist-mode t))
+#+END_SRC
+
 ** Colors
 *** [[https://github.com/atomontage/xterm-color][Show ANSI colors]]
 #+BEGIN_SRC emacs-lisp
