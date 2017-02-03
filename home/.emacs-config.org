@@ -685,8 +685,9 @@ Find path of current position in XML docuement
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-x p") (lambda ()
                                 (interactive)
-                                (other-window -1)))
+                                (switch-to-buffer (other-buffer (current-buffer) 1))))
 #+END_SRC
+
 *** Interactive search in buffer
 #+BEGIN_SRC emacs-lisp
 (use-package helm-swoop
