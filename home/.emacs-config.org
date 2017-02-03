@@ -125,6 +125,11 @@ Do not load outdated byte code
 (fset 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
 
+** Show keystrokes earlier
+#+BEGIN_SRC emacs-lisp
+(setq echo-keystrokes 0.1)
+#+END_SRC
+
 ** History
 #+BEGIN_SRC emacs-lisp
 (use-package savehist
