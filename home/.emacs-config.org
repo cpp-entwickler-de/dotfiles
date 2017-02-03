@@ -880,6 +880,19 @@ Always use a fixed width for line numbers (maximum number length)
         (hlinum-activate))
 #+END_SRC
 
+*** Utilities
+**** Copy buffer file name to clipboard
+#+BEGIN_SRC emacs-lisp
+(defun cpped-copy-file-name-to-clipboard ()
+  "Copy the current buffer file name to the clipboard."
+  (interactive)
+  (let ((filename (if (equal major-mode 'dired-mode)
+                      default-directory
+                    (buffer-file-name))))
+    (when filename
+      (kill-new filename))))
+#+END_SRC
+
 ** Cursor
 *** Center Cursor
 #+BEGIN_SRC emacs-lisp
