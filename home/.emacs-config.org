@@ -596,7 +596,7 @@ Find path of current position in XML docuement
         helm-case-fold-search t
         helm-comp-read-case-fold-search 'Ignore\ case
         helm-grep-ignored-directories '("SCCS" "RCS" "CVS" "MCVS" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" ".gvfs" "branches" "tags")
-        helm-input-idle-delay 0.1
+        helm-input-idle-delay 0.01
         helm-recentf-fuzzy-match t
         helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
         helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
