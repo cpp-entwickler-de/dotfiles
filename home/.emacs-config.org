@@ -666,6 +666,11 @@ Find path of current position in XML docuement
 (set-default 'imenu-auto-rescan t)
 #+END_SRC
 ** Buffers
+*** Go to last position when opening buffer
+#+BEGIN_SRC emacs-lisp
+(save-place-mode 1)
+#+END_SRC
+
 *** Buffer switching
 #+BEGIN_SRC emacs-lisp
 (defun cpped-switch-buffer ()
