@@ -37,6 +37,7 @@
 - sushi
 - the_silver_searcher
 - util-linux-user
+- wordnet (thesaurus)
 - zsh
 ** Fonts
 - Source Code Pro
@@ -1636,6 +1637,12 @@ Always use a fixed width for line numbers (maximum number length)
   (setq yas-use-menu nil))
 #+END_SRC
 
+*** Thesaurus
+#+BEGIN_SRC emacs-lisp
+(use-package synosaurus
+  :init
+  (setq-default synosaurus-backend 'synosaurus-backend-wordnet)
+  (add-hook 'after-init-hook #'synosaurus-mode))
 #+END_SRC
 
 *** Utilities
