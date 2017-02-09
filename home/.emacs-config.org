@@ -1534,6 +1534,13 @@ Always use a fixed width for line numbers (maximum number length)
 (global-set-key (kbd "RET") 'newline-and-indent)
 #+END_SRC
 
+*** [[https://gitlab.com/emacs-stuff/indent-tools][Indent tools]]
+#+BEGIN_SRC emacs-lisp
+(use-package indent-tools
+  :config
+  (global-set-key (kbd "C-c >") 'indent-tools-hydra/body))
+#+END_SRC
+
 *** Upper/lower case
 #+BEGIN_SRC emacs-lisp
 (use-package fix-word
