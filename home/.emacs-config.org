@@ -495,10 +495,12 @@ Find path of current position in XML docuement
 
 *** Powerline
 #+BEGIN_SRC emacs-lisp
-(use-package powerline)
+(use-package powerline
+  :config
+  (setq powerline-default-separator 'slant
+        powerline-display-hud nil
+        powerline-height 20))
 
-(setq powerline-default-separator 'slant
-      powerline-display-hud nil)
 (defun powerline-cpp-entwickler-theme ()
   "Setup the default mode-line."
   (interactive)
