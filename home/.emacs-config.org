@@ -1691,6 +1691,34 @@ Some useful abbreviations
   (setq yas-use-menu nil))
 #+END_SRC
 
+*** Insert Date/Time
+#+BEGIN_SRC emacs-lisp
+(defun cpped-insert-timestamp ()
+  "Insert date and time according to the locale's date and time format."
+  (interactive)
+  (insert (format-time-string "%c" (current-time))))
+
+(defun cpped-insert-date ()
+  "Insert the date according to the locale's date format."
+  (interactive)
+  (insert (format-time-string "%x" (current-time))))
+
+(defun cpped-insert-time ()
+  "Insert the time according to the locale's time format."
+  (interactive)
+  (insert (format-time-string "%X" (current-time))))
+
+(defun cpped-insert-iso-date ()
+  "Insert the date according to the ISO date format."
+  (interactive)
+  (insert (format-time-string "%F" (current-time))))
+
+(defun cpped-insert-iso-timestamp ()
+  "Insert the date according to the ISO date format."
+  (interactive)
+  (insert (format-time-string "%FT%T%z" (current-time))))
+#+END_SRC
+
 *** Thesaurus
 #+BEGIN_SRC emacs-lisp
 (use-package synosaurus
