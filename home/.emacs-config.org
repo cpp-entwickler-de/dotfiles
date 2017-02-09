@@ -2913,6 +2913,11 @@ When using Magit >= 2.4.0
 #+END_SRC
 
 * Utilities
+** Calculator
+*** Do not use scientific form so quickly
+#+BEGIN_SRC emacs-lisp
+(setq calc-display-sci-low -5)
+#+END_SRC
 
 ** Calendar
 #+BEGIN_SRC emacs-lisp
