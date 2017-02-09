@@ -701,9 +701,12 @@ Find path of current position in XML docuement
 *** Interactive search in buffer
 #+BEGIN_SRC emacs-lisp
 (use-package helm-swoop
-        :bind
-        ("C-r" . helm-resume))
+  :bind
+  ("C-r" . helm-resume)
+  :config
+  (setq helm-swoop-split-with-multiple-windows t))
 #+END_SRC
+
 *** Scratch Buffer
 **** Always use text mode
 
