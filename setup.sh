@@ -118,6 +118,9 @@ if [ "$LINKS" = TRUE ]; then
 (define-abbrev-table 'global-abbrev-table '((\"$(whoami)\" \"$USER_NAME\")))" > "$EMACS_USER_FILE"
     fi
 
+    make_link "$DOTFILES_DIRECTORY/home/IDE.desktop" "$(realpath ~)/.local/share/applications/IDE.desktop"
+    make_link "$DOTFILES_DIRECTORY/home/IDE Open.desktop" "$(realpath ~)/.local/share/applications/IDE Open.desktop"
+
     make_link "$DOTFILES_DIRECTORY/home/emacs.service" "$(realpath ~)/.config/systemd/emacs.service"
     systemctl enable --user emacs
     systemctl start --user emacs

@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Name=IDE
+GenericName=IDE
+Comment=Software Development Environment based on Emacs
+MimeType=
+Exec=emacsclient -c -F "((width . 1920) (height . 1200) (left . 200) (fullscreen . fullboth))"
+TryExec=emacsclient
+Icon=cpp
+Type=Application
+Terminal=false
+Categories=Development;TextEditor;IDE;BUilding;Debugger;RevisionControl
+StartupWMClass=Emacs25
