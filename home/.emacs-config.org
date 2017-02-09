@@ -2921,13 +2921,13 @@ When using Magit >= 2.4.0
         '("115200" ;; Given twice because 115200 b/s is the most common speed
           "1200" "2400" "4800" "9600" "14400" "19200" "28800" "38400" "57600" "115200"))
 
-(defun serial-terminal ()
-       (interactive)
-       (serial-term "/dev/ttyUSB0" 115200)
-       (rename-buffer "*Serial Terminal*")
-       (term-send-string (get-buffer-process (current-buffer))
-                         "export TERM=xterm-color\nclear\n"))
-
+(defun cpped-serial-terminal ()
+  (interactive)
+  (serial-term "/dev/ttyUSB0" 115200)
+  (rename-buffer "*Serial Terminal*")
+  (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix)
+  (term-send-string (get-buffer-process (current-buffer))
+                    "export TERM=xterm-color\nclear\n"))
 #+END_SRC
 
 ** [[https://www.emacswiki.org/emacs/TrampMode][Network Devices]]
