@@ -33,6 +33,7 @@
 - imagemagick
 - links
 - recode
+- saxon
 - the_silver_searcher
 - util-linux-user
 - zsh
@@ -2589,6 +2590,13 @@ clang-check
 #+BEGIN_SRC emacs-lisp
 (add-hook 'nxml-mode-hook (lambda() 
                                   (set (make-local-variable 'company-backends) '(company-nxml company-dabbrev-code company-yasnippet company-files company-capf))))
+#+END_SRC
+
+***** XQuery
+#+BEGIN_SRC emacs-lisp
+(use-package xquery-tool
+  :config
+  (setq xquery-tool-saxonb-jar "/usr/share/java/saxon/saxon.jar"))
 #+END_SRC
 
 **** Documentation
