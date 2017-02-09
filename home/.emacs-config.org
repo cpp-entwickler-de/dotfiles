@@ -1026,6 +1026,14 @@ Always use a fixed width for line numbers (maximum number length)
 (use-package unbound)
 #+END_SRC
 
+
+** Utilites
+
+[[https://github.com/bbatsov/crux][A Collection of Ridiculously Useful eXtensions]]
+#+BEGIN_SRC emacs-lisp
+(use-package crux)
+#+END_SRC
+
 * File Handling
 ** Edit config
 #+BEGIN_SRC emacs-lisp
