@@ -2181,7 +2181,14 @@ Handler to close buffer after quitting ccmake.
                 '(progn
                          (define-key company-mode-map (kbd "C-:") 'helm-company)
                          (define-key company-active-map (kbd "C-:") 'helm-company))))
+
+(use-package company-statistics
+  :after
+  company
+  :config
+  (company-statistics-mode))
 #+END_SRC
+
 ***** Automatic spacing
 #+BEGIN_SRC emacs-lisp
 (defun cpped-electric-spacing-/ ()
