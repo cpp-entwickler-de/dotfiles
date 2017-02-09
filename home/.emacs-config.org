@@ -1244,6 +1244,13 @@ Always use a fixed width for line numbers (maximum number length)
 #+END_SRC
 
 ** Highlighting
+*** Enable stealth fontification
+#+BEGIN_SRC emacs-lisp
+(setq jit-lock-stealth-time 1
+      jit-lock-chunk-size 1000
+      jit-lock-defer-time 0.05)
+#+END_SRC
+
 *** Pretty symbols
 #+BEGIN_SRC emacs-lisp
 (add-hook 'text-mode-hook (lambda()
