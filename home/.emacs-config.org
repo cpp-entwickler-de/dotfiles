@@ -1090,6 +1090,8 @@ Always use a fixed width for line numbers (maximum number length)
 
 ** [[https://github.com/m00natic/vlfi][Allow opening large files]]
 #+BEGIN_SRC emacs-lisp
+(setq large-file-warning-threshold (* 25 1024 1024))
+
 (use-package vlf
   :config
   (require 'vlf-setup)
