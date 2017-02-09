@@ -1660,10 +1660,21 @@ Always use a fixed width for line numbers (maximum number length)
 
 *** Automatic insert
 **** Abbreviations
+Enable Abbrev-Mode by default
 #+BEGIN_SRC emacs-lisp
 (setq-default abbrev-mode t)
-(setq save-abbrevs t)
-;;(define-abbrev-table 'global-abbrev-table '(("" "")))
+#+END_SRC
+
+Always save abbreviations. Do not ask.
+#+BEGIN_SRC emacs-lisp
+(setq save-abbrevs 'silently)
+#+END_SRC
+
+Some useful abbreviations
+#+BEGIN_SRC emacs-lisp
+(define-abbrev-table 'global-abbrev-table '(("cpsign" "©")
+                                            ("tmsign" "™")
+                                            ("infsign" "∞")))
 #+END_SRC
 
 **** [[https://github.com/joaotavora/yasnippet][Templates]]
