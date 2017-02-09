@@ -2928,13 +2928,6 @@ When using Magit >= 2.4.0
       calendar-time-display-form '(24-hours ":" minutes (and time-zone (concat " (" time-zone ")"))))
 #+END_SRC
 
-** Weather
-#+BEGIN_SRC emacs-lisp
-(use-package wttrin
-  :init
-  (setq wttrin-default-cities `(,calendar-location-name)))
-#+END_SRC
-
 ** GNUPlot
 #+BEGIN_SRC emacs-lisp
 (use-package gnuplot-mode
@@ -2958,6 +2951,12 @@ When using Magit >= 2.4.0
 (use-package strace-mode)
 #+END_SRC
 
+** Weather
+#+BEGIN_SRC emacs-lisp
+(use-package wttrin
+  :init
+  (setq wttrin-default-cities `(,calendar-location-name)))
+#+END_SRC
 * Remote
 ** Serial Devices
 #+BEGIN_SRC emacs-lisp
