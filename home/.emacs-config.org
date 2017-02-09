@@ -2614,6 +2614,15 @@ clang-check
 #+END_SRC
 
 *** Shell
+**** Editing
+***** Autocompletion
+#+BEGIN_SRC emacs-lisp
+(use-package company-shell
+  :config
+  (add-hook 'sh-mode-hook (lambda()
+                            (set (make-local-variable 'company-backends) '(company-shell company-keywords company-dabbrev-code company-yasnippet company-files company-capf)))))
+#+END_SRC
+
 **** ZSH
 #+BEGIN_SRC emacs-lisp
 (add-hook 'sh-mode-hook (lambda ()
