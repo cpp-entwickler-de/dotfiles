@@ -2928,16 +2928,6 @@ When using Magit >= 2.4.0
        (term-send-string (get-buffer-process (current-buffer))
                          "export TERM=xterm-color\nclear\n"))
 
-(defun serial-command (command)
-       (interactive "MCommand:")
-       (serial-term "/dev/ttyUSB1" 115200)
-       (rename-buffer "*Serial Terminal*")
-       (term-send-string (get-buffer-process (current-buffer))
-                         (concat "unlock \n"))
-       (term-send-return)
-       (term-send-string (get-buffer-process (current-buffer))
-                         (concat command "\n"))
-       (term-send-return))
 #+END_SRC
 
 ** [[https://www.emacswiki.org/emacs/TrampMode][Network Devices]]
