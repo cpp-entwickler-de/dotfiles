@@ -34,6 +34,7 @@
 - links
 - recode
 - saxon
+- sushi
 - the_silver_searcher
 - util-linux-user
 - zsh
@@ -2943,6 +2944,13 @@ When using Magit >= 2.4.0
   :mode
   ("\\.gp\\'"
    "\\.gnuplot\\'"))
+#+END_SRC
+
+** Preview
+#+BEGIN_SRC emacs-lisp
+(use-package quick-preview
+  :config
+  (setq quick-preview-method 'sushi))
 #+END_SRC
 
 ** STrace
