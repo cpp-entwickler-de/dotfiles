@@ -2978,9 +2978,13 @@ When using Magit >= 2.4.0
 ** Alert messages
 #+BEGIN_SRC emacs-lisp
 (use-package org-alert
-        :config
-        (setq alert-default-style 'libnotify)
-        (org-alert-enable))
+  :config
+  (setq alert-default-style 'libnotify
+        org-alert-interval 86400
+        org-alert-notification-title "TODO")
+  (org-alert-enable))
+#+END_SRC
+
 #+END_SRC
 
 * Utilities
