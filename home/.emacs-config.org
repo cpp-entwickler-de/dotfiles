@@ -919,13 +919,27 @@ Always use a fixed width for line numbers (maximum number length)
 ** [[https://www.emacswiki.org/emacs/UndoTree][Undo]]
 #+BEGIN_SRC emacs-lisp
 (use-package undo-tree
-        :config
-        (global-undo-tree-mode)
-        (setq undo-tree-visualizer-timestamps t
-              undo-tree-visualizer-diff t)
-        (global-set-key (kbd "C-z") 'undo-tree-undo)
-        (global-set-key (kbd "M-z") 'undo-tree-redo)
-        (global-set-key (kbd "C-M-z") 'undo-tree-visualize))
+  :config
+  (global-undo-tree-mode)
+  (setq undo-tree-visualizer-timestamps t
+        undo-tree-visualizer-diff t)
+  (global-set-key (kbd "C-z") 'undo-tree-undo)
+  (global-set-key (kbd "M-z") 'undo-tree-redo)
+  (global-set-key (kbd "C-M-z") 'undo-tree-visualize)
+#+END_SRC
+
+*** Keep selection when undoing
+#+BEGIN_SRC emacs-lisp
+(defadvice undo-tree-undo (around keep-region activate)
+  (if (use-region-p)
+      (let ((mark-position (set-marker (make-marker) (mark)))
+            (point-position (set-marker (make-marker) (point))))
+        ad-do-it
+        (goto-char point-position)
+        (set-mark mark-position)
+        (set-marker point-position nil)
+        (set-marker mark-position nil))
+    ad-do-it))
 #+END_SRC
 
 ** Shell
