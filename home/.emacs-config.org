@@ -2911,7 +2911,10 @@ When using Magit >= 2.4.0
         (setq alert-default-style 'libnotify)
         (org-alert-enable))
 #+END_SRC
-* Calendar
+
+* Utilities
+
+** Calendar
 #+BEGIN_SRC emacs-lisp
 (use-package german-holidays
         :config
