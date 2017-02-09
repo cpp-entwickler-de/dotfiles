@@ -2947,6 +2947,9 @@ When using Magit >= 2.4.0
         (setq tramp-default-method "ssh"
               tramp-default-host "device"
               tramp-default-user "root"))
+
+(use-package helm-tramp
+  :after (helm tramp))
 #+END_SRC
 
 * Notify when loading is finished
