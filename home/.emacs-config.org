@@ -1671,6 +1671,14 @@ Always use a fixed width for line numbers (maximum number length)
         ("C-c s" . helm-flyspell-correct))
 #+END_SRC
 
+*** [[https://github.com/nschum/auto-dictionary-mode][Automatic dictionary selection]]
+#+BEGIN_SRC emacs-lisp
+(use-package auto-dictionary
+  :config
+  (add-hook 'flyspell-mode-hook (lambda ()
+                                  (auto-dictionary-mode 1))))
+#+END_SRC
+
 ** [[https://github.com/bastibe/annotate.el][Annotations]]
 #+BEGIN_SRC emacs-lisp
 (use-package annotate
