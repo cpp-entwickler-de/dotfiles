@@ -852,20 +852,15 @@ Find path of current position in XML docuement
 **** Show line numbers
 Always use a fixed width for line numbers (maximum number length)
 #+BEGIN_SRC emacs-lisp
-(defun fix-nlinum-width()
-       (when nlinum-mode
-             (setq nlinum--width
-                   (length (number-to-string
-                            (count-lines (point-min) (point-max)))))
-             (nlinum--flush)))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
 (use-package nlinum
   :config
   (global-nlinum-mode 1)
-  (add-hook 'nlinum-mode-hook
-            (lambda () (fix-nlinum-width))))
+  (add-hook 'nlinum-mode-hook (lambda ()
+                                (when (and nlinum-mode
+                                           (buffer-live-p (current-buffer)))
+                                  (setq nlinum--width
+                                        (length (number-to-string
+                                                 (count-lines (point-min) (point-max)))))))))
 #+END_SRC
 
 **** Use relative numbers on request
