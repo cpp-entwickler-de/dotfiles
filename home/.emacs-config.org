@@ -1691,6 +1691,12 @@ Some useful abbreviations
   (setq yas-use-menu nil))
 #+END_SRC
 
+*** [[https://github.com/bomgar/helm-unicode][Insert Unicode Characters]]
+#+BEGIN_SRC emacs-lisp
+(use-package helm-unicode
+  :after helm)
+#+END_SRC
+
 *** Insert Date/Time
 #+BEGIN_SRC emacs-lisp
 (defun cpped-insert-timestamp ()
