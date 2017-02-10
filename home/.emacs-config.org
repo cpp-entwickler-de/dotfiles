@@ -71,7 +71,8 @@ Do not load outdated byte code
 
 ** [[https://github.com/syohex/emacs-helm-package][Helm integration]]
 #+BEGIN_SRC emacs-lisp
-(use-package helm-package)
+(use-package helm-package
+  :after helm)
 #+END_SRC
 
 * Internals
@@ -576,6 +577,7 @@ Find path of current position in XML docuement
 (use-package ag)
 
 (use-package projectile
+  :after ag
   :bind ("C-x C-p" . projectile-find-file-dwim)
   :config
   (setq projectile-enable-caching t
@@ -622,6 +624,7 @@ Find path of current position in XML docuement
 *** Projectile Integration
 #+BEGIN_SRC emacs-lisp
 (use-package helm-projectile
+  :after (helm projectile)
   :bind ("M-g g" . helm-projectile-ag)
   :config (helm-projectile-on))
 #+END_SRC
@@ -629,15 +632,18 @@ Find path of current position in XML docuement
 *** Fuzzy Matching
 #+BEGIN_SRC emacs-lisp
 (use-package helm-flx
+  :after helm
   :config (helm-flx-mode +1))
 
 (use-package helm-fuzzier
+  :after helm
   :config (helm-fuzzier-mode 1))
 #+END_SRC
 
 *** Grep
 #+BEGIN_SRC emacs-lisp
 (use-package helm-ag
+  :after (helm ag)
   :config
   (setq helm-ag-use-grep-ignore-list t
         helm-ag-insert-at-point 'symbol))
@@ -854,6 +860,7 @@ Always use a fixed width for line numbers (maximum number length)
 **** Use relative numbers on request
 #+BEGIN_SRC emacs-lisp
 (use-package nlinum-relative
+  :after nlinum
   :config
   (setq nlinum-relative-redisplay-delay 0
         nlinum-relative-current-symbol "➔ "
@@ -1717,6 +1724,7 @@ Some useful abbreviations
   (add-hook 'text-mode-hook 'flyspell-mode))
 
 (use-package helm-flyspell
+  :after (helm flyspell)
   :bind ("C-c s" . helm-flyspell-correct))
 #+END_SRC
 
@@ -1724,6 +1732,7 @@ Some useful abbreviations
 [[https://github.com/nschum/auto-dictionary-mode][Automatic dictionary selection]]
 #+BEGIN_SRC emacs-lisp
 (use-package auto-dictionary
+  :after flyspell
   :config
   (add-hook 'flyspell-mode-hook (lambda ()
                                   (auto-dictionary-mode 1))))
@@ -2155,6 +2164,7 @@ Handler to close buffer after quitting ccmake.
   (add-hook 'after-init-hook 'global-company-mode))
 
 (use-package helm-company
+  :after (helm company)
   :bind (:map company-mode-map
               ("C-:" . helm-company)
               ("C-:" . helm-company)))
@@ -2227,7 +2237,8 @@ Helm Integration
 **** Compilation
 ***** [[https://github.com/abo-abo/helm-make][Select make target with helm]]
 #+BEGIN_SRC emacs-lisp
-(use-package helm-make)
+(use-package helm-make
+  :after helm)
 #+END_SRC
 
 ***** Always kill running compilation when starting another
@@ -2449,7 +2460,8 @@ Helm Integration
 
 ***** Auto-completion
 #+BEGIN_SRC emacs-lisp
-(use-package company-c-headers)
+(use-package company-c-headers
+  :after company)
 
 (add-hook 'c-mode-common-hook (lambda()
                                 (set (make-local-variable 'company-backends) '(company-rtags company-c-headers company-keywords company-dabbrev-code company-yasnippet company-files company-capf))))
@@ -2525,6 +2537,7 @@ Helm Integration
 clang-check
 #+BEGIN_SRC emacs-lisp
 (use-package flycheck-clangcheck
+  :after flycheck
   :config (flycheck-add-next-checker 'c/c++-clang '(t . c/c++-clangcheck)))
 #+END_SRC
 
@@ -2836,6 +2849,7 @@ When using Magit >= 2.4.0
 **** [[https://github.com/tarsius/magit-rockstar][Change commit author and date]]
 #+BEGIN_SRC emacs-lisp
 (use-package magit-rockstar
+  :after magit
   :config
   (magit-define-popup-action 'magit-rebase-popup ?R "Rockstar" 'magit-rockstar)
   (magit-define-popup-action 'magit-commit-popup ?n "Reshelve" 'magit-reshelve))
@@ -2918,6 +2932,7 @@ When using Magit >= 2.4.0
 *** Automatically create lists
 #+BEGIN_SRC emacs-lisp
 (use-package org-autolist
+  :after org
   :config
   (add-hook 'org-mode-hook (lambda ()
                              (org-autolist-mode t))))
@@ -2926,6 +2941,7 @@ When using Magit >= 2.4.0
 *** Show actual bullets for list items
 #+BEGIN_SRC emacs-lisp
 (use-package org-bullets
+  :after org
   :config
   (setq org-bullets-bullet-list '("○"))
   (add-hook 'org-mode-hook (lambda ()
@@ -2975,6 +2991,7 @@ When using Magit >= 2.4.0
 ** Alert messages
 #+BEGIN_SRC emacs-lisp
 (use-package org-alert
+  :after org
   :config
   (setq alert-default-style 'libnotify
         org-alert-interval 86400
