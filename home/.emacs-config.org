@@ -41,7 +41,6 @@
 - zsh
 ** Fonts
 - Source Code Pro
-- [[https://github.com/domtronn/all-the-icons.el/tree/master/fonts][all-the-icons fonts]]
 
 * Package Management
 ** [[https://github.com/tarsius/auto-compile][Automatically compile packages]]
