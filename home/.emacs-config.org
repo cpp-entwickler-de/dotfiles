@@ -615,6 +615,7 @@ Find path of current position in XML docuement
                         (unless (string-match "\\(?:/\\|\\`\\)\\.\\{1,2\\}\\'" file)
                           (funcall fcn file)))) ;; hide current directory/parent directory in file list
   (helm-mode 1))
+
 (require 'helm-config)
 #+END_SRC
 
@@ -664,11 +665,13 @@ Find path of current position in XML docuement
 (add-hook 'helm-minibuffer-set-up-hook #'*-popwin-help-mode-off)
 (add-hook 'helm-cleanup-hook #'*-popwin-help-mode-on)
 #+END_SRC
+
 ** Imenu
 *** Automatically rescan
 #+BEGIN_SRC emacs-lisp
 (set-default 'imenu-auto-rescan t)
 #+END_SRC
+
 ** Buffers
 *** Go to last position when opening buffer
 #+BEGIN_SRC emacs-lisp
@@ -708,7 +711,6 @@ Find path of current position in XML docuement
 
 *** Scratch Buffer
 **** Always use text mode
-
 #+BEGIN_SRC emacs-lisp
 (setq initial-major-mode 'text-mode)
 #+END_SRC
@@ -717,6 +719,7 @@ Find path of current position in XML docuement
 #+BEGIN_SRC emacs-lisp
 (setq initial-scratch-message nil)
 #+END_SRC
+
 **** [[https://github.com/Fanael/persistent-scratch][Save scratch buffers between sessions]]
 #+BEGIN_SRC emacs-lisp
 (use-package persistent-scratch
@@ -817,6 +820,7 @@ Find path of current position in XML docuement
 (global-set-key (kbd "C-x C-k") 'clean-buffer-list)
 (defvar clean-buffer-list-delay-general 1)
 #+END_SRC
+
 *** Kill unused buffers automatically
 #+BEGIN_SRC emacs-lisp
 (defun clean-buffer-list-delay-3hours (name)
@@ -833,6 +837,7 @@ Find path of current position in XML docuement
 (fset 'clean-buffer-list-delay 'clean-buffer-list-delay-3hours)
 (run-with-timer 0 (* 3 (* 60 60)) 'clean-buffer-list)
 #+END_SRC
+
 *** Lines
 **** Highlight current line
 #+BEGIN_SRC emacs-lisp
@@ -1027,7 +1032,6 @@ Always use a fixed width for line numbers (maximum number length)
 
 
 ** Utilites
-
 [[https://github.com/bbatsov/crux][A Collection of Ridiculously Useful eXtensions]]
 #+BEGIN_SRC emacs-lisp
 (use-package crux)
@@ -1194,6 +1198,7 @@ Always use a fixed width for line numbers (maximum number length)
   :config
   (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 #+END_SRC
+
 **** Filtering
 #+BEGIN_SRC emacs-lisp
 (use-package dired-narrow
@@ -1406,6 +1411,7 @@ Always use a fixed width for line numbers (maximum number length)
 #+BEGIN_SRC emacs-lisp
 (setq sentence-end-double-space nil)
 #+END_SRC
+
 *** Go to line
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "M-g l") 'goto-line)
@@ -1745,7 +1751,6 @@ Some useful abbreviations
 #+END_SRC
 
 **** [[https://github.com/lateau/charmap][Unicode table]]
-
 #+BEGIN_SRC emacs-lisp
 (use-package charmap)
 #+END_SRC
@@ -1800,6 +1805,7 @@ Some useful abbreviations
         :config
         (global-set-key (kbd "M-g t") 'dictcc))
 #+END_SRC
+
 * Programming
 ** Projects
 *** CMake
@@ -2271,6 +2277,7 @@ Handler to close buffer after quitting ccmake.
 #+BEGIN_SRC emacs-lisp
 (use-package helm-flycheck)
 #+END_SRC
+
 ***** Flip booleans
 #+BEGIN_SRC emacs-lisp
 (use-package bool-flip
@@ -2282,6 +2289,7 @@ Handler to close buffer after quitting ccmake.
 #+BEGIN_SRC emacs-lisp
 (use-package helm-make)
 #+END_SRC
+
 ***** Always kill running compilation when starting another
 #+BEGIN_SRC emacs-lisp
 (setq compilation-always-kill t)
@@ -2305,6 +2313,7 @@ Handler to close buffer after quitting ccmake.
         :config
         (bury-successful-compilation 1))
 #+END_SRC
+
 **** Documentation
 #+BEGIN_SRC emacs-lisp
 (use-package helm-dash
@@ -2314,6 +2323,7 @@ Handler to close buffer after quitting ccmake.
         (setq helm-dash-browser-func 'browse-url
               helm-dash-docsets-url "https://api.github.com/repos/Kapeli/feeds/contents/"))
 #+END_SRC
+
 **** Comments
 ***** Comment style
 #+BEGIN_SRC emacs-lisp
@@ -2443,6 +2453,7 @@ Handler to close buffer after quitting ccmake.
               rtags-autostart-diagnostics nil
               rtags-completions-enabled t))
 #+END_SRC
+
 ***** Jump to function
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "M-g f") 'rtags-find-file)
@@ -2603,6 +2614,7 @@ clang-check
 (add-hook 'c++-mode-hook (lambda ()
                            (setq flycheck-cppcheck-language-standard "c++11")))
 #+END_SRC
+
 **** Documentation
 ***** ELDoc
 #+BEGIN_SRC emacs-lisp
@@ -2684,6 +2696,7 @@ clang-check
         (add-hook 'lisp-mode-hook 'hl-sexp-mode)
         (add-hook 'emacs-lisp-mode-hook 'hl-sexp-mode))
 #+END_SRC
+
 **** Auto-completion
 #+BEGIN_SRC emacs-lisp
 (add-hook 'elisp-mode-hook (lambda() 
@@ -2914,6 +2927,7 @@ When using Magit >= 2.4.0
 #+BEGIN_SRC emacs-lisp
 (use-package git-timemachine)
 #+END_SRC
+
 **** [[https://github.com/emacs-helm/helm-ls-git][Browse other git projects with helm]]
 #+BEGIN_SRC emacs-lisp
 (use-package helm-ls-git
@@ -2996,6 +3010,7 @@ When using Magit >= 2.4.0
         (let ((file-name (buffer-file-name)))
              ad-do-it
              (setq buffer-file-name file-name)))
+
 (use-package babel
         :config
         (org-babel-do-load-languages
@@ -3044,7 +3059,6 @@ When using Magit >= 2.4.0
       mark-holidays-in-calendar t
       calendar-mark-holidays-flag t
       calendar-view-holidays-initially-flag t
-
       calendar-time-display-form '(24-hours ":" minutes (and time-zone (concat " (" time-zone ")"))))
 #+END_SRC
 
@@ -3077,6 +3091,7 @@ When using Magit >= 2.4.0
   :init
   (setq wttrin-default-cities `(,calendar-location-name)))
 #+END_SRC
+
 * Remote
 ** Serial Devices
 #+BEGIN_SRC emacs-lisp
