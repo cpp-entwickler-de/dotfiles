@@ -93,7 +93,7 @@ autosquash = true
 autoStash = true
 
 # Do not apply rebase if commits were removed via line removal (force drop to remove)
-missingCommitsCheck=error
+#missingCommitsCheck=error
 
 
 [diff]
