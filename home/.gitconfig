@@ -16,6 +16,9 @@ whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol,space-before-tab,
 # Use custom ignore patterns
 excludesfile = ~/.gitignore
 
+# Use custom attributes file
+attributesFile = ~/.gitattributes
+
 # Use emacs for editing
 editor = "emacsclient -a \"\""
 
@@ -107,6 +110,11 @@ noprefix=true
 
 # Use histogram diff algorithm
 algorithm=histogram
+
+
+[diff "org"]
+# Use org headline in diff
+xfuncname = "^(\\*+ [a-zA-Z0-9]+.+)$"
 
 
 [merge]
