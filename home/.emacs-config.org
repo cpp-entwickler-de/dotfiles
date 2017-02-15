@@ -2914,18 +2914,29 @@ When using Magit >= 2.4.0
          ("C-c s" . org-capture)
          ("C-c a" . org-agenda))
   :config
-  (setq org-use-speed-commands t
-        org-support-shift-select t
-        org-src-fontify-natively t
-        org-src-window-setup 'current-window
-        org-src-strip-leading-and-trailing-blank-lines t
-        org-src-preserve-indentation t
-        org-src-tab-acts-natively t
-        org-image-actual-width 550
-        org-indent-indentation-per-level 4
+  (defvar org-default-bugs-file "~/.bugs.org" "The default file for bug tasks.")
+  (defvar org-default-todos-file "~/.todos.org" "The default file for todo tasks.")
+  (setq org-blank-before-new-entry '((heading . t))
         org-default-notes-file "~/.notes.org"
+        org-ellipsis " ▼"
+        org-enforce-todo-checkbox-dependencies t
+        org-enforce-todo-dependencies t
+        org-fast-tag-selection-single-key t
+        org-hide-emphasis-markers t
         org-highlight-latex-and-related '(latex script entities)
-        org-ellipsis " ▼")
+        org-image-actual-width 550
+        org-indent-indentation-per-level cpped-default-indentation
+        org-log-redeadline 'time
+        org-log-reschedule 'time
+        org-refile-targets '((org-agenda-files . (:maxlevel . 6)))
+        org-src-fontify-natively t
+        org-src-preserve-indentation t
+        org-src-strip-leading-and-trailing-blank-lines t
+        org-src-tab-acts-natively t
+        org-src-window-setup 'current-window
+        org-startup-with-inline-images t
+        org-support-shift-select t
+        org-use-speed-commands t)
   (add-hook 'org-mode-hook (lambda()
                              (nlinum-mode -1)
                              (org-indent-mode))))
@@ -2951,9 +2962,17 @@ When using Magit >= 2.4.0
                              (org-bullets-mode t))))
 #+END_SRC
 
-** [[https://github.com/bard/org-dashboard/blob/master/org-dashboard.el][Progress bars]]
+** Use current heading as function name
 #+BEGIN_SRC emacs-lisp
-(use-package org-dashboard)
+(defun cpped-org-log-current-defun ()
+  (save-excursion
+    (org-back-to-heading)
+    (when (looking-at org-complex-heading-regexp)
+      (match-string 4))))
+
+(add-hook 'org-mode-hook (lambda ()
+                           (make-variable-buffer-local 'add-log-current-defun-function)
+                           (setq add-log-current-defun-function 'cpped-org-log-current-defun)))
 #+END_SRC
 
 ** Link Insertion
@@ -3008,38 +3027,187 @@ When using Magit >= 2.4.0
 #+END_SRC
 
 ** Inline code
+*** Set correct ditaa jar path
+#+BEGIN_SRC emacs-lisp
+(setq org-ditaa-jar-path "/usr/share/java/ditaa.jar")
+#+END_SRC
+
+*** Disable evaluation confirmation for some languages
 #+BEGIN_SRC emacs-lisp
 (defun cpped-org-confirm-babel-evaluate (lang body)
-       "Do not confirm evaluation for these languages."
-       (not (or (string= lang "C")
-                (string= lang "java")
-                (string= lang "python")
-                (string= lang "emacs-lisp")
-                (string= lang "plantuml")
-                (string= lang "sqlite"))))
+  "Do not confirm evaluation for these languages."
+  (not (or (string= lang "calc")
+           (string= lang "ditaa")
+           (string= lang "dot")
+           (string= lang "latex")
+           (string= lang "emacs-lisp")
+           (string= lang "python")
+           (string= lang "sh"))))
+#+END_SRC
 
-(defadvice org-edit-src-code (around set-buffer-file-name activate compile)
-        (let ((file-name (buffer-file-name)))
-             ad-do-it
-             (setq buffer-file-name file-name)))
-
+*** Allow evaluation
+#+BEGIN_SRC emacs-lisp
 (use-package babel
-  :after org
+  :after org graphviz-dot-mode
   :config
   (org-babel-do-load-languages
    'org-babel-load-languages
-   '((python . t)
-     (C . t)
-     (calc . t)
-     ;;(ditaa.  t)
+   '((calc . t)
+     (ditaa . t)
      (dot . t)
      (latex . t)
      (lisp . t)
-     (plantuml . t)
-     (sh . t)
-     (sqlite . t)
-     (js . t)))
-  (setq org-confirm-babel-evaluate 'cpped-org-confirm-babel-evaluate))
+     (python . t)
+     (sh . t)))
+  (setq org-confirm-babel-evaluate 'cpped-org-confirm-babel-evaluate)
+  (add-hook 'org-babel-after-execute-hook 'org-display-inline-images))
+#+END_SRC
+
+*** Set file name for edit buffer
+#+BEGIN_SRC emacs-lisp
+(defadvice org-edit-src-code (around set-buffer-file-name activate compile)
+  (let ((file-name (buffer-file-name)))
+    ad-do-it
+    (setq buffer-file-name file-name)))
+#+END_SRC
+
+** Structure Templates
+#+BEGIN_SRC emacs-lisp
+(setq org-structure-template-alist
+      '(("a" "#+BEGIN_ASCII\n?\n#+END_ASCII\n" "")
+        ("c" "#+BEGIN_CENTER\n?\n#+END_CENTER\n" "<center>\n?\n</center>")
+        ("e" "#+BEGIN_EXAMPLE\n?\n#+END_EXAMPLE\n" "<example>\n?\n</example>")
+        ("h" "#+BEGIN_HTML\n?\n#+END_HTML\n" "<literal style=\"html\">\n?\n</literal>")
+        ("i" "#+INCLUDE: %file ?\n" "<include file=%file markup=\"?\">")
+        ("l" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC\n" "<src lang=\"emacs-lisp\">\n\n</src>")
+        ("p" ":PROPERTIES:\n?\n:END:\n")
+        ("q" "#+BEGIN_QUOTE\n?\n#+END_QUOTE\n" "<quote>\n?\n</quote>")
+        ("v" "#+BEGIN_VERBATIM\n?\n#+END_VERBATIM\n" "<verbatim>\n?\n</verbatim>")
+        ("s" "#+BEGIN_SRC ?\n\n#+END_SRC\n" "<src lang=\"?\">\n\n</src>")))
+#+END_SRC
+
+** TODO-States
+#+BEGIN_SRC emacs-lisp
+(setq cpped-org-todo-keyword-todo "⚠ To Do"
+      cpped-org-todo-keyword-done "✓ Done"
+      cpped-org-todo-keyword-bug "🐛 Bug"
+      cpped-org-todo-keyword-analyzed "🔎 Analyzed"
+      cpped-org-todo-keyword-fixed "✓ Fixed"
+      cpped-org-todo-keyword-in-progress "▶ In Progress"
+      cpped-org-todo-keyword-waiting "🕓 Waiting"
+      cpped-org-todo-keyword-suspended "💤 Suspended"
+      cpped-org-todo-keyword-canceled "🗙 Canceled"
+      org-todo-keywords `((sequence ,(concat cpped-org-todo-keyword-todo "(t)") "|" ,(concat cpped-org-todo-keyword-done "(d!/@)"))
+                          (sequence ,(concat cpped-org-todo-keyword-bug "(b)") ,(concat cpped-org-todo-keyword-analyzed "(a@)") ,(concat cpped-org-todo-keyword-fixed "(f!/@)"))
+                          (sequence ,(concat cpped-org-todo-keyword-in-progress "(p!)") ,(concat cpped-org-todo-keyword-waiting "(w@/!)") ,(concat cpped-org-todo-keyword-suspended "(s@/!)"))
+                          (sequence "|" ,(concat cpped-org-todo-keyword-canceled "(c@/@)"))))
+#+END_SRC
+
+Format according to the state.
+#+BEGIN_SRC emacs-lisp
+(defface org-todo-keyword-todo '((t :inherit default)) "Face used for todo items." :group 'org)
+(defface org-todo-keyword-in-progress '((t :inherit default)) "Face used for in-progress items." :group 'org)
+(defface org-todo-keyword-waiting '((t :inherit default)) "Face used for waiting items." :group 'org)
+(defface org-todo-keyword-suspended '((t :inherit default)) "Face used for suspended items." :group 'org)
+(defface org-todo-keyword-done '((t :inherit default)) "Face used for done items." :group 'org)
+(defface org-todo-keyword-canceled '((t :inherit default)) "Face used for canceled items." :group 'org)
+
+(setq org-todo-keyword-faces `((,cpped-org-todo-keyword-todo . org-todo-keyword-todo)
+                               (,cpped-org-todo-keyword-done . org-todo-keyword-done)
+                               (,cpped-org-todo-keyword-bug . org-todo-keyword-todo)
+                               (,cpped-org-todo-keyword-analyzed . org-todo-keyword-in-progress)
+                               (,cpped-org-todo-keyword-fixed . org-todo-keyword-done)
+                               (,cpped-org-todo-keyword-in-progress . org-todo-keyword-in-progress)
+                               (,cpped-org-todo-keyword-waiting . org-todo-keyword-waiting)
+                               (,cpped-org-todo-keyword-suspended . org-todo-keyword-suspended)
+                               (,cpped-org-todo-keyword-canceled . org-todo-keyword-canceled)))
+#+END_SRC
+
+Archive when done, remove flag if reset to todo.
+#+BEGIN_SRC emacs-lisp
+(setq org-todo-state-tags-triggers '((done ("ARCHIVE" . t))
+                                     (todo ("ARCHIVE" . nil))))
+#+END_SRC
+
+** Priorities
+#+BEGIN_SRC emacs-lisp
+(defface org-priority-high '((t :inherit default)) "Face used for high priority." :group 'org)
+(defface org-priority-medium '((t :inherit default)) "Face used for medium priority." :group 'org)
+(defface org-priority-low '((t :inherit default)) "Face used for low priority." :group 'org)
+
+(setq org-priority-faces '(("A" . org-priority-high)
+                           ("B" . org-priority-medium)
+                           ("C" . org-priority-low)))
+#+END_SRC
+
+** Capture Templates
+#+BEGIN_SRC emacs-lisp
+(setq org-capture-templates
+      `(("t" "To Do" entry (file+headline org-default-todos-file "ToDos") ,(concat "** " cpped-org-todo-keyword-todo " [#B] %? %^g\n%U\n:CATEGORY: ToDos\nSCHEDULED: %t\n%i\n") :empty-lines 1 :kill-buffer t)
+        ("p" "Priority To Do" entry (file+headline org-default-todo-file "ToDos") ,(concat "** " cpped-org-todo-keyword-todo " [#A] %? %^g\n%T\n:CATEGORY: ToDos\nDEADLINE: %t\n%i\n") :empty-lines 1 :kill-buffer t)
+        ("b" "Bug" entry (file+headline org-default-bugs-file "Bugs") (concat "** " cpped-org-todo-keyword-bug " [#B] %? %^g\n%U\n:CATEGORY: Bugs\n%i\n") :empty-lines 1 :kill-buffer t)
+        ("n" "Note" entry (file+headline org-default-notes-file "Notes") "** Note %? %^g\n%T\n:CATEGORY: Notes\n%i\n" :empty-lines 1 :kill-buffer t)))
+#+END_SRC
+
+** Agenda
+#+BEGIN_SRC emacs-lisp
+(setq org-agenda-compact-blocks t
+      org-agenda-deadline-faces '((0.7 . error)
+                                  (0.5 . warning)
+                                  (0.0 . default))
+      org-agenda-files (list org-default-bugs-file
+                             org-default-todos-file
+                             org-default-notes-file)
+      org-agenda-format-date "%A, %e.%m.%Y"
+      org-agenda-prefix-format '((agenda  . "  %l%-6T%?-12t% s  ")
+                                 (timeline  . "  %l% s")
+                                 (todo  . "  %l%-6T%?-12t")
+                                 (tags  . "  %l%-6T")
+                                 (search . "  %l%-6T"))
+      org-agenda-remove-tags 'prefix
+      org-agenda-restore-windows-after-quit t
+      org-agenda-show-all-dates nil
+      org-agenda-skip-deadline-if-done t
+      org-agenda-skip-deadline-prewarning-if-scheduled t
+      org-agenda-skip-scheduled-if-done t
+      org-agenda-skip-timestamp-if-done t
+      org-agenda-span 7
+      org-agenda-start-on-weekday 1
+      org-agenda-todo-keyword-format "%-14s")
+#+END_SRC
+
+*** Custom Views
+#+BEGIN_SRC emacs-lisp
+(setq org-agenda-custom-commands '(("d" "Default agenda view"
+                                    ((agenda "" ((org-agenda-skip-function '(org-agenda-skip-entry-if 'done 'notscheduled))))
+                                     (todo cpped-org-todo-keyword-waiting
+                                           ((org-agenda-overriding-header cpped-org-todo-keyword-waiting)))
+                                     (todo cpped-org-todo-keyword-suspended
+                                           ((org-agenda-overriding-header cpped-org-todo-keyword-suspended)))
+                                     (todo cpped-org-todo-keyword-bug
+                                           ((org-agenda-skip-function '(org-agenda-skip-entry-if 'done 'scheduled))
+                                            (org-agenda-overriding-header cpped-org-todo-keyword-bug)))
+                                     (todo cpped-org-todo-keyword-todo ((org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline 'done))
+                                                                        (org-agenda-overriding-header cpped-org-todo-keyword-todo)))))))
+#+END_SRC
+
+/ filter tags
+/ / reset tag filter
+< filter cat
+
+** [[https://github.com/bard/org-dashboard/blob/master/org-dashboard.el][Progress Report]]
+#+BEGIN_SRC emacs-lisp
+(use-package org-dashboard
+  :config
+  (setq org-dashboard-omit-completed t))
+#+END_SRC
+
+** Show Notes
+#+BEGIN_SRC emacs-lisp
+(defun cpped-show-notes ()
+  "Open the default org-mode notes file."
+  (interactive)
+  (find-file org-default-notes-file))
 #+END_SRC
 
 ** Alert messages

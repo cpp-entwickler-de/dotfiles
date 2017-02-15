@@ -1,5 +1,5 @@
 (deftheme cpp-entwickler.de
-  "Created 2016-11-11.")
+  "Created 2017-02-15.")
 
 (custom-theme-set-faces
  'cpp-entwickler.de
@@ -110,6 +110,12 @@
  '(outline-6 ((t (:weight bold :inherit default :height 1.2))))
  '(outline-7 ((t (:weight bold :inherit default :height 1.1))))
  '(outline-8 ((t (:weight bold :inherit default :height 1.1))))
- '(default ((t (:inherit nil :stipple nil :background "gray5" :foreground "white smoke" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight semi-bold :height 100 :width normal :foundry "ADBO" :family "Source Code Pro")))))
+ '(org-agenda-done ((t (:foreground "PaleGreen" :strike-through t :weight ultra-bold))))
+ '(org-agenda-date ((t (:inherit helm-source-header))))
+ '(org-agenda-date-today ((t (:inherit org-agenda-date))))
+ '(org-agenda-date-weekend ((t (:inherit org-agenda-date :weight light))))
+ '(org-headline-done ((t (:foreground "light green" :strike-through t :weight ultra-bold))))
+ '(default ((t (:inherit nil :stipple nil :background "gray5" :foreground "white smoke" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight semi-bold :height 100 :width normal :foundry "ADBO" :family "Source Code Pro"))))
+ '(org-agenda-structure ((t (:inherit org-agenda-date)))))
 
 (provide-theme 'cpp-entwickler.de)
