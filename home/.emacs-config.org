@@ -1484,6 +1484,7 @@ Always use a fixed width for line numbers (maximum number length)
       require-final-newline nil)
 (show-paren-mode)
 
+(defvar cpped-default-indentation 4 "The default number of spaces to indent.")
 (defvar autopair-skip-whitespace t)
 (defvar electric-spacing-double-space-docs nil)
 (defvar whitespace-action '(cleanup))
@@ -2425,7 +2426,7 @@ Helm Integration
 (c-add-style "cpped-style"
              '("bsd"
                (c-progress-interval . nil)                   ; do not echo progress when indenting)
-               (c-basic-offset . 4)
+               (c-basic-offset . cpped-default-indentation)
                (comment-empty-lines . t)
                (c-electric-pound-behavior . '(alignleft))    ; do not indent macros
                (c-auto-align-backslashes . t)                ; align line end escape characters
