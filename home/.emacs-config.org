@@ -2607,6 +2607,16 @@ Documentation
 (use-package css-eldoc
   :config (add-hook 'css-mode-hook 'turn-on-css-eldoc))
 #+END_SRC
+*** Dot
+#+BEGIN_SRC emacs-lisp
+(use-package graphviz-dot-mode
+  :after org
+  :config
+  (setq graphviz-dot-auto-indent-on-braces t
+        graphviz-dot-indent-width cpped-default-indentation)
+  (add-to-list 'org-src-lang-modes '("dot" . graphviz-dot)))
+#+END_SRC
+
 *** HTML
 #+BEGIN_SRC emacs-lisp
 (push '("\\.html?$" . html-mode) auto-mode-alist)
