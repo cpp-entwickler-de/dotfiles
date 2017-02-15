@@ -1,5 +1,4 @@
 #+TITLE: Emacs config
-#+TODO: BROKEN DISABLED VERIFY TODO
 
 * Custom configuration
 #+BEGIN_SRC emacs-lisp
