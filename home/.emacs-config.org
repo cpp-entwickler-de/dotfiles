@@ -2956,6 +2956,57 @@ When using Magit >= 2.4.0
 (use-package org-dashboard)
 #+END_SRC
 
+** Link Insertion
+#+BEGIN_SRC emacs-lisp
+(defun cpped-url-to-title (url)
+  "Returns the content of the <title> tag of the page at url."
+  (with-temp-buffer
+    (url-insert-file-contents url)
+    (beginning-of-buffer)
+    (let ((begin (search-forward "<title>"))
+          (end (progn
+                 (search-forward "</title>")
+                 (search-backward "<"))))
+      (buffer-substring-no-properties begin end))))
+
+(defun cpped-org-insert-link-dwim (url)
+  "Insert an org link with the target page title as description. The URL is taken from either argument, region, thing-at-point or user input."
+  (interactive (list (let (url begin end)
+                       (if (region-active-p)
+                           (setq begin (region-beginning)
+                                 end (region-end)
+                                 url (buffer-substring-no-properties begin end))
+                         (progn
+                           (setq url (thing-at-point 'url))
+                           (if (not (= 0 (length url)))
+                               (let ((bounds (bounds-of-thing-at-point 'url)))
+                                 (setq begin (car bounds)
+                                       end (cdr bounds)))
+                             (let ((bounds (bounds-of-thing-at-point 'word)))
+                               (setq url (read-string "URL: " "http://www.")
+                                     begin (car bounds)
+                                     end (cdr bounds))))))
+                       (delete-region begin end)
+                       url)))
+  (org-insert-link nil url (cpped-url-to-title url)))
+
+(defun cpped-org-convert-to-link-dwim (url title)
+  "Convert the region or thing-at-point to a link with thing-at-point as the description."
+  (interactive (list (read-string "URL: " "http://www.")
+                     (let (title begin end)
+                       (if (region-active-p)
+                           (setq begin (region-beginning)
+                                 end (region-end)
+                                 title (buffer-substring-no-properties begin end))
+                         (let* ((bounds (bounds-of-thing-at-point 'word)))
+                           (setq title (buffer-substring-no-properties (car bounds) (cdr bounds))
+                                 begin (car bounds)
+                                 end (cdr bounds)))
+                         (delete-region begin end)
+                         title))))
+  (org-insert-link nil url title))
+#+END_SRC
+
 ** Inline code
 #+BEGIN_SRC emacs-lisp
 (defun cpped-org-confirm-babel-evaluate (lang body)
