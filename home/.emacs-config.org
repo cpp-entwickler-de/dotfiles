@@ -3263,10 +3263,6 @@ Do not use scientific form so quickly
 * Remote
 ** Serial Devices
 #+BEGIN_SRC emacs-lisp
-(defvar serial-speed-history
-        '("115200" ;; Given twice because 115200 b/s is the most common speed
-          "1200" "2400" "4800" "9600" "14400" "19200" "28800" "38400" "57600" "115200"))
-
 (defun cpped-serial-terminal ()
   (interactive)
   (serial-term "/dev/ttyUSB0" 115200)
