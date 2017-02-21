@@ -2594,6 +2594,43 @@ Documentation
 (push '("\\.x?html?\\'" . html-mode) auto-mode-alist)
 #+END_SRC
 
+*** Ini
+#+BEGIN_SRC emacs-lisp
+(defvar ini-mode-syntax-table
+  (let ((table (make-syntax-table)))
+    (modify-syntax-entry ?\; "< b" table)
+    (modify-syntax-entry ?# "< b" table)
+    (modify-syntax-entry ?\n "> b" table)
+    table)
+  "Syntax table for `ini-mode'.")
+
+(defvar ini-mode-font-lock-keywords
+  '(("^\\[\\(.*\\)\\]"
+     (1 font-lock-function-name-face))
+    ("^\\([^ \t\n=]+\\) *="
+     (1 font-lock-variable-name-face)))
+  "Highlight rules for `ini-mode'.")
+
+(defun ini-mode-indent-line ()
+  "Indent current line as WPDL code"
+  (interactive)
+  (beginning-of-line))
+
+(define-derived-mode ini-mode prog-mode "Ini-Mode"
+  "A major mode for editing ini files."
+  (setq-local comment-start "; ")
+  (setq-local comment-start-skip "[#;] *")
+  (setq-local font-lock-defaults '(ini-mode-font-lock-keywords))
+  (setq-local imenu-generic-expression '(("Section" "^\\[\\([a-zA-Z0-9]+\\)\\] *" 1)))
+  (setq-local outline-regexp "\\["))
+
+(push '("\\.conf\\'" . ini-mode) auto-mode-alist)
+(push '("\\.ini\\'" . ini-mode) auto-mode-alist)
+(push '("\\.service\\'" . ini-mode) auto-mode-alist)
+
+(provide 'ini-mode)
+#+END_SRC
+
 *** Latex
 #+BEGIN_SRC emacs-lisp
 (push '("\\.tex\\'" . latex-mode) auto-mode-alist)
