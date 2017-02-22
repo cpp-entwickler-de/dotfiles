@@ -114,6 +114,11 @@ Show fullscreen for single monitor, fullscreen on right side on dual-monitor
                                                                    (fullscreen . fullboth))))))
 #+END_SRC
 
+** Do not auto-raise
+#+BEGIN_SRC emacs-lisp
+(setq minibuffer-auto-raise nil)
+#+END_SRC
+
 ** GTK+ interface
 *** Disable Menus, Toolbars and Dialogs
 #+BEGIN_SRC emacs-lisp
