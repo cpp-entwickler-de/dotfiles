@@ -3269,8 +3269,8 @@ Archive when done, remove flag if reset to todo.
       org-agenda-skip-deadline-prewarning-if-scheduled t
       org-agenda-skip-scheduled-if-done t
       org-agenda-skip-timestamp-if-done t
-      org-agenda-start-on-weekday 1
       org-agenda-span 8
+      org-agenda-start-on-weekday nil
       org-agenda-todo-keyword-format "%-14s")
 #+END_SRC
 
