@@ -3025,6 +3025,20 @@ When using Magit >= 2.4.0
                              (org-indent-mode))))
 #+END_SRC
 
+** Create agenda files if necessary
+#+BEGIN_SRC emacs-lisp
+(defun cpped-create-agenda-file (file)
+  (when (not (file-exists-p file))
+    (with-temp-buffer
+      (write-file file))))
+
+(cpped-create-agenda-file org-default-bugs-file)
+(cpped-create-agenda-file org-default-todos-file)
+(cpped-create-agenda-file org-default-recurring-events-file)
+(cpped-create-agenda-file org-default-notes-file)
+
+#+END_SRC
+
 ** Lists
 *** Automatically create lists
 #+BEGIN_SRC emacs-lisp
