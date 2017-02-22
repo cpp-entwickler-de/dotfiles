@@ -2998,6 +2998,7 @@ When using Magit >= 2.4.0
   :config
   (defvar org-default-bugs-file "~/.bugs.org" "The default file for bug tasks.")
   (defvar org-default-todos-file "~/.todos.org" "The default file for todo tasks.")
+  (defvar org-default-recurring-events-file "~/.recurring-events.org" "The default file for anniversaries.")
   (setq org-blank-before-new-entry '((heading . t))
         org-default-notes-file "~/.notes.org"
         org-ellipsis " ▼"
@@ -3239,6 +3240,7 @@ Archive when done, remove flag if reset to todo.
                                   (0.0 . default))
       org-agenda-files (list org-default-bugs-file
                              org-default-todos-file
+                             org-default-recurring-events-file
                              org-default-notes-file)
       org-agenda-format-date "%A, %e.%m.%Y"
       org-agenda-prefix-format '((agenda  . "  %l%-6T%?-12t% s  ")
