@@ -97,6 +97,22 @@ Do not load outdated byte code
 #+BEGIN_SRC emacs-lisp
 (set-frame-parameter nil 'fullscreen 'fullboth)
 #+END_SRC
+** Frame Setup
+Show fullscreen for single monitor, fullscreen on right side on dual-monitor
+#+BEGIN_SRC emacs-lisp
+(add-hook 'before-make-frame-hook '(lambda ()
+                                     (let* ((screen-width (x-display-pixel-width))
+                                            (screen-height (x-display-pixel-height))
+                                            (aspect-ratio (/ screen-width screen-height))
+                                            (left-space 0))
+                                       (when (> aspect-ratio 2) ; dual-monitor-setup
+                                         (setq screen-width (/ screen-width 2)
+                                               left-space screen-width))
+                                       (setq default-frame-alist `((width . ,screen-width)
+                                                                   (height . ,screen-height)
+                                                                   (left . ,left-space)
+                                                                   (fullscreen . fullboth))))))
+#+END_SRC
 
 ** GTK+ interface
 *** Disable Menus, Toolbars and Dialogs
