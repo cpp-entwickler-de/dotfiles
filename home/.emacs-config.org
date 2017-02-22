@@ -1,5 +1,33 @@
 #+TITLE: Emacs config
 
+* Use only one frame
+#+BEGIN_SRC emacs-lisp
+(defun cpped-find-quoted-file (file)
+  "Find-file for single-quoted file names."
+  (find-file (replace-regexp-in-string "'" "" file)))
+
+(defun cpped-maybe-create-new-frame (&rest files)
+  "Create a new frame if none exists. Takes a file name that is loaded into the frame."
+  (let ((display (getenv "DISPLAY")))
+    (when (or display
+              (> (length display) 0))
+      (unless (find-if (lambda (frame)
+                         (assq 'display (frame-parameters frame)))
+                       (frame-list))
+        (make-frame-on-display display))))
+  (apply 'cpped-find-quoted-file files))
+
+(use-package server
+  :config
+  (when (server-running-p)
+    (let ((file (last (cdr command-line-args)))
+          (file-argument ""))
+      (when file
+        (setq file-argument (format " %S" (car file)))
+        (shell-command (format "emacsclient --no-wait --alternate-editor=\"\" --eval '(cpped-maybe-create-new-frame%s)'" file-argument)))
+      (kill-emacs))))
+#+END_SRC
+
 * Custom configuration
 #+BEGIN_SRC emacs-lisp
 (load "~/.emacs.user" t t)

@@ -3,8 +3,8 @@ Version=1.0
 Name=IDE
 GenericName=IDE
 Comment=Software Development Environment based on Emacs
-MimeType=
-Exec=emacsclient -c
+MimeType=application/x-shellscript;application/xml;text/english;text/plain;text/x-c++;text/x-c++hdr;text/x-c++src;text/x-c;text/x-chdr;text/x-csrc;text/x-java;text/x-makefile;text/x-moc;text/x-pascal;text/x-tcl;text/x-tex;text/xml
+Exec=emacsclient --no-wait --alternate-editor="" --eval "(cpped-maybe-create-new-frame \\"%f\\")"
 TryExec=emacsclient
 Icon=cpp
 Type=Application
