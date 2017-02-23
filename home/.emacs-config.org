@@ -3388,6 +3388,23 @@ Archive when done, remove flag if reset to todo.
 (add-hook 'ediff-unselect-hook 'cpped-ediff-org-fold)
 #+END_SRC
 
+** Change todo state of subtree
+#+BEGIN_SRC emacs-lisp
+(defun cpped-todo-subtree ()
+  "Change the todo state of a subtree."
+  (interactive)
+  (org-mark-subtree)
+  (let ((state (org-fast-todo-selection))
+        (begin (point)))
+    (when state
+      (save-excursion
+        (exchange-point-and-mark)
+        (while (> (point) begin)
+          (org-todo state)
+          (outline-previous-visible-heading 1))
+        (org-todo state)))))
+#+END_SRC
+
 * Utilities
 ** Calculator
 Do not use scientific form so quickly
