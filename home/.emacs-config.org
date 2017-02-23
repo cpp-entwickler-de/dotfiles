@@ -3362,6 +3362,30 @@ Archive when done, remove flag if reset to todo.
   (org-alert-enable))
 #+END_SRC
 
+** EDiff Compatibility
+#+BEGIN_SRC emacs-lisp
+(defun cpped-run-in-org-buffer (buffer command &rest arguments)
+  "Execute command if given buffer is in org mode"
+  (when (and buffer
+             (eq (buffer-local-value 'major-mode (get-buffer buffer)) 'org-mode)
+             (save-excursion
+               (set-buffer buffer)
+               (apply command arguments)))))
+
+(defun cpped-ediff-org-unfold ()
+  "Unfold at diff location"
+  (cpped-run-in-org-buffer ediff-buffer-A 'org-reveal)
+  (cpped-run-in-org-buffer ediff-buffer-B 'org-reveal)
+  (cpped-run-in-org-buffer ediff-buffer-C 'org-reveal))
+
+(defun cpped-ediff-org-fold ()
+  "Fold back to top level"
+  (cpped-run-in-org-buffer ediff-buffer-A 'hide-sublevels 1)
+  (cpped-run-in-org-buffer ediff-buffer-B 'hide-sublevels 1)
+  (cpped-run-in-org-buffer ediff-buffer-C 'hide-sublevels 1))
+
+(add-hook 'ediff-select-hook 'cpped-ediff-org-unfold)
+(add-hook 'ediff-unselect-hook 'cpped-ediff-org-fold)
 #+END_SRC
 
 * Utilities
