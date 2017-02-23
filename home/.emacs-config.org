@@ -3405,6 +3405,24 @@ Archive when done, remove flag if reset to todo.
         (org-todo state)))))
 #+END_SRC
 
+** Mark heading done when all checkboxes are checked.
+#+BEGIN_SRC emacs-lisp
+(defun cpped-checkbox-list-complete ()
+  (interactive)
+  (save-excursion
+    (org-back-to-heading t)
+    (let ((begin (point)))
+      (end-of-line)
+      (when (re-search-backward "\\[\\([0-9]+%\\)\\]\\|\\[\\([0-9]+\\)/\\([0-9]+\\)\\]" begin t)
+        (if (or (equal (match-string 1) "100%")
+                (and (match-string 2)
+                     (equal (match-string 2) (match-string 3))))
+            (org-todo cpped-org-todo-keyword-done)
+          (org-todo cpped-org-todo-keyword-todo))))))
+
+(add-hook 'org-checkbox-statistics-hook 'cpped-checkbox-list-complete)
+#+END_SRC
+
 * Utilities
 ** Calculator
 Do not use scientific form so quickly
