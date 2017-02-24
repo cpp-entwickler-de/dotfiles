@@ -78,8 +78,10 @@ if [ "$LINKS" = TRUE ]; then
         USER_NAME=$(/bin/grep -P "^$(whoami):" /etc/passwd | cut -f5 -d:)
         read -e -p "Please enter your full name:     " -i "$USER_NAME" USER_NAME
         read -e -p "Please enter your email address: " -i "$(whoami)@$(dnsdomainname)" EMAIL
-        
-        rm -f "$GIT_USER_FILE"
+
+        if [ -e "$GIT_USER_FILE" ]; then
+            mv "$GIT_USER_FILE" "$GIT_USER_FILE"".bak"
+        fi
         echo -e "[user]\nname = $USER_NAME\nemail = $EMAIL" > "$GIT_USER_FILE"
         
         function read_xml
@@ -108,7 +110,9 @@ if [ "$LINKS" = TRUE ]; then
         read -e -p "Please enter your latitude:      " -i "$LATITUDE" LATITUDE
         read -e -p "Please enter your longitude:     " -i "$LONGITUDE" LONGITUDE
 
-        rm -f "$EMACS_USER_FILE"
+        if [ -e "$EMACS_USER_FILE" ]; then
+            mv "$EMACS_USER_FILE" "$EMACS_USER_FILE"".bak"
+        fi
         echo "(defvar username \"$(whoami)\")
 (setq user-full-name \"$USER_NAME\"
       user-mail-address \"$EMAIL\"
