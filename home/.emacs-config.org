@@ -669,6 +669,15 @@ Find path of current position in XML docuement
   (helm-mode 1))
 
 (require 'helm-config)
+
+(require 'helm-buffers)
+(push "\\*Messages\\*" helm-boring-buffer-regexp-list)
+(push "\\*Warnings\\*" helm-boring-buffer-regexp-list)
+(push "\\*Completions\\*" helm-boring-buffer-regexp-list)
+(push "\\*Help\\*" helm-boring-buffer-regexp-list)
+(push "\\*compilation\\*" helm-boring-buffer-regexp-list)
+(push "\\*compile.*\\*" helm-boring-buffer-regexp-list)
+(push "\\*Compilation Log\\*" helm-boring-buffer-regexp-list)
 #+END_SRC
 
 *** Projectile Integration
@@ -1008,7 +1017,8 @@ Always use a fixed width for line numbers (maximum number length)
   (setq shelldoc-keep-man-locale nil)
   (add-hook 'eshell-mode-hook 'shelldoc-minor-mode-on)
   (add-hook 'sh-mode-hook 'shelldoc-minor-mode-on)
-  (add-hook 'shell-mode-hook 'shelldoc-minor-mode-on))
+  (add-hook 'shell-mode-hook 'shelldoc-minor-mode-on)
+  (push "\\*Shelldoc\\*" helm-boring-buffer-regexp-list))
 #+END_SRC
 
 *** Auto-completion
@@ -1747,10 +1757,12 @@ Some useful abbreviations
 ** [[http://www-sop.inria.fr/members/Manuel.Serrano/flyspell/flyspell.html][Spell checking]]
 #+BEGIN_SRC emacs-lisp
 (use-package flyspell
+  :after helm
   :config
   (setq flyspell-issue-welcome-flag nil
         flyspell-issue-message-flag nil
         flyspell-sort-corrections t)
+  (push "\\*flypell.*\\*" helm-boring-buffer-regexp-list)
   (add-hook 'text-mode-hook 'flyspell-mode))
 
 (use-package helm-flyspell
@@ -2240,12 +2252,15 @@ Handler to close buffer after quitting ccmake.
 ***** [[http://www.flycheck.org/en/latest/][Syntax checking]]
 #+BEGIN_SRC emacs-lisp
 (use-package flycheck
+  :after (helm popwin)
   :bind (:map flycheck-mode-map ("C-c ! h" . helm-flycheck))
   :config
   (setq flycheck-display-errors-delay 0.2
         flycheck-indication-mode nil
         flycheck-check-syntax-automatically '(mode-enabled save idle-change))
-  (add-hook 'after-init-hook #'global-flycheck-mode))
+  (add-hook 'after-init-hook #'global-flycheck-mode)
+  (push "^\\*Flycheck.+\\*$" helm-boring-buffer-regexp-list)
+  (push '("^\\*Flycheck.+\\*$" :regexp t :dedicated t :position bottom) popwin:special-display-config))
 
 (use-package flycheck-pos-tip
         :config
@@ -2435,10 +2450,13 @@ Helm Integration
 ***** [[https://github.com/Andersbakken/rtags][RTags]]
 #+BEGIN_SRC emacs-lisp
 (use-package rtags
+  :after helm
   :config
   (setq rtags-use-helm t
         rtags-autostart-diagnostics nil
         rtags-completions-enabled t)
+  (push "\\*rdm\\*" helm-boring-buffer-regexp-list)
+  (push "\\*RTags .*" helm-boring-buffer-regexp-list)
   (add-hook 'c-mode-common-hook 'rtags-start-process-unless-running))
 #+END_SRC
 
@@ -2960,6 +2978,7 @@ When using Magit >= 2.4.0
 **** [[https://github.com/magit/magit][Magit]]
 #+BEGIN_SRC emacs-lisp
 (use-package magit
+  :after helm
   :bind (("C-c g" . magit-status)
          :map magit-status-mode-map
          ("q" . magit-quit-session))
@@ -2967,7 +2986,8 @@ When using Magit >= 2.4.0
   (setq magit-log-arguments '("--graph"
                               "--color"
                               "--decorate"
-                              "-n200")))
+                              "-n200"))
+  (push "^\\*magit.*" helm-boring-buffer-regexp-list))
 #+END_SRC
 
 ***** Full screen magit-status
@@ -3084,6 +3104,7 @@ When using Magit >= 2.4.0
         org-startup-with-inline-images t
         org-support-shift-select t
         org-use-speed-commands t)
+  (push "\\*Org Agenda\\*" helm-boring-buffer-regexp-list)
   (add-hook 'org-mode-hook (lambda()
                              (nlinum-mode -1)
                              (org-indent-mode))))
