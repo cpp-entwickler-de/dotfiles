@@ -108,6 +108,11 @@ Do not load outdated byte code
 (setq gc-cons-threshold (* 100 1024 1024))
 #+END_SRC
 
+** Include cl package
+#+BEGIN_SRC emacs-lisp
+(use-package cl)
+#+END_SRC
+
 * User Interface
 ** Startup
 *** Disable startup screen
@@ -3320,6 +3325,16 @@ Archive when done, remove flag if reset to todo.
 / filter tags
 / / reset tag filter
 < filter cat
+
+*** Reschedule to today
+#+BEGIN_SRC emacs-lisp
+(defun cpped-org-agenda-reschedule-to-today ()
+  "Reschedule the selected item to today."
+  (interactive)
+  (cl-letf (((symbol-function 'org-read-date) '(lambda (&rest args)
+                                                 (current-time))))
+    (call-interactively 'org-agenda-schedule)))
+#+END_SRC
 
 ** [[https://github.com/bard/org-dashboard/blob/master/org-dashboard.el][Progress Report]]
 #+BEGIN_SRC emacs-lisp
