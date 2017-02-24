@@ -79,7 +79,7 @@
  '(error ((t (:foreground "red" :weight bold))))
  '(warning ((default (:weight bold)) (((class color) (min-colors 16)) (:foreground "DarkOrange")) (((class color)) (:foreground "yellow"))))
  '(preproc-font-lock-preprocessor-background ((t (:inherit font-lock-preprocessor-face))))
- '(vhl/default-face ((t (:inherit (secondary-selection)))))
+ '(vhl/default-face ((t (:inherit default :inverse-video t))))
  '(helm-buffer-file ((t (:inherit helm-ff-file))))
  '(helm-grep-match ((((background light)) (:foreground "#b00000")) (((background dark)) (:foreground "gold1"))))
  '(helm-buffer-saved-out ((t (:inherit helm-buffer-file :underline (:color "red" :style wave)))))
