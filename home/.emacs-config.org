@@ -3361,10 +3361,6 @@ Archive when done, remove flag if reset to todo.
                                                                         (org-agenda-overriding-header cpped-org-todo-keyword-todo)))))))
 #+END_SRC
 
-/ filter tags
-/ / reset tag filter
-< filter cat
-
 *** Reschedule to today
 #+BEGIN_SRC emacs-lisp
 (defun cpped-org-agenda-reschedule-to-today ()
