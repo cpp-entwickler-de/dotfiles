@@ -974,6 +974,11 @@ Always use a fixed width for line numbers (maximum number length)
 #+END_SRC
 
 ** Shell
+#+BEGIN_SRC emacs-lisp
+(setq comint-buffer-maximum-size 1000000
+      comint-scroll-show-maximum-output t)
+#+END_SRC
+
 *** Open shell in project directory
 #+BEGIN_SRC emacs-lisp
 (defun eshell-project-dir ()
