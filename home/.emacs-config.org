@@ -1177,6 +1177,11 @@ Always use a fixed width for line numbers (maximum number length)
 (global-set-key (kbd "M-g l") 'goto-line)
 #+END_SRC
 
+*** Go to directory
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "M-g .") 'dired-jump)
+#+END_SRC
+
 *** Jump to first non-whitespace character or beginning of line
 #+BEGIN_SRC emacs-lisp
 (defun back-to-indentation-or-beginning()
