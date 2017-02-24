@@ -3058,6 +3058,14 @@ When using Magit >= 2.4.0
                              (org-indent-mode))))
 #+END_SRC
 
+** Hide default org files in buffer list
+#+BEGIN_SRC emacs-lisp
+(push (regexp-quote (file-name-nondirectory org-default-bugs-file)) helm-boring-buffer-regexp-list)
+(push (regexp-quote (file-name-nondirectory org-default-todos-file)) helm-boring-buffer-regexp-list)
+(push (regexp-quote (file-name-nondirectory org-default-recurring-events-file)) helm-boring-buffer-regexp-list)
+(push (regexp-quote (file-name-nondirectory org-default-notes-file)) helm-boring-buffer-regexp-list)
+#+END_SRC
+
 ** Create agenda files if necessary
 #+BEGIN_SRC emacs-lisp
 (defun cpped-create-agenda-file (file)
