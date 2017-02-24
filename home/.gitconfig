@@ -117,6 +117,11 @@ algorithm=histogram
 xfuncname = "^(\\*+ [a-zA-Z0-9]+.+)$"
 
 
+[diff "ini"]
+# Use org headline in diff
+xfuncname = "^\\[([a-zA-Z0-9]+)\\]$"
+
+
 [merge]
 tool = meld
 
