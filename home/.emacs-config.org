@@ -301,13 +301,17 @@ Helper function to figure out version control root directory
                           (file-name-as-directory (file-name-directory (if project-root
                                                                            (file-relative-name filename project-root)
                                                                          filename)))))
-         (buffer-name (format-mode-line "%b")))
+         (buffer-name (format-mode-line "%b"))
+         (special-buffer (string-match "^\\*.*\\*$" buffer-name)))
     (concat
      (when relative-path
        (propertize relative-path
                    'face (list ':weight 'light)))
-     (propertize buffer-name
-                 'face (list ':weight 'black))))))
+     (if special-buffer
+         (propertize (replace-regexp-in-string "^\\*\\(.*\\)\\*$" "\\1" buffer-name)
+                     'face (list ':weight 'normal ':slant 'italic))
+       (propertize buffer-name
+                   'face (list ':weight 'black)))))))
 #+END_SRC
 
 *** Git Info
