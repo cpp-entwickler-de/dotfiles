@@ -639,6 +639,7 @@ Find path of current position in XML docuement
 ** Helm UI
 #+BEGIN_SRC emacs-lisp
 (use-package helm
+  :after popwin
   :bind
   (("C-c h" . helm-command-prefix)
    ("M-x" . helm-M-x)
@@ -784,23 +785,17 @@ Switch to previous buffer
 #+BEGIN_SRC emacs-lisp
 (use-package popwin
   :config
-  (setq popwin:special-display-config '((help-mode
-                                         ("*Miniedit Help*" :noselect t)
-                                         (completion-list-mode :noselect t)
-                                         (compilation-mode :noselect t)
-                                         (grep-mode :noselect t)
-                                         (occur-mode :noselect t)
-                                         ("*Pp Macroexpand Output*" :noselect t)
-                                         "*Shell Command Output*" "*vc-diff*" "*vc-change-log*"
-                                         (" *undo-tree*" :width 60 :position right)
-                                         ("^\\*anything.*\\*$" :regexp t)
-                                         "*slime-apropos*" "*slime-macroexpansion*" "*slime-description*"
-                                         ("*slime-compilation*" :noselect t)
-                                         "*slime-xref*"
-                                         (sldb-mode :stick t)
-                                         slime-repl-mode slime-connection-list-mode)))
+  (push '("*Messages*" :dedicated t :position bottom :height 40 :tail) popwin:special-display-config)
+  (push '(compilation-mode :dedicated t :position bottom :height 30) popwin:special-display-config)
+  (push '(help-mode :dedicated t :position bottom :height 40) popwin:special-display-config)
+  (push '("*helm kill ring*" :dedicated t :position bottom :height 40) popwin:special-display-config)
   (popwin-mode 1))
+
+(global-set-key (kbd "C-c m") (lambda ()
+                                (interactive)
+                                (popwin:display-buffer "*Messages*")))
 #+END_SRC
+
 *** Add path if required to make buffer name unique
 #+BEGIN_SRC emacs-lisp
 (setq uniquify-buffer-name-style 'forward
@@ -963,13 +958,15 @@ Always use a fixed width for line numbers (maximum number length)
 ** [[https://www.emacswiki.org/emacs/UndoTree][Undo]]
 #+BEGIN_SRC emacs-lisp
 (use-package undo-tree
+  :after popwin
   :config
   (global-undo-tree-mode)
   (setq undo-tree-visualizer-timestamps t
         undo-tree-visualizer-diff t)
   (global-set-key (kbd "C-z") 'undo-tree-undo)
   (global-set-key (kbd "M-z") 'undo-tree-redo)
-  (global-set-key (kbd "C-M-z") 'undo-tree-visualize))
+  (global-set-key (kbd "C-M-z") 'undo-tree-visualize)
+  (push '(" *undo-tree*" :dedicated t :width 60 :position right) popwin:special-display-config))
 #+END_SRC
 
 *** Keep selection when undoing
@@ -1013,12 +1010,14 @@ Always use a fixed width for line numbers (maximum number length)
 *** [[https://github.com/mhayashi1120/Emacs-shelldoc][Show man page for shell commands]]
 #+BEGIN_SRC emacs-lisp
 (use-package shelldoc
+  :after (helm popwin)
   :config
   (setq shelldoc-keep-man-locale nil)
   (add-hook 'eshell-mode-hook 'shelldoc-minor-mode-on)
   (add-hook 'sh-mode-hook 'shelldoc-minor-mode-on)
   (add-hook 'shell-mode-hook 'shelldoc-minor-mode-on)
-  (push "\\*Shelldoc\\*" helm-boring-buffer-regexp-list))
+  (push "\\*Shelldoc\\*" helm-boring-buffer-regexp-list)
+  (push '("*Shelldoc*" :position bottom :height 30) popwin:special-display-config))
 #+END_SRC
 
 *** Auto-completion
@@ -3075,6 +3074,7 @@ When using Magit >= 2.4.0
 * Org-Mode
 #+BEGIN_SRC emacs-lisp
 (use-package org
+  :after (helm popwin)
   :mode ("\\.org\\'" . org-mode)
   :bind (("C-c l" . org-store-link)
          ("C-c s" . org-capture)
@@ -3105,6 +3105,10 @@ When using Magit >= 2.4.0
         org-support-shift-select t
         org-use-speed-commands t)
   (push "\\*Org Agenda\\*" helm-boring-buffer-regexp-list)
+  (push '("*Agenda Commands*" :dedicated t :position bottom :height 20) popwin:special-display-config)
+  (push '("*Org Agenda*" :position bottom :height 30) popwin:special-display-config)
+  (push '("*Org Select*" :height 0.2 :position bottom :noselect nil :stick t) popwin:special-display-config)
+  (push '("^CAPTURE-.+\*.org$" :position left :regexp t) popwin:special-display-config)
   (add-hook 'org-mode-hook (lambda()
                              (nlinum-mode -1)
                              (org-indent-mode))))
