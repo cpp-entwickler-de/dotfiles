@@ -3531,9 +3531,7 @@ Do not use scientific form so quickly
       (progn
         (serial-term (concat "/dev/" port) 115200)
         (rename-buffer (format "*Serial Terminal %s*" port))
-        (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix)
-        (term-send-string (get-buffer-process (current-buffer))
-                          "export TERM=xterm-color\nclear\n"))
+        (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))
     (message "No serial port found.")))
 #+END_SRC
 
