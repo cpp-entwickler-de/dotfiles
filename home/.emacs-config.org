@@ -4,7 +4,9 @@
 #+BEGIN_SRC emacs-lisp
 (defun cpped-find-quoted-file (file)
   "Find-file for single-quoted file names."
-  (find-file (replace-regexp-in-string "'" "" file)))
+  (let ((unquoted-file (replace-regexp-in-string "'" "" file)))
+    (unless (file-directory-p unquoted-file)
+      (find-file unquoted-file))))
 
 (defun cpped-maybe-create-new-frame (&rest files)
   "Create a new frame if none exists. Takes a file name that is loaded into the frame."
