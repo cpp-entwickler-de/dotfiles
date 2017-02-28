@@ -987,8 +987,14 @@ Always use a fixed width for line numbers (maximum number length)
 
 ** Shell
 #+BEGIN_SRC emacs-lisp
-(setq comint-buffer-maximum-size 1000000
-      comint-scroll-show-maximum-output t)
+(setq comint-buffer-maximum-size 10000
+      comint-scroll-show-maximum-output t
+      comint-input-ring-size 500
+      comint-output-filter-functions '(ansi-color-process-output
+                                       comint-strip-ctrl-m
+                                       comint-postoutput-scroll-to-bottom
+                                       comint-watch-for-password-prompt
+                                       comint-truncate-buffer))
 #+END_SRC
 
 *** Open shell in project directory
