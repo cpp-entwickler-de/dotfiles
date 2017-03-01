@@ -3098,7 +3098,7 @@ When using Magit >= 2.4.0
   :config
   (defvar org-default-bugs-file "~/.bugs.org" "The default file for bug tasks.")
   (defvar org-default-todos-file "~/.todos.org" "The default file for todo tasks.")
-  (defvar org-default-recurring-events-file "~/.recurring-events.org" "The default file for anniversaries.")
+  (defvar org-default-events-file "~/.events.org" "The default file for events.")
   (setq org-blank-before-new-entry '((heading . t))
         org-default-notes-file "~/.notes.org"
         org-ellipsis " ▼"
@@ -3134,7 +3134,7 @@ When using Magit >= 2.4.0
 #+BEGIN_SRC emacs-lisp
 (push (regexp-quote (file-name-nondirectory org-default-bugs-file)) helm-boring-buffer-regexp-list)
 (push (regexp-quote (file-name-nondirectory org-default-todos-file)) helm-boring-buffer-regexp-list)
-(push (regexp-quote (file-name-nondirectory org-default-recurring-events-file)) helm-boring-buffer-regexp-list)
+(push (regexp-quote (file-name-nondirectory org-default-events-file)) helm-boring-buffer-regexp-list)
 (push (regexp-quote (file-name-nondirectory org-default-notes-file)) helm-boring-buffer-regexp-list)
 #+END_SRC
 
@@ -3147,7 +3147,7 @@ When using Magit >= 2.4.0
 
 (cpped-create-agenda-file org-default-bugs-file)
 (cpped-create-agenda-file org-default-todos-file)
-(cpped-create-agenda-file org-default-recurring-events-file)
+(cpped-create-agenda-file org-default-events-file)
 (cpped-create-agenda-file org-default-notes-file)
 
 #+END_SRC
@@ -3367,7 +3367,7 @@ Archive when done, remove flag if reset to todo.
                                   (0.0 . default))
       org-agenda-files (list org-default-bugs-file
                              org-default-todos-file
-                             org-default-recurring-events-file
+                             org-default-events-file
                              org-default-notes-file)
       org-agenda-format-date "%A, %e.%m.%Y"
       org-agenda-prefix-format '((agenda  . "  %l%-6T%?-12t% s  ")
