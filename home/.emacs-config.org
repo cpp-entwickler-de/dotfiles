@@ -3370,7 +3370,7 @@ Archive when done, remove flag if reset to todo.
                              org-default-events-file
                              org-default-notes-file)
       org-agenda-format-date "%A, %e.%m.%Y"
-      org-agenda-prefix-format '((agenda  . "  %l%-6T%?-12t% s  ")
+      org-agenda-prefix-format '((agenda  . "  %l%-10T%?-12t% s  ")
                                  (timeline  . "  %l% s")
                                  (todo  . "  %l%-6T%?-12t")
                                  (tags  . "  %l%-6T")
@@ -3392,7 +3392,14 @@ Archive when done, remove flag if reset to todo.
 *** Custom Views
 #+BEGIN_SRC emacs-lisp
 (setq org-agenda-custom-commands '(("d" "Default agenda view"
-                                    ((agenda "" ((org-agenda-skip-function '(org-agenda-skip-entry-if 'done 'notscheduled))))
+                                    ((agenda "" ((org-agenda-skip-function '(let ((tags (save-excursion
+                                                                                          (outline-back-to-heading)
+                                                                                          (org-get-tags))))
+                                                                              (if (or (member "Appointment" tags)
+                                                                                      (member "Birthday" tags)
+                                                                                      (member "Holiday" tags))
+                                                                                  nil
+                                                                                (org-agenda-skip-entry-if 'done 'notscheduled))))))
                                      (todo cpped-org-todo-keyword-waiting
                                            ((org-agenda-overriding-header cpped-org-todo-keyword-waiting)))
                                      (todo cpped-org-todo-keyword-suspended
