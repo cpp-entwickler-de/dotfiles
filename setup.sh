@@ -3,7 +3,7 @@
 function show_help
 {
     echo "Usage:"
-    echo "    --links          Create links for configuration files from this repository to ~/ (CAUTION: removes old files!)"
+    echo "    --links          Create links for configuration files from this repository to ~/"
     echo "    --printers       Download and install pretty-printers for GDB"
     echo "    --fonts          Download and install special fonts for emacs"
     echo "    --documentation  Download and install DASH documentation files"
