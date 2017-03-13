@@ -624,7 +624,7 @@ Find path of current position in XML docuement
 (powerline-cpp-entwickler-theme)
 #+END_SRC
 
-** Projectile
+** [[https://github.com/bbatsov/projectile][Projectile]]
 #+BEGIN_SRC emacs-lisp
 (use-package ag)
 
@@ -638,7 +638,7 @@ Find path of current position in XML docuement
   (projectile-global-mode))
 #+END_SRC
 
-** Helm UI
+** [[https://github.com/emacs-helm/helm][Helm UI]]
 #+BEGIN_SRC emacs-lisp
 (use-package helm
   :after popwin
@@ -1785,7 +1785,6 @@ Some useful abbreviations
 #+END_SRC
 
 *** [[https://github.com/nschum/auto-dictionary-mode][Automatic dictionary selection]]
-[[https://github.com/nschum/auto-dictionary-mode][Automatic dictionary selection]]
 #+BEGIN_SRC emacs-lisp
 (use-package auto-dictionary
   :after flyspell
@@ -2255,8 +2254,6 @@ Handler to close buffer after quitting ccmake.
   :config
   (global-dummyparens-mode))
 #+END_SRC
-
-***** [[http://www.flycheck.org/en/latest/][Syntax check]]
 
 ***** Spell checking
 #+BEGIN_SRC emacs-lisp
