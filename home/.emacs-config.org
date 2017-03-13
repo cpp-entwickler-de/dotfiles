@@ -1137,9 +1137,11 @@ Always use a fixed width for line numbers (maximum number length)
 (global-auto-revert-mode t)
 #+END_SRC
 
-** Auto-save buffers automatically
+** Auto-save buffers
 #+BEGIN_SRC emacs-lisp
 (setq auto-save-visited-file-name t
+      auto-save-timeout 5
+      auto-save-interval 100
       buffer-save-without-query t)
 #+END_SRC
 
