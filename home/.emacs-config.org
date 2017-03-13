@@ -3443,7 +3443,7 @@ Archive when done, remove flag if reset to todo.
   (setq alert-default-style 'libnotify
         org-alert-interval 86400
         org-alert-notification-title "TODO")
-  (org-alert-enable))
+  (add-hook 'after-make-frame-functions #'org-alert-enable))
 #+END_SRC
 
 ** EDiff Compatibility
