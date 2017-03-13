@@ -669,6 +669,10 @@ Find path of current position in XML docuement
               :around (lambda (fcn file)
                         (unless (string-match "\\(?:/\\|\\`\\)\\.\\{1,2\\}\\'" file)
                           (funcall fcn file)))) ;; hide current directory/parent directory in file list
+  (eval-after-load "popwin"
+    '(progn
+       (push '("*helm kill ring*" :dedicated t :position bottom :height 40) popwin:special-display-config)
+       (push '("*helm calcul*" :dedicated t :position bottom :height 10) popwin:special-display-config)))
   (helm-mode 1))
 
 (require 'helm-config)
@@ -713,20 +717,22 @@ Find path of current position in XML docuement
 
 *** Popwin Fix
 #+BEGIN_SRC emacs-lisp
-(defun *-popwin-help-mode-off ()
+(defun cpped-popwin-help-mode-off ()
        "Turn `popwin-mode' off for *Help* buffers."
        (when (boundp 'popwin:special-display-config)
              (customize-set-variable 'popwin:special-display-config
                                      (delq 'help-mode popwin:special-display-config))))
 
-(defun *-popwin-help-mode-on ()
+(defun cpped-popwin-help-mode-on ()
        "Turn `popwin-mode' on for *Help* buffers."
        (when (boundp 'popwin:special-display-config)
              (customize-set-variable 'popwin:special-display-config
                                      (add-to-list 'popwin:special-display-config 'help-mode nil #'eq))))
 
-(add-hook 'helm-minibuffer-set-up-hook #'*-popwin-help-mode-off)
-(add-hook 'helm-cleanup-hook #'*-popwin-help-mode-on)
+(eval-after-load "popwin"
+  '(progn
+     (add-hook 'helm-minibuffer-set-up-hook #'cpped-popwin-help-mode-off)
+     (add-hook 'helm-cleanup-hook #'cpped-popwin-help-mode-on)))
 #+END_SRC
 
 ** Imenu
@@ -790,7 +796,6 @@ Switch to previous buffer
   (push '("*Messages*" :dedicated t :position bottom :height 40 :tail) popwin:special-display-config)
   (push '(compilation-mode :dedicated t :position bottom :height 30) popwin:special-display-config)
   (push '(help-mode :dedicated t :position bottom :height 40) popwin:special-display-config)
-  (push '("*helm kill ring*" :dedicated t :position bottom :height 40) popwin:special-display-config)
   (popwin-mode 1))
 
 (global-set-key (kbd "C-c m") (lambda ()
