@@ -1121,8 +1121,7 @@ Always use a fixed width for line numbers (maximum number length)
 
 ** Save backup files to /tmp
 #+BEGIN_SRC emacs-lisp
-(setq backup-directory-alist `((".*" . ,temporary-file-directory))
-      auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
+(setq backup-directory-alist `((".*" . ,temporary-file-directory)))
 #+END_SRC
 
 ** Move deleted files to trash instead of deleting
