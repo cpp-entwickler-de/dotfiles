@@ -673,10 +673,10 @@ Find path of current position in XML docuement
               :around (lambda (fcn file)
                         (unless (string-match "\\(?:/\\|\\`\\)\\.\\{1,2\\}\\'" file)
                           (funcall fcn file)))) ;; hide current directory/parent directory in file list
-  (eval-after-load "popwin"
-    '(progn
-       (push '("*helm kill ring*" :dedicated t :position bottom :height 40) popwin:special-display-config)
-       (push '("*helm calcul*" :dedicated t :position bottom :height 10) popwin:special-display-config)))
+  (with-eval-after-load "popwin"
+    (progn
+      (push '("*helm kill ring*" :dedicated t :position bottom :height 40) popwin:special-display-config)
+      (push '("*helm calcul*" :dedicated t :position bottom :height 10) popwin:special-display-config)))
   (helm-mode 1))
 
 (require 'helm-config)
@@ -733,10 +733,10 @@ Find path of current position in XML docuement
              (customize-set-variable 'popwin:special-display-config
                                      (add-to-list 'popwin:special-display-config 'help-mode nil #'eq))))
 
-(eval-after-load "popwin"
-  '(progn
-     (add-hook 'helm-minibuffer-set-up-hook #'cpped-popwin-help-mode-off)
-     (add-hook 'helm-cleanup-hook #'cpped-popwin-help-mode-on)))
+(with-eval-after-load "popwin"
+  (progn
+    (add-hook 'helm-minibuffer-set-up-hook #'cpped-popwin-help-mode-off)
+    (add-hook 'helm-cleanup-hook #'cpped-popwin-help-mode-on)))
 #+END_SRC
 
 ** Imenu
