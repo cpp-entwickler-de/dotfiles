@@ -302,9 +302,11 @@ Helper function to figure out version control root directory
                                       (string-equal (substring filename 0 (length home-dir)) home-dir))
                              home-dir)))
          (relative-path (when filename
-                          (file-name-as-directory (file-name-directory (if project-root
-                                                                           (file-relative-name filename project-root)
-                                                                         filename)))))
+                          (let ((directory (file-name-directory (if project-root
+                                                                    (file-relative-name filename project-root)
+                                                                  filename))))
+                            (when directory
+                              (file-name-as-directory directory)))))
          (buffer-name (format-mode-line "%b"))
          (special-buffer (string-match "^\\*.*\\*$" buffer-name)))
     (concat
@@ -315,7 +317,7 @@ Helper function to figure out version control root directory
          (propertize (replace-regexp-in-string "^\\*\\(.*\\)\\*$" "\\1" buffer-name)
                      'face (list ':weight 'normal ':slant 'italic))
        (propertize buffer-name
-                   'face (list ':weight 'black)))))))
+                   'face (list ':weight 'black))))))
 #+END_SRC
 
 *** Git Info
@@ -3068,7 +3070,7 @@ When using Magit >= 2.4.0
 (use-package pdf-tools
   :mode ("\\.pdf\\'" . doc-view-mode)
   :config
-  ;(pdf-tools-install)
+  (pdf-tools-install t)
   (setq doc-view-continuous t
         doc-view-ghostscript-program "mudraw"
         doc-view-pdf->png-converter-function 'doc-view-pdf->png-converter-mupdf))
