@@ -243,6 +243,16 @@ Disable prettification if cursor is at edge of expression
 ** Mode Line
 *** Project
 #+BEGIN_SRC emacs-lisp
+(with-eval-after-load "projectile"
+  (defun cpped-project-dir ()
+    (interactive)
+    (or (when (and (ignore-errors (projectile-project-p))
+                   (fboundp 'projectile-project-root))
+          (projectile-project-root))
+        (let ((backend (vc-deduce-backend)))
+          (when backend
+            (ignore-errors (vc-call-backend backend 'root default-directory)))))))
+
 (defun powerline-project-id (icon-face)
   (when buffer-file-name
     (let ((project-name (if (and (ignore-errors (projectile-project-p))
@@ -259,7 +269,7 @@ Disable prettification if cursor is at edge of expression
                             'display '(raise -0.0))
                 " "
                 (propertize project-name
-                            'help-echo "Switch Project"
+                            'help-echo (cpped-project-dir)
                             'local-map (make-mode-line-mouse-map
                                         'mouse-1 (lambda ()
                                                    (interactive)
@@ -280,21 +290,11 @@ Disable prettification if cursor is at edge of expression
 *** Buffer name
 Helper function to figure out version control root directory
 #+BEGIN_SRC emacs-lisp
-(with-eval-after-load "projectile"
-(defun project-dir ()
-  (when buffer-file-name
-    (or (when (and (ignore-errors (projectile-project-p))
-                   (fboundp 'projectile-project-root))
-          (projectile-project-root))
-        (let ((backend (vc-deduce-backend)))
-          (when backend
-            (ignore-errors (vc-call-backend backend 'root default-directory)))))))
-
 (defun powerline-buffer-id ()
   (let* ((home-dir (getenv "HOME"))
          (filename (when buffer-file-name
                      (file-truename buffer-file-name)))
-         (project-root (or (project-dir)
+         (project-root (or (cpped-project-dir)
                            (when (and filename
                                       home-dir
                                       (string-equal (substring filename 0 (length home-dir)) home-dir))
@@ -1012,12 +1012,13 @@ Always use a fixed width for line numbers (maximum number length)
 
 *** Open shell in project directory
 #+BEGIN_SRC emacs-lisp
-(defun eshell-project-dir ()
+(defun cpped-eshell-project-dir ()
   (interactive)
-  (let ((default-directory (project-dir)))
+  (let ((default-directory (cpped-project-dir)))
     (if default-directory
         (eshell))))
 #+END_SRC
+
 *** [[https://github.com/jerryxgh/smartwin][Group shell buffers]]
 #+BEGIN_SRC emacs-lisp
 (use-package smartwin
@@ -2404,7 +2405,7 @@ Helm Integration
   "Count lines of code in file or project (with prefix argument)."
   (interactive "P")
   (if (executable-find "sloccount")
-      (let* ((project-root (project-dir))
+      (let* ((project-root (cpped-project-dir))
              (thing-to-process (if (and project-root
                                         argument)
                                    project-root
