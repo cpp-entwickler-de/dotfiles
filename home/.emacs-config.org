@@ -1088,6 +1088,7 @@ Always use a fixed width for line numbers (maximum number length)
   (add-hook 'term-exec-hook   'with-editor-export-editor)
   (add-hook 'eshell-mode-hook 'with-editor-export-editor))
 #+END_SRC
+
 ** Help
 *** [[https://github.com/justbur/emacs-which-key][Show available keys after entering prefix]]
 #+BEGIN_SRC emacs-lisp
@@ -1415,8 +1416,7 @@ Always use a fixed width for line numbers (maximum number length)
 *** [[https://github.com/bnbeckwith/writegood-mode][Mark common language issues]]
 #+BEGIN_SRC emacs-lisp
 (use-package writegood-mode
-  :config (add-hook 'find-file-hook (lambda ()
-                                      (writegood-mode))))
+  :config (add-hook 'fundamental-mode-hook 'writegood-mode))
 #+END_SRC
 
 *** Smart narrowing/widening
@@ -2874,6 +2874,7 @@ Set shell for buffer
 (add-hook 'sh-mode-hook (lambda()
                           (set (make-local-variable 'helm-dash-docsets) '("Bash" "Man Pages"))))
 #+END_SRC
+
 *** XML
 #+BEGIN_SRC emacs-lisp
 (push '("<\\?xml" . nxml-mode) magic-mode-alist)
