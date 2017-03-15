@@ -1957,11 +1957,6 @@ Handler to close buffer after quitting ccmake.
         (with-temp-file cpped-last-project-file
           (insert build-dir)))
     (error "`%s' is not a CMake build directory" build-dir)))
-
-(add-hook 'after-init-hook '(lambda()
-                              (let ((last-project (cpped-find-last-project-path)))
-                                (when last-project
-                                  (cpped-load-project last-project)))))
 #+END_SRC
 
 **** Open shell in build directory
