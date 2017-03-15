@@ -146,7 +146,9 @@ Show fullscreen for single monitor, fullscreen on right side on dual-monitor
                                        (setq default-frame-alist `((width . ,screen-width)
                                                                    (height . ,screen-height)
                                                                    (left . ,left-space)
-                                                                   (fullscreen . fullboth))))))
+                                                                   (fullscreen . fullboth)
+                                                                   (title . "IDE")
+                                                                   (name . "IDE"))))))
 #+END_SRC
 
 ** Do not auto-raise
