@@ -2189,8 +2189,16 @@ Handler to close buffer after quitting ccmake.
         (widen)
         (if iedit-mode
             (iedit-done)
-          (narrow-to-defun)
-          (iedit-start (current-word) (point-min) (point-max)))))))
+          (let ((word (current-word))
+                (end (progn (if (derived-mode-p 'c-mode 'c++-mode)
+                                (c-end-of-defun)
+                              (end-of-defun))
+                            (point)))
+                (begin (progn (if (derived-mode-p 'c-mode 'c++-mode)
+                                  (c-beginning-of-defun)
+                                (beginning-of-defun))
+                            (point))))
+            (iedit-start word begin end)))))))
 #+END_SRC
 
 ***** Change numbers
