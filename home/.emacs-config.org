@@ -3067,10 +3067,11 @@ When using Magit >= 2.4.0
 (use-package pdf-tools
   :mode ("\\.pdf\\'" . pdf-view-mode)
   :config
-  (pdf-tools-install t)
   (setq doc-view-continuous t
         doc-view-ghostscript-program "mudraw"
-        doc-view-pdf->png-converter-function 'doc-view-pdf->png-converter-mupdf))
+        doc-view-pdf->png-converter-function 'doc-view-pdf->png-converter-mupdf)
+  (add-hook 'after-make-frame-functions (lambda ()
+                                          (pdf-tools-install t))))
 #+END_SRC
 
 ** System Logs
