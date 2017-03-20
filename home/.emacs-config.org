@@ -2614,19 +2614,12 @@ Helm Integration
                            (setq flycheck-clang-language-standard "c++11")))
 #+END_SRC
 
-clang-check
-#+BEGIN_SRC emacs-lisp
-(use-package flycheck-clangcheck
-  :after flycheck
-  :config (flycheck-add-next-checker 'c/c++-clang '(t . c/c++-clangcheck)))
-#+END_SRC
-
 ****** GCC
 #+BEGIN_SRC emacs-lisp
 (setq flycheck-gcc-pedantic t
       flycheck-gcc-pedantic-errors nil
       flycheck-gcc-warnings '("all" "extra" "ctor-dtor-privacy" "effc++" "old-style-cast" "overloaded-virtual" "format=2" "missing-include-dirs" "switch-default" "switch-enum" "unused-parameter" "uninitialized" "float-equal" "shadow" "cast-qual" "conversion" "double-promotion" "zero-as-null-pointer-constant" "useless-cast" "logical-op"))
-(flycheck-add-next-checker 'c/c++-clangcheck '(t . c/c++-gcc))
+(flycheck-add-next-checker 'c/c++-clang '(t . c/c++-gcc))
 (add-hook 'c++-mode-hook (lambda ()
                            (setq flycheck-gcc-language-standard "c++11")))
 #+END_SRC
