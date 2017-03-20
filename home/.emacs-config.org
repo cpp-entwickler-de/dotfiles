@@ -3168,7 +3168,7 @@ When using Magit >= 2.4.0
   :config
   (setq org-bullets-bullet-list '("○"))
   (add-hook 'org-mode-hook (lambda ()
-                             (org-bullets-mode t))))
+                             (org-bullets-mode 1))))
 #+END_SRC
 
 ** Use current heading as function name
