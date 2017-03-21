@@ -3306,10 +3306,11 @@ When using Magit >= 2.4.0
       cpped-org-todo-keyword-in-progress "▶ In Progress"
       cpped-org-todo-keyword-waiting "🕓 Waiting"
       cpped-org-todo-keyword-suspended "💤 Suspended"
+      cpped-org-todo-keyword-review "🗫 Review"
       cpped-org-todo-keyword-canceled "🗙 Canceled"
       org-todo-keywords `((sequence ,(concat cpped-org-todo-keyword-todo "(t)") "|" ,(concat cpped-org-todo-keyword-done "(d!/@)"))
                           (sequence ,(concat cpped-org-todo-keyword-bug "(b)") ,(concat cpped-org-todo-keyword-analyzed "(a@)") ,(concat cpped-org-todo-keyword-fixed "(f!/@)"))
-                          (sequence ,(concat cpped-org-todo-keyword-in-progress "(p!)") ,(concat cpped-org-todo-keyword-waiting "(w@/!)") ,(concat cpped-org-todo-keyword-suspended "(s@/!)"))
+                          (sequence ,(concat cpped-org-todo-keyword-in-progress "(p!)") ,(concat cpped-org-todo-keyword-waiting "(w@/!)") ,(concat cpped-org-todo-keyword-suspended "(s@/!)") ,(concat cpped-org-todo-keyword-review "(r!/!)"))
                           (sequence "|" ,(concat cpped-org-todo-keyword-canceled "(c@/@)"))))
 #+END_SRC
 
@@ -3328,6 +3329,7 @@ Format according to the state.
                                (,cpped-org-todo-keyword-analyzed . org-todo-keyword-in-progress)
                                (,cpped-org-todo-keyword-fixed . org-todo-keyword-done)
                                (,cpped-org-todo-keyword-in-progress . org-todo-keyword-in-progress)
+                               (,cpped-org-todo-keyword-review . org-todo-keyword-in-progress)
                                (,cpped-org-todo-keyword-waiting . org-todo-keyword-waiting)
                                (,cpped-org-todo-keyword-suspended . org-todo-keyword-suspended)
                                (,cpped-org-todo-keyword-canceled . org-todo-keyword-canceled)))
