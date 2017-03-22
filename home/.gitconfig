@@ -131,6 +131,11 @@ tool = meld
 verbose = true
 
 
+[fetch]
+# Update submodule if reference in parent was updated
+recurseSubmodules = on-demand
+
+
 [push]
 # Push without target refspec
 default=simple
