@@ -3232,7 +3232,8 @@ When using Magit >= 2.4.0
 (setq org-ditaa-jar-path "/usr/share/java/ditaa.jar")
 #+END_SRC
 
-*** Disable evaluation confirmation for some languages
+*** Allow evaluation
+Disable evaluation confirmation for some languages
 #+BEGIN_SRC emacs-lisp
 (defun cpped-org-confirm-babel-evaluate (lang body)
   "Do not confirm evaluation for these languages."
@@ -3243,10 +3244,7 @@ When using Magit >= 2.4.0
            (string= lang "emacs-lisp")
            (string= lang "python")
            (string= lang "sh"))))
-#+END_SRC
 
-*** Allow evaluation
-#+BEGIN_SRC emacs-lisp
 (use-package babel
   :after org graphviz-dot-mode
   :config
