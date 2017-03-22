@@ -105,8 +105,8 @@ tool = meld
 # Detect renames, including copies
 renames=copies
 
-# do not show a/b prefixes in diffs
-noprefix=true
+# use mnemonic prefixes instead of a/b
+mnemonicPrefix = true
 
 # Use histogram diff algorithm
 algorithm=histogram
