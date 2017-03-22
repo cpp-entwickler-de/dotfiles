@@ -3327,6 +3327,8 @@ Archive when done, remove flag if reset to todo.
 #+BEGIN_SRC emacs-lisp
 (setq org-todo-state-tags-triggers '((done ("ARCHIVE" . t))
                                      (todo ("ARCHIVE" . nil))))
+(setq org-archive-mark-done nil
+      org-archive-location "%s_archive::* Archived")
 #+END_SRC
 
 ** Priorities
