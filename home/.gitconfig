@@ -55,15 +55,15 @@ decorate = short
 lineNumber = true
 
 # Allow extended Regexps
-extendedRegexp=true
+extendedRegexp = true
 
 
 [help]
 # Correct misspellings of commands automatically
-autocorrect=1
+autocorrect = 1
 
 # Use HTML help
-format=web
+format = web
 
 
 [web]
@@ -73,19 +73,19 @@ browser = firefox
 
 [versionsort]
 # Proper sorting of version suffixes
-prereleaseSuffix=-alpha
-prereleaseSuffix=-beta
-prereleaseSuffix=-pre
-prereleaseSuffix=-rc
-prereleaseSuffix=-demo
+prereleaseSuffix = -alpha
+prereleaseSuffix = -beta
+prereleaseSuffix = -pre
+prereleaseSuffix = -rc
+prereleaseSuffix = -demo
 
 
 [branch]
 # Setup tracking
-autosetupmerge=true
+autosetupmerge = true
 
 # Always rebase when pulling
-autosetuprebase=always
+autosetuprebase = always
 
 
 [rebase]
@@ -103,13 +103,13 @@ autoStash = true
 tool = meld
 
 # Detect renames, including copies
-renames=copies
+renames = copies
 
 # use mnemonic prefixes instead of a/b
 mnemonicPrefix = true
 
 # Use histogram diff algorithm
-algorithm=histogram
+algorithm = histogram
 
 
 [diff "org"]
@@ -141,9 +141,10 @@ prune = true
 
 [push]
 # Push without target refspec
-default=simple
+default = simple
+
 # Check if all submodules are pushed
-recurseSubmodules=check
+recurseSubmodules = check
 
 
 [rerere]
