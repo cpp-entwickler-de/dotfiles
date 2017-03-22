@@ -135,6 +135,9 @@ verbose = true
 # Update submodule if reference in parent was updated
 recurseSubmodules = on-demand
 
+# Remove deleted remote branches
+prune = true
+
 
 [push]
 # Push without target refspec
