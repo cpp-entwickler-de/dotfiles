@@ -19,7 +19,8 @@
 (setq use-package-enable-imenu-support t)
 (eval-when-compile
   (require 'use-package)
-  (setq use-package-always-ensure t))
+  (setq use-package-always-ensure t
+        use-package-verbose t))
 
 ;; Save customizations to different file
 (setq custom-file "~/.emacs.d/customizations.el")
