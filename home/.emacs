@@ -7,6 +7,8 @@
 (setq load-prefer-newer t)
 (package-initialize)
 
+;; (setq debug-on-error t)
+
 ;; Bootstrap use-package
 ;; Install use-package if it's not already installed.
 ;; use-package configures the rest of the packages.
