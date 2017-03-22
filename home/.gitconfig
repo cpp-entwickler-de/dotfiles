@@ -146,6 +146,11 @@ default=simple
 recurseSubmodules=check
 
 
+[rerere]
+# record/replay resolutions
+enabled = true
+
+
 [url "https://github.com/"]
 insteadOf = github:
 
