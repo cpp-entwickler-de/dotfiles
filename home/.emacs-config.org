@@ -3398,7 +3398,11 @@ Archive when done, remove flag if reset to todo.
                                            ((org-agenda-skip-function '(org-agenda-skip-entry-if 'done 'scheduled))
                                             (org-agenda-overriding-header cpped-org-todo-keyword-bug)))
                                      (todo cpped-org-todo-keyword-todo ((org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline 'done))
-                                                                        (org-agenda-overriding-header cpped-org-todo-keyword-todo)))))))
+                                                                        (org-agenda-overriding-header cpped-org-todo-keyword-todo)))
+                                     (tags "Notes"
+                                           ((org-agenda-overriding-header "Notes")))))
+                                   ("n" "Notes" tags "Notes"
+                                    ((org-agenda-overriding-header "Notes")))))
 #+END_SRC
 
 *** Reschedule to today
