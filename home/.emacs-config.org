@@ -1,4 +1,5 @@
 #+TITLE: Emacs config
+#+OPTIONS: toc:4
 
 * Use only one frame
 #+BEGIN_SRC emacs-lisp
