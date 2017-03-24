@@ -3346,7 +3346,7 @@ Archive when done, remove flag if reset to todo.
       `(("t" "To Do" entry (file+headline org-default-todos-file "ToDos") ,(concat "** " cpped-org-todo-keyword-todo " [#B] %? %^g\n%U\n:CATEGORY: ToDos\nSCHEDULED: %t\n%i\n") :empty-lines 1 :kill-buffer t)
         ("p" "Priority To Do" entry (file+headline org-default-todo-file "ToDos") ,(concat "** " cpped-org-todo-keyword-todo " [#A] %? %^g\n%T\n:CATEGORY: ToDos\nDEADLINE: %t\n%i\n") :empty-lines 1 :kill-buffer t)
         ("b" "Bug" entry (file+headline org-default-bugs-file "Bugs") (concat "** " cpped-org-todo-keyword-bug " [#B] %? %^g\n%U\n:CATEGORY: Bugs\n%i\n") :empty-lines 1 :kill-buffer t)
-        ("n" "Note" entry (file+headline org-default-notes-file "Notes") "** Note %? %^g\n%T\n:CATEGORY: Notes\n%i\n" :empty-lines 1 :kill-buffer t)))
+        ("n" "Note" entry (file+headline org-default-notes-file "Notes") "** %? %^g\n%U\n:CATEGORY: Notes\n%i\n" :empty-lines 1 :kill-buffer t)))
 #+END_SRC
 
 ** Agenda
