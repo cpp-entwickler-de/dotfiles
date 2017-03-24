@@ -1,5 +1,6 @@
 #+TITLE: Emacs config
 #+OPTIONS: toc:4
+#+PROPERTY: header-args :results silent
 
 * Use only one frame
 #+BEGIN_SRC emacs-lisp
