@@ -3177,7 +3177,14 @@ When using Magit >= 2.4.0
                            (setq add-log-current-defun-function 'cpped-org-log-current-defun)))
 #+END_SRC
 
-** Link Insertion
+** Links
+*** Shortcuts
+#+BEGIN_SRC emacs-lisp
+(push '("google"  . "https://www.google.de/?gws_rd=ssl#q=%s") org-link-abbrev-alist)
+(push '("wikipedia"  . "https://en.wikipedia.org/wiki/%s") org-link-abbrev-alist)
+#+END_SRC
+
+*** Insertion
 #+BEGIN_SRC emacs-lisp
 (defun cpped-url-to-title (url)
   "Returns the content of the <title> tag of the page at url."
