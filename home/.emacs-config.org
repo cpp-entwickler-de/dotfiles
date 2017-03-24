@@ -3244,6 +3244,7 @@ Disable evaluation confirmation for some languages
            (string= lang "latex")
            (string= lang "emacs-lisp")
            (string= lang "python")
+           (string= lang "sed")
            (string= lang "sh"))))
 
 (use-package babel
@@ -3258,6 +3259,7 @@ Disable evaluation confirmation for some languages
      (latex . t)
      (lisp . t)
      (python . t)
+     (sed . t)
      (sh . t)))
   (setq org-confirm-babel-evaluate 'cpped-org-confirm-babel-evaluate)
   (add-hook 'org-babel-after-execute-hook 'org-display-inline-images))
