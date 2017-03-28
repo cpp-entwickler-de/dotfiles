@@ -1,5 +1,5 @@
 (deftheme cpp-entwickler.de
-  "Created 2017-02-15.")
+  "Created 2017-03-28.")
 
 (custom-theme-set-faces
  'cpp-entwickler.de
@@ -65,17 +65,17 @@
  '(org-block-begin-line ((t (:background "gray10" :foreground "gray40" :height 0.7))))
  '(org-block-end-line ((t (:inherit org-block-begin-line :height 0.8))))
  '(org-block ((t (:background "gray10"))))
- '(flycheck-error-list-warning ((t (:inherit (warning)))))
- '(flycheck-error-list-info ((t (:inherit flycheck-error-list-error :foreground "gold1"))))
+ '(flycheck-error-list-warning ((t (:inherit warning :foreground "DarkOrange"))))
+ '(flycheck-error-list-info ((t (:inherit flycheck-error-list-error :foreground "blue1"))))
  '(flycheck-error-list-error ((t (:inherit error))))
  '(flycheck-error-list-checker-name ((t (:inherit shadow))))
  '(flycheck-error-list-line-number ((t (:inherit shadow))))
  '(flycheck-error-list-highlight ((t (:inherit (highlight)))))
  '(flycheck-error-list-column-number ((t (:inherit shadow))))
  '(flycheck-error-list-id ((t (:inherit (font-lock-type-face)))))
- '(flycheck-error ((t (:background "red1" :distant-foreground "white smoke"))))
- '(flycheck-warning ((t (:background "DarkOrange" :foreground "black"))))
- '(flycheck-info ((t (:background "gold1" :foreground "black"))))
+ '(flycheck-error ((t (:background "red1" :foreground "white smoke"))))
+ '(flycheck-warning ((t (:background "DarkOrange" :foreground "white smoke"))))
+ '(flycheck-info ((t (:background "blue1" :foreground "white smoke"))))
  '(error ((t (:foreground "red" :weight bold))))
  '(warning ((default (:weight bold)) (((class color) (min-colors 16)) (:foreground "DarkOrange")) (((class color)) (:foreground "yellow"))))
  '(preproc-font-lock-preprocessor-background ((t (:inherit font-lock-preprocessor-face))))

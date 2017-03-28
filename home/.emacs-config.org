@@ -2267,22 +2267,67 @@ Handler to close buffer after quitting ccmake.
   :after (helm popwin)
   :bind (:map flycheck-mode-map ("C-c ! h" . helm-flycheck))
   :config
-  (setq flycheck-display-errors-delay 0.2
+  (setq flycheck-idle-change-delay 0.3
+        flycheck-display-errors-delay 0.2
         flycheck-indication-mode nil
+        flycheck-highlighting-mode nil
+        flycheck-display-errors-function nil
+        flycheck-help-echo-function nil
+        flycheck-process-error-functions nil
         flycheck-check-syntax-automatically '(mode-enabled save idle-change))
   (add-hook 'after-init-hook #'global-flycheck-mode)
   (push "^\\*Flycheck.+\\*$" helm-boring-buffer-regexp-list)
   (push '("^\\*Flycheck.+\\*$" :regexp t :dedicated t :position bottom) popwin:special-display-config))
-
-(use-package flycheck-pos-tip
-        :config
-        (flycheck-pos-tip-mode))
 #+END_SRC
 
 Helm Integration
 #+BEGIN_SRC emacs-lisp
 (use-package helm-flycheck
   :after (helm flycheck))
+#+END_SRC
+
+Custom error highlighting (colored line under location)
+#+BEGIN_SRC emacs-lisp
+(defun cpped-flycheck-clear (status)
+  "Clear the highlights if appropriate."
+  (let ((clear nil))
+    (when (boundp 'flycheck-last-status-change)
+      (pcase flycheck-last-status-change
+        (`not-checked (setq clear t))
+        (`errored (setq clear t))
+        (`interrupted (setq clear t))
+        (_ (setq clear nil))))
+    (when clear
+      (remove-overlays nil nil 'cpped-flycheck-inline-error t))))
+
+(defun cpped-flycheck-inline-error-messages ()
+  "Show Flycheck errors in a new line below the problematic line."
+  (remove-overlays nil nil 'cpped-flycheck-inline-error t)
+  (mapc #'(lambda (error)
+            (let* ((begin (save-excursion
+                            (goto-char (flycheck-error-pos error))
+                            (+ 1 (line-end-position))))
+                   (level (symbol-name (flycheck-error-level error)))
+                   (face (pcase level
+                           ("error" 'flycheck-error)
+                           ("warning" 'flycheck-warning)
+                           ("info" 'flycheck-info)
+                           (_ 'default)))
+                   (overlay (make-overlay begin begin)))
+              (overlay-put overlay 'before-string (concat
+                                                   (propertize (all-the-icons-faicon (pcase level
+                                                                                       ("error" "times-circle")
+                                                                                       ("warning" "exclamation-triangle")
+                                                                                       ("info" "info-circle")
+                                                                                       (_ "question-circle")))
+                                                               'face (list ':inherit face
+                                                                           ':family (all-the-icons-faicon-family))
+                                                               'display '(raise -0.0))
+                                                   (propertize (concat " " (flycheck-error-message error) "\n") 'face face)))
+              (overlay-put overlay 'cpped-flycheck-inline-error t))) flycheck-current-errors))
+
+(add-hook 'flycheck-after-syntax-check-hook #'cpped-flycheck-inline-error-messages)
+(add-hook 'flycheck-status-changed-functions #'cpped-flycheck-clear)
 #+END_SRC
 
 ***** Flip booleans
