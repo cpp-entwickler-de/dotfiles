@@ -3283,6 +3283,11 @@ When using Magit >= 2.4.0
 #+END_SRC
 
 ** Inline code
+*** Auto-save
+#+BEGIN_SRC emacs-lisp
+(setq org-edit-src-auto-save-idle-delay cpped-autosave-delay)
+#+END_SRC
+
 *** Set correct ditaa jar path
 #+BEGIN_SRC emacs-lisp
 (setq org-ditaa-jar-path "/usr/share/java/ditaa.jar")
