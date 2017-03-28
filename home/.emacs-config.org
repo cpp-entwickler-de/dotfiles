@@ -3140,6 +3140,7 @@ When using Magit >= 2.4.0
   (defvar org-default-todos-file "~/.todos.org" "The default file for todo tasks.")
   (defvar org-default-events-file "~/.events.org" "The default file for events.")
   (setq org-blank-before-new-entry '((heading . t))
+        org-catch-invisible-edits 'error
         org-default-notes-file "~/.notes.org"
         org-ellipsis " ▼"
         org-enforce-todo-checkbox-dependencies t
