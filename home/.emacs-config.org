@@ -3664,7 +3664,5 @@ Do not use scientific form so quickly
 
 * Notify when loading is finished
 #+BEGIN_SRC emacs-lisp
-(notifications-notify
- :title "Emacs"
- :body "Emacs Server Started")
+(notifications-notify :title "IDE ready")
 #+END_SRC
