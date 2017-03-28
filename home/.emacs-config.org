@@ -3592,8 +3592,13 @@ Do not use scientific form so quickly
 
 ** GNUPlot
 #+BEGIN_SRC emacs-lisp
-(use-package gnuplot-mode
+(use-package gnuplot
+  :mode ("\\.gnuplot\\'" . gnuplot-mode)
   :config
+  (setq gnuplot-eldoc-mode t
+        gnuplot-image-format "svg"
+        gnuplot-inline-image-mode 'dedicated
+        gnuplot-tab-completion t)
   (add-hook 'gnuplot-mode-hook (lambda ()
                                  (flyspell-prog-mode))))
 #+END_SRC
