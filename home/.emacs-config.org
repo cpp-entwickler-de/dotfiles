@@ -3552,6 +3552,18 @@ Archive when done, remove flag if reset to todo.
         (org-todo state)))))
 #+END_SRC
 
+** Mark heading done when all subheadings are done
+#+BEGIN_SRC emacs-lisp
+(defun cpped-org-summary-change-todo (done todo)
+  "Switch entry to DONE when all subentries are done, to TODO otherwise."
+  (let (org-log-done org-log-states) ; turn off logging
+    (org-todo (if (= todo 0)
+                  cpped-org-todo-keyword-done
+                cpped-org-todo-keyword-todo))))
+
+(add-hook 'org-after-todo-statistics-hook 'cpped-org-summary-change-todo)
+#+END_SRC
+
 ** Mark heading done when all checkboxes are checked.
 #+BEGIN_SRC emacs-lisp
 (defun cpped-checkbox-list-complete ()
