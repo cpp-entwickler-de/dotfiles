@@ -3106,6 +3106,7 @@ When using Magit >= 2.4.0
 (use-package pdf-tools
   :mode ("\\.pdf\\'" . pdf-view-mode)
   :config
+  (push '("%PDF" . pdf-view-mode) magic-mode-alist)
   (setq doc-view-continuous t
         doc-view-ghostscript-program "mudraw"
         doc-view-pdf->png-converter-function 'doc-view-pdf->png-converter-mupdf)
