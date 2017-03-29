@@ -3362,17 +3362,27 @@ Disable evaluation confirmation for some languages
 (setq cpped-org-todo-keyword-todo "⚠ To Do"
       cpped-org-todo-keyword-done "✓ Done"
       cpped-org-todo-keyword-bug "🐛 Bug"
-      cpped-org-todo-keyword-analyzed "🔎 Analyzed"
+      cpped-org-todo-keyword-analysis "🔎 Analysis"
+      cpped-org-todo-keyword-correction "🛠 Correction"
       cpped-org-todo-keyword-fixed "✓ Fixed"
       cpped-org-todo-keyword-in-progress "▶ In Progress"
       cpped-org-todo-keyword-waiting "🕓 Waiting"
       cpped-org-todo-keyword-suspended "💤 Suspended"
       cpped-org-todo-keyword-review "🗫 Review"
       cpped-org-todo-keyword-canceled "🗙 Canceled"
-      org-todo-keywords `((sequence ,(concat cpped-org-todo-keyword-todo "(t)") "|" ,(concat cpped-org-todo-keyword-done "(d!/@)"))
-                          (sequence ,(concat cpped-org-todo-keyword-bug "(b)") ,(concat cpped-org-todo-keyword-analyzed "(a@)") ,(concat cpped-org-todo-keyword-fixed "(f!/@)"))
-                          (sequence ,(concat cpped-org-todo-keyword-in-progress "(p!)") ,(concat cpped-org-todo-keyword-waiting "(w@/!)") ,(concat cpped-org-todo-keyword-suspended "(s@/!)") ,(concat cpped-org-todo-keyword-review "(r!/!)"))
-                          (sequence "|" ,(concat cpped-org-todo-keyword-canceled "(c@/@)"))))
+      org-todo-keywords `((sequence ,(concat cpped-org-todo-keyword-todo "(t)")
+                                    ,(concat cpped-org-todo-keyword-in-progress "(p!)")
+                                    ,(concat cpped-org-todo-keyword-review "(r!/@)")
+                                    "|"
+                                    ,(concat cpped-org-todo-keyword-done "(d!/@)"))
+                          (sequence ,(concat cpped-org-todo-keyword-bug "(b)")
+                                    ,(concat cpped-org-todo-keyword-analysis "(a!/@)")
+                                    ,(concat cpped-org-todo-keyword-correction "(c!)")
+                                    "|"
+                                    ,(concat cpped-org-todo-keyword-fixed "(f!/@)"))
+                          (sequence ,(concat cpped-org-todo-keyword-waiting "(w@/!)")
+                                    ,(concat cpped-org-todo-keyword-suspended "(s@/!)"))
+                          (sequence "|" ,(concat cpped-org-todo-keyword-canceled "(x@/@)"))))
 #+END_SRC
 
 Format according to the state.
@@ -3387,7 +3397,8 @@ Format according to the state.
 (setq org-todo-keyword-faces `((,cpped-org-todo-keyword-todo . org-todo-keyword-todo)
                                (,cpped-org-todo-keyword-done . org-todo-keyword-done)
                                (,cpped-org-todo-keyword-bug . org-todo-keyword-todo)
-                               (,cpped-org-todo-keyword-analyzed . org-todo-keyword-in-progress)
+                               (,cpped-org-todo-keyword-analysis . org-todo-keyword-in-progress)
+                               (,cpped-org-todo-keyword-correction . org-todo-keyword-in-progress)
                                (,cpped-org-todo-keyword-fixed . org-todo-keyword-done)
                                (,cpped-org-todo-keyword-in-progress . org-todo-keyword-in-progress)
                                (,cpped-org-todo-keyword-review . org-todo-keyword-in-progress)
