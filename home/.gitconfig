@@ -168,7 +168,7 @@ branch-info = branch -av
 last-commit = log -n1 -p --format=fuller
 diff-log = log -p
 commit-log = log --oneline --graph --decorate
-changed-files = git diff-tree --no-commit-id --name-only -r
+changed-files = diff-tree --no-commit-id --name-only -r
 
 find-change = log -p -S
 unpushed = log --branches --not --remotes
