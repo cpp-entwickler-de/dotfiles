@@ -166,7 +166,7 @@ markers = log --decorate --oneline --simplify-by-decoration --all
 branch-info = branch -av
 
 last-commit = log -n1 -p --format=fuller
-file-log = log -p
+diff-log = log -p
 commit-log = log --oneline --graph --decorate
 changed-files = git diff-tree --no-commit-id --name-only -r
 
