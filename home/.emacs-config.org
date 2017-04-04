@@ -1139,6 +1139,26 @@ Always use a fixed width for line numbers (maximum number length)
 (global-auto-revert-mode t)
 #+END_SRC
 
+** Save current region or buffer to different file
+#+BEGIN_SRC emacs-lisp
+(defun cpped-save-copy ()
+  "Save the current buffer or region to a different file."
+  (interactive)
+  (let* ((original (buffer-file-name))
+         (copy (read-file-name "Copy to file: " nil nil nil (and original
+                                                                 (file-name-nondirectory original))))
+         (begin (if (use-region-p)
+                    (region-beginning)
+                  (point-min)))
+         (end (if (use-region-p)
+                  (region-end)
+                (point-max)))
+         (mustbenew (if (and original (file-equal-p original copy))
+                        'excl
+                      t)))
+    (write-region begin end copy nil nil nil mustbenew)))
+#+END_SRC
+
 ** Auto-save buffers
 #+BEGIN_SRC emacs-lisp
 (defconst cpped-autosave-delay 5 "The number of seconds to wait before saving autmatically.")
