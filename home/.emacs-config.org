@@ -3328,7 +3328,10 @@ Disable evaluation confirmation for some languages
            (string= lang "emacs-lisp")
            (string= lang "python")
            (string= lang "sed")
-           (string= lang "sh"))))
+           (string= lang "sh")
+           (string= lang "shell")
+           (string= lang "bash")
+           (string= lang "zsh"))))
 
 (use-package babel
   :after org graphviz-dot-mode
@@ -3343,8 +3346,12 @@ Disable evaluation confirmation for some languages
      (lisp . t)
      (python . t)
      (sed . t)
-     (sh . t)))
-  (setq org-confirm-babel-evaluate 'cpped-org-confirm-babel-evaluate)
+     (sh . t)
+     (shell . t)))
+
+  (setq org-confirm-babel-evaluate 'cpped-org-confirm-babel-evaluate
+        org-babel-shell-names '("sh" "bash" "zsh"))
+  (org-babel-shell-initialize)
   (add-hook 'org-babel-after-execute-hook 'org-display-inline-images))
 #+END_SRC
 
@@ -3360,6 +3367,7 @@ Disable evaluation confirmation for some languages
 #+BEGIN_SRC emacs-lisp
 (setq org-structure-template-alist
       '(("a" "#+BEGIN_ASCII\n?\n#+END_ASCII\n" "")
+        ("b" "#+BEGIN_SRC bash\n?\n#+END_SRC\n" "<src lang=\"?\">\n\n</src>")
         ("c" "#+BEGIN_CENTER\n?\n#+END_CENTER\n" "<center>\n?\n</center>")
         ("e" "#+BEGIN_EXAMPLE\n?\n#+END_EXAMPLE\n" "<example>\n?\n</example>")
         ("h" "#+BEGIN_HTML\n?\n#+END_HTML\n" "<literal style=\"html\">\n?\n</literal>")
@@ -3367,8 +3375,10 @@ Disable evaluation confirmation for some languages
         ("l" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC\n" "<src lang=\"emacs-lisp\">\n\n</src>")
         ("p" ":PROPERTIES:\n?\n:END:\n")
         ("q" "#+BEGIN_QUOTE\n?\n#+END_QUOTE\n" "<quote>\n?\n</quote>")
+        ("r" "#+BEGIN_SRC ?\n\n#+END_SRC\n" "<src lang=\"?\">\n\n</src>")
+        ("s" "#+BEGIN_SRC shell\n?\n#+END_SRC\n" "<src lang=\"?\">\n\n</src>")
         ("v" "#+BEGIN_VERBATIM\n?\n#+END_VERBATIM\n" "<verbatim>\n?\n</verbatim>")
-        ("s" "#+BEGIN_SRC ?\n\n#+END_SRC\n" "<src lang=\"?\">\n\n</src>")))
+        ("z" "#+BEGIN_SRC zsh\n?\n#+END_SRC\n" "<src lang=\"?\">\n\n</src>")))
 #+END_SRC
 
 ** TODO-States
