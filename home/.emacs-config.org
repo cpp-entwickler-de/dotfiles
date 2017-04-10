@@ -2307,12 +2307,6 @@ Handler to close buffer after quitting ccmake.
   (push '("^\\*Flycheck.+\\*$" :regexp t :dedicated t :position bottom) popwin:special-display-config))
 #+END_SRC
 
-Helm Integration
-#+BEGIN_SRC emacs-lisp
-(use-package helm-flycheck
-  :after (helm flycheck))
-#+END_SRC
-
 Custom error highlighting (colored line under location)
 #+BEGIN_SRC emacs-lisp
 (defun cpped-flycheck-clear (status)
