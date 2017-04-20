@@ -3173,7 +3173,11 @@ When using Magit >= 2.4.0
         org-indent-indentation-per-level cpped-default-indentation
         org-log-redeadline 'time
         org-log-reschedule 'time
-        org-refile-targets '((org-agenda-files . (:maxlevel . 6)))
+        org-outline-path-complete-in-steps nil
+        org-refile-targets '((nil . (:maxlevel . 6))
+                             (org-agenda-files . (:maxlevel . 3)))
+        org-refile-use-outline-path 'file
+        org-refile-allow-creating-parent-nodes 'confirm
         org-src-fontify-natively t
         org-src-preserve-indentation t
         org-src-strip-leading-and-trailing-blank-lines t
