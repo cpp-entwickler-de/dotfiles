@@ -1477,42 +1477,6 @@ Always use a fixed width for line numbers (maximum number length)
 (global-set-key (kbd "M-g .") 'dired-jump)
 #+END_SRC
 
-*** Jump to first non-whitespace character or beginning of line
-#+BEGIN_SRC emacs-lisp
-(defun cpped-back-to-indentation-or-beginning()
-       (interactive)
-       "If at the begining of line go to begining of buffer.
-   If at the indention go to begining of line.
-   Go to indention otherwise."
-         (if (bolp) (beginning-of-buffer)
-             (skip-chars-backward " \t")
-             (unless (bolp) (back-to-indentation))))
-  (global-set-key (kbd "<home>") 'cpped-back-to-indentation-or-beginning)
-#+END_SRC
-
-*** Jump to last non-whitespace character or end of line
-#+BEGIN_SRC emacs-lisp
-  (defun cpped-end-of-code-or-line (arg)
-         "Move to end of line, or before start of comments depending on situation.
-   Toggle back and forth positions if we are already at one.
-   Comments are recognized in any mode that sets syntax-ppss
-   properly."
-         (interactive "P")
-         (when (catch 'bol
-                      (let ((start (point))
-                            (bol (save-excursion
-                                         (beginning-of-line)
-                                         (point)))
-                            (eol (progn (move-end-of-line arg) (point))))
-                           (while (point-in-comment)
-                                  (backward-char)
-                                  (when (= (point) bol)
-                                        (throw 'bol t)))
-                           (throw 'bol (and (not (= eol start)) (>= start (point))))))
-               (move-end-of-line arg)))
-  (global-set-key (kbd "<end>") 'cpped-end-of-code-or-line)
-#+END_SRC
-
 *** Jump to other instances of symbol
 #+BEGIN_SRC emacs-lisp
 (use-package smartscan
