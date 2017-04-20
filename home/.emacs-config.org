@@ -3510,7 +3510,7 @@ Archive when done, remove flag if reset to todo.
                                                                                       (member "Birthday" tags)
                                                                                       (member "Holiday" tags))
                                                                                   nil
-                                                                                (org-agenda-skip-entry-if 'done 'notscheduled))))))
+                                                                                (org-agenda-skip-entry-if 'done))))))
                                      (todo cpped-org-todo-keyword-waiting
                                            ((org-agenda-overriding-header cpped-org-todo-keyword-waiting)))
                                      (todo cpped-org-todo-keyword-suspended
