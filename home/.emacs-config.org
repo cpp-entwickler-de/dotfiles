@@ -3481,11 +3481,11 @@ Archive when done, remove flag if reset to todo.
                              org-default-events-file
                              org-default-notes-file)
       org-agenda-format-date "%A, %e.%m.%Y"
-      org-agenda-prefix-format '((agenda  . "  %l%-10T%?-12t% s  ")
+      org-agenda-prefix-format '((agenda  . "  %-8(org-format-outline-path (org-get-outline-path)) %-10T%?-12t% s  ")
                                  (timeline  . "  %l% s")
-                                 (todo  . "  %l%-6T%?-12t")
-                                 (tags  . "  %l%-6T")
-                                 (search . "  %l%-6T"))
+                                 (todo  . "  %-16(org-format-outline-path (org-get-outline-path)) %-6T%?-12t")
+                                 (tags  . "  %-16(org-format-outline-path (org-get-outline-path)) %-6T")
+                                 (search . "  %(org-format-outline-path (org-get-outline-path))%-6T"))
       org-agenda-remove-tags 'prefix
       org-agenda-restore-windows-after-quit t
       org-agenda-show-all-dates nil
@@ -3517,13 +3517,20 @@ Archive when done, remove flag if reset to todo.
                                            ((org-agenda-overriding-header cpped-org-todo-keyword-suspended)))
                                      (todo cpped-org-todo-keyword-bug
                                            ((org-agenda-skip-function '(org-agenda-skip-entry-if 'done 'scheduled))
-                                            (org-agenda-overriding-header cpped-org-todo-keyword-bug)))
-                                     (todo cpped-org-todo-keyword-todo ((org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline 'done))
-                                                                        (org-agenda-overriding-header cpped-org-todo-keyword-todo)))
-                                     (tags "Notes"
-                                           ((org-agenda-overriding-header "Notes")))))
-                                   ("n" "Notes" tags "Notes"
-                                    ((org-agenda-overriding-header "Notes")))))
+                                            (org-agenda-overriding-header cpped-org-todo-keyword-bug)
+                                            (org-agenda-prefix-format '((todo  . "  %(org-format-outline-path (org-get-outline-path))%?-12t")))
+                                            (org-agenda-todo-keyword-format "")))
+                                     (todo cpped-org-todo-keyword-todo
+                                           ((org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline 'done))
+                                            (org-agenda-overriding-header cpped-org-todo-keyword-todo)
+                                            (org-agenda-prefix-format '((todo  . "  %(org-format-outline-path (org-get-outline-path))%?-12t")))
+                                            (org-agenda-todo-keyword-format "")))
+                                     (tags "+CATEGORY=\"Notes\""
+                                           ((org-agenda-overriding-header "Notes")
+                                            (org-agenda-prefix-format '((tags . "%(org-format-outline-path (org-get-outline-path)) ")))))))
+                                   ("n" "Notes" tags "+CATEGORY=\"Notes\""
+                                    ((org-agenda-overriding-header "Notes")
+                                     (org-agenda-prefix-format '((tags . "%(org-format-outline-path (org-get-outline-path)) ")))))))
 #+END_SRC
 
 *** Reschedule to today
