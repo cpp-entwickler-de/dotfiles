@@ -3206,16 +3206,18 @@ When using Magit >= 2.4.0
 
 ** Create agenda files if necessary
 #+BEGIN_SRC emacs-lisp
-(defun cpped-create-agenda-file (file)
+(defun cpped-create-default-file (file &optional content)
+  "Create a file with given default content."
   (when (not (file-exists-p file))
     (with-temp-buffer
+      (when content
+        (insert content))
       (write-file file))))
 
-(cpped-create-agenda-file org-default-bugs-file)
-(cpped-create-agenda-file org-default-todos-file)
-(cpped-create-agenda-file org-default-events-file)
-(cpped-create-agenda-file org-default-notes-file)
-
+(cpped-create-default-file org-default-bugs-file "#+CATEGORY: Bugs\n\n")
+(cpped-create-default-file org-default-todos-file "#+CATEGORY: ToDos\n\n")
+(cpped-create-default-file org-default-events-file)
+(cpped-create-default-file org-default-notes-file "#+CATEGORY: Notes\n\n")
 #+END_SRC
 
 ** Lists
@@ -3461,11 +3463,11 @@ Archive when done, remove flag if reset to todo.
 ** Capture Templates
 #+BEGIN_SRC emacs-lisp
 (setq org-capture-templates
-      `(("t" "To Do" entry (file+headline org-default-todos-file "ToDos") ,(concat "** " cpped-org-todo-keyword-todo " [#B] %? %^g\n%U\n:CATEGORY: ToDos\nSCHEDULED: %t\n%i\n") :empty-lines 1 :kill-buffer t)
-        ("p" "Priority To Do" entry (file+headline org-default-todo-file "ToDos") ,(concat "** " cpped-org-todo-keyword-todo " [#A] %? %^g\n%T\n:CATEGORY: ToDos\nDEADLINE: %t\n%i\n") :empty-lines 1 :kill-buffer t)
-        ("b" "Bug" entry (file+headline org-default-bugs-file "Bugs") ,(concat "** " cpped-org-todo-keyword-bug " [#B] %? %^g\n%U\n:CATEGORY: Bugs\n%i\n") :empty-lines 1 :kill-buffer t)
-        ("f" "Fixme" entry (file+headline org-default-bugs-file "Review Fixes") ,(concat "** " cpped-org-todo-keyword-fixme " [#A] %?\n%U\n:CATEGORY: Bugs\nSCHEDULED: %t\n[[file:%F::%(with-current-buffer (org-capture-get :original-buffer) (number-to-string (line-number-at-pos)))]]\n%i\n") :empty-lines 1 :kill-buffer t)
-        ("n" "Note" entry (file+headline org-default-notes-file "Notes") "** %? %^g\n%U\n:CATEGORY: Notes\n%i\n" :empty-lines 1 :kill-buffer t)))
+      `(("t" "To Do" entry (file+function org-default-todos-file org-ask-location) ,(concat "* " cpped-org-todo-keyword-todo " [#B] %?\n%U\nSCHEDULED: %t\n%i\n") :empty-lines 1 :kill-buffer t)
+        ("p" "Priority To Do" entry (file+headline org-default-todo-file "") ,(concat "* " cpped-org-todo-keyword-todo " [#A] %?\n%T\nDEADLINE: %t\n%i\n") :empty-lines 1 :kill-buffer t)
+        ("b" "Bug" entry (file+headline org-default-bugs-file "") ,(concat "* " cpped-org-todo-keyword-bug " [#B] %?\n%U\n%i\n") :empty-lines 1 :kill-buffer t)
+        ("f" "Fixme" entry (file+headline org-default-bugs-file "") ,(concat "* " cpped-org-todo-keyword-fixme " [#A] %?\n%U\nSCHEDULED: %t\n[[file:%F::%(with-current-buffer (org-capture-get :original-buffer) (number-to-string (line-number-at-pos)))]]\n%i\n") :empty-lines 1 :kill-buffer t)
+        ("n" "Note" entry (file+headline org-default-notes-file "") "* %?\n%U\n%i\n" :empty-lines 1 :kill-buffer t)))
 #+END_SRC
 
 ** Agenda
