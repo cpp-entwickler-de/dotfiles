@@ -2658,9 +2658,10 @@ Custom error highlighting (colored line under location)
 ***** Syntax checkers
 ****** RTags
 #+BEGIN_SRC emacs-lisp
-(require 'flycheck-rtags)
-(add-hook 'c-mode-common-hook (lambda ()
-                                 (flycheck-select-checker 'rtags)))
+(use-package flycheck-rtags
+  :config
+  (add-hook 'c-mode-common-hook (lambda ()
+                                  (flycheck-select-checker 'rtags))))
 #+END_SRC
 
 ****** Clang
