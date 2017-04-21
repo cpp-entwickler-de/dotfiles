@@ -1252,6 +1252,28 @@ Always use a fixed width for line numbers (maximum number length)
   :bind (:map dired-mode-map ("V" . peep-dired)))
 #+END_SRC
 
+**** Diff files
+#+BEGIN_SRC emacs-lisp
+(defvar cpped-dired-ediff-window-configuration nil)
+
+(defun cpped-dired-ediff-files ()
+  "Show a diff of two files marked in dired."
+  (interactive)
+  (let* ((files (dired-get-marked-files))
+         (file1 (car files))
+         (file2 (if (cdr files)
+                    (cadr files)
+                  (read-file-name "Diff to: " (dired-dwim-target-directory)))))
+    (setq cpped-dired-ediff-window-configuration (current-window-configuration))
+    (ediff-files file1 file2 '((lambda ()
+                                 (setq-local ediff-quit-hook (lambda ()
+                                                               (ediff-kill-buffer-carefully ediff-buffer-A)
+                                                               (ediff-kill-buffer-carefully ediff-buffer-B)
+                                                               (set-window-configuration cpped-dired-ediff-window-configuration.))))))))
+
+(define-key dired-mode-map "e" 'cpped-dired-ediff-files)
+#+END_SRC
+
 *** [[https://www.emacswiki.org/emacs/Sunrise_Commander][Sunrise Commander]]
 #+BEGIN_SRC emacs-lisp
 (use-package sunrise-commander)
