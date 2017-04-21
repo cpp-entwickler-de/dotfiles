@@ -1202,6 +1202,11 @@ Always use a fixed width for line numbers (maximum number length)
 #+END_SRC
 
 *** Dired
+#+BEGIN_SRC emacs-lisp
+(setq dired-recursive-copies 'always
+      dired-recursive-deletes 'top)
+#+END_SRC
+
 **** Rename files in dired mode
 #+BEGIN_SRC emacs-lisp
 (use-package dired-efap
