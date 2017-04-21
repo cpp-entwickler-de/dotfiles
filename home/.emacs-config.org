@@ -117,6 +117,15 @@ Do not load outdated byte code
 (use-package cl)
 #+END_SRC
 
+** Utilities
+#+BEGIN_SRC emacs-lisp
+(defun cpped-word-or-region-bounds()
+  "Get the bounds of the current region or word under point."
+  (if (use-region-p)
+      (list (region-beginning) (region-end))
+    (bounds-of-thing-at-point 'word)))
+#+END_SRC
+
 * User Interface
 ** Startup
 *** Disable startup screen
@@ -1830,7 +1839,39 @@ Some useful abbreviations
 *** [[https://github.com/cqql/dictcc.el][Translate text]]
 #+BEGIN_SRC emacs-lisp
 (use-package dictcc
-  :bind ("M-g t" . dictcc))
+  :config
+  (defconst cpped-translation-buffer "*Translations*")
+  (push `(,cpped-translation-buffer :dedicated t :position bottom :height 20) popwin:special-display-config)
+
+  (defun cpped-show-translation ()
+    "Show translations for the current region or word."
+    (interactive)
+    (let* ((bounds (cpped-word-or-region-bounds))
+           (text (buffer-substring-no-properties (car bounds) (cdr bounds))))
+      (url-retrieve (dictcc--request-url text)
+                    (lambda (_log)
+                      (save-excursion
+                        (let ((translations (dictcc--parse-http-response))
+                              (format-string (format "%%-%ds  %%s\n" 50)))
+                          (with-current-buffer (get-buffer-create cpped-translation-buffer)
+                            (local-set-key (kbd "q") 'popwin:close-popup-window)
+                            (delete-region (point-min) (point-max))
+                            (mapcar #'(lambda (pair)
+                                        (insert (format format-string (dictcc--translation-to-string (car pair)) (dictcc--translation-to-string (cdr pair)))))
+                                    translations)))))))
+    (popwin:display-buffer cpped-translation-buffer))
+
+  (defun cpped-translate-word-or-region ()
+    "Replace the current region or word with its translation."
+    (interactive)
+    (let* ((bounds (cpped-word-or-region-bounds))
+           (begin (car bounds))
+           (end (cdr bounds))
+           (text (buffer-substring-no-properties begin end)))
+      (delete-region begin end)
+      (if text
+          (dictcc text)
+        (call-interactively #'dictcc)))))
 #+END_SRC
 
 * Programming
