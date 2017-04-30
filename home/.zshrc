@@ -184,7 +184,6 @@ esac
 alias cd..="cd .."
 alias cp="cp -i"
 alias du="du -h"
-alias grep="ag"
 alias gti="git"
 alias less="less -FNMsW"
 alias ls="ls -AFhl --color $*"
