@@ -171,4 +171,15 @@ if [ ! -d "$OH_MY_ZSH_DIR" ]; then
     git clone https://github.com/robbyrussell/oh-my-zsh.git "$OH_MY_ZSH_DIR"
 fi
 
+# install ssh-connect
+SSH_CONNECT_DIRECTORY=~/.ssh-connect
+if [ ! -d "$SSH_CONNECT_DIRECTORY" ]; then
+    git clone --recursive --quiet https://github.com/gko/ssh-connect "$SSH_CONNECT_DIRECTORY"
+else
+    cd "$SSH_CONNECT_DIRECTORY"
+    git pull --quiet
+fi
+source ~/.ssh-connect/ssh-connect.sh
+
+# change default shell
 chsh -s $(which zsh) 2> /dev/null
