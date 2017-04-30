@@ -168,7 +168,7 @@ fi
 # install oh-my-zsh
 OH_MY_ZSH_DIR=~/.oh-my-zsh
 if [ ! -d "$OH_MY_ZSH_DIR" ]; then
-    git clone https://github.com/robbyrussell/oh-my-zsh.git "$OH_MY_ZSH_DIR"
+    git clone --quiet https://github.com/robbyrussell/oh-my-zsh.git "$OH_MY_ZSH_DIR"
 fi
 
 # install zsh plugins
