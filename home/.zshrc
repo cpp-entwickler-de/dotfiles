@@ -50,7 +50,7 @@ HIST_STAMPS="dd.mm.yyyy"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(adb autojump colored-man-pages command-not-found dirhistory extract git gnu-utils systemd)
+plugins=(adb almostontop autojump bd colored-man-pages colorize command-not-found dirhistory extract git gnu-utils safe-paste setenv sudo systemd up wd zsh-autopair zsh-autosuggestions zsh-dwim zsh-reentry-hook zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -198,16 +198,6 @@ alias dos2unix="recode ibmpc..lat1"
 alias unix2dos="recode lat1..ibmpc"
 alias unix2mac="recode lat1..mac"
 alias mac2unix="recode mac..lat1"
-
-function up
-{
-    ARGUMENT=""
-    ((LEVELS = ${1:=1} - 1))
-    for i in {0..$LEVELS}; do
-        ARGUMENT="../$ARGUMENT"
-    done
-    cd $ARGUMENT
-}
 
 alias -s pdf=emacsclient
 alias -s ps=gv

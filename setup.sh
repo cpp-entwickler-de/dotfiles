@@ -171,6 +171,30 @@ if [ ! -d "$OH_MY_ZSH_DIR" ]; then
     git clone https://github.com/robbyrussell/oh-my-zsh.git "$OH_MY_ZSH_DIR"
 fi
 
+# install zsh plugins
+function  install_zsh_plugin
+{
+    PLUGIN_ADDRESS=$1
+    PLUGIN_NAME=$(basename $PLUGIN_ADDRESS)
+
+    PLUGIN_DIRECTORY=$OH_MY_ZSH_DIR/plugins/$PLUGIN_NAME
+    if [ ! -d "$PLUGIN_DIRECTORY" ]; then
+        git clone --quiet $PLUGIN_ADDRESS $PLUGIN_DIRECTORY
+    else
+        cd "$PLUGIN_DIRECTORY"
+        git pull --quiet
+    fi
+}
+
+install_zsh_plugin https://github.com/Valiev/almostontop
+install_zsh_plugin https://github.com/kalpakrg/setenv
+install_zsh_plugin https://github.com/Tarrasch/zsh-bd
+install_zsh_plugin https://github.com/hlissner/zsh-autopair
+install_zsh_plugin https://github.com/zsh-users/zsh-autosuggestions
+install_zsh_plugin https://github.com/oknowton/zsh-dwim
+install_zsh_plugin https://github.com/RobSis/zsh-reentry-hook
+install_zsh_plugin https://github.com/zsh-users/zsh-syntax-highlighting.git
+
 # install ssh-connect
 SSH_CONNECT_DIRECTORY=~/.ssh-connect
 if [ ! -d "$SSH_CONNECT_DIRECTORY" ]; then
