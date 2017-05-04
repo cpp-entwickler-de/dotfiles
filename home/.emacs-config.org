@@ -2933,11 +2933,12 @@ Set correct major mode
 (push '("\\.bash\\'" . bash-mode) auto-mode-alist)
 #+END_SRC
 
-Set shell for buffer
+Set shell and syntax checker for buffer
 #+BEGIN_SRC emacs-lisp
 (add-hook 'sh-mode-hook (lambda ()
-                          (if (string-match "\\.bash$" buffer-file-name)
-                              (sh-set-shell "bash"))))
+                          (when (string-match "\\.bash$" buffer-file-name)
+                              (sh-set-shell "bash")
+                              (flycheck-add-next-checker 'sh-shellcheck '(t . sh-bash)))))
 #+END_SRC
 
 **** ZSH
@@ -2947,11 +2948,12 @@ Set correct major mode
 (push '("\\.zsh\\'" . sh-mode) auto-mode-alist)
 #+END_SRC
 
-Set shell for buffer
+Set shell and syntax checker for buffer
 #+BEGIN_SRC emacs-lisp
 (add-hook 'sh-mode-hook (lambda ()
-                          (if (string-match "\\.zsh$" buffer-file-name)
-                              (sh-set-shell "zsh"))))
+                          (when (string-match "\\.zsh$" buffer-file-name)
+                              (sh-set-shell "zsh")
+                              (flycheck-add-next-checker 'sh-shellcheck '(t . sh-zsh)))))
 #+END_SRC
 
 **** DOS
