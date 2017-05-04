@@ -48,6 +48,7 @@
 - kcachegrind
 - ninja-build
 - rtags
+- shellcheck
 - sloccount
 - uncrustify
 - valgrind
@@ -2917,6 +2918,12 @@ Documentation
   :config
   (add-hook 'sh-mode-hook (lambda()
                             (set (make-local-variable 'company-backends) '(company-shell company-keywords company-dabbrev-code company-yasnippet company-files company-capf)))))
+#+END_SRC
+
+***** Syntax checkers
+#+BEGIN_SRC emacs-lisp
+(add-hook 'sh-mode-hook (lambda ()
+                            (flycheck-select-checker 'sh-shellcheck)))
 #+END_SRC
 
 **** BASH
