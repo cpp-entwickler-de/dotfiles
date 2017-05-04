@@ -2992,6 +2992,13 @@ Set shell and syntax checker for buffer
   (setq xquery-tool-saxonb-jar "/usr/share/java/saxon/saxon.jar"))
 #+END_SRC
 
+***** Syntax checkers
+#+BEGIN_SRC emacs-lisp
+(add-hook 'nxml-mode-hook (lambda ()
+                            (flycheck-select-checker 'xml-xmllint)))
+(flycheck-add-next-checker 'xml-xmllint '(t . xml-xmlstarlet))
+#+END_SRC
+
 **** Documentation
 #+BEGIN_SRC emacs-lisp
 (add-hook 'nxml-mode-hook (lambda()
