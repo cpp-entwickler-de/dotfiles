@@ -58,7 +58,7 @@ if [ "$LINKS" = TRUE ]; then
                 mv "$LINK" "$BACKUP"
             fi
         fi
-        mkdir -p $(dirname "$LINK")
+        mkdir -p "$(dirname "$LINK")"
         echo "Creating $LINK -> $FILE"
         ln -s "$FILE" "$LINK"
     }
@@ -149,7 +149,7 @@ if [ "$FONTS" = TRUE ]; then
     FONT_DIR=~/.fonts/
     ALL_THE_ICONS_FONTS="all-the-icons file-icons fontawesome octicons weathericons"
     for FONT in $ALL_THE_ICONS_FONTS; do
-        wget --quiet --timestamping --no-directories --directory-prefix=$FONT_DIR https://github.com/domtronn/all-the-icons.el/raw/master/fonts/$FONT.ttf
+        wget --quiet --timestamping --no-directories --directory-prefix="$FONT_DIR" "https://github.com/domtronn/all-the-icons.el/raw/master/fonts/$FONT.ttf"
     done
 fi
 
@@ -159,9 +159,9 @@ if [ "$DOCUMENTATION" = TRUE ]; then
     DOCSET_DIR=~/.docsets
     DOCSETS="Bash Boost C C++ CMake Emacs_Lisp GLib HTML Man_Pages OpenGL_4 Qt_4 SVG XSLT"
     for DOCSET in $DOCSETS; do
-        wget --quiet --timestamping --no-directories --directory-prefix=$DOCSET_DIR http://sanfrancisco.kapeli.com/feeds/$DOCSET.tgz
-        tar xfz $DOCSET_DIR/$DOCSET.tgz --overwrite -C $DOCSET_DIR
-        rm $DOCSET_DIR/$DOCSET.tgz
+        wget --quiet --timestamping --no-directories --directory-prefix="$DOCSET_DIR" "http://sanfrancisco.kapeli.com/feeds/$DOCSET.tgz"
+        tar xfz "$DOCSET_DIR/$DOCSET.tgz" --overwrite -C "$DOCSET_DIR"
+        rm "$DOCSET_DIR/$DOCSET.tgz"
     done
 fi
 
@@ -175,13 +175,13 @@ fi
 function  install_zsh_plugin
 {
     PLUGIN_ADDRESS=$1
-    PLUGIN_NAME=$(basename $PLUGIN_ADDRESS)
+    PLUGIN_NAME=$(basename "$PLUGIN_ADDRESS")
 
     PLUGIN_DIRECTORY=$OH_MY_ZSH_DIR/plugins/$PLUGIN_NAME
     if [ ! -d "$PLUGIN_DIRECTORY" ]; then
-        git clone --quiet $PLUGIN_ADDRESS $PLUGIN_DIRECTORY
+        git clone --quiet "$PLUGIN_ADDRESS" "$PLUGIN_DIRECTORY"
     else
-        cd "$PLUGIN_DIRECTORY"
+        cd "$PLUGIN_DIRECTORY" || exit
         git pull --quiet
     fi
 }
@@ -200,10 +200,10 @@ SSH_CONNECT_DIRECTORY=~/.ssh-connect
 if [ ! -d "$SSH_CONNECT_DIRECTORY" ]; then
     git clone --recursive --quiet https://github.com/gko/ssh-connect "$SSH_CONNECT_DIRECTORY"
 else
-    cd "$SSH_CONNECT_DIRECTORY"
+    cd "$SSH_CONNECT_DIRECTORY" || exit
     git pull --quiet
 fi
-source ~/.ssh-connect/ssh-connect.sh
+source "$SSH_CONNECT_DIRECTORY/ssh-connect.sh"
 
 # change default shell
-chsh -s $(which zsh) 2> /dev/null
+chsh -s "$(which zsh)" 2> /dev/null
