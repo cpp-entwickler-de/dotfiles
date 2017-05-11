@@ -1711,6 +1711,12 @@ Save system clipboard contents to kill ring before killing
 #+END_SRC
 
 *** Automatic insert
+**** Typographic characters
+#+BEGIN_SRC emacs-lisp
+(use-package typo
+  :config (add-hook 'text-mode-hook 'typo-mode))
+#+END_SRC
+
 **** Abbreviations
 Enable Abbrev-Mode by default
 #+BEGIN_SRC emacs-lisp
