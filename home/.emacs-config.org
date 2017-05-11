@@ -1818,11 +1818,13 @@ Some useful abbreviations
 
 *** [[https://github.com/nschum/auto-dictionary-mode][Automatic dictionary selection]]
 #+BEGIN_SRC emacs-lisp
-(use-package auto-dictionary
+(use-package guess-language
   :after flyspell
   :config
+  (setq guess-language-languages '(en de)
+        guess-language-min-paragraph-length 35)
   (add-hook 'flyspell-mode-hook (lambda ()
-                                  (auto-dictionary-mode 1))))
+                                  (guess-language-mode 1))))
 #+END_SRC
 
 ** [[https://github.com/bastibe/annotate.el][Annotations]]
