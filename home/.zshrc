@@ -84,10 +84,10 @@ export LC_TELEPHONE=de_DE.UTF-8
 export LC_MEASUREMENT=de_DE.UTF-8
 
 # Preferred editor for local and remote sessions
-if [[ -n $SSH_CONNECTION ]]; then
-   export EDITOR='emacsclient'
+if [[ -z $SSH_CONNECTION ]]; then
+    export EDITOR="emacsclient --alternate-editor=\"\" --eval '(cpped-maybe-create-new-frame)'"
 else
-   export EDITOR='vim'
+   export EDITOR=vim
 fi
 export VISUAL=$EDITOR
 
