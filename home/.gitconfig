@@ -174,10 +174,10 @@ find-change = log -p -S
 unpushed = log --branches --not --remotes
 
 # Clone submodules
-clone-recursive=clone --recursive
+clone-recursive = clone --recursive
 
 # Mark commit as fix for given revision
-fixup=commit --fixup
+fixup = commit --fixup
 
 # Safe forced push
 force-push = push --force-with-lease
