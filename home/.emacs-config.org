@@ -2755,8 +2755,10 @@ Translation Files
 *** CMake
 #+BEGIN_SRC emacs-lisp
 (use-package cmake-mode
-  :mode "CMakeLists\\.txt\\'" "\\.cmake\\'"
-  :config (setq cmake-tab-width 4))
+  :config
+  (setq cmake-tab-width 4)
+  (push '("CMakeLists\\.txt\\'" . cmake-mode) auto-mode-alist)
+  (push '(".\\cmake\\'" . cmake-mode) auto-mode-alist))
 #+END_SRC
 
 **** [[https://github.com/Lindydancer/cmake-font-lock][Highlighting]]
