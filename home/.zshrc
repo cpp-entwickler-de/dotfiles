@@ -73,6 +73,7 @@ zstyle :compinstall filename '/home/player/.zshrc'
 
 # Set language environment
 export LANG=en_US.UTF-8
+export LC_CTYPE=de_DE.UTF-8
 export LC_NUMERIC=de_DE.UTF-8
 export LC_TIME=de_DE.UTF-8
 export LC_MONETARY=de_DE.UTF-8
