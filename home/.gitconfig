@@ -162,6 +162,9 @@ insteadOf = cpped:
 [alias]
 root = rev-parse --show-toplevel
 
+# show abbreviated status message
+stat = status -sb
+
 markers = log --decorate --oneline --simplify-by-decoration --all
 branch-info = branch -av
 
@@ -173,8 +176,14 @@ changed-files = diff-tree --no-commit-id --name-only -r
 find-change = log -p -S
 unpushed = log --branches --not --remotes
 
+# remove deleted files from git
+remove-deleted = !git rm $(git ls-files -d)
+
 # Clone submodules
 clone-recursive = clone --recursive
+
+# update submodules
+pull-recursive = pull --recurse-submodules
 
 # Mark commit as fix for given revision
 fixup = commit --fixup
