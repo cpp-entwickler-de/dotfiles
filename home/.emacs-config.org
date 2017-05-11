@@ -1807,7 +1807,11 @@ Some useful abbreviations
   :config
   (setq flyspell-issue-welcome-flag nil
         flyspell-issue-message-flag nil
-        flyspell-sort-corrections t)
+        flyspell-sort-corrections t
+        flyspell-default-dictionary nil
+        ispell-dictionary "en_US"
+        ispell-local-dictionary "en_US"
+        ispell-program-name "/usr/bin/aspell")
   (push "\\*flypell.*\\*" helm-boring-buffer-regexp-list)
   (add-hook 'text-mode-hook 'flyspell-mode))
 
