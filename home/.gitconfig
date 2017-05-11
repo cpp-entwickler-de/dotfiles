@@ -20,7 +20,7 @@ excludesfile = ~/.gitignore
 attributesFile = ~/.gitattributes
 
 # Use emacs for editing
-editor = "emacsclient -a \"\""
+editor = "emacsclient --alternate-editor=\"\" --eval '(cpped-maybe-create-new-frame)'"
 
 
 [color]
