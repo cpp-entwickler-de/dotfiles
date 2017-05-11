@@ -28,7 +28,7 @@
           (file-argument ""))
       (when file
         (setq file-argument (format " %S" (car file)))
-        (shell-command (format "emacsclient --no-wait --alternate-editor=\"\" --eval '(cpped-maybe-create-new-frame%s)'" file-argument)))
+        (shell-command (format "emacsclient --no-wait --alternate-editor=\"\" --eval '(cpped-maybe-create-new-frame %s)'" file-argument)))
       (kill-emacs))))
 #+END_SRC
 
