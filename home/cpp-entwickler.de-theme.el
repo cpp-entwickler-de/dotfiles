@@ -1,5 +1,5 @@
 (deftheme cpp-entwickler.de
-  "Created 2017-03-29.")
+  "Created 2017-05-18.")
 
 (custom-theme-set-faces
  'cpp-entwickler.de
@@ -125,7 +125,6 @@
  '(company-scrollbar-bg ((t (:inherit company-tooltip))))
  '(company-scrollbar-fg ((t (:background "white smoke"))))
  '(org-date ((t (:background "RoyalBlue4" :foreground "white smoke"))))
- '(default ((t (:inherit nil :stipple nil :background "gray5" :foreground "white smoke" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight semi-bold :height 100 :width normal :foundry "ADBO" :family "Source Code Pro"))))
  '(ediff-even-diff-Ancestor ((t (:inherit ediff-odd-diff-Ancestor))))
  '(ediff-odd-diff-A ((t (:background "coral1" :distant-foreground "white smoke"))))
  '(ediff-fine-diff-Ancestor ((t (:background "RoyalBlue3"))))
@@ -141,6 +140,8 @@
  '(ediff-current-diff-C ((((class color) (min-colors 88) (background light)) (:background "#ffffaa")) (((class color) (min-colors 88) (background dark)) (:background "#888833")) (((class color) (min-colors 16)) (:background "Pink" :foreground "Navy")) (((class color)) (:weight bold :background "yellow3" :foreground "cyan3")) (t (:inverse-video t))))
  '(ediff-even-diff-A ((t (:inherit ediff-odd-diff-A))))
  '(ediff-even-diff-B ((t (:inherit ediff-odd-diff-B))))
- '(ediff-even-diff-C ((t (:inherit ediff-odd-diff-C)))))
+ '(ediff-even-diff-C ((t (:inherit ediff-odd-diff-C))))
+ '(flycheck-okay ((t (:foreground "black" :background "light green" :inherit flycheck-error))))
+ '(default ((t (:inherit nil :stipple nil :background "gray5" :foreground "white smoke" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight semi-bold :height 100 :width normal :foundry "ADBO" :family "Source Code Pro")))))
 
 (provide-theme 'cpp-entwickler.de)

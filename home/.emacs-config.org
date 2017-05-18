@@ -501,20 +501,29 @@ Find path of current position in XML docuement
 
 *** Syntax Check
 #+BEGIN_SRC emacs-lisp
-(defun powerline-flycheck-status (icon-face)
+(defface flycheck-okay '((t :inherit default))
+  "Flycheck Okay")
+
+(defun cpped-flycheck-status-face ()
+  (pcase flycheck-last-status-change
+    (`errored 'flycheck-error)
+    (`finished
+       (if flycheck-current-errors
+                          (let-alist (flycheck-count-errors flycheck-current-errors)
+                            (cond (.error 'flycheck-error)
+                                  (.warning 'flycheck-warning)
+                                  (.info 'flycheck-info)))
+         'flycheck-okay))
+    (_ 'flycheck-warning)))
+
+(defun powerline-flycheck-status ()
   (when (and (boundp 'flycheck-last-status-change)
              (not (equal flycheck-last-status-change 'no-checker)))
     (let* ((issues (if (and (equal flycheck-last-status-change 'finished)
                             flycheck-current-errors)
                        (let-alist (flycheck-count-errors flycheck-current-errors)
-                         (+ (or .warning 0) (or .error 0)))
-                     0))
-           (show-warning (or (> issues 0)
-                             (pcase flycheck-last-status-change
-                               (`errored t)
-                               (`interrupted t)
-                               (`suspicious t)
-                               (_ nil)))))
+                         (+ (or .warning 0) (or .error 0) (or .info 0)))
+                     0)))
       (concat
        (propertize (all-the-icons-faicon (pcase flycheck-last-status-change
                                            (`finished (if (> issues 0) "exclamation-triangle" "check"))
@@ -525,10 +534,7 @@ Find path of current position in XML docuement
                                            (`suspicious "exclamation-triangle")
                                            (_ "power-off")))
                    'face (list ':family (all-the-icons-faicon-family)
-                               ':foreground (face-attribute (if show-warning
-                                                                'warning
-                                                              icon-face) :foreground)
-                               ':background (face-attribute icon-face :background))
+                               ':background (face-attribute (cpped-flycheck-status-face) :background))
                    'display '(raise -0.0))
        " "
        (propertize (pcase flycheck-last-status-change
@@ -543,6 +549,8 @@ Find path of current position in XML docuement
                      (`interrupted "Interrupted")
                      (`suspicious "Error")
                      (_ "Disabled"))
+                   'face (list ':weight 'bold
+                               ':background (face-attribute (cpped-flycheck-status-face) :background))
                    'help-echo "Show Flycheck Errors"
                    'local-map (make-mode-line-mouse-map
                                'mouse-1 (lambda ()
@@ -606,9 +614,10 @@ Find path of current position in XML docuement
                           (show-project (not (= 0 (length project-id))))
                           (current-function (powerline-which-function (symbol-value 'face1)))
                           (show-function (not (= 0 (length current-function))))
-                          (check-status (powerline-flycheck-status (symbol-value 'face2)))
+                          (check-status (powerline-flycheck-status))
                           (show-check-status (not (= 0 (length check-status))))
-                          (lhs (list 
+                          (check-face (cpped-flycheck-status-face))
+                          (lhs (list
                                 (when show-project
                                   (powerline-raw project-id face1 'l))
                                 (when show-project
@@ -632,13 +641,13 @@ Find path of current position in XML docuement
                                 (when show-function
                                   (funcall separator-left face1 mode-line))
                                 (powerline-raw (format-mode-line 'global-mode-string) mode-line)))
-                          (rhs (list 
+                          (rhs (list
                                 (when show-check-status
-                                  (funcall separator-right mode-line face2))
+                                  (funcall separator-right mode-line check-face))
                                 (when show-check-status
-                                  (powerline-raw check-status face2))
+                                  (powerline-raw check-status check-face))
                                 (when show-check-status
-                                  (funcall separator-right face2 mode-line))
+                                  (funcall separator-right check-face mode-line))
                                 (powerline-raw (powerline-date) mode-line 'l)
                                 (funcall separator-right mode-line face1)
                                (powerline-raw (powerline-time face1) face1 'r))))
