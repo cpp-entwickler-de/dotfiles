@@ -2893,6 +2893,14 @@ Documentation
   (add-hook 'emacs-lisp-mode-hook 'hl-sexp-mode))
 #+END_SRC
 
+**** [[https://github.com/cpitclaudel/easy-escape][Simplify Regular Expressions]]
+#+BEGIN_SRC emacs-lisp
+(use-package easy-escape
+  :config
+  (add-hook 'lisp-mode-hook 'easy-escape-minor-mode)
+  (add-hook 'emacs-lisp-mode-hook 'easy-escape-minor-mode))
+#+END_SRC
+
 **** Auto-completion
 #+BEGIN_SRC emacs-lisp
 (add-hook 'elisp-mode-hook (lambda()
