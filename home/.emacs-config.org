@@ -313,24 +313,23 @@ Disable prettification if cursor is at edge of expression
 *** Buffer name
 Helper function to figure out version control root directory
 #+BEGIN_SRC emacs-lisp
-(defun powerline-buffer-id ()
-  (let* ((home-dir (getenv "HOME"))
-         (filename (when buffer-file-name
-                     (file-truename buffer-file-name)))
-         (project-root (or (cpped-project-dir)
-                           (when (and filename
-                                      home-dir
-                                      (string-equal (substring filename 0 (length home-dir)) home-dir))
+(with-eval-after-load "projectile"
+  (defun powerline-buffer-id ()
+    (let* ((home-dir (getenv "HOME"))
+           (filename (when buffer-file-name
+                       (file-truename buffer-file-name)))
+           (project-root (or (cpped-project-dir)
+                             (when (and filename
+                                        home-dir
+                                        (string-equal (substring filename 0 (length home-dir)) home-dir))
                              home-dir)))
-         (relative-path (when filename
-                          (let ((directory (file-name-directory (if project-root
-                                                                    (file-relative-name filename project-root)
-                                                                  filename))))
-                            (when directory
-                              (file-name-as-directory directory)))))
-         (buffer-name (format-mode-line "%b"))
-         (special-buffer (string-match "^\\*.*\\*$" buffer-name)))
-    (concat
+           (relative-path (when filename
+                            (file-name-directory (if project-root
+                                                     (file-relative-name filename project-root)
+                                                   filename))))
+           (buffer-name (format-mode-line "%b"))
+           (special-buffer (string-match "^\\*.*\\*$" buffer-name)))
+      (concat
      (when relative-path
        (propertize relative-path
                    'face (list ':weight 'light)))
@@ -338,7 +337,7 @@ Helper function to figure out version control root directory
          (propertize (replace-regexp-in-string "^\\*\\(.*\\)\\*$" "\\1" buffer-name)
                      'face (list ':weight 'normal ':slant 'italic))
        (propertize buffer-name
-                   'face (list ':weight 'black))))))
+                   'face (list ':weight 'black)))))))
 #+END_SRC
 
 *** Git Info
