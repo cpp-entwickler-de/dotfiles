@@ -270,29 +270,33 @@ Disable prettification if cursor is at edge of expression
           (projectile-project-root))
         (let ((backend (vc-deduce-backend)))
           (when backend
-            (ignore-errors (vc-call-backend backend 'root default-directory)))))))
+            (ignore-errors (vc-call-backend backend 'root default-directory))))))
 
-(defun powerline-project-id (icon-face)
-  (when buffer-file-name
-    (let ((project-name (if (and (ignore-errors (projectile-project-p))
-                                 (fboundp 'projectile-project-name)
-                                 (projectile-project-name))
-                            (projectile-project-name)
-                          (let ((backend (vc-deduce-backend)))
-                            (when backend
-                              (file-name-nondirectory (directory-file-name (file-name-directory (ignore-errors (vc-call-backend backend 'root default-directory))))))))))
-      (when (not (= 0 (length project-name)))
-        (concat (propertize (all-the-icons-faicon "folder")
-                            'face (list ':family (all-the-icons-faicon-family)
-                                        ':background (face-attribute icon-face :background))
-                            'display '(raise -0.0))
-                " "
-                (propertize project-name
-                            'help-echo (cpped-project-dir)
-                            'local-map (make-mode-line-mouse-map
-                                        'mouse-1 (lambda ()
-                                                   (interactive)
-                                                   (projectile-switch-project)))))))))
+  (defun powerline-project-id (icon-face)
+    (when buffer-file-name
+      (let ((project-name (if (and (ignore-errors (projectile-project-p))
+                                   (fboundp 'projectile-project-name)
+                                   (projectile-project-name))
+                              (projectile-project-name)
+                            (let ((backend (vc-deduce-backend)))
+                              (when backend
+                                (file-name-nondirectory (directory-file-name (file-name-directory (ignore-errors (vc-call-backend backend 'root default-directory))))))))))
+        (concat
+         (propertize (all-the-icons-faicon (cond ((not (= 0 (length project-name))) "folder")
+                                                 ((string-prefix-p (getenv "HOME") buffer-file-name) "home")
+                                                 ((tramp-tramp-file-p buffer-file-name) "cloud")
+                                                 (t "desktop")))
+                                'face (list ':family (all-the-icons-faicon-family)
+                                            ':background (face-attribute icon-face :background))
+                                'display '(raise -0.0))
+         (when (not (= 0 (length project-name)))
+           (concat " "
+                   (propertize project-name
+                               'help-echo (cpped-project-dir)
+                               'local-map (make-mode-line-mouse-map
+                                           'mouse-1 (lambda ()
+                                                      (interactive)
+                                                      (projectile-switch-project)))))))))))
 #+END_SRC
 
 *** Major mode icon
