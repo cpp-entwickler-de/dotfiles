@@ -62,6 +62,7 @@
 *** Shell
 - PackageKit-command-not-found
 - autojump-zsh
+- devscripts-checkbashisms
 - imagemagick
 - links
 - recode
@@ -2976,8 +2977,15 @@ Documentation
 
 ***** Syntax checkers
 #+BEGIN_SRC emacs-lisp
+(use-package flycheck-checkbashisms
+  :after flycheck
+  :config (add-to-list 'flycheck-checkers 'sh-checkbashisms t))
+
 (add-hook 'sh-mode-hook (lambda ()
-                            (flycheck-select-checker 'sh-shellcheck)))
+                          (flycheck-select-checker 'sh-bash)
+                          (flycheck-add-next-checker 'sh-bash '(t . sh-zsh))
+                          (flycheck-add-next-checker 'sh-zsh '(t . sh-checkbashisms))
+                          (flycheck-add-next-checker 'sh-checkbashisms '(t . sh-shellcheck))))
 #+END_SRC
 
 **** BASH
