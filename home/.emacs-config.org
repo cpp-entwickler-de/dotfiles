@@ -2168,11 +2168,11 @@ Handler to close buffer after quitting ccmake.
   "Face used for info text."
   :group 'hl-todo)
 
-(defface hl-todo-warning'((t :inherit warning))
+(defface hl-todo-warning '((t :inherit warning))
   "Face used for warning text."
   :group 'hl-todo)
 
-(defface hl-todo-error'((t :inherit error))
+(defface hl-todo-error '((t :inherit error))
   "Face used for error text."
   :group 'hl-todo)
 
