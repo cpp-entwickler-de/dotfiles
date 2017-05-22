@@ -2471,11 +2471,12 @@ Custom error highlighting (colored line under location)
                                 (local-set-key (kbd "RET") 'c-context-line-break)))
 #+END_SRC
 
-***** TODO Insert license comment
+***** Insert license comment
 #+BEGIN_SRC emacs-lisp
 (use-package legalese
   :config
   (setq legalese-date-format "%Y-%m-%d"
+        legalese-default-license 'gpl
         legalese-templates '((emacs-lisp-mode (nil ";;; " legalese-file-name " --- " _ "\n;;\n"
                                                    ";; Copyright © " legalese-year "  " legalese-copyright "\n;;\n"
                                                    ";; Author: " legalese-author "\n;;\n"
@@ -2484,16 +2485,30 @@ Custom error highlighting (colored line under location)
                                                    @
                                                    '(legalese-license)
                                                    @ ";;\n;;\n"
-                                                   ";;; Commentary: \n;;\n"
-                                                   ";;; Code: \n\n"
-                                                   "(provide '" legalese-file ")\n\n"
-                                                   ";;; " legalese-file-name " ends here\n"))
-                             (default (nil @ legalese-file-name "\n\n"
-                                             "Copyright © " legalese-year " " legalese-copyright "\n\n"
-                                             "Author: "
-                                             legalese-author "\n\n"
-                                             '(legalese-license)
-                                             @ "\n"))))
+                                                     ";;; Commentary: \n;;\n"
+                                                     ";;; Code: \n\n"
+                                                     "(provide '" legalese-file ")\n\n"
+                                                     ";;; " legalese-file-name " ends here\n"))))
+  (if (not (= 0 (length company-full-name)))
+      (progn
+        (add-to-list 'legalese-templates '(c++-mode (nil
+                                                     "/**\n"
+                                                     " * " legalese-file-name "\n\n"
+                                                     " * @date " legalese-date "\n"
+                                                     " * @author " legalese-author "\n"
+                                                     " * @copyright Copyright © " company-full-name ". All rights reserved.\n"
+                                                     " */")))
+        (add-to-list 'legalese-templates '(default (nil @ legalese-file-name "\n\n"
+                                                          "Date: " legalese-date "\n"
+                                                          "Author: " legalese-author "\n"
+                                                          "Copyright © " company-full-name ". All rights reserved.\n"
+                                                          @ "\n")) t))
+    (add-to-list 'legalese-templates '(default (nil @ legalese-file-name "\n\n"
+                                                      "Copyright © " legalese-year " " legalese-copyright "\n\n"
+                                                      "Author: "
+                                                      legalese-author "\n\n"
+                                                      '(legalese-license)
+                                                      @ "\n"))))
   (add-hook 'prog-mode-hook  (lambda ()
                                (when (= (buffer-size (current-buffer)) 0)
                                  (legalese nil)))))
