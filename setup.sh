@@ -78,6 +78,8 @@ if [ "$LINKS" = TRUE ]; then
         USER_NAME=$(/bin/grep -P "^$(whoami):" /etc/passwd | cut -f5 -d:)
         read -e -p "Please enter your full name:     " -i "$USER_NAME" USER_NAME
         read -e -p "Please enter your email address: " -i "$(whoami)@$(dnsdomainname)" EMAIL
+        read -e -p "Please enter the (short) company name: " COMPANY_NAME
+        read -e -p "Please enter the full company name: " -i "$COMPANY_NAME" COMPANY_FULL_NAME
 
         if [ -e "$GIT_USER_FILE" ]; then
             mv "$GIT_USER_FILE" "$GIT_USER_FILE"".bak"
@@ -114,7 +116,9 @@ if [ "$LINKS" = TRUE ]; then
             mv "$EMACS_USER_FILE" "$EMACS_USER_FILE"".bak"
         fi
         echo "(defvar username \"$(whoami)\")
-(setq user-full-name \"$USER_NAME\"
+(setq company-name \"$COMPANY_NAME\"
+      company-full-name \"$COMPANY_FULL_NAME\"
+      user-full-name \"$USER_NAME\"
       user-mail-address \"$EMAIL\"
       calendar-latitude $LATITUDE
       calendar-longitude $LONGITUDE
