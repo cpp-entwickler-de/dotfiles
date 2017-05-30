@@ -314,6 +314,8 @@ Disable prettification if cursor is at edge of expression
 *** Buffer name
 Helper function to figure out version control root directory
 #+BEGIN_SRC emacs-lisp
+(defvar cpped-buffer-names-alist nil "A list of buffer name transformations.")
+
 (with-eval-after-load "projectile"
   (defun powerline-buffer-id ()
     (let* ((home-dir (getenv "HOME"))
@@ -328,15 +330,17 @@ Helper function to figure out version control root directory
                             (file-name-directory (if project-root
                                                      (file-relative-name filename project-root)
                                                    filename))))
-           (buffer-name (format-mode-line "%b"))
+           (buffer-name (let ((name (format-mode-line "%b")))
+                          (or (cdr (assoc name cpped-buffer-names-alist))
+                              name)))
            (special-buffer (string-match "^\\*.*\\*$" buffer-name)))
-      (concat
-     (when relative-path
-       (propertize relative-path
-                   'face (list ':weight 'light)))
      (if special-buffer
          (propertize (replace-regexp-in-string "^\\*\\(.*\\)\\*$" "\\1" buffer-name)
                      'face (list ':weight 'normal ':slant 'italic))
+      (concat
+       (when relative-path
+         (propertize relative-path
+                     'face (list ':weight 'light)))
        (propertize buffer-name
                    'face (list ':weight 'black)))))))
 #+END_SRC
@@ -3290,6 +3294,14 @@ When using Magit >= 2.4.0
 (push (regexp-quote (file-name-nondirectory org-default-todos-file)) helm-boring-buffer-regexp-list)
 (push (regexp-quote (file-name-nondirectory org-default-events-file)) helm-boring-buffer-regexp-list)
 (push (regexp-quote (file-name-nondirectory org-default-notes-file)) helm-boring-buffer-regexp-list)
+#+END_SRC
+
+** Show special name for default buffers in mode line
+#+BEGIN_SRC emacs-lisp
+(push `(,(file-name-nondirectory org-default-bugs-file) . "*Bugs*") cpped-buffer-names-alist)
+(push `(,(file-name-nondirectory org-default-todos-file) . "*ToDos*") cpped-buffer-names-alist)
+(push `(,(file-name-nondirectory org-default-events-file) . "*Events*") cpped-buffer-names-alist)
+(push `(,(file-name-nondirectory org-default-notes-file) . "*Notes*") cpped-buffer-names-alist)
 #+END_SRC
 
 ** Create agenda files if necessary
