@@ -1,0 +1,5 @@
+{
+    "Prompt":        "Pattern:",
+    "InitialFilter": "Fuzzy",
+    "OnCancel":      "error"
+}

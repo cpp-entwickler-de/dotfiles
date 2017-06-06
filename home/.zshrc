@@ -186,12 +186,25 @@ alias cd..="cd .."
 alias cp="cp -i"
 alias du="du -h"
 alias gti="git"
+
+function helm()
+{
+    "$@" | peco --select-1
+}
+
+function kill()
+{
+    PID=${1:ps aux | peco --select-1 --query "$1" | tr -s " " | cut --delimiter=\  -f 2}
+    kill $PID
+}
+
 alias less="less -FNMsW"
 alias ls="ls -AFhl --color $*"
 alias lstree="ls -R $*"
 alias make="make -j"
 alias mkdir="mkdir -p"
 alias mv="mv -i"
+alias peco="peco --select-1"
 alias ps="ps aux"
 
 alias dos2unix="recode ibmpc..lat1"
