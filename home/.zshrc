@@ -206,6 +206,7 @@ alias mkdir="mkdir -p"
 alias mv="mv -i"
 alias peco="peco --select-1"
 alias ps="ps aux"
+alias yank="yank-cli"
 
 alias dos2unix="recode ibmpc..lat1"
 alias unix2dos="recode lat1..ibmpc"
