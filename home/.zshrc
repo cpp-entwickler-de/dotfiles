@@ -268,7 +268,7 @@ function user_host()
     fi
 }
 
-git_info()
+function git_info()
 {
     GIT_DIR=$(git rev-parse --git-dir 2>/dev/null)
     if [[ -n $GIT_DIR ]]; then
