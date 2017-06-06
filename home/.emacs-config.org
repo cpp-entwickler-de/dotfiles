@@ -37,44 +37,6 @@
 (load "~/.emacs.user" t t)
 #+END_SRC
 
-* External Packages
-** Programs
-*** Development
-- clang
-- colorgcc
-- cppcheck
-- gcc
-- gdb
-- kcachegrind
-- ninja-build
-- rtags
-- shellcheck
-- sloccount
-- uncrustify
-- valgrind
-*** PDF
-- mupdf
-- poppler-dev
-- poppler-glib-dev
-*** XML
-- xmllint
-- xmlstarlet
-*** Shell
-- PackageKit-command-not-found
-- autojump-zsh
-- devscripts-checkbashisms
-- imagemagick
-- links
-- recode
-- saxon
-- sushi
-- the_silver_searcher
-- util-linux-user
-- wordnet (thesaurus)
-- zsh
-** Fonts
-- Source Code Pro
-
 * Package Management
 ** [[https://github.com/tarsius/auto-compile][Automatically compile packages]]
 Do not load outdated byte code

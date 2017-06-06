@@ -3,6 +3,7 @@
 function show_help
 {
     echo "Usage:"
+    echo "    -packages        Install packages"
     echo "    --links          Create links for configuration files from this repository to ~/"
     echo "    --printers       Download and install pretty-printers for GDB"
     echo "    --fonts          Download and install special fonts for emacs"
@@ -17,6 +18,9 @@ fi
 
 for ARGUMENT in "$@"; do
     case $ARGUMENT in
+        --packages)
+        PACKAGES=true
+        ;;
         --links)
         LINKS=TRUE
         ;;
@@ -30,6 +34,7 @@ for ARGUMENT in "$@"; do
         DOCUMENTATION=TRUE
         ;;
         --all)
+        PACKAGES=true
         LINKS=TRUE
         PRINTERS=TRUE
         FONTS=TRUE
@@ -41,6 +46,13 @@ for ARGUMENT in "$@"; do
     esac
     shift
 done
+
+if [ "$PACKAGES" = TRUE ]; then
+    # install packages
+    sudo dnf install PackageKit-command-not-found adobe-source-code-pro-fonts adobe-source-sans-pro-fonts adobe-source-serif-pro-fonts autojump-zsh clang colorgcc cppcheck devscripts-checkbashisms emacs gcc gdb imagemagick kcachegrind links mupdf ninja-build poppler-dev poppler-glib-dev recode saxon shellcheck sloccount sushi the_silver_searcher uncrustify util-linux-user valgrind wordnet xmllint xmlstarlet yank zsh
+
+    echo "Install Peco from https://github.com/peco/peco and RTags from https://github.com/Andersbakken/rtags manually."
+fi
 
 if [ "$LINKS" = TRUE ]; then
     # set up symlinks
