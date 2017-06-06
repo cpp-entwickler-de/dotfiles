@@ -3273,6 +3273,7 @@ When using Magit >= 2.4.0
         org-refile-use-outline-path 'file
         org-refile-allow-creating-parent-nodes 'confirm
         org-src-fontify-natively t
+        org-fontify-done-headline t
         org-src-preserve-indentation t
         org-src-strip-leading-and-trailing-blank-lines t
         org-src-tab-acts-natively t
@@ -3285,6 +3286,7 @@ When using Magit >= 2.4.0
   (push '("*Org Agenda*" :position bottom :height 30) popwin:special-display-config)
   (push '("*Org Select*" :height 0.2 :position bottom :noselect nil :stick t) popwin:special-display-config)
   (push '("^CAPTURE-.+\*.org$" :position left :regexp t) popwin:special-display-config)
+  (font-lock-add-keywords 'org-mode `(("^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\|\\([0-9]+\\)/\\2\\)\\][^\n]*\n\\)" 1 'org-headline-done prepend)) 'append)
   (add-hook 'org-mode-hook (lambda()
                              (nlinum-mode -1)
                              (org-indent-mode))))

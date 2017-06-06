@@ -1,5 +1,5 @@
 (deftheme cpp-entwickler.de
-  "Created 2017-05-22.")
+  "Created 2017-06-01.")
 
 (custom-theme-set-faces
  'cpp-entwickler.de
@@ -114,7 +114,7 @@
  '(org-agenda-date ((t (:inherit helm-source-header))))
  '(org-agenda-date-today ((t (:inherit org-agenda-date))))
  '(org-agenda-date-weekend ((t (:inherit org-agenda-date :weight light))))
- '(org-headline-done ((t (:foreground "light green" :strike-through t :weight ultra-bold))))
+ '(org-headline-done ((t (:strike-through t :inherit shadow))))
  '(org-agenda-structure ((t (:inherit org-agenda-date))))
  '(company-preview ((t (:foreground "gray60"))))
  '(company-preview-common ((t (:inherit company-preview :weight bold))))
