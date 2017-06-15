@@ -225,8 +225,13 @@ Disable prettification if cursor is at edge of expression
 #+END_SRC
 
 ** Mode Line
-*** Project
+*** Base Location
 #+BEGIN_SRC emacs-lisp
+(defun cpped-tramp-file-remote-p (file)
+  "Checks if a tramp file is actually remote."
+  (and (tramp-tramp-file-p file)
+       (not (string-equal (tramp-file-name-host (tramp-dissect-file-name file)) "localhost"))))
+
 (with-eval-after-load "projectile"
   (defun cpped-project-dir ()
     (interactive)
@@ -237,7 +242,7 @@ Disable prettification if cursor is at edge of expression
           (when backend
             (ignore-errors (vc-call-backend backend 'root default-directory))))))
 
-  (defun powerline-project-id (icon-face)
+(defun powerline-project-id (icon-face)
     (when buffer-file-name
       (let ((project-name (if (and (ignore-errors (projectile-project-p))
                                    (fboundp 'projectile-project-name)
@@ -248,20 +253,27 @@ Disable prettification if cursor is at edge of expression
                                 (file-name-nondirectory (directory-file-name (file-name-directory (ignore-errors (vc-call-backend backend 'root default-directory))))))))))
         (concat
          (propertize (all-the-icons-faicon (cond ((not (= 0 (length project-name))) "folder")
-                                                 ((string-prefix-p (getenv "HOME") buffer-file-name) "home")
-                                                 ((tramp-tramp-file-p buffer-file-name) "cloud")
+                                                 ((and (not (cpped-tramp-file-remote-p buffer-file-name))
+                                                       (string-prefix-p (getenv "HOME")
+                                                                        (if (tramp-tramp-file-p buffer-file-name)
+                                                                            (tramp-file-name-localname (tramp-dissect-file-name buffer-file-name))
+                                                                          buffer-file-name))) "home")
+                                                 ((cpped-tramp-file-remote-p buffer-file-name) "cloud")
                                                  (t "desktop")))
                                 'face (list ':family (all-the-icons-faicon-family)
                                             ':background (face-attribute icon-face :background))
                                 'display '(raise -0.0))
-         (when (not (= 0 (length project-name)))
-           (concat " "
-                   (propertize project-name
-                               'help-echo (cpped-project-dir)
-                               'local-map (make-mode-line-mouse-map
-                                           'mouse-1 (lambda ()
-                                                      (interactive)
-                                                      (projectile-switch-project)))))))))))
+         (let ((location (if (cpped-tramp-file-remote-p buffer-file-name)
+                             tramp-current-host
+                           (when (not (= 0 (length project-name)))
+                             (propertize project-name
+                                         'help-echo (cpped-project-dir)
+                                         'local-map (make-mode-line-mouse-map
+                                                     'mouse-1 (lambda ()
+                                                                (interactive)
+                                                                (projectile-switch-project))))))))
+           (unless (= 0 (length location))
+               (concat " " location))))))))
 #+END_SRC
 
 *** Major mode icon
@@ -283,30 +295,34 @@ Helper function to figure out version control root directory
 (with-eval-after-load "projectile"
   (defun powerline-buffer-id ()
     (let* ((home-dir (getenv "HOME"))
+           (buffer-name (let ((name (if (and buffer-file-name
+                                             (tramp-tramp-file-p buffer-file-name))
+                                        (tramp-file-name-localname (tramp-dissect-file-name buffer-file-name))
+                                      (format-mode-line "%b"))))
+                          (or (cdr (assoc name cpped-special-buffer-names-alist))
+                              name)))
            (filename (when buffer-file-name
-                       (file-truename buffer-file-name)))
+                       (file-truename buffer-name)))
            (project-root (or (cpped-project-dir)
                              (when (and filename
                                         home-dir
                                         (string-equal (substring filename 0 (length home-dir)) home-dir))
-                             home-dir)))
+                               home-dir)))
            (relative-path (when filename
                             (file-name-directory (if project-root
                                                      (file-relative-name filename project-root)
                                                    filename))))
-           (buffer-name (let ((name (format-mode-line "%b")))
-                          (or (cdr (assoc name cpped-special-buffer-names-alist))
-                              name)))
-           (special-buffer (string-match "^\\*.*\\*$" buffer-name)))
-     (if special-buffer
-         (propertize (replace-regexp-in-string "^\\*\\(.*\\)\\*$" "\\1" buffer-name)
-                     'face (list ':weight 'normal ':slant 'italic))
-      (concat
-       (when relative-path
-         (propertize relative-path
-                     'face (list ':weight 'light)))
-       (propertize buffer-name
-                   'face (list ':weight 'black)))))))
+
+           (special-buffer (string-match "^\\*.*\\*?$" buffer-name)))
+      (if special-buffer
+          (propertize (replace-regexp-in-string "^\\*\\([^\*]*\\)\\*?$" "\\1" buffer-name)
+                      'face (list ':weight 'normal ':slant 'italic))
+        (concat
+         (when relative-path
+           (propertize relative-path
+                       'face (list ':weight 'light)))
+         (propertize (file-name-nondirectory buffer-name)
+                     'face (list ':weight 'black)))))))
 #+END_SRC
 
 *** Git Info
@@ -332,7 +348,7 @@ Helper function to figure out version control root directory
 *** Show if file is remote
 #+BEGIN_SRC emacs-lisp
 (defun powerline-remote (icon-face)
-  (when (file-remote-p default-directory)
+  (when (cpped-tramp-file-remote-p default-directory)
     (propertize (all-the-icons-faicon "cloud")
                 'face (list ':family (all-the-icons-faicon-family)
                             ':background (face-attribute icon-face :background))
@@ -356,11 +372,12 @@ Helper function to figure out version control root directory
   (propertize (pcase (format-mode-line "%*")
                 (`"*" (all-the-icons-faicon "pencil"))
                 (`"-"
-                 (if (and buffer-file-name
-                          vc-mode)
-                     (if (string-equal (vc-state buffer-file-name) 'edited)
-                         (all-the-icons-faicon "floppy-o")
-                       (all-the-icons-faicon "cloud"))
+                 (if buffer-file-name
+                     (if vc-mode
+                         (if (string-equal (vc-state buffer-file-name) 'edited)
+                             (all-the-icons-faicon "floppy-o")
+                           (all-the-icons-faicon "cloud"))
+                       (all-the-icons-faicon "floppy-o"))
                    (all-the-icons-faicon "star")))
                 (`"%" (all-the-icons-faicon "lock"))
                 (_ (all-the-icons-faicon "question")))
