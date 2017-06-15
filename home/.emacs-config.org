@@ -276,7 +276,7 @@ Disable prettification if cursor is at edge of expression
 *** Buffer name
 Helper function to figure out version control root directory
 #+BEGIN_SRC emacs-lisp
-(defvar cpped-buffer-names-alist nil "A list of buffer name transformations.")
+(defvar cpped-special-buffer-names-alist nil "A list of buffer name transformations.")
 
 (with-eval-after-load "projectile"
   (defun powerline-buffer-id ()
@@ -293,7 +293,7 @@ Helper function to figure out version control root directory
                                                      (file-relative-name filename project-root)
                                                    filename))))
            (buffer-name (let ((name (format-mode-line "%b")))
-                          (or (cdr (assoc name cpped-buffer-names-alist))
+                          (or (cdr (assoc name cpped-special-buffer-names-alist))
                               name)))
            (special-buffer (string-match "^\\*.*\\*$" buffer-name)))
      (if special-buffer
@@ -3277,10 +3277,10 @@ When using Magit >= 2.4.0
 
 ** Show special name for default buffers in mode line
 #+BEGIN_SRC emacs-lisp
-(push `(,(file-name-nondirectory org-default-bugs-file) . "*Bugs*") cpped-buffer-names-alist)
-(push `(,(file-name-nondirectory org-default-todos-file) . "*ToDos*") cpped-buffer-names-alist)
-(push `(,(file-name-nondirectory org-default-events-file) . "*Events*") cpped-buffer-names-alist)
-(push `(,(file-name-nondirectory org-default-notes-file) . "*Notes*") cpped-buffer-names-alist)
+(push `(,(file-name-nondirectory org-default-bugs-file) . "*Bugs*") cpped-special-buffer-names-alist)
+(push `(,(file-name-nondirectory org-default-todos-file) . "*ToDos*") cpped-special-buffer-names-alist)
+(push `(,(file-name-nondirectory org-default-events-file) . "*Events*") cpped-special-buffer-names-alist)
+(push `(,(file-name-nondirectory org-default-notes-file) . "*Notes*") cpped-special-buffer-names-alist)
 #+END_SRC
 
 ** Create agenda files if necessary
