@@ -353,12 +353,13 @@ Helper function to figure out version control root directory
 (defun powerline-modified (icon-face)
   (propertize (pcase (format-mode-line "%*")
                 (`"*" (all-the-icons-faicon "pencil"))
-                (`"-"  
+                (`"-"
                  (if (and buffer-file-name
-                          vc-mode
-                          (string-equal (vc-state buffer-file-name) 'edited))
-                     (all-the-icons-faicon "floppy-o")
-                   (all-the-icons-faicon "cloud")))
+                          vc-mode)
+                     (if (string-equal (vc-state buffer-file-name) 'edited)
+                         (all-the-icons-faicon "floppy-o")
+                       (all-the-icons-faicon "cloud"))
+                   (all-the-icons-faicon "star")))
                 (`"%" (all-the-icons-faicon "lock"))
                 (_ (all-the-icons-faicon "question")))
               'face (list ':family (all-the-icons-faicon-family)
