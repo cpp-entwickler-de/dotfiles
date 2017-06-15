@@ -1812,7 +1812,10 @@ Some useful abbreviations
 ** [[https://github.com/bastibe/annotate.el][Annotations]]
 #+BEGIN_SRC emacs-lisp
 (use-package annotate
-  :config (setq annotate-file "~/.emacs.d/annotations"))
+  :config
+  (setq annotate-file "~/.emacs.d/annotations")
+  (add-hook 'find-file-hooks (lambda ()
+                               (annotate-mode))))
 #+END_SRC
 
 ** Utilities
