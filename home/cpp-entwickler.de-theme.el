@@ -1,5 +1,5 @@
 (deftheme cpp-entwickler.de
-  "Created 2017-06-01.")
+  "Created 2017-06-09.")
 
 (custom-theme-set-faces
  'cpp-entwickler.de
@@ -142,6 +142,12 @@
  '(ediff-even-diff-B ((t (:inherit ediff-odd-diff-B))))
  '(ediff-even-diff-C ((t (:inherit ediff-odd-diff-C))))
  '(flycheck-okay ((t (:foreground "black" :background "light green" :inherit flycheck-error))))
- '(default ((t (:inherit nil :stipple nil :background "gray5" :foreground "white smoke" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight semi-bold :height 100 :width normal :foundry "ADBO" :family "Source Code Pro")))))
+ '(vr/match-separator-face ((((class color)) (:bold t :foreground "red")) (t (:inverse-video t))))
+ '(vr/match-0 ((((class color) (background light)) (:background "lightblue")) (((class color) (background dark)) (:background "steelblue4")) (t (:inverse-video t))))
+ '(vr/match-1 ((((class color) (background light)) (:background "pale turquoise")) (((class color) (background dark)) (:background "dodgerblue4")) (t (:inverse-video t))))
+ '(vr/group-0 ((((class color) (background light)) (:background "aquamarine")) (((class color) (background dark)) (:background "blue3")) (t (:inverse-video t))))
+ '(vr/group-1 ((((class color) (background light)) (:background "springgreen")) (((class color) (background dark)) (:background "chartreuse4")) (t (:inverse-video t))))
+ '(vr/group-2 ((((min-colors 88) (class color) (background light)) (:background "yellow1")) (((class color) (background light)) (:background "yellow")) (((class color) (background dark)) (:background "sienna4")) (t (:inverse-video t))))
+ '(default ((t (:inherit nil :stipple nil :background "gray5" :foreground "white smoke" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight semi-bold :height 100 :width normal :foundry "ADBO" :family "Source Code Pro"))))
 
 (provide-theme 'cpp-entwickler.de)

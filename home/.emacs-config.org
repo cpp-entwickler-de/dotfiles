@@ -1686,6 +1686,14 @@ Save system clipboard contents to kill ring before killing
 (use-package sort-words)
 #+END_SRC
 
+*** [[https://github.com/benma/visual-regexp.el][Visual regular expressions]]
+#+BEGIN_SRC emacs-lisp
+(use-package visual-regexp)
+
+(use-package visual-regexp-steroids
+  :after visual-regexp)
+#+END_SRC
+
 *** Automatic insert
 **** Typographic characters
 #+BEGIN_SRC emacs-lisp
