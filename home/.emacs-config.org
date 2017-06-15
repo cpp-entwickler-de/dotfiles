@@ -219,7 +219,9 @@ Disable prettification if cursor is at edge of expression
 
 ** Theme
 #+BEGIN_SRC emacs-lisp
-(load-theme 'cpp-entwickler.de t)
+(defvar cpped-theme 'cpp-entwickler.de "The default theme")
+
+(load-theme cpped-theme t)
 #+END_SRC
 
 ** Mode Line
