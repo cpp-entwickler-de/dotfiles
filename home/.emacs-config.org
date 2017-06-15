@@ -1868,6 +1868,15 @@ Some useful abbreviations
         (call-interactively #'dictcc)))))
 #+END_SRC
 
+* Binaries
+Open binary files in hexl-mode
+#+BEGIN_SRC emacs-lisp
+(add-hook 'find-file-hooks (lambda ()
+                             (with-current-buffer (current-buffer)
+                               (when (eq buffer-file-coding-system 'no-conversion)
+                                 (hexl-mode)))))
+#+END_SRC
+
 * Programming
 ** Projects
 *** CMake
