@@ -149,5 +149,7 @@
  '(vr/group-1 ((((class color) (background light)) (:background "springgreen")) (((class color) (background dark)) (:background "chartreuse4")) (t (:inverse-video t))))
  '(vr/group-2 ((((min-colors 88) (class color) (background light)) (:background "yellow1")) (((class color) (background light)) (:background "yellow")) (((class color) (background dark)) (:background "sienna4")) (t (:inverse-video t))))
  '(default ((t (:inherit nil :stipple nil :background "gray5" :foreground "white smoke" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight semi-bold :height 100 :width normal :foundry "ADBO" :family "Source Code Pro"))))
+ '(num3-face-even ((t nil)))
+ '(num3-face-odd ((t (:inverse-video t)))))
 
 (provide-theme 'cpp-entwickler.de)
