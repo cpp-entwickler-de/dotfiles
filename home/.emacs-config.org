@@ -1198,7 +1198,7 @@ Always use a fixed width for line numbers (maximum number length)
   :config
   (setq recentf-max-saved-items 200
         recentf-max-menu-items 15
-        recentf-auto-save-timer (run-with-idle-timer 600 t
+        recentf-auto-save-timer (run-with-idle-timer 300 t
                                                      'recentf-save-list))
   (recentf-mode t))
 #+END_SRC
