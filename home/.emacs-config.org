@@ -1097,6 +1097,11 @@ Always use a fixed width for line numbers (maximum number length)
 #+END_SRC
 
 ** Help
+*** [[https://github.com/Wilfred/helpful][Better Help Buffer]]
+#+BEGIN_SRC emacs-lisp
+(use-package helpful)
+#+END_SRC
+
 *** [[https://github.com/justbur/emacs-which-key][Show available keys after entering prefix]]
 #+BEGIN_SRC emacs-lisp
 (use-package which-key
