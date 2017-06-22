@@ -1688,6 +1688,17 @@ Save system clipboard contents to kill ring before killing
   (ws-butler-global-mode))
 #+END_SRC
 
+*** Allow adding a newline to the end of the current line, regardless of point position
+#+BEGIN_SRC emacs-lisp
+(defun cpped-newline-after-current-line ()
+  "Moves to the end of the current line and inserts a newline."
+  (interactive)
+  (end-of-line)
+  (newline-and-indent))
+
+(global-set-key (kbd "<C-return>") 'cpped-newline-after-current-line)
+#+END_SRC
+
 *** Cut/copy whole line if no region is active
 #+BEGIN_SRC emacs-lisp
 (use-package whole-line-or-region
