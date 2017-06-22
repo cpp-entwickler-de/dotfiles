@@ -238,9 +238,10 @@ Disable prettification if cursor is at edge of expression
     (or (when (and (ignore-errors (projectile-project-p))
                    (fboundp 'projectile-project-root))
           (projectile-project-root))
-        (let ((backend (vc-deduce-backend)))
-          (when backend
-            (ignore-errors (vc-call-backend backend 'root default-directory))))))
+        (when vc-mode
+          (let ((backend (vc-deduce-backend)))
+            (when backend
+              (ignore-errors (vc-call-backend backend 'root default-directory)))))))
 
 (defun powerline-project-id (icon-face)
     (when buffer-file-name
@@ -248,9 +249,10 @@ Disable prettification if cursor is at edge of expression
                                    (fboundp 'projectile-project-name)
                                    (projectile-project-name))
                               (projectile-project-name)
-                            (let ((backend (vc-deduce-backend)))
-                              (when backend
-                                (file-name-nondirectory (directory-file-name (file-name-directory (ignore-errors (vc-call-backend backend 'root default-directory))))))))))
+                            (when vc-mode
+                              (let ((backend (vc-deduce-backend)))
+                                (when backend
+                                  (file-name-nondirectory (directory-file-name (file-name-directory (ignore-errors (vc-call-backend backend 'root default-directory)))))))))))
         (concat
          (propertize (all-the-icons-faicon (cond ((not (= 0 (length project-name))) "folder")
                                                  ((and (not (cpped-tramp-file-remote-p buffer-file-name))
