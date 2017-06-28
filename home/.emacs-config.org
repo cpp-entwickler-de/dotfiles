@@ -1096,6 +1096,12 @@ Always use a fixed width for line numbers (maximum number length)
   (add-hook 'eshell-mode-hook 'with-editor-export-editor))
 #+END_SRC
 
+*** [[https://github.com/riscy/bifocal-mode][Split buffer on scroll to show both scrolled position and tail]]
+#+BEGIN_SRC emacs-lisp
+(use-package bifocal
+  :config (bifocal-global-mode 1))
+#+END_SRC
+
 ** Help
 *** [[https://github.com/Wilfred/helpful][Better Help Buffer]]
 #+BEGIN_SRC emacs-lisp
