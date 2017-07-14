@@ -672,7 +672,7 @@ Find path of current position in XML docuement
   :config
   (setq helm-buffer-max-length nil
         helm-buffers-fuzzy-matching t
-        helm-candidate-number-limit 200
+        helm-candidate-number-limit 5000
         helm-case-fold-search t
         helm-comp-read-case-fold-search 'Ignore\ case
         helm-grep-ignored-directories '("SCCS" "RCS" "CVS" "MCVS" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" ".gvfs" "branches" "tags")
