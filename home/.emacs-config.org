@@ -663,12 +663,6 @@ Find path of current position in XML docuement
 #+BEGIN_SRC emacs-lisp
 (use-package helm
   :after popwin
-  :bind
-  (("C-c h" . helm-command-prefix)
-   ("M-x" . helm-M-x)
-   ("M-y" . helm-show-kill-ring)
-   ("C-x C-f" . helm-find-files)
-   ("C-x C-b" . helm-buffers-list))
   :config
   (setq helm-buffer-max-length nil
         helm-buffers-fuzzy-matching t
@@ -712,7 +706,6 @@ Find path of current position in XML docuement
 #+BEGIN_SRC emacs-lisp
 (use-package helm-projectile
   :after (helm projectile)
-  :bind ("M-g g" . helm-projectile-ag)
   :config (helm-projectile-on))
 #+END_SRC
 
@@ -780,7 +773,6 @@ Find path of current position in XML docuement
     (when (ignore-errors (projectile-project-p))
       '(helm-source-projectile-files-list))
     '(helm-source-buffer-not-found)) "*helm-buffers*"))
-(global-set-key (kbd "C-x b") 'cpped-switch-buffer)
 #+END_SRC
 
 Switch to previous buffer
@@ -788,8 +780,6 @@ Switch to previous buffer
 (defun cpped-previous-buffer ()
   (interactive)
   (switch-to-buffer (other-buffer (current-buffer) 1)))
-
-(global-set-key (kbd "C-x p") 'cpped-previous-buffer)
 #+END_SRC
 
 *** Scratch Buffer
@@ -818,10 +808,6 @@ Switch to previous buffer
   (push '(compilation-mode :dedicated t :position bottom :height 30) popwin:special-display-config)
   (push '(help-mode :dedicated t :position bottom :height 40) popwin:special-display-config)
   (popwin-mode 1))
-
-(global-set-key (kbd "C-c m") (lambda ()
-                                (interactive)
-                                (popwin:display-buffer "*Messages*")))
 #+END_SRC
 
 *** Add path if required to make buffer name unique
@@ -834,9 +820,7 @@ Switch to previous buffer
 
 *** [[https://github.com/dimitri/switch-window][Use smarter window switching (numbered windows)]]
 #+BEGIN_SRC emacs-lisp
-(use-package switch-window
-  :config
-  (global-set-key (kbd "C-<tab>") 'switch-window))
+(use-package switch-window)
 #+END_SRC
 
 *** Do not show buffer boundaries in fringe
@@ -869,8 +853,6 @@ Switch to previous buffer
                (buffer-modified-p))
       (save-buffer))
     (kill-buffer)))
-
-(global-set-key (kbd "C-x k") 'cpped-kill-default-buffer)
 #+END_SRC
 
 *** Do not ask before killing buffer with running processes
@@ -882,7 +864,6 @@ Switch to previous buffer
 
 *** Multi-buffer kill
 #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-x C-k") 'clean-buffer-list)
 (defvar clean-buffer-list-delay-general 1)
 #+END_SRC
 
@@ -991,9 +972,6 @@ Always use a fixed width for line numbers (maximum number length)
   (global-undo-tree-mode)
   (setq undo-tree-visualizer-timestamps t
         undo-tree-visualizer-diff t)
-  (global-set-key (kbd "C-z") 'undo-tree-undo)
-  (global-set-key (kbd "M-z") 'undo-tree-redo)
-  (global-set-key (kbd "C-M-z") 'undo-tree-visualize)
   (push '(" *undo-tree*" :dedicated t :width 60 :position right) popwin:special-display-config))
 #+END_SRC
 
@@ -1207,7 +1185,6 @@ Always use a fixed width for line numbers (maximum number length)
 *** [[https://www.emacswiki.org/emacs/RecentFiles][Recent files]]
 #+BEGIN_SRC emacs-lisp
 (use-package recentf
-  :bind ("C-x C-r" . helm-recentf)
   :config
   (setq recentf-max-saved-items 200
         recentf-max-menu-items 15
@@ -1512,21 +1489,9 @@ Always use a fixed width for line numbers (maximum number length)
 (setq sentence-end-double-space nil)
 #+END_SRC
 
-*** Go to line
-#+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "M-g l") 'goto-line)
-#+END_SRC
-
-*** Go to directory
-#+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "M-g .") 'dired-jump)
-#+END_SRC
-
 *** Jump to other instances of symbol
 #+BEGIN_SRC emacs-lisp
 (use-package smartscan
-  :bind (("M-g n" . smartscan-symbol-go-forward)
-         ("M-g p" . smartscan-symbol-go-backward))
   :config (global-smartscan-mode 1))
 #+END_SRC
 
@@ -1542,8 +1507,7 @@ Always use a fixed width for line numbers (maximum number length)
 
 *** [[https://github.com/camdez/goto-last-change.el][Jump to last change]]
 #+BEGIN_SRC emacs-lisp
-(use-package goto-last-change
-  :bind ("M-g e" . goto-last-change))
+(use-package goto-last-change)
 #+END_SRC
 
 *** URIs
@@ -1561,13 +1525,7 @@ Always use a fixed width for line numbers (maximum number length)
       (ace-link-addr))))
 
 (use-package ace-link
-  :bind ("M-g w" . cpped-jump-to-url)
   :config (ace-link-setup-default))
-#+END_SRC
-
-*** Find with google
-#+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "M-g i") 'helm-google-suggest)
 #+END_SRC
 
 ** Editing
@@ -1594,24 +1552,14 @@ Always use a fixed width for line numbers (maximum number length)
 (defvar whitespace-style '(face))
 #+END_SRC
 
-*** Indent new lines
-#+BEGIN_SRC emacs-lips
-(global-set-key (kbd "RET") 'newline-and-indent)
-#+END_SRC
-
 *** [[https://gitlab.com/emacs-stuff/indent-tools][Indent tools]]
 #+BEGIN_SRC emacs-lisp
-(use-package indent-tools
-  :bind ("C-c >" . indent-tools-hydra/body))
+(use-package indent-tools)
 #+END_SRC
 
 *** Upper/lower case
 #+BEGIN_SRC emacs-lisp
-(use-package fix-word
-  :bind
-  (("M-u" . fix-word-upcase)
-   ("M-l" . fix-word-downcase)
-   ("M-c" . fix-word-capitalize)))
+(use-package fix-word)
 #+END_SRC
 
 *** [[https://github.com/davidshepherd7/aggressive-fill-paragraph-mode][Auto-fill paragraphs]]
@@ -1624,14 +1572,12 @@ Always use a fixed width for line numbers (maximum number length)
 
 *** Easier escaping
 #+BEGIN_SRC emacs-lisp
-(use-package string-edit
-  :bind ("C-c \"" . string-edit-at-point))
+(use-package string-edit)
 #+END_SRC
 
 *** Expand selection
 #+BEGIN_SRC emacs-lisp
-(use-package expand-region
-  :bind ("C-S-e" . er/expand-region))
+(use-package expand-region)
 #+END_SRC
 
 *** Clipboard
@@ -1663,11 +1609,6 @@ Save system clipboard contents to kill ring before killing
 *** Move text
 #+BEGIN_SRC emacs-lisp
 (use-package smart-shift
-  :bind
-  (("S-M-<up>" . smart-shift-up)
-   ("S-M-<down>" . smart-shift-down)
-   ("S-M-<left>" . smart-shift-left)
-   ("S-M-<right>" . smart-shift-right))
   :config (global-smart-shift-mode 1))
 #+END_SRC
 
@@ -1701,8 +1642,6 @@ Save system clipboard contents to kill ring before killing
   (interactive)
   (end-of-line)
   (newline-and-indent))
-
-(global-set-key (kbd "<C-return>") 'cpped-newline-after-current-line)
 #+END_SRC
 
 *** Cut/copy whole line if no region is active
@@ -1713,8 +1652,7 @@ Save system clipboard contents to kill ring before killing
 
 *** [[https://github.com/ongaeshi/duplicate-thing][Duplicate lines/regions]]
 #+BEGIN_SRC emacs-lisp
-(use-package duplicate-thing
-  :bind ("C-x d" . duplicate-thing))
+(use-package duplicate-thing)
 #+END_SRC
 *** Case-insensitive line sorting
 #+BEGIN_SRC emacs-lisp
@@ -1845,8 +1783,7 @@ Some useful abbreviations
   (add-hook 'text-mode-hook 'flyspell-mode))
 
 (use-package helm-flyspell
-  :after (helm flyspell)
-  :bind ("C-c s" . helm-flyspell-correct))
+  :after (helm flyspell))
 #+END_SRC
 
 *** [[https://github.com/nschum/auto-dictionary-mode][Automatic dictionary selection]]
@@ -1877,8 +1814,7 @@ Some useful abbreviations
 
 *** [[https://github.com/netromdk/describe-number][Convert numbers]]
 #+BEGIN_SRC emacs-lisp
-(use-package describe-number
-  :bind ("M-?" . describe-number-at-point))
+(use-package describe-number)
 #+END_SRC
 
 *** [[https://github.com/cqql/dictcc.el][Translate text]]
@@ -2148,8 +2084,6 @@ Handler to close buffer after quitting ccmake.
   (when target
     (compile (concat "cmake --build " cmake-ide-build-dir " --target " target))
     (cmake-ide--run-rc)))
-
-(global-set-key (kbd "<f8>") 'cpped-build-target)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -2210,7 +2144,6 @@ Handler to close buffer after quitting ccmake.
                                 ("NOTE" . hl-todo-info)
                                 ("TODO" . hl-todo-warning)
                                 ("XXX" . hl-todo-warning)))
-  (define-key hl-todo-mode-map (kbd "M-g i") 'hl-todo-next)
   (add-hook 'prog-mode-hook (lambda ()
                               (hl-todo-mode 1))))
 #+END_SRC
@@ -2228,9 +2161,6 @@ Handler to close buffer after quitting ccmake.
 ***** [[https://github.com/gregsexton/origami.el][Folding]]
 #+BEGIN_SRC emacs-lisp
 (use-package origami
-  :bind
-  (("M-f" . origami-forward-toggle-node)
-   ("M-F" . origami-recursively-toggle-node))
   :config
   (add-hook 'prog-mode-hook 'origami-mode)
   (add-hook 'origami-mode-hook (lambda ()
@@ -2242,19 +2172,9 @@ Handler to close buffer after quitting ccmake.
 (add-hook 'prog-mode-hook (lambda () (subword-mode 1)))
 #+END_SRC
 
-***** S-EXPR
-#+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "M-g <left>") 'backward-sexp)
-(global-set-key (kbd "M-g <right>") 'forward-sexp)
-#+END_SRC
-
 ***** [[https://github.com/magnars/smart-forward.el][Smart forward/backward]]
 #+BEGIN_SRC emacs-lisp
-(use-package smart-forward
-  :bind (("M-<up>" . smart-up)
-         ("M-<down>" . smart-down)
-         ("M-<left>" . smart-backward)
-         ("M-<right>" . smart-forward)))
+(use-package smart-forward)
 #+END_SRC
 
 **** Editing
@@ -2271,8 +2191,7 @@ Handler to close buffer after quitting ccmake.
 
 ***** [[https://github.com/remyferre/comment-dwim-2][Smarter commenting]]
 #+BEGIN_SRC emacs-lisp
-(use-package comment-dwim-2
-  :bind ("C-c c" . comment-dwim-2))
+(use-package comment-dwim-2)
 #+END_SRC
 
 ***** [[https://github.com/victorhge/iedit][Edit all occurences within function]]
@@ -2303,10 +2222,7 @@ Handler to close buffer after quitting ccmake.
 
 ***** Change numbers
 #+BEGIN_SRC emacs-lisp
-(use-package shift-number
-  :bind
-  (("M-+" . shift-number-up)
-   ("M--" . shift-number-down)))
+(use-package shift-number)
 #+END_SRC
 
 ***** [[https://github.com/AdamNiederer/0xc][Convert number formats]]
@@ -2333,14 +2249,14 @@ Handler to close buffer after quitting ccmake.
   (add-hook 'after-init-hook 'global-company-mode))
 
 (use-package helm-company
-  :after (helm company)
-  :bind (:map company-mode-map
-              ("C-:" . helm-company)
-              ("C-:" . helm-company)))
+  :after (helm company))
 
 (use-package company-statistics
   :after company
   :config (company-statistics-mode))
+
+(use-package company-quickhelp
+  :config (company-quickhelp-mode 1))
 #+END_SRC
 
 ***** Automatic spacing
@@ -2378,7 +2294,6 @@ Handler to close buffer after quitting ccmake.
 #+BEGIN_SRC emacs-lisp
 (use-package flycheck
   :after (helm popwin)
-  :bind (:map flycheck-mode-map ("C-c ! h" . helm-flycheck))
   :config
   (setq flycheck-idle-change-delay 0.3
         flycheck-display-errors-delay 0.2
@@ -2439,8 +2354,7 @@ Custom error highlighting (colored line under location)
 
 ***** Flip booleans
 #+BEGIN_SRC emacs-lisp
-(use-package bool-flip
-  :bind ("C-c b" . bool-flip-do-flip))
+(use-package bool-flip)
 #+END_SRC
 
 **** Compilation
@@ -2476,7 +2390,6 @@ Custom error highlighting (colored line under location)
 **** Documentation
 #+BEGIN_SRC emacs-lisp
 (use-package helm-dash
-  :bind ("M-g d" . helm-dash-at-point)
   :config
   (setq helm-dash-browser-func 'browse-url
         helm-dash-docsets-url "https://api.github.com/repos/Kapeli/feeds/contents/"))
@@ -2639,22 +2552,6 @@ Custom error highlighting (colored line under location)
   (add-hook 'c-mode-common-hook 'rtags-start-process-unless-running))
 #+END_SRC
 
-***** Jump to function
-#+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "M-g f") 'rtags-find-file)
-(global-set-key (kbd "M-g m") 'helm-imenu)
-#+END_SRC
-
-***** Jump to declaration
-#+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "M-g s") 'rtags-find-symbol-at-point)
-#+END_SRC
-
-***** Find references
-#+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "M-g r") 'rtags-find-references-at-point)
-#+END_SRC
-
 **** Editing
 ***** Auto-newline
 #+BEGIN_SRC emacs-lisp
@@ -2742,18 +2639,12 @@ Custom error highlighting (colored line under location)
 ****** Clang
 #+BEGIN_SRC emacs-lisp
 (use-package clang-format
-  :bind
-  (("C-c f c" . clang-format)
-   ("C-c f C" . clang-format-buffer))
   :config (setq clang-format-executable "clang-format-4.0"))
 #+END_SRC
 
 ****** [[https://github.com/koko1000ban/emacs-uncrustify-mode][Uncrustify]]
 #+BEGIN_SRC emacs-lisp
-  (use-package uncrustify-mode
-    :bind
-    (("C-c f u" . uncrustify)
-     ("C-c f U" . uncrustify-buffer)))
+  (use-package uncrustify-mode)
 #+END_SRC
 
 ***** Syntax checkers
@@ -3185,9 +3076,7 @@ When using Magit >= 2.4.0
 #+BEGIN_SRC emacs-lisp
 (use-package magit
   :after helm
-  :bind (("C-c g" . magit-status)
-         :map magit-status-mode-map
-         ("q" . magit-quit-session))
+  :bind (:map magit-status-mode-map ("q" . magit-quit-session))
   :config
   (setq magit-log-arguments '("--graph"
                               "--color"
@@ -3230,8 +3119,7 @@ When using Magit >= 2.4.0
 
 **** [[https://github.com/syohex/emacs-git-messenger][Show commit message of line on request]]
 #+BEGIN_SRC emacs-lisp
-(use-package git-messenger
-  :bind ("C-x v p" . git-messenger:popup-message))
+(use-package git-messenger)
 #+END_SRC
 
 **** [[https://github.com/pidu/git-timemachine][Switch to previous version]]
@@ -3242,8 +3130,7 @@ When using Magit >= 2.4.0
 **** [[https://github.com/emacs-helm/helm-ls-git][Browse other git projects with helm]]
 #+BEGIN_SRC emacs-lisp
 (use-package helm-ls-git
-  :after helm
-  :bind ("C-x C-g" . helm-browse-project))
+  :after helm)
 #+END_SRC
 * Viewer
 ** Man Pages
@@ -3858,6 +3745,665 @@ Do not use scientific form so quickly
 
 (use-package helm-tramp
   :after (helm tramp))
+#+END_SRC
+
+* [[https://github.com/abo-abo/hydra][Keybindings]]
+** Use Escape instead of C-g
+#+BEGIN_SRC emacs-lisp
+(define-key key-translation-map (kbd "ESC") (kbd "C-g"))
+#+END_SRC
+
+** Helm
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "M-x") 'helm-M-x)
+#+END_SRC
+
+** Hydra
+#+BEGIN_SRC emacs-lisp
+(use-package hydra)
+#+END_SRC
+
+** Projects
+#+BEGIN_SRC emacs-lisp
+(defhydra cpped-hydra-projects (:exit t :hint nil)
+  "
+☰ Project 📁 %s(projectile-project-root)%s(if cmake-ide-build-dir
+                                (concat \" 🛠 \" cmake-ide-build-dir)
+                               \"\")
+
+CMake              ^^Git           ^^Directories         ^^Shell
+  _o_: Load            _g_: Status     _/_: Project          _#_: Project directory
+  _c_: Configure                     ^^_._: Current          _$_: Current directory
+  _r_: Reconfigure                   ^^_d_: Subdirectory     q_%_: Build directory
+  _-_: Reset                         ^^_b_: Build
+  _x_: Close
+"
+  ("o" cpped-load-project)
+  ("c" cpped-cmake-configure)
+  ("r" cpped-cmake-reconfigure)
+  ("-" cpped-cmake-reset)
+  ("x" projectile-kill-buffers)
+  ("g" magit-status)
+  ("/" projectile-dired)
+  ("." dired-jump)
+  ("d" projectile-find-dir)
+  ("b" (lambda ()
+         (interactive)
+         (if cmake-ide-build-dir
+             (dired cmake-ide-build-dir))))
+  ("#" cpped-eshell-project-dir)
+  ("$" eshell)
+  ("%" cpped-eshell-build-dir))
+
+(global-set-key (kbd "C-p") #'cpped-hydra-projects/body)
+#+END_SRC
+
+** Files
+
+
+; in helm ("F" find-file-other-window "open in other window") action
+;("S-s" sudo-edit "open as root") action
+   ; integrate ("S-r" helm-projectile-recentf "recent project file")
+
+#+BEGIN_SRC emacs-lisp
+(defhydra cpped-hydra-files (:exit t :hint nil)
+  "
+☰ File
+
+Open                         ^^Save           ^^Close                  ^^Switch               ^^Version                  ^^Display                       ^^File                           ^^^^^^Encoding
+      _o_: Open                  _s_: Save        _x_: File                _SPC_: Switch file     _v_: Show old version      _h_: Hexadecimal mode           _d_: Delete                      ^^^^_C-d_: DOS
+      _r_: Recent                _a_: Save as     _X_: Other files           _l_: Last file                                ^^_!_: Toggle read-only mode      _m_: Rename                      ^^^^_C-u_: UNIX
+      _p_: From project                         ^^_w_: File and window                                                                                 ^^^^^^_c_: Copy name to clipboard
+      _P_: From all projects                    ^^_u_: Unused files                                                                                    ^^^^^^_._: Open directory
+                                                                                                                                                 ^^^^^^^^^^^^_+_: Show Directory Tree
+      _j_: Header/Source
+      _T_: Test
+  _<RET>_: File under cursor
+
+      _t_: ToDos
+      _b_: Bugs
+      _n_: Notes
+      _e_: Events
+"
+  ("o" helm-find-files)
+  ("r" helm-recentf)
+  ("p" helm-browse-project)
+  ("P" helm-projectile-find-file-in-known-projects)
+  ("j" helm-projectile-find-other-file :exit nil)
+  ("T" projectile-toggle-between-implementation-and-test :exit nil)
+  ("<RET>" helm-projectile-find-file-dwim)
+  ("t" (lambda()
+         (interactive)
+         (find-file org-default-todos-file)))
+  ("b" (lambda()
+         (interactive)
+         (find-file org-default-bugs-file)))
+  ("n" (lambda()
+         (interactive)
+         (find-file org-default-notes-file)))
+  ("e" (lambda()
+         (interactive)
+         (find-file org-default-events-file)))
+
+  ("s" save-buffer)
+  ("a" cpped-save-copy)
+
+  ("x" cpped-kill-default-buffer)
+  ("X" crux-kill-other-buffers)
+  ("w" kill-buffer-and-window)
+  ("u" clean-buffer-list)
+
+  ("SPC" helm-buffers-list :exit nil);cpped-switch-buffer :exit nil)  ;; in helm ("S-o" switch-to-buffer-other-window "switch buffer in other window")
+;helm-buffers-list
+  ("l" cpped-previous-buffer :exit nil)
+
+  ("v" git-timemachine)
+  ("d" crux-delete-file-and-buffer)
+  ("m" crux-rename-file-and-buffer)
+  ("C-d" cpped-unix2dos)
+  ("C-u" cpped-dos2unix)
+  ("!" (lambda ()
+         (interactive)
+         (when buffer-read-only
+           (read-only-mode)
+           (when buffer-file-name
+             (unless (file-writable-p buffer-file-name)
+               (sudo-edit-current-file))))))
+  ("h" hexl-mode)
+  ("c" cpped-copy-file-name-to-clipboard)
+  ("." dired-jump)
+  ("+" neotree-toggle))
+
+(global-set-key (kbd "C-f") 'cpped-hydra-files/body)
+(global-set-key (kbd "M-^") 'cpped-switch-buffer)
+#+END_SRC
+
+** Info
+#+BEGIN_SRC emacs-lisp
+(defhydra cpped-hydra-info (:exit t :hint nil)
+  "
+☰ Information
+
+Text                    ^^Code                                ^^Version Control         ^^System             ^^Other
+  _#_: Number               _y_: Symbol Info                      _c_: Commit Message       _p_: Processes       _a_: Agenda
+  _t_: Translate            _d_: Documentation                    _b_: Blame                _m_: Man page        _n_: Notes
+  _s_: Synonym              _r_: References                                                                  ^^^^_w_: Weather
+  _g_: Google               _-_: Dependencies
+  _o_: Preview markdown     _v_: Enum value
+  _._: Cursor               _i_: Include files for symbol
+                          ^^_f_: Functions called
+                          ^^_+_: Preprocess
+                          ^^_l_: Count lines of code
+
+                          ^^_D_: Toggle shell documentation
+"
+  ("#" describe-number-at-point)
+  ("t" cpped-show-translation)
+  ("s" synosaurus-lookup)
+  ("g" helm-google-suggest)
+  ("o" flymd-flyit)
+  ("." what-cursor-position)
+  ("y" rtags-summary)
+  ("d" helm-dash-at-point)
+  ("r" rtags-find-all-references-at-point)
+  ("-" rtags-dependencies-tree)
+  ("v" rtags-print-enum-value-at-point)
+  ("i" rtags-get-include-files-for-symbol)
+  ("f" rtags-find-functions-called-by-this-function)
+  ("+" rtags-preprocess-file)
+  ("l" cpped-sloccount)
+  ("c" git-messenger:popup-message)
+  ("b" magit-blame-popup)
+  ("p" helm-top)
+  ("m" helm-man-woman)
+  ("a" (org-agenda nil "d"))
+  ("n" (org-agenda nil "n"))
+  ("D" shelldoc-toggle-doc-window)
+  ("w" wttrin))
+
+(global-set-key (kbd "C-ß") 'cpped-hydra-info/body)
+
+(global-set-key (kbd "C-c m") (lambda ()
+                                (interactive)
+                                (popwin:display-buffer "*Messages*")))
+
+#+END_SRC
+
+** Navigation
+#+BEGIN_SRC emacs-lisp
+(defhydra cpped-hydra-flyspell (:exit nil :columns 1)
+  "
+☰ Spell Check
+"
+  ("C-y" flyspell-goto-next-error "Next error")
+  ("C-c" helm-flyspell-auto-correct "Correct"))
+
+(defhydra cpped-hydra-flycheck (:exit nil :columns 1)
+"
+☰ Code Check
+"
+  ("C-S-e" flycheck-previous-error  "Previous error")
+  ("C-e" flycheck-next-error "Next error")
+  ("C-w" flycheck-copy-errors-as-kill "Copy errors" :exit t)
+  ("C-x" flycheck-clear "Clear errors" :exit t))
+
+(defhydra cpped-hydra-navigation (:exit nil :hint nil)
+  "
+☰ Navigation
+
+Text                           ^^Code                                 Marker                     ^^Diff                 ^^Other
+   _<left>_: Left                  _C-S-s_: Previous S-EXPR          _C-S-i_: Previous instance      _C-S-h_: Previous hunk   _C-c_: Last change
+  _<right>_: Right                   _C-s_: Next S-EXPR                _C-i_: Next instance          _C-h_: Next hunk         _C-u_: URL
+ _C-<left>_: Previous word             _w_: Up block                 _C-S-t_: Previous ToDo                                   ^^_C-q_: XQuery
+_C-<right>_: Next word                 _y_: Down block                 _C-t_: Next ToDo                                       ^^_C-x_: XPath
+   _<home>_: Beginning of line         _q_: Left block               _C-S-e_: Previous error
+    _<end>_: End of line           _C-S-f_: Beginning of function      _C-e_: Next error
+     _<up>_: Previous line           _C-f_: End of function          _C-S-a_: Previous Annotation
+   _<down>_: Next line               _C-s_: Symbol declaration         _C-a_: Next Annotation
+   _<C-up>_: Previous paragraph      _C-m_: Function
+ _<C-down>_: Next paragraph        _C-S-m_: Function (all buffers)
+ _<C-home>_: Begining of file
+  _<C-end>_: End of file
+    _C-S-l_: Previous list
+      _C-l_: Next list
+      _C-j_: jump to character
+      _C-l_: Line
+"
+  ("<left>" left-char)
+  ("<right>" right-char)
+  ("C-<left>" left-word)
+  ("C-<right>" right-word)
+  ("<home>" crux-move-beginning-of-line)
+  ("<end>" end-of-visual-line)
+  ("<up>" previous-line)
+  ("<down>" next-line)
+  ("<C-up>" backward-paragraph)
+  ("<C-down>" forward-paragraph)
+  ("<C-home>" beginning-of-buffer)
+  ("<C-end>" end-of-buffer)
+  ("C-S-l" backward-up-list)
+  ("C-l" down-list)
+  ("C-j" ace-jump-char-mode :exit t)
+  ("C-l" goto-line :exit t)
+
+  ("C-S-s" backward-sexp)
+  ("C-s" forward-sexp)
+  ("w" smart-up)
+  ("y" smart-down)
+  ("q" smart-left)
+  ("d" smart-right)
+  ("C-S-f" beginning-of-defun)
+  ("C-f" end-of-defun)
+  ("C-s" rtags-find-symbol-at-point :exit t)
+  ("C-m" helm-imenu :exit t)
+  ("C-S-m" helm-imenu-in-all-buffers :exit t)
+
+  ("C-S-i" smartscan-symbol-go-backward)
+  ("C-i" smartscan-symbol-go-forward)
+  ("C-S-t" hl-todo-previous)
+  ("C-t" hl-todo-next)
+  ("C-S-e" (lambda()
+             (interactive)
+             (flycheck-previous-error)
+             (cpped-hydra-flycheck/body) :exit t))
+  ("C-e" (lambda()
+           (interactive)
+           (flycheck-next-error)
+           (cpped-hydra-flycheck/body) :exit t))
+  ("C-y" (lambda ()
+           (interactive)
+           (flyspell-goto-next-error)
+           (cpped-hydra-flyspell/body)) :exit t)
+  ("C-S-a" annotate-previous-annotation)
+  ("C-a" annotate-next-annotation)
+
+  ("C-S-h" diff-hl-previous-hunk)
+  ("C-h" diff-hl-next-hunk)
+
+  ("C-c" goto-last-change :exit t)
+  ("C-u" cpped-jump-to-url :exit t)
+  ("C-q" xquery-tool-query :exit t)
+  ("C-x" helm-x-path-walker :exit t))
+
+(global-set-key (kbd "C-<left>") 'left-word)
+(global-set-key (kbd "C-<right>") 'right-word)
+(global-set-key (kbd "<home>") 'crux-move-beginning-of-line)
+(global-set-key (kbd "<end>") 'end-of-visual-line)
+(global-set-key (kbd "C-<up>") 'backward-paragraph)
+(global-set-key (kbd "C-<down>") 'forward-paragraph)
+(global-set-key (kbd "C-<home>") 'beginning-of-buffer)
+(global-set-key (kbd "C-<end>") 'end-of-buffer)
+
+(global-set-key (kbd "C-n") 'cpped-hydra-navigation/body)
+(global-set-key (kbd "C-j") 'ace-jump-char-mode)
+#+END_SRC
+
+** Folding
+#+BEGIN_SRC emacs-lisp
+(defhydra cpped-hydra-fold (:exit t :columns 1)
+  "
+☰ Fold
+"
+  ("f" origami-forward-toggle-node "(un)fold")
+  ("r" origami-recursive-toggle-node "(un)fold recursive")
+  ("a" origami-toggle-all-nodes "(un)fold all nodes")
+  ("n" cpped-narrow-or-widen-dwim "narrow/widen"))
+
+(global-set-key (kbd "C-+") 'cpped-hydra-fold/body)
+#+END_SRC
+
+** Finding
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-s") 'helm-swoop)
+(global-set-key (kbd "C-S-s") 'helm-projectile-ag)
+(global-set-key (kbd "M-s") 'helm-ag-buffers)
+#+END_SRC
+
+** Mark
+#+BEGIN_SRC emacs-lisp
+(defhydra cpped-hydra-mark (:exit nil :hint nil :foreign-keys run :pre (set-mark (point)))
+  "
+☰ Mark
+
+Mark                            ^^Modify                        ^^Act
+  _w_: Word                        _+_: Expand region              _c_: Copy
+  _s_: S-EXPR                      _x_: Exchange mark and point    _d_: Delete
+  _f_: Function                                                  ^^_k_: Kill
+  _b_: Everything before cursor
+  _a_: Everything after cursor
+  _e_: Everything
+"
+  ("w" mark-word)
+  ("s" mark-sexp)
+  ("f" mark-defun)
+  ("+" er/expand-region)
+  ("x" exchange-point-and-mark)
+  ("b" mark-buffer-before-point)
+  ("a" mark-buffer-after-point)
+  ("e" mark-whole-buffer)
+  ("c" (lambda ()
+         (interactive)
+         (kill-ring-save nil nil t)) :exit t)
+  ("d" (lambda ()
+         (interactive)
+         (call-interactively #'delete-region)) :exit t)
+  ("k" (lambda ()
+         (interactive)
+         (kill-region nil nil t)) :exit t))
+
+(global-set-key (kbd "C-SPC") #'cpped-hydra-mark/body)
+#+END_SRC
+
+** Editing
+#+BEGIN_SRC emacs-lisp
+(defhydra cpped-hydra-edit-case (:exit t :columns 1)
+  "
+☰ Change Case
+"
+  ("u" fix-word-upcase "Upper case")
+  ("l" fix-word-downcase "Lower case")
+  ("c" fix-word-capitalize "Capitalize")
+  ("i" string-inflection-cycle "Change inflection" :exit nil))
+
+(defhydra cpped-hydra-edit-insert (:exit t :hint nil)
+  "
+☰ Insert
+
+Date         ^^Time         ^^Timestamp    ^^Block          ^^Special
+  _d_: local     _t_: local     _s_: local     _3_: License     _u_: Unicode Character
+  _D_: ISO                    ^^_S_: ISO       _f_: File
+                                         ^^^^^^_c_: Snippet
+"
+  ("d" cpped-insert-date)
+  ("D" cpped-insert-iso-date)
+  ("t" cpped-insert-time)
+  ("s" cpped-insert-timestamp)
+  ("S" cpped-insert-iso-timestamp)
+  ("3" legalese)
+  ("f" insert-file)
+  ("c" yas-insert-snippet)
+  ("u" helm-ucs :exit nil))
+
+(defhydra cpped-hydra-edit-sort (:exit t :columns 1)
+  "
+☰ Sort
+"
+  ("L" sort-lines "Lines")
+  ("l" cpped-sort-lines-case-insensitive "Lines (case insensitive)")
+  ("w" sort-words "Words"))
+
+(defhydra cpped-hydra-edit-move (:exit t :hint nil)
+  "
+☰ Move
+
+    ^^↑
+    ^_w_
+← _a_   _d_ →
+    ^_s_
+    ^^↓
+"
+  ("w" smart-shift-up)
+  ("s" smart-shift-down)
+  ("a" smart-shift-left)
+  ("d" smart-shift-right))
+
+(defhydra cpped-hydra-edit-transpose (:exit t :columns 1)
+  "
+☰ Transpose
+"
+     ("c" transpose-chars "Characters")
+     ("w" (lambda ()
+            (interactive)
+            (if (equal major-mode 'org-mode)
+                org-transpose-words
+              transpose-words)) "Words")
+     ("l" transpose-lines "Lines")
+     ("s" transpose-sentences "Sentences")
+     ("e" org-transpose-elements "Org mode elements")
+     ("p" transpose-paragraphs "Paragraphs")
+     ("t" org-table-transpose-table-at-point "Org mode table"))
+
+(defhydra cpped-hydra-edit (:exit t :hint nil)
+  "
+☰ Edit
+
+                           ^^Rename           ^^Replace           ^^Change          ^^^Format                ^^Text             ^^Code                         ^^Annotation
+  _d_: Duplicate               _n_: Local         _r_: Regex          _c_: Case         ^_>_: Indentation        _t_: Translate     _c_: Comment                   _a_: Add
+  _D_: Duplicate & Comment     _N_: File-wide     _p_: in Project     _\"_: String       _m_: Move               _y_: Synonym       _e_: Evaluate                  _A_: Clear all
+  _+_: Insert                                                     ^^^^_+_: Value +      ^_j_: Join lines         _l_: Spelling      _E_: Evaluate & Replace
+  _'_: Quoted insert                                              ^^^^_-_: Value -      ^_:_: Fill paragraph     _s_: Sort          _f_: Format (Selection)
+  _<_: Complete                                                   ^^^^_#_: Base                               ^^^_x_: Transpose     _F_: Format (File)
+  _g_: Edit area                                                  ^^^^_1_: Flip bool                                           ^^^^^_u_: Uncrustify (Selection)
+  ___: Overwrite Mode                                                                                                    ^^^^^^^^^^^_U_: Uncrustify (File)
+"
+  ("d" crux-duplicate-current-line-or-region)
+  ("D" crux-duplicate-and-comment-current-line-or-region)
+  ("+" cpped-hydra-edit-insert/body :exit t)
+  ("'" quoted-insert)
+  ("<" helm-company)
+  ("g" org-edit-special)
+  ("_" overwrite-mode)
+
+  ("n" iedit-dwim)
+  ("N" iedit)
+
+  ("r" vr/query-replace)
+  ("p" projectile-replace)
+
+  ("c" cpped-hydra-edit-case/body :exit t)
+  ("\"" string-edit-at-point)
+  ("#" 0xc-convert-point)
+  ("+" shift-number-up)
+  ("-" shift-number-down)
+  ("1" bool-flip-do-flip)
+
+  (">" indent-tools-hydra/body :exit t)
+  ("m" cpped-hydra-edit-move/body :exit t)
+  ("j" crux-top-join-line)
+  (":" fill-paragraph)
+
+  ("t" cpped-translate-word-or-region)
+  ("y" synosaurus-choose-and-replace)
+  ("l" helm-flyspell-correct)
+  ("s" cpped-hydra-edit-sort/body :exit t)
+  ("x" cpped-hydra-edit-transpose/body :exit t)
+
+  ("c" comment-dwim2)
+  ("e" eval-last-sexp)
+  ("E" crux-eval-and-replace)
+  ("f" clang-format)
+  ("F" clang-format-buffer)
+  ("u" uncrustify)
+  ("U" uncrustify-buffer)
+
+  ("a" annotate-annotate)
+  ("A" annotate-clear-annotations))
+
+(global-set-key (kbd "C-e") 'cpped-hydra-edit/body)
+#+END_SRC
+
+
+*** Indent new lines
+#+BEGIN_SRC emacs-lips
+(global-set-key (kbd "RET") 'newline-and-indent)
+(global-set-key (kbd "<C-return>") 'cpped-newline-after-current-line)
+#+END_SRC
+
+*** Undo/Redo
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-z") #'undo-tree-undo)
+(global-set-key (kbd "C-S-z") #'undo-tree-redo)
+(global-set-key (kbd "M-z") #'undo-tree-visualize)
+#+END_SRC
+
+*** Kill/yank
+#+BEGIN_SRC emacs-lisp
+(defhydra cpped-hydra-kill (:exit nil)
+"
+☰ Cut / Delete
+
+Cut                   ^^Delete
+_k_: line or region       _SPC_: limit to one space
+_K_: line (back)          _C-SPC_: blank lines
+_w_: word
+_W_: word (back)
+_s_: sentence
+_S_: sentence (back)
+_x_: expression
+_X_: expression (back)
+"
+("k" whole-line-or-region-kill-region :exit t)
+("K" cpped-backward-kill-dwim)
+("w" kill-word)
+("W" backward-kill-word)
+("s" kill-sentence)
+("S" backward-kill-sentence)
+("x" kill-sexp)
+("X" backward-kill-sexp)
+("SPC" just-one-space)
+("C-SPC" delete-blank-lines))
+
+(global-set-key (kbd "C-k") #'cpped-hydra-kill/body)
+
+(defhydra cpped-hydra-yank (:hint nil :exit nil)
+  ("C-y" whole-line-or-region-yank :exit nil)
+  ("M-y" helm-show-kill-ring :exit t))
+
+(global-set-key (kbd "C-y") #'cpped-hydra-yank/whole-line-or-region-yank)
+(global-set-key (kbd "M-y") #'helm-show-kill-ring)
+#+END_SRC
+** Remote
+#+BEGIN_SRC emacs-lisp
+(defhydra cpped-hydra-remote (:exit t :columns 1)
+  "
+☰ Remote
+"
+  ("t" cpped-serial-terminal "Serial Terminal")
+  ("s" helm-tramp "Remote Shell"))
+
+(global-set-key (kbd "C-r") 'cpped-hydra-remote/body)
+#+END_SRC
+
+** Windows
+#+BEGIN_SRC emacs-lisp
+(defhydra cpped-hydra-windows (:exit nil :hint nil)
+  "
+☰ Window Management
+
+Focus                ^^Close                ^^Split               ^^Align               ^^View
+  _\\^_: Switch window     _x_: Window            _v_: Vertically       _t_: Swap windows     _<left>_: Scroll left
+                       ^^_X_: Other windows     _h_: Horizontally     _+_: Enlarge         _<right>_: Scroll right
+                       ^^_q_: Frame                                 ^^_-_: Shrink           _<C-up>_: Scroll other window up
+                                                                                  ^^^^^^^^_<C-down>_: Scroll other window down
+                                                                                  ^^^^^^^^_<C-home>_; Beginning of other window
+                                                                                   ^^^^^^^^_<C-end>_: End of other window
+                                                                                         ^^^^^^^^_1_: Toggle line numbers
+                                                                                         ^^^^^^^^_#_: Toggle relative line numbers
+"
+  ("x" delete-window :exit t)
+  ("X" delete-other-windows :exit t)
+  ("^" (lambda ()
+         (interactive)
+         (call-interactively #'switch-window)) :exit t)
+  ("q" delete-frame)
+  ("v" split-window-below)
+  ("h" split-window-right)
+  ("t" crux-transpose-windows)
+  ("+" enlarge-window-horizontally)
+  ("-" shrink-window-horizontally)
+  ("<left>" scroll-left)
+  ("<right>" scroll-right)
+  ("<up>" scroll-up)
+  ("<down>" scroll-down)
+  ("<home>" beginning-of-buffer)
+  ("<end>" end-of-buffer)
+  ("<C-up>" scroll-other-window)
+  ("<C-down>" scroll-other-window-down)
+  ("<C-home>" beginning-of-buffer-other-window)
+  ("<C-end>" end-of-buffer-other-window)
+  ("1" nlinum-mode)
+  ("#" nlinum-relative-mode))
+
+(global-set-key (kbd "C-^") #'cpped-hydra-windows/body)
+(global-set-key (kbd "C-x C-c") #'delete-frame)
+#+END_SRC
+
+** Settings
+#+BEGIN_SRC emacs-lisp
+(defhydra cpped-hydra-settings (:exit t :hint nil)
+  "
+☰ Settings
+
+Settings                       ^^Snippets            ^^Abbreviations             ^^Packages
+  _c_: Open config file            _Y_: New snippet      _A_: New abbreviation       _p_: Show packages
+  _m_: Open customization file     _y_: Edit snippet     _a_: Edit abbreviations
+  _t_: Edit theme
+"
+  ("c" (lambda()
+         (interactive)
+         (find-file cpped-config-file)))
+  ("m" (lambda()
+         (interactive)
+         (find-file custom-file)))
+  ("y" yas-visit-snippet-file)
+  ("Y" yas-new-snippet)
+  ("a" edit-abbrevs)
+  ("A" add-inverse-global)
+  ("p" list-packages)
+  ("t" (lambda ()
+         (interactive)
+         (custom-theme-visit-theme cpped-theme))))
+
+(global-set-key (kbd "C-S-s") #'cpped-hydra-settings/body)
+#+END_SRC
+
+** Help
+#+BEGIN_SRC emacs-lisp
+(defhydra cpped-hydra-help (:exit t :columns 1)
+  "
+☰ Help
+"
+  ("f" helpful-function "Function")
+  ("v" describe-variable "Variable")
+  ("s" describe-symbol "Symbol")
+  ("k" describe-key "Key")
+  ("m" describe-mode "Mode")
+  ("p" finder-commentary "Package")
+  ("y" describe-syntax "Syntax"))
+
+(global-set-key (kbd "C-h") #'cpped-hydra-help/body)
+#+END_SRC
+
+** Tools
+#+BEGIN_SRC emacs-lisp
+(defhydra cpped-hydra-tools (:exit t :columns 1)
+  "
+☰ Tools
+"
+  ("c" helm-calcul-expression "Calculator")
+  ("x" helm-regexp "Regex Builder")
+  ("r" repeat "Repeat last command")
+  ("f" helm-resume "Resume last command"))
+
+(global-set-key (kbd "C-t") #'cpped-hydra-tools/body)
+#+END_SRC
+** Build
+#+BEGIN_SRC emacs-lisp
+(defhydra cpped-hydra-build (:exit t :columns 1)
+  "
+☰ Build 🞋 %s(if cpped-cmake-current-target
+     cpped-cmake-current-target
+    \"none\")
+"
+  ("t" cpped-cmake-select-target "Select Target")
+  ("b" cpped-build-target "Build target")
+  ("B" (lambda ()
+         (interactive)
+         (let ((cpped-cmake-current-target nil))
+           (call-interactively #'cpped-build-target))) "Select and build target")
+  ("c" cpped-cmake-clean-build-directory "Clean build directory"))
+
+(global-set-key (kbd "C-b") #'cpped-hydra-build/body)
 #+END_SRC
 
 * Notify when loading is finished
