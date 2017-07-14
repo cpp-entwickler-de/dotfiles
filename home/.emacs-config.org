@@ -3052,6 +3052,12 @@ Set correct major mode
 (push '("<\\?xml" . nxml-mode) magic-mode-alist)
 #+END_SRC
 
+**** Navigation
+***** Jump to element
+#+BEGIN_SRC emacs-lisp
+(use-package x-path-walker)
+#+END_SRC
+
 **** Editing
 ***** Always add XML declaration
 #+BEGIN_SRC emacs-lisp
