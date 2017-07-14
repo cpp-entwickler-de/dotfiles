@@ -1,5 +1,5 @@
 (deftheme cpp-entwickler.de
-  "Created 2017-06-09.")
+  "Created 2017-06-22.")
 
 (custom-theme-set-faces
  'cpp-entwickler.de
@@ -14,8 +14,8 @@
  '(secondary-selection ((((class color) (min-colors 88) (background light)) (:background "yellow1")) (((class color) (min-colors 88) (background dark)) (:background "SkyBlue4")) (((class color) (min-colors 16) (background light)) (:background "yellow")) (((class color) (min-colors 16) (background dark)) (:background "SkyBlue4")) (((class color) (min-colors 8)) (:foreground "black" :background "cyan")) (t (:inverse-video t))))
  '(trailing-whitespace ((t (:background "dark gray"))))
  '(font-lock-builtin-face ((t (:foreground "turquoise1" :slant italic))))
- '(font-lock-comment-delimiter-face ((default (:inherit (font-lock-comment-face)))))
- '(font-lock-comment-face ((t (:foreground "dark gray" :height 0.85))))
+ '(font-lock-comment-delimiter-face ((t (:inherit font-lock-comment-face))))
+ '(font-lock-comment-face ((t (:foreground "dark gray" :slant italic :height 0.85))))
  '(font-lock-constant-face ((((class grayscale) (background light)) (:underline (:color foreground-color :style line) :weight bold :foreground "LightGray")) (((class grayscale) (background dark)) (:underline (:color foreground-color :style line) :weight bold :foreground "Gray50")) (((class color) (min-colors 88) (background light)) (:foreground "dark cyan")) (((class color) (min-colors 88) (background dark)) (:foreground "Aquamarine")) (((class color) (min-colors 16) (background light)) (:foreground "CadetBlue")) (((class color) (min-colors 16) (background dark)) (:foreground "Aquamarine")) (((class color) (min-colors 8)) (:foreground "magenta")) (t (:underline (:color foreground-color :style line) :weight bold))))
  '(font-lock-doc-face ((t (:inherit font-lock-comment-face))))
  '(font-lock-function-name-face ((((class color) (min-colors 88) (background light)) (:foreground "Blue1")) (((class color) (min-colors 88) (background dark)) (:foreground "LightSkyBlue")) (((class color) (min-colors 16) (background light)) (:foreground "Blue")) (((class color) (min-colors 16) (background dark)) (:foreground "LightSkyBlue")) (((class color) (min-colors 8)) (:weight bold :foreground "blue")) (t (:weight bold :inverse-video t))))
