@@ -1199,13 +1199,6 @@ Always use a fixed width for line numbers (maximum number length)
       dired-recursive-deletes 'top)
 #+END_SRC
 
-**** Rename files in dired mode
-#+BEGIN_SRC emacs-lisp
-(use-package dired-efap
-  :bind (:map dired-mode-map ("[f2]" . dired-efap))
-  :config (setq dired-efap-initial-filename-selection 'o-extension))
-#+END_SRC
-
 **** [[https://github.com/DamienCassou/dired-imenu][imenu Integration]]
 #+BEGIN_SRC emacs-lisp
 (use-package dired-imenu)
