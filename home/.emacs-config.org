@@ -1207,7 +1207,7 @@ Always use a fixed width for line numbers (maximum number length)
 **** [[https://www.emacswiki.org/emacs/wdired.el][Editing]]
 #+BEGIN_SRC emacs-lisp
 (use-package wdired
-  :bind (:map dired-mode-map ("e" . wdired-change-to-wdired-mode)))
+  :bind (:map dired-mode-map ("r" . wdired-change-to-wdired-mode)))
 #+END_SRC
 
 **** Use standard ls parameters for listing
@@ -1232,14 +1232,14 @@ Always use a fixed width for line numbers (maximum number length)
 **** Filtering
 #+BEGIN_SRC emacs-lisp
 (use-package dired-narrow
-  :bind (:map dired-mode-map ("/" . dired-narrow)))
+  :bind (:map dired-mode-map ("f" . dired-narrow)))
 #+END_SRC
 
 **** Preview
 #+BEGIN_SRC emacs-lisp
 (use-package peep-dired
   :defer t
-  :bind (:map dired-mode-map ("V" . peep-dired)))
+  :bind (:map dired-mode-map ("v" . peep-dired)))
 #+END_SRC
 
 **** Diff files
@@ -1261,7 +1261,7 @@ Always use a fixed width for line numbers (maximum number length)
                                                                (ediff-kill-buffer-carefully ediff-buffer-B)
                                                                (set-window-configuration cpped-dired-ediff-window-configuration.))))))))
 
-(define-key dired-mode-map "e" 'cpped-dired-ediff-files)
+(define-key dired-mode-map "d" 'cpped-dired-ediff-files)
 #+END_SRC
 
 *** [[https://www.emacswiki.org/emacs/Sunrise_Commander][Sunrise Commander]]
