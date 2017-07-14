@@ -3095,6 +3095,11 @@ When using Magit >= 2.4.0
   :after magit)
 #+END_SRC
 
+***** [[https://github.com/terranpro/magit-gerrit][Gerrit integration]]
+#+BEGIN_SRC emacs-lisp
+(use-package magit-gerrit)
+#+END_SRC
+
 **** [[https://github.com/tarsius/magit-rockstar][Change commit author and date]]
 #+BEGIN_SRC emacs-lisp
 (use-package magit-rockstar
