@@ -2088,12 +2088,6 @@ Handler to close buffer after quitting ccmake.
 ** Languages
 *** Common
 **** Highlighting
-***** Focus on current function
-#+BEGIN_SRC emacs-lisp
-(use-package focus
-  :config (add-hook 'c-mode-common-hook #'focus-mode))
-#+END_SRC
-
 ***** [[https://github.com/ikirill/hl-indent][Scope background]]
 #+BEGIN_SRC emacs-lisp
 (use-package hl-indent
