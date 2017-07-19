@@ -4354,6 +4354,8 @@ Settings                       ^^Snippets            ^^Abbreviations            
   _c_: Open config file            _Y_: New snippet      _A_: New abbreviation       _p_: Show packages
   _m_: Open customization file     _y_: Edit snippet     _a_: Edit abbreviations
   _t_: Edit theme
+  _v_: Customize variable
+  _g_: Customize group
 "
   ("c" (lambda()
          (interactive)
@@ -4368,7 +4370,9 @@ Settings                       ^^Snippets            ^^Abbreviations            
   ("p" list-packages)
   ("t" (lambda ()
          (interactive)
-         (custom-theme-visit-theme cpped-theme))))
+         (custom-theme-visit-theme cpped-theme)))
+  ("v" customize-variable)
+  ("g" customize-group))
 
 (global-set-key (kbd "C-S-s") #'cpped-hydra-settings/body)
 #+END_SRC
