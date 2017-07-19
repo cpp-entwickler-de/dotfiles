@@ -8,6 +8,7 @@ function show_help
     echo "    --printers       Download and install pretty-printers for GDB"
     echo "    --fonts          Download and install special fonts for emacs"
     echo "    --documentation  Download and install DASH documentation files"
+    echo "    --shell          Install zsh and plugins"
     echo "    --all            Do all of the above"
     exit 1
 }
@@ -34,12 +35,16 @@ for ARGUMENT in "$@"; do
         --documentation)
         DOCUMENTATION=TRUE
         ;;
+        --shell)
+        SHELL=TRUE
+        ;;
         --all)
         PACKAGES=TRUE
         LINKS=TRUE
         PRINTERS=TRUE
         FONTS=TRUE
         DOCUMENTATION=TRUE
+        SHELL=TRUE
         ;;
         *)
         show_help
@@ -53,6 +58,16 @@ if [ "$PACKAGES" = TRUE ]; then
     sudo dnf install PackageKit-command-not-found adobe-source-code-pro-fonts adobe-source-sans-pro-fonts adobe-source-serif-pro-fonts autojump-zsh clang colorgcc cppcheck devscripts-checkbashisms emacs gcc gdb imagemagick kcachegrind links mupdf ninja-build poppler-dev poppler-glib-dev recode saxon shellcheck sloccount sushi the_silver_searcher uncrustify util-linux-user valgrind wordnet xmllint xmlstarlet yank zsh
 
     echo "Install Peco from https://github.com/peco/peco and RTags from https://github.com/Andersbakken/rtags manually."
+    
+    # install ssh-connect
+    SSH_CONNECT_DIRECTORY=~/.ssh-connect
+    if [ ! -d "$SSH_CONNECT_DIRECTORY" ]; then
+        git clone --recursive --quiet https://github.com/gko/ssh-connect "$SSH_CONNECT_DIRECTORY"
+    else
+        cd "$SSH_CONNECT_DIRECTORY" || exit
+        git pull --quiet
+    fi
+    source "$SSH_CONNECT_DIRECTORY/ssh-connect.sh"
 fi
 
 if [ "$LINKS" = TRUE ]; then
@@ -183,12 +198,6 @@ if [ "$DOCUMENTATION" = TRUE ]; then
     done
 fi
 
-# install oh-my-zsh
-OH_MY_ZSH_DIR=~/.oh-my-zsh
-if [ ! -d "$OH_MY_ZSH_DIR" ]; then
-    git clone --quiet https://github.com/robbyrussell/oh-my-zsh.git "$OH_MY_ZSH_DIR"
-fi
-
 # install zsh plugins
 function  install_zsh_plugin
 {
@@ -204,24 +213,22 @@ function  install_zsh_plugin
     fi
 }
 
-install_zsh_plugin https://github.com/Valiev/almostontop
-install_zsh_plugin https://github.com/kalpakrg/setenv
-install_zsh_plugin https://github.com/Tarrasch/zsh-bd
-install_zsh_plugin https://github.com/hlissner/zsh-autopair
-install_zsh_plugin https://github.com/zsh-users/zsh-autosuggestions
-install_zsh_plugin https://github.com/oknowton/zsh-dwim
-install_zsh_plugin https://github.com/RobSis/zsh-reentry-hook
-install_zsh_plugin https://github.com/zsh-users/zsh-syntax-highlighting.git
+if [ "$SHELL" = TRUE ]; then
+    # install oh-my-zsh
+    OH_MY_ZSH_DIR=~/.oh-my-zsh
+    if [ ! -d "$OH_MY_ZSH_DIR" ]; then
+        git clone --quiet https://github.com/robbyrussell/oh-my-zsh.git "$OH_MY_ZSH_DIR"
+    fi
 
-# install ssh-connect
-SSH_CONNECT_DIRECTORY=~/.ssh-connect
-if [ ! -d "$SSH_CONNECT_DIRECTORY" ]; then
-    git clone --recursive --quiet https://github.com/gko/ssh-connect "$SSH_CONNECT_DIRECTORY"
-else
-    cd "$SSH_CONNECT_DIRECTORY" || exit
-    git pull --quiet
+    install_zsh_plugin https://github.com/Valiev/almostontop
+    install_zsh_plugin https://github.com/kalpakrg/setenv
+    install_zsh_plugin https://github.com/Tarrasch/zsh-bd
+    install_zsh_plugin https://github.com/hlissner/zsh-autopair
+    install_zsh_plugin https://github.com/zsh-users/zsh-autosuggestions
+    install_zsh_plugin https://github.com/oknowton/zsh-dwim
+    install_zsh_plugin https://github.com/RobSis/zsh-reentry-hook
+    install_zsh_plugin https://github.com/zsh-users/zsh-syntax-highlighting.git
+    
+    # change default shell
+    sudo chsh -s "$(which zsh)" $(whoami) 2> /dev/null
 fi
-source "$SSH_CONNECT_DIRECTORY/ssh-connect.sh"
-
-# change default shell
-chsh -s "$(which zsh)" 2> /dev/null
