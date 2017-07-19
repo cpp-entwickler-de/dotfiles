@@ -67,6 +67,8 @@ if [ "$PACKAGES" = TRUE ]; then
         cd "$SSH_CONNECT_DIRECTORY" || exit
         git pull --quiet
     fi
+
+    # shellcheck source=/dev/null
     source "$SSH_CONNECT_DIRECTORY/ssh-connect.sh"
 fi
 
@@ -105,10 +107,10 @@ if [ "$LINKS" = TRUE ]; then
     GIT_USER_FILE=~/.gitconfig.user
     if [ ! -s "$EMACS_USER_FILE" ] || [ ! -s "$GIT_USER_FILE" ]; then
         USER_NAME=$(/bin/grep -P "^$(whoami):" /etc/passwd | cut -f5 -d:)
-        read -e -p "Please enter your full name:     " -i "$USER_NAME" USER_NAME
-        read -e -p "Please enter your email address: " -i "$(whoami)@$(dnsdomainname)" EMAIL
-        read -e -p "Please enter the (short) company name: " COMPANY_NAME
-        read -e -p "Please enter the full company name: " -i "$COMPANY_NAME" COMPANY_FULL_NAME
+        read -r -e -p "Please enter your full name:     " -i "$USER_NAME" USER_NAME
+        read -r -e -p "Please enter your email address: " -i "$(whoami)@$(dnsdomainname)" EMAIL
+        read -r -e -p "Please enter the (short) company name: " COMPANY_NAME
+        read -r -e -p "Please enter the full company name: " -i "$COMPANY_NAME" COMPANY_FULL_NAME
 
         if [ -e "$GIT_USER_FILE" ]; then
             mv "$GIT_USER_FILE" "$GIT_USER_FILE"".bak"
@@ -118,7 +120,7 @@ if [ "$LINKS" = TRUE ]; then
         function read_xml
         {
             local IFS=\>
-            read -d \< TAG VALUE
+            read -r -d \< TAG VALUE
         }
         
         while read_xml; do
@@ -135,11 +137,11 @@ if [ "$LINKS" = TRUE ]; then
                 *)
                 ;;
             esac
-        done <<< $(wget -qO- freegeoip.net/xml)
+        done <<< "$(wget -qO- freegeoip.net/xml)"
         
-        read -e -p "Please enter your location name: " -i "$CITY" CITY
-        read -e -p "Please enter your latitude:      " -i "$LATITUDE" LATITUDE
-        read -e -p "Please enter your longitude:     " -i "$LONGITUDE" LONGITUDE
+        read -r -e -p "Please enter your location name: " -i "$CITY" CITY
+        read -r -e -p "Please enter your latitude:      " -i "$LATITUDE" LATITUDE
+        read -r -e -p "Please enter your longitude:     " -i "$LONGITUDE" LONGITUDE
 
         if [ -e "$EMACS_USER_FILE" ]; then
             mv "$EMACS_USER_FILE" "$EMACS_USER_FILE"".bak"
@@ -230,5 +232,5 @@ if [ "$SHELL" = TRUE ]; then
     install_zsh_plugin https://github.com/zsh-users/zsh-syntax-highlighting.git
     
     # change default shell
-    sudo chsh -s "$(which zsh)" $(whoami) 2> /dev/null
+    sudo chsh -s "$(which zsh)" "$(whoami)" 2> /dev/null
 fi
