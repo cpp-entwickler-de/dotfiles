@@ -9,6 +9,7 @@ function show_help
     echo "    --fonts          Download and install special fonts for emacs"
     echo "    --documentation  Download and install DASH documentation files"
     echo "    --all            Do all of the above"
+    exit 1
 }
 
 if [ $# -eq 0 ]; then
