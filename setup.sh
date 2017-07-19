@@ -55,7 +55,7 @@ done
 
 if [ "$PACKAGES" = TRUE ]; then
     # install packages
-    sudo dnf install PackageKit-command-not-found adobe-source-code-pro-fonts adobe-source-sans-pro-fonts adobe-source-serif-pro-fonts autojump-zsh clang colorgcc cppcheck devscripts-checkbashisms emacs gcc gdb imagemagick kcachegrind links mupdf ninja-build poppler-dev poppler-glib-dev recode saxon shellcheck sloccount sushi the_silver_searcher uncrustify util-linux-user valgrind wordnet xmllint xmlstarlet yank zsh
+    sudo dnf install PackageKit-command-not-found adobe-source-code-pro-fonts adobe-source-sans-pro-fonts adobe-source-serif-pro-fonts aspell aspell-de aspell-en autojump-zsh clang clang-analyzer clang-devel cmake cmake-gui colorgcc cppcheck devscripts-checkbashisms ditaa emacs gcc gdb gnuplot ImageMagick kcachegrind links llvm llvm-devel mupdf ninja-build poppler-devel poppler-glib-devel recode saxon ShellCheck sloccount sushi the_silver_searcher uncrustify util-linux-user valgrind wordnet libxml2 xmlstarlet yank zsh
 
     echo "Install Peco from https://github.com/peco/peco and RTags from https://github.com/Andersbakken/rtags manually."
     
