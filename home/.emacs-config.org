@@ -3371,7 +3371,8 @@ Disable evaluation confirmation for some languages
 #+BEGIN_SRC emacs-lisp
 (defun cpped-org-confirm-babel-evaluate (lang body)
   "Do not confirm evaluation for these languages."
-  (not (or (string= lang "calc")
+  (not (or (string= lang "bash")
+           (string= lang "calc")
            (string= lang "ditaa")
            (string= lang "dot")
            (string= lang "gnuplot")
@@ -3381,7 +3382,6 @@ Disable evaluation confirmation for some languages
            (string= lang "sed")
            (string= lang "sh")
            (string= lang "shell")
-           (string= lang "bash")
            (string= lang "zsh"))))
 
 (use-package babel
