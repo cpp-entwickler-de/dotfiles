@@ -3,7 +3,7 @@
 function show_help
 {
     echo "Usage:"
-    echo "    -packages        Install packages"
+    echo "    --packages       Install packages"
     echo "    --links          Create links for configuration files from this repository to ~/"
     echo "    --printers       Download and install pretty-printers for GDB"
     echo "    --fonts          Download and install special fonts for emacs"
@@ -20,7 +20,7 @@ fi
 for ARGUMENT in "$@"; do
     case $ARGUMENT in
         --packages)
-        PACKAGES=true
+        PACKAGES=TRUE
         ;;
         --links)
         LINKS=TRUE
@@ -35,7 +35,7 @@ for ARGUMENT in "$@"; do
         DOCUMENTATION=TRUE
         ;;
         --all)
-        PACKAGES=true
+        PACKAGES=TRUE
         LINKS=TRUE
         PRINTERS=TRUE
         FONTS=TRUE
