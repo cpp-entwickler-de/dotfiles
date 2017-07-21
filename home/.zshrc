@@ -234,6 +234,8 @@ function kill()
     fi
 }
 
+alias dnf="sudo dnf"
+
 alias less="less -FNMsW"
 alias ls="ls -AFhl --color $*"
 alias lstree="ls -R $*"
