@@ -204,10 +204,34 @@ function helm()
     "$@" | peco --select-1
 }
 
+KILL_COMMAND=$(which kill)
 function kill()
 {
-    PID=${1:ps aux | peco --select-1 --query "$1" | tr -s " " | cut --delimiter=\  -f 2}
-    kill $PID
+    for ARGUMENT in "$@"; do
+        case $ARGUMENT in
+            -*)
+            local KILL_ARGUMENTS=($KILL_ARGUMENTS $ARGUMENT)
+            ;;
+            *)
+            local PROCESS_ARGUMENTS=($PROCESS_ARGUMENTS $ARGUMENT)
+            ;;
+        esac
+    done
+    for ARGUMENT in $PROCESS_ARGUMENTS; do
+        if [[ "$ARGUMENT" =~ "^[0-9]+$" ]]; then
+            local PIDS=($PIDS $ARGUMENT)
+        else
+            local PROCESS_NAMES=($PROCESS_NAMES $ARGUMENT)
+        fi
+    done
+    if [[ -n "$PROCESS_NAMES" || -z "$PIDS" ]]; then
+        local PIDS=($PIDS $(ps aux | peco --query "$PROCESS_NAMES" | while IFS= read -r LINE; do 
+                                                                         echo $LINE | tr -s " " | cut --delimiter=\  -f 2; 
+                                                                     done))
+    fi
+    if [[ -n "$PIDS" ]]; then
+        $KILL_COMMAND $KILL_ARGUMENTS $PIDS
+    fi
 }
 
 alias less="less -FNMsW"
