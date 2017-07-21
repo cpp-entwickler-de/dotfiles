@@ -192,6 +192,11 @@ Show fullscreen for single monitor, fullscreen on right side on dual-monitor
 #+END_SRC
 
 ** Fonts
+*** Set fallback font for symbols
+#+BEGIN_SRC emacs-lisp
+(set-fontset-font "fontset-default" 'unicode "Symbola")
+#+END_SRC
+
 *** Show pretty symbols
 Disable prettification if cursor is at edge of expression
 #+BEGIN_SRC emacs-lisp
