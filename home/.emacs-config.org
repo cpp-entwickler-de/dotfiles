@@ -3135,6 +3135,80 @@ When using Magit >= 2.4.0
 (use-package magit-gerrit)
 #+END_SRC
 
+***** Icons for changes
+#+BEGIN_SRC emacs-lisp
+(defvar prettify-magit-alist (list (list (rx bol (not (in "+@-")) (0+ any) bow (group "add" (? (or "s" "ed"))) eow)
+                                         (all-the-icons-faicon "plus")
+                                         `(:family ,(all-the-icons-faicon-family)))
+                                   (list (rx bol (not (in "+@-")) (0+ any) bow (group (or "remove" "delete") (? (in "sd"))) eow)
+                                         (all-the-icons-faicon "trash-o")
+                                         `(:family ,(all-the-icons-faicon-family)))
+                                   (list (rx bol (not (in "+@-")) (0+ any) bow (group "fix" (? "e" (in "sd"))) eow)
+                                         (all-the-icons-faicon "bug")
+                                         `(:family ,(all-the-icons-faicon-family)))
+                                   (list (rx bol (not (in "+@-")) (+ any) bow (group "fixup!"))
+                                         (all-the-icons-faicon "wrench")
+                                         `(:family ,(all-the-icons-faicon-family) :foreground ,(face-attribute 'warning :foreground)))
+                                   (list (rx bol (not (in "+@-")) (+ any) bow (group "clean" (? (or "s" "ed")) (? "up")) eow)
+                                         (all-the-icons-faicon "paint-brush")
+                                         `(:family ,(all-the-icons-faicon-family)))
+                                   (list (rx bol (not (in "+@-")) (+ any) bow (group "update" (? (in "sd"))) eow)
+                                         (all-the-icons-faicon "refresh")
+                                         `(:family ,(all-the-icons-faicon-family)))
+                                   (list (rx bol (not (in "+@-")) (+ any) bow (group (or "replace" "exchange") (? (in "sd"))) eow)
+                                         (all-the-icons-faicon "random")
+                                         `(:family ,(all-the-icons-faicon-family)))
+                                   (list (rx bol (not (in "+@-")) (+ any) bow (group "master") eow)
+                                         (all-the-icons-faicon "home")
+                                         `(:family ,(all-the-icons-faicon-family)))
+                                   (list (rx bol (not (in "+@-")) (+ any) bow (group "origin") eow)
+                                         (all-the-icons-faicon "cloud")
+                                         `(:family ,(all-the-icons-faicon-family)))
+                                   (list (rx bol (not (in "+@-")) (+ any) bow (group "HEAD") eow)
+                                         (all-the-icons-faicon "cloud")
+                                         `(:family ,(all-the-icons-faicon-family)))
+                                   (list (rx bol (not (in "+@-")) (+ any) bow (group "Merge branch") eow)
+                                         (all-the-icons-octicon "git-merge")
+                                         `(:family ,(all-the-icons-octicon-family)))
+                                   (list (rx bol (group "modified") eow)
+                                         (all-the-icons-faicon "pencil")
+                                         `(:family ,(all-the-icons-faicon-family)))
+                                   (list (rx bol (group "new file") eow)
+                                         (all-the-icons-faicon "plus")
+                                         `(:family ,(all-the-icons-faicon-family)))
+                                   (list (rx bol (group "deleted") eow)
+                                         (all-the-icons-faicon "trash-o")
+                                         `(:family ,(all-the-icons-faicon-family)))
+                                   (list (rx bol (group "@@"))
+                                         (all-the-icons-faicon "align-left")
+                                         `(:family ,(all-the-icons-faicon-family)))
+                                   (list (rx bol "@@" (+ any) (group "@@"))
+                                         (all-the-icons-faicon "puzzle-piece")
+                                         `(:family ,(all-the-icons-faicon-family)))
+                                   (list (rx bol "Magithub is " (group "OFFLINE") eow)
+                                         (all-the-icons-octicon "plug")
+                                         `(:family ,(all-the-icons-octicon-family))))
+  "An alist of expressions and icon properties to replace strings with icons in magit logs.")
+
+(defun cpped-prettify-magit ()
+  "Add face properties and compose symbols for buffer from pretty-magit."
+  (interactive)
+  (with-silent-modifications
+    (dolist (entry prettify-magit-alist)
+      (let ((expression (nth 0 entry))
+            (icon (nth 1 entry))
+            (properties (nth 2 entry)))
+        (save-excursion
+          (goto-char (point-min))
+          (while (search-forward-regexp expression nil t)
+            (compose-region (match-beginning 1) (match-end 1) icon)
+            (when properties
+              (add-face-text-property (match-beginning 1) (match-end 1) properties))))))))
+
+(advice-add 'magit-status :after 'cpped-prettify-magit)
+(advice-add 'magit-refresh-buffer :after 'cpped-prettify-magit)
+#+END_SRC
+
 **** [[https://github.com/tarsius/magit-rockstar][Change commit author and date]]
 #+BEGIN_SRC emacs-lisp
 (use-package magit-rockstar
