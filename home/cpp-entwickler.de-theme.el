@@ -1,5 +1,5 @@
 (deftheme cpp-entwickler.de
-  "Created 2017-06-22.")
+  "Created 2017-07-21.")
 
 (custom-theme-set-faces
  'cpp-entwickler.de
@@ -150,6 +150,7 @@
  '(vr/group-2 ((((min-colors 88) (class color) (background light)) (:background "yellow1")) (((class color) (background light)) (:background "yellow")) (((class color) (background dark)) (:background "sienna4")) (t (:inverse-video t))))
  '(num3-face-even ((t nil)))
  '(num3-face-odd ((t (:inverse-video t))))
+ '(magit-branch-current ((t (:inherit magit-branch-local :inverse-video t))))
  '(default ((t (:inherit nil :stipple nil :background "gray5" :foreground "white smoke" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight semi-bold :height 100 :width normal :foundry "ADBO" :family "Source Code Pro")))))
 
 (provide-theme 'cpp-entwickler.de)
