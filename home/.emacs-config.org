@@ -3126,7 +3126,8 @@ When using Magit >= 2.4.0
 ***** [[https://github.com/vermiculus/magithub][Github integration]]
 #+BEGIN_SRC emacs-lisp
 (use-package magithub
-  :after magit)
+  :after magit
+  :config (magithub-feature-autoinject t))
 #+END_SRC
 
 ***** [[https://github.com/terranpro/magit-gerrit][Gerrit integration]]
