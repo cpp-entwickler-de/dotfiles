@@ -178,6 +178,18 @@ case $(tty) in /dev/tty[0-9]*)
      setterm -blength 0 
 esac
 
+# Skip directories with no files
+zmodload zsh/parameter
+function chpwd() {
+    if [[ ! $history[$HISTCMD] =~ "cd +[\./]+" ]]; then
+        ITEMS=$(/bin/ls -A)
+        ITEM_COUNT=$(echo $ITEMS | wc -l)
+        if [[ $ITEM_COUNT = "1" && -d $ITEMS ]]; then
+            cd "$ITEMS"
+        fi
+    fi
+}
+
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
