@@ -417,6 +417,15 @@ Helper function to figure out version control root directory
             (count-words (region-end) (region-beginning))
             (- (region-end) (region-beginning)))))
 #+END_SRC
+*** Show if overwrite mode is active
+#+BEGIN_SRC emacs-lisp
+(defun powerline-overwrite-mode (icon-face)
+  (when overwrite-mode
+    (propertize (all-the-icons-faicon "eraser")
+                'face (list ':family (all-the-icons-faicon-family)
+                            ':background (face-attribute icon-face :background))
+                'display '(raise -0.0))))
+#+END_SRC
 
 *** Buffer size (characters/lines)
 #+BEGIN_SRC emacs-lisp
@@ -618,6 +627,7 @@ Find path of current position in XML docuement
                                 (powerline-raw (powerline-remote (symbol-value 'face2)) face2)
                                 (powerline-raw (powerline-su (symbol-value 'face2)) face2 'r)
                                 (powerline-raw (powerline-modified (symbol-value 'face2)) face2)
+                                (powerline-raw (powerline-overwrite-mode (symbol-value 'face2)) face2 'l)
                                 (powerline-raw (powerline-position-info (symbol-value 'face2)) face2 'l)
                                 (powerline-raw (powerline-region-info (symbol-value 'face2)) face2 'l)
                                 (funcall separator-left face2 mode-line)
