@@ -434,7 +434,7 @@ Helper function to figure out version control root directory
 
 *** Show if typo mode is active
 #+BEGIN_SRC emacs-lisp
-(with-eval-after-load "typo-mode"
+(with-eval-after-load "typo"
   (defun powerline-typo-mode (icon-face)
     (when typo-mode
       (propertize (all-the-icons-faicon "book")
