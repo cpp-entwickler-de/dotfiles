@@ -4189,6 +4189,7 @@ Date         ^^Time         ^^Timestamp    ^^Block          ^^Special
   _<_: Complete                                                   ^^^^_#_: Base                               ^^^_x_: Transpose     _F_: Format (File)
   _g_: Edit area                                                  ^^^^_1_: Flip bool                                           ^^^^^_u_: Uncrustify (Selection)
   ___: Overwrite Mode                                                                                                    ^^^^^^^^^^^_U_: Uncrustify (File)
+  _&_: Typographic Mode
 "
   ("d" crux-duplicate-current-line-or-region)
   ("D" crux-duplicate-and-comment-current-line-or-region)
@@ -4197,6 +4198,7 @@ Date         ^^Time         ^^Timestamp    ^^Block          ^^Special
   ("<" helm-company)
   ("g" org-edit-special)
   ("_" overwrite-mode)
+  ("&" typo-mode)
 
   ("n" iedit-dwim)
   ("N" iedit)
