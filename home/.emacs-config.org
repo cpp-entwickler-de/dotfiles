@@ -2772,11 +2772,20 @@ Translation Files
 (push '("\\.css\\'". css-mode) auto-mode-alist)
 #+END_SRC
 
-Documentation
+**** Editing
+***** Syntax checkers
+#+BEGIN_SRC emacs-lisp
+(add-hook 'css-mode-hook (lambda ()
+                          (flycheck-select-checker 'css-csslint)
+                          (flycheck-add-next-checker 'css-csslint '(t . css-stylelint))))
+#+END_SRC
+
+**** Documentation
 #+BEGIN_SRC emacs-lisp
 (use-package css-eldoc
   :config (add-hook 'css-mode-hook 'turn-on-css-eldoc))
 #+END_SRC
+
 *** Dot
 #+BEGIN_SRC emacs-lisp
 (use-package graphviz-dot-mode
@@ -2827,6 +2836,17 @@ Documentation
 (push '("\\.service\\'" . ini-mode) auto-mode-alist)
 
 (provide 'ini-mode)
+#+END_SRC
+
+*** Javascript
+**** Editing
+***** Syntax checkers
+#+BEGIN_SRC emacs-lisp
+(add-hook 'js-mode-hook (lambda ()
+                          (flycheck-select-checker 'javascript-standard)
+                          (flycheck-add-next-checker 'javascript-standard '(t . javascript-jscs))
+                          (flycheck-add-next-checker 'javascript-jscs '(t . javascript-eslint))
+                          (flycheck-add-next-checker 'javascript-eslint '(t . javascript-jshint))))
 #+END_SRC
 
 *** Latex
