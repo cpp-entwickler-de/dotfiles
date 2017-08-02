@@ -132,10 +132,11 @@ Show fullscreen for single monitor, fullscreen on right side on dual-monitor
 #+END_SRC
 
 ** GTK+ interface
-*** Disable Menus, Toolbars and Dialogs
+*** Disable Menus, Toolbars, Scrollbars and Dialogs
 #+BEGIN_SRC emacs-lisp
 (menu-bar-mode -1)
 (tool-bar-mode -1)
+(scroll-bar-mode -1)
 (setq use-file-dialog nil
       use-dialog-box nil)
 #+END_SRC
@@ -145,10 +146,6 @@ Show fullscreen for single monitor, fullscreen on right side on dual-monitor
 (setq x-gtk-use-system-tooltips t)
 #+END_SRC
 
-*** Show scrollbar on the left side
-#+BEGIN_SRC emacs-lisp
-(set-scroll-bar-mode 'left)
-#+end_src
 
 ** Notifications
 #+BEGIN_SRC emacs-lisp
