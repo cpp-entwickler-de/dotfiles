@@ -55,7 +55,7 @@ done
 
 if [ "$PACKAGES" = TRUE ]; then
     # install packages
-    sudo dnf install PackageKit-command-not-found adobe-source-code-pro-fonts adobe-source-sans-pro-fonts adobe-source-serif-pro-fonts aspell aspell-de aspell-en autojump-zsh clang clang-analyzer clang-devel cmake cmake-gui colorgcc cppcheck csslint devscripts-checkbashisms ditaa emacs-lucid gcc gdb gdouros-symbola-fonts gnuplot ImageMagick kcachegrind links llvm llvm-devel mupdf ninja-build npm poppler-devel poppler-glib-devel recode saxon ShellCheck sloccount sushi the_silver_searcher uncrustify util-linux-user valgrind wordnet libxml2 xmlstarlet yank zsh
+    sudo dnf install PackageKit-command-not-found adobe-source-code-pro-fonts adobe-source-sans-pro-fonts adobe-source-serif-pro-fonts aspell aspell-de aspell-en autojump-zsh clang clang-analyzer clang-devel cmake cmake-gui colorgcc cppcheck csslint devscripts-checkbashisms ditaa emacs-lucid gcc gdb gdouros-symbola-fonts gnuplot htop ImageMagick iotop kcachegrind links llvm llvm-devel mupdf ninja-build npm poppler-devel poppler-glib-devel recode saxon ShellCheck sloccount sushi the_silver_searcher uncrustify util-linux-user valgrind wordnet libxml2 xmlstarlet yank zsh
 
     sudo npm install -g stylelint eslint jshint jslint standard jscs
     sudo pip install proselint
@@ -104,6 +104,7 @@ if [ "$LINKS" = TRUE ]; then
 
     make_link "$DOTFILES_DIRECTORY/home/cpp-entwickler.de-theme.el" "$(realpath ~)/.emacs.d/cpp-entwickler.de-theme.el"
     make_link "$DOTFILES_DIRECTORY/home/mc" "$(realpath ~)/.config/mc"
+    make_link "$DOTFILES_DIRECTORY/home/htoprc" "$(realpath ~)/.config/htop/htoprc"
     make_link "$DOTFILES_DIRECTORY/home/peco.json" "$(realpath ~)/.config/peco/config.json"
     
     EMACS_USER_FILE=~/.emacs.user

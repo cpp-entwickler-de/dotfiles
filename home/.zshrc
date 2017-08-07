@@ -244,6 +244,7 @@ alias mkdir="mkdir -p"
 alias mv="mv -i"
 alias peco="peco --select-1"
 alias ps="ps aux"
+alias top="htop"
 alias yank="yank-cli"
 
 alias dos2unix="recode ibmpc..lat1"
