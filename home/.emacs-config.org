@@ -3949,8 +3949,8 @@ Do not use scientific form so quickly
                                 (concat \" 🛠 \" cmake-ide-build-dir)
                                \"\")
 
-CMake              ^^Git                         ^^Directories         ^^Shell
-  _o_: Load            _g_: Status                   _/_: Project          _#_: Project directory
+CMake              ^^Git                         ^^Directories         ^^Shell                    ^^Other
+  _o_: Load            _g_: Status                   _/_: Project          _#_: Project directory     _l_: Add change log entry
   _c_: Configure       _G_: Other Project Status     _._: Current          _$_: Current directory
   _r_: Reconfigure                                 ^^_d_: Subdirectory     _%_: Build directory
   _-_: Reset                                       ^^_b_: Build
@@ -3971,7 +3971,9 @@ CMake              ^^Git                         ^^Directories         ^^Shell
            (dired cmake-ide-build-dir)))
   ("#" cpped-eshell-project-dir)
   ("$" eshell)
-  ("%" cpped-eshell-build-dir))
+  ("%" cpped-eshell-build-dir)
+
+  ("l" add-change-log-entry))
 
 (global-set-key (kbd "C-p") #'cpped-hydra-projects/body)
 #+END_SRC
