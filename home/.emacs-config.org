@@ -1303,6 +1303,12 @@ Always use a fixed width for line numbers (maximum number length)
 (define-key dired-mode-map "d" 'cpped-dired-ediff-files)
 #+END_SRC
 
+**** Compress files
+#+BEGIN_SRC emacs-lisp
+(define-key dired-mode-map "c" 'dired-do-compress)
+(define-key dired-mode-map "C" 'dired-do-compress-to)
+#+END_SRC
+
 *** [[https://www.emacswiki.org/emacs/Sunrise_Commander][Sunrise Commander]]
 #+BEGIN_SRC emacs-lisp
 (use-package sunrise-commander)
