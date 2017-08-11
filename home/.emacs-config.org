@@ -3904,6 +3904,18 @@ Do not use scientific form so quickly
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
 #+END_SRC
 
+** Smart close
+#+BEGIN_SRC emacs-lisp
+(defun cpped-close-editor ()
+  "Close the editor (either frame or emacs), depending on the current mode of operation."
+  (interactive)
+  (if (= (length (frame-list)) 1)
+      (kill-emacs)
+    (delete-frame)))
+
+(global-set-key (kbd "\C-x \C-c") 'cpped-close-editor)
+#+END_SRC
+
 ** Helm
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "M-x") 'helm-M-x)
