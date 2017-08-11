@@ -1224,6 +1224,13 @@ Always use a fixed width for line numbers (maximum number length)
       dired-recursive-deletes 'top)
 #+END_SRC
 
+**** Re-use dired buffers
+#+BEGIN_SRC emacs-lisp
+(put 'dired-find-alternate-file 'disabled nil)
+
+(define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
+#+END_SRC
+
 **** [[https://github.com/DamienCassou/dired-imenu][imenu Integration]]
 #+BEGIN_SRC emacs-lisp
 (use-package dired-imenu)
