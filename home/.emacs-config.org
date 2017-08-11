@@ -3989,7 +3989,7 @@ Open                         ^^Save           ^^Close                  ^^Switch 
       _e_: Events
 "
   ("o" helm-find-files)
-  ("r" helm-recentf)
+  ("r" helm-for-files)
   ("p" helm-browse-project)
   ("P" helm-projectile-find-file-in-known-projects)
   ("j" helm-projectile-find-other-file :exit nil)
