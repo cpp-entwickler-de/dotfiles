@@ -2451,6 +2451,11 @@ Custom error highlighting (colored line under location)
         helm-dash-docsets-url "https://api.github.com/repos/Kapeli/feeds/contents/"))
 #+END_SRC
 
+***** Change Log
+#+BEGIN_SRC emacs-lisp
+(setq change-log-default-name "CHANGELOG")
+#+END_SRC
+
 **** Comments
 ***** Comment style
 #+BEGIN_SRC emacs-lisp
