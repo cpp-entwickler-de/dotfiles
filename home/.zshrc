@@ -237,7 +237,7 @@ function kill()
 alias dnf="sudo dnf"
 
 alias less="less -FNMsW"
-alias ls="ls -AFhl --color $*"
+alias l="ls -AFhl1v --color --group-directories-first $*"
 alias lstree="ls -R $*"
 alias make="make -j"
 alias mkdir="mkdir -p"
