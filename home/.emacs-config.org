@@ -1244,7 +1244,7 @@ Always use a fixed width for line numbers (maximum number length)
 
 **** Use standard ls parameters for listing
 #+BEGIN_SRC emacs-lisp
-(setq dired-listing-switches "-aFhl")
+(setq dired-listing-switches "-aFhl1v --group-directories-first")
 #+END_SRC
 
 **** Coloring
