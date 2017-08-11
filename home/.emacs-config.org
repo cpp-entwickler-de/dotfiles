@@ -4386,7 +4386,7 @@ Date         ^^Time         ^^Timestamp    ^^Block          ^^Special
 Cut                   ^^Delete
 _k_: line or region       _SPC_: limit to one space
 _K_: line (back)          _C-SPC_: blank lines
-_w_: word
+_w_: word                 _d_: Duplicate lines
 _W_: word (back)
 _s_: sentence
 _S_: sentence (back)
@@ -4402,7 +4402,8 @@ _X_: expression (back)
 ("x" kill-sexp)
 ("X" backward-kill-sexp)
 ("SPC" just-one-space)
-("C-SPC" delete-blank-lines))
+("C-SPC" delete-blank-lines)
+("d" delete-duplicate-lines))
 
 (global-set-key (kbd "C-k") #'cpped-hydra-kill/body)
 
