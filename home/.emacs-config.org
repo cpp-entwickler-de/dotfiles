@@ -4208,7 +4208,7 @@ _C-<right>_: Next word                 _y_: Down block                 _C-t_: Ne
 (global-set-key (kbd "C-<end>") 'end-of-buffer)
 
 (global-set-key (kbd "C-n") 'cpped-hydra-navigation/body)
-(global-set-key (kbd "C-j") 'ace-jump-char-mode)
+(global-set-key (kbd "C-j") 'avy-goto-char-timer)
 #+END_SRC
 
 ** Folding
