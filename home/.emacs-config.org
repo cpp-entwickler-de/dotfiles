@@ -3190,6 +3190,16 @@ When using Magit >= 2.4.0
 (use-package magit-gerrit)
 #+END_SRC
 
+***** Find other projects
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "projectile"
+  (setq magit-repository-directories (mapcar #'directory-file-name
+                                             (cl-remove-if-not (lambda (project)
+                                                                 (file-directory-p (concat project "/.git/")))
+                                                               (projectile-relevant-known-projects)))
+        magit-repository-directories-depth 1))
+#+END_SRC
+
 ***** Icons for changes
 #+BEGIN_SRC emacs-lisp
 (defvar prettify-magit-alist (list (list (rx bol (not (in "+@-")) (0+ any) bow (group "add" (? (or "s" "ed"))) eow)
