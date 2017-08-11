@@ -152,6 +152,11 @@ recurseSubmodules = check
 enabled = true
 
 
+[remote]
+# automatically fetch pull requests to refs/pull/origin/<number>
+fetch = +refs/pull/*/head:refs/pull/origin/*
+
+
 [url "https://github.com/"]
 insteadOf = github:
 
