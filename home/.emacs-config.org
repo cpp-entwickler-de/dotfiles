@@ -2346,6 +2346,7 @@ Handler to close buffer after quitting ccmake.
   :config
   (setq flycheck-idle-change-delay 0.3
         flycheck-display-errors-delay 0.2
+        flycheck-checker-error-threshold nil
         flycheck-indication-mode nil
         flycheck-highlighting-mode nil
         flycheck-display-errors-function nil
