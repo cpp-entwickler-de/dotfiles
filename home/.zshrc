@@ -181,12 +181,19 @@ esac
 # Skip directories with no files
 zmodload zsh/parameter
 function chpwd() {
+    LIST=true
     if [[ ! $history[$HISTCMD] =~ "cd +[\./]+" ]]; then
-        ITEMS=$(/bin/ls -A)
+        ITEMS=$(ls -A)
         ITEM_COUNT=$(echo $ITEMS | wc -l)
         if [[ $ITEM_COUNT = "1" && -d $ITEMS ]]; then
             cd "$ITEMS"
+            LIST=false
         fi
+    fi
+
+    # list contents of final directory
+    if [[ "$LIST" = true ]]; then
+        l
     fi
 }
 
