@@ -3949,11 +3949,11 @@ Do not use scientific form so quickly
                                 (concat \" 🛠 \" cmake-ide-build-dir)
                                \"\")
 
-CMake              ^^Git           ^^Directories         ^^Shell
-  _o_: Load            _g_: Status     _/_: Project          _#_: Project directory
-  _c_: Configure                     ^^_._: Current          _$_: Current directory
-  _r_: Reconfigure                   ^^_d_: Subdirectory     _%_: Build directory
-  _-_: Reset                         ^^_b_: Build
+CMake              ^^Git                         ^^Directories         ^^Shell
+  _o_: Load            _g_: Status                   _/_: Project          _#_: Project directory
+  _c_: Configure       _G_: Other Project Status     _._: Current          _$_: Current directory
+  _r_: Reconfigure                                 ^^_d_: Subdirectory     _%_: Build directory
+  _-_: Reset                                       ^^_b_: Build
   _x_: Close
 "
   ("o" cpped-load-project)
@@ -3962,6 +3962,8 @@ CMake              ^^Git           ^^Directories         ^^Shell
   ("-" cpped-cmake-reset)
   ("x" projectile-kill-buffers)
   ("g" magit-status)
+  ("G" (let ((current-prefix-arg 4))
+         (call-interactively #'magit-status)))
   ("/" projectile-dired)
   ("." dired-jump)
   ("d" projectile-find-dir)
