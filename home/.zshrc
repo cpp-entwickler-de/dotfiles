@@ -259,6 +259,17 @@ alias unix2dos="recode lat1..ibmpc"
 alias unix2mac="recode lat1..mac"
 alias mac2unix="recode mac..lat1"
 
+function smart-enter ()
+{
+    zle accept-line
+    if [[ -z $BUFFER ]]; then
+        l
+    fi
+}
+
+zle -N smart-enter
+bindkey "^M" smart-enter
+
 alias -s pdf=emacsclient
 alias -s ps=gv
 alias -s dvi=xdvi
