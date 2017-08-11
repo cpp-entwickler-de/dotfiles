@@ -909,6 +909,11 @@ Switch to previous buffer
 (run-with-timer 0 (* 3 (* 60 60)) 'clean-buffer-list)
 #+END_SRC
 
+*** Allow erasing
+#+BEGIN_SRC emacs-lisp
+(put 'erase-buffer 'disabled nil)
+#+END_SRC
+
 *** Lines
 **** Highlight current line
 #+BEGIN_SRC emacs-lisp
@@ -4013,8 +4018,10 @@ Open                         ^^Save           ^^Close                  ^^Switch 
 
   ("v" git-timemachine)
   ("g" magit-log-buffer-file)
+
   ("d" crux-delete-file-and-buffer)
   ("m" crux-rename-file-and-buffer)
+  ("z" erase-buffer)
   ("C-d" cpped-unix2dos)
   ("C-u" cpped-dos2unix)
   ("!" (when buffer-read-only
