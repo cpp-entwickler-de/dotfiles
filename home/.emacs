@@ -26,6 +26,13 @@
 (setq custom-file "~/.emacs.d/customizations.el")
 (load custom-file 'noerror)
 
-;; Load actual configuration.
 (setq vc-follow-symlinks t)
-(org-babel-load-file "~/.emacs-config.org")
+
+;; increase garbage collection threshold for initialization
+(let ((gc-cons-threshold (* 100 1024 1024))
+      (gc-cons-percentage 0.6))
+  ;; Load actual configuration.
+  (org-babel-load-file "~/.emacs-config.org"))
+
+(setq gc-cons-threshold (* 50 1024)
+      gc-cons-percentage 0.2)
