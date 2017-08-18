@@ -4451,10 +4451,10 @@ _X_: expression (back)
   "
 ☰ Window Management
 
-Focus                ^^Close                ^^Split               ^^Align               ^^View
-  _\\^_: Switch window     _x_: Window            _v_: Vertically       _t_: Swap windows     _<left>_: Scroll left
-                       ^^_X_: Other windows     _h_: Horizontally     _+_: Enlarge         _<right>_: Scroll right
-                       ^^_q_: Frame                                 ^^_-_: Shrink           _<C-up>_: Scroll other window up
+Focus                  ^^^^Close                ^^Split               ^^Align               ^^View
+  _\\^_: Switch window       _x_: Window            _v_: Vertically       _t_: Swap windows     _<left>_: Scroll left
+                         ^^^^_X_: Other windows     _h_: Horizontally     _+_: Enlarge         _<right>_: Scroll right
+                         ^^^^_q_: Frame                                 ^^_-_: Shrink           _<C-up>_: Scroll other window up
                                                                                   ^^^^^^^^_<C-down>_: Scroll other window down
                                                                                   ^^^^^^^^_<C-home>_; Beginning of other window
                                                                                    ^^^^^^^^_<C-end>_: End of other window
