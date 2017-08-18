@@ -140,8 +140,6 @@ Show fullscreen for single monitor, fullscreen on right side on dual-monitor
 #+BEGIN_SRC emacs-lisp
 (setq x-gtk-use-system-tooltips t)
 #+END_SRC
-
-
 ** Notifications
 #+BEGIN_SRC emacs-lisp
 (use-package notifications)
@@ -602,14 +600,14 @@ Find path of current position in XML docuement
                 '("%e"
                   (:eval
                    (let* ((active (powerline-selected-window-active))
-                          (mode-line (if active 
-                                         'mode-line 
+                          (mode-line (if active
+                                         'mode-line
                                        'mode-line-inactive))
-                          (face1 (if active 
-                                     'powerline-active1 
+                          (face1 (if active
+                                     'powerline-active1
                                    'powerline-inactive1))
-                          (face2 (if active 
-                                     'powerline-active2 
+                          (face2 (if active
+                                     'powerline-active2
                                    'powerline-inactive2))
                           (separator-left (intern (format "powerline-%s-%s"
                                                           (powerline-current-separator)
@@ -659,7 +657,7 @@ Find path of current position in XML docuement
                                   (funcall separator-right check-face mode-line))
                                 (powerline-raw (powerline-date) mode-line 'l)
                                 (funcall separator-right mode-line face1)
-                               (powerline-raw (powerline-time face1) face1 'r))))
+                                (powerline-raw (powerline-time face1) face1 'r))))
                      (concat (powerline-render lhs)
                              (powerline-fill mode-line (powerline-width rhs))
                              (powerline-render rhs)))))))
