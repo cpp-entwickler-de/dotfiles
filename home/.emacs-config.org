@@ -3375,6 +3375,8 @@ When using Magit >= 2.4.0
         org-src-fontify-natively t
         org-hidden-keywords '(title author date email)
         org-fontify-done-headline t
+        org-fontify-quote-and-verse-blocks t
+        org-fontify-whole-heading-line t
         org-src-preserve-indentation t
         org-src-strip-leading-and-trailing-blank-lines t
         org-src-tab-acts-natively t
