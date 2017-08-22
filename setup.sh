@@ -226,7 +226,6 @@ if [ "$SHELL" = TRUE ]; then
         git clone --quiet https://github.com/robbyrussell/oh-my-zsh.git "$OH_MY_ZSH_DIR"
     fi
 
-    install_zsh_plugin https://github.com/Valiev/almostontop
     install_zsh_plugin https://github.com/kalpakrg/setenv
     install_zsh_plugin https://github.com/Tarrasch/zsh-bd
     install_zsh_plugin https://github.com/hlissner/zsh-autopair

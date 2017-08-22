@@ -50,7 +50,7 @@ HIST_STAMPS="dd.mm.yyyy"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(adb almostontop autojump bd colored-man-pages colorize command-not-found dirhistory extract git gnu-utils safe-paste setenv sudo systemd up wd zsh-autopair zsh-autosuggestions zsh-dwim zsh-reentry-hook zsh-syntax-highlighting)
+plugins=(adb autojump bd colored-man-pages colorize command-not-found dirhistory extract git gnu-utils safe-paste setenv sudo systemd up wd zsh-autopair zsh-autosuggestions zsh-dwim zsh-reentry-hook zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
 
