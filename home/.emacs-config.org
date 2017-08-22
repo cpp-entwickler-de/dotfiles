@@ -3373,6 +3373,7 @@ When using Magit >= 2.4.0
         org-refile-use-outline-path 'file
         org-refile-allow-creating-parent-nodes 'confirm
         org-src-fontify-natively t
+        org-hidden-keywords '(title author date email)
         org-fontify-done-headline t
         org-src-preserve-indentation t
         org-src-strip-leading-and-trailing-blank-lines t
