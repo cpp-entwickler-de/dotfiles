@@ -1021,7 +1021,10 @@ Always use a fixed width for line numbers (maximum number length)
                                        comint-strip-ctrl-m
                                        comint-postoutput-scroll-to-bottom
                                        comint-watch-for-password-prompt
-                                       comint-truncate-buffer))
+                                       comint-truncate-buffer)
+      eshell-scroll-to-bottom-on-input 'this
+      eshell-scroll-to-bottom-on-output 'this
+      eshell-kill-processes-on-exit t)
 #+END_SRC
 
 *** Clear buffer
