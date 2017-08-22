@@ -1472,7 +1472,8 @@ Always use a fixed width for line numbers (maximum number length)
         ahs-default-range 'ahs-range-whole-buffer
         ahs-idle-interval 0.25
         ahs-inhibit-face-list nil)
-  (global-auto-highlight-symbol-mode t))
+  (global-auto-highlight-symbol-mode t)
+  (add-hook 'org-mode-hook 'auto-highlight-symbol-mode))
 #+END_SRC
 
 *** [[- rainbow-mode][Show hex color definitions as color]]
