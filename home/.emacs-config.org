@@ -3698,6 +3698,7 @@ Archive when done, remove flag if reset to todo.
       org-agenda-remove-tags 'prefix
       org-agenda-restore-windows-after-quit t
       org-agenda-show-all-dates nil
+      org-agenda-skip-unavailable-files t
       org-agenda-skip-deadline-if-done t
       org-agenda-skip-deadline-prewarning-if-scheduled t
       org-agenda-skip-scheduled-if-done t
