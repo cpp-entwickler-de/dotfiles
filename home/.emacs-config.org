@@ -3382,6 +3382,8 @@ When using Magit >= 2.4.0
         org-src-tab-acts-natively t
         org-src-window-setup 'current-window
         org-startup-with-inline-images t
+        org-startup-folded t
+        org-startup-indented t
         org-support-shift-select t
         org-use-speed-commands t)
   (push "\\*Org Agenda\\*" helm-boring-buffer-regexp-list)
