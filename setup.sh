@@ -61,18 +61,6 @@ if [ "$PACKAGES" = TRUE ]; then
     sudo pip install proselint
 
     echo "Install Peco from https://github.com/peco/peco and RTags from https://github.com/Andersbakken/rtags manually."
-    
-    # install ssh-connect
-    SSH_CONNECT_DIRECTORY=~/.ssh-connect
-    if [ ! -d "$SSH_CONNECT_DIRECTORY" ]; then
-        git clone --recursive --quiet https://github.com/gko/ssh-connect "$SSH_CONNECT_DIRECTORY"
-    else
-        cd "$SSH_CONNECT_DIRECTORY" || exit
-        git pull --quiet
-    fi
-
-    # shellcheck source=/dev/null
-    source "$SSH_CONNECT_DIRECTORY/ssh-connect.sh"
 fi
 
 if [ "$LINKS" = TRUE ]; then

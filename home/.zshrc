@@ -249,6 +249,7 @@ alias lstree="ls -R $*"
 alias make="make -j"
 alias mkdir="mkdir -p"
 alias mv="mv -i"
+alias raw-peco=$(which peco)
 alias peco="peco --select-1"
 alias ps="ps aux"
 alias top="htop"
@@ -271,6 +272,17 @@ zle -N smart-enter
 bindkey "^M" smart-enter
 
 alias -s pdf=emacsclient
+function ssh-connect ()
+{
+    CONNECTIONS=$(fc -ln -10000 | grep -E "^ssh\s" | sed -e 's/\s*$//' | sort | uniq -c | sort -nr | sed -e "s/^\s*[0-9]*\s//")
+    if [ "$CONNECTIONS" ]; then
+        SELECTION=$(echo "$CONNECTIONS" | raw-peco --prompt "Select a connection")
+    else
+        echo "No previous connections found."
+    fi
+    print -S "$SELECTION"
+    eval $SELECTION
+}
 alias -s ps=gv
 alias -s dvi=xdvi
 
