@@ -243,16 +243,19 @@ function kill()
 
 alias dnf="sudo dnf"
 
-alias less="less -FNMsW"
+alias e="emacsclient"
+alias r="less -FNMsW"
 alias l="ls -AFhl1v --color --group-directories-first $*"
-alias lstree="ls -R $*"
+alias lstree="l -R $*"
 alias make="make -j"
 alias mkdir="mkdir -p"
 alias mv="mv -i"
 alias raw-peco=$(which peco)
 alias peco="peco --select-1"
-alias ps="ps aux"
+alias p="ps aux"
+alias t="htop"
 alias top="htop"
+alias x="extract"
 alias yank="yank-cli"
 
 alias dos2unix="recode ibmpc..lat1"
@@ -271,7 +274,6 @@ function smart-enter ()
 zle -N smart-enter
 bindkey "^M" smart-enter
 
-alias -s pdf=emacsclient
 function ssh-connect ()
 {
     CONNECTIONS=$(fc -ln -10000 | grep -E "^ssh\s" | sed -e 's/\s*$//' | sort | uniq -c | sort -nr | sed -e "s/^\s*[0-9]*\s//")
@@ -283,6 +285,26 @@ function ssh-connect ()
     print -S "$SELECTION"
     eval $SELECTION
 }
+
+alias -s txt=r
+alias -s md=r
+
+alias -s bat=e
+alias -s bin=e
+alias -s c=e
+alias -s cpp=e
+alias -s cxx=e
+alias -s h=e
+alias -s hpp=e
+alias -s hxx=e
+
+alias -s cfg=e
+alias -s config=e
+
+alias -s el=e
+alias -s org=e
+
+alias -s pdf=e
 alias -s ps=gv
 alias -s dvi=xdvi
 
@@ -297,6 +319,9 @@ alias -s png="display -antialias"
 alias -s jpg="display -antialias"
 alias -s jpeg="display -antialias"
 alias -s svg="display -antialias"
+alias -s xml=e
+alias -s xsl=e
+alias -s xslt=e
 
 export LSCOLORS="XXfxhxhxCxdxdxBXBXxxxx"
 export LS_COLORS="di=1;0;1:ln=35:so=37:pi=37:ex=1;32:bd=33:cd=33:su=1;31;1:sg=1;31;1:tw=0:ow=0"
