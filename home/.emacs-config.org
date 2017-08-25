@@ -2734,6 +2734,7 @@ Custom error highlighting (colored line under location)
 (flycheck-add-next-checker 'rtags '(t . c/c++-clang))
 (add-hook 'c++-mode-hook (lambda ()
                            (setq flycheck-clang-language-standard "c++11")))
+(push "\\*clang-.*\\*" helm-boring-buffer-regexp-list)
 #+END_SRC
 
 ****** GCC
