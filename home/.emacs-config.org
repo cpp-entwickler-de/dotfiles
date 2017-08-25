@@ -4416,7 +4416,7 @@ Date         ^^Time         ^^Timestamp    ^^Block          ^^Special
 
 
 *** Indent new lines
-#+BEGIN_SRC emacs-lips
+#+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "RET") 'newline-and-indent)
 (global-set-key (kbd "<C-return>") 'cpped-newline-after-current-line)
 #+END_SRC
