@@ -531,10 +531,15 @@ Find path of current position in XML docuement
                      0)))
       (concat
        (propertize (all-the-icons-faicon (pcase flycheck-last-status-change
-                                           (`finished (if (> issues 0) "exclamation-triangle" "check"))
+                                           (`finished (if flycheck-current-errors
+                                                          (let-alist (flycheck-count-errors flycheck-current-errors)
+                                                            (cond (.error "times-circle")
+                                                                  (.warning "exclamation-triangle")
+                                                                  (.info "info-circle")))
+                                                        "check"))
                                            (`running "refresh")
                                            (`not-checked "power-off")
-                                           (`errored "exclamation-triangle")
+                                           (`errored "times-circle")
                                            (`interrupted "flash")
                                            (`suspicious "exclamation-triangle")
                                            (_ "power-off")))
