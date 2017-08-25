@@ -901,10 +901,10 @@ Switch to previous buffer
                        (if (functionp regex)
                            (funcall regex input) (string-match regex input)))
                      clean-buffer-list-delay-special)
-      (* 3 (* 60 60))))
+      (* 60 60)))
 
 (fset 'clean-buffer-list-delay 'cpped-clean-buffer-list-delay-3hours)
-(run-with-timer 0 (* 3 (* 60 60)) 'clean-buffer-list)
+(run-with-timer 0 (* 60 60) 'clean-buffer-list)
 #+END_SRC
 
 *** Allow erasing
