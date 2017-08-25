@@ -1186,7 +1186,7 @@ Always use a fixed width for line numbers (maximum number length)
 
 ** Auto-save buffers
 #+BEGIN_SRC emacs-lisp
-(defconst cpped-autosave-delay 5 "The number of seconds to wait before saving autmatically.")
+(defconst cpped-autosave-delay 5 "The number of seconds to wait before saving automatically.")
 
 (setq auto-save-visited-file-name t
       auto-save-timeout cpped-autosave-delay
