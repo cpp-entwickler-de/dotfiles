@@ -2392,7 +2392,8 @@ Custom error highlighting (colored line under location)
   (mapc #'(lambda (error)
             (let* ((begin (save-excursion
                             (goto-char (flycheck-error-pos error))
-                            (+ 1 (line-end-position))))
+                            (forward-line)
+                            (point)))
                    (level (symbol-name (flycheck-error-level error)))
                    (face (pcase level
                            ("error" 'flycheck-error)
