@@ -122,6 +122,18 @@ Show fullscreen for single monitor, fullscreen on right side on dual-monitor
                                                                    (name . "IDE"))))))
 #+END_SRC
 
+Show below other windows
+#+BEGIN_SRC emacs-lisp
+(defun cpped-move-frame-below-others (&optional frame)
+  "Move frame below others in window system."
+  (interactive)
+  (with-selected-frame (or frame (selected-frame))
+    (when window-system
+      (x-send-client-message nil 0 nil "_NET_WM_STATE" 32 '(1 "_NET_WM_STATE_BELOW" 0)))))
+
+(add-hook 'after-make-frame-functions #'cpped-move-frame-below-others t)
+#+END_SRC
+
 ** Do not auto-raise
 #+BEGIN_SRC emacs-lisp
 (setq minibuffer-auto-raise nil)
