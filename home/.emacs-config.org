@@ -2809,7 +2809,11 @@ Translation Files
   :config
   (setq cmake-tab-width 4)
   (push '("CMakeLists\\.txt\\'" . cmake-mode) auto-mode-alist)
-  (push '(".\\cmake\\'" . cmake-mode) auto-mode-alist))
+  (push '(".\\cmake\\'" . cmake-mode) auto-mode-alist)
+  (with-eval-after-load "all-the-icons"
+    (push '(cmake-mode all-the-icons-fileicon "cmake" :v-adjust 0.0) all-the-icons-mode-icon-alist)
+    (push '("CMakeLists.txt$" all-the-icons-fileicon "cmake" :v-adjust 0.0) all-the-icons-icon-alist)
+    (push '("\\.cmake$" all-the-icons-fileicon "cmake" :v-adjust 0.0) all-the-icons-icon-alist)))
 #+END_SRC
 
 **** [[https://github.com/Lindydancer/cmake-font-lock][Highlighting]]
