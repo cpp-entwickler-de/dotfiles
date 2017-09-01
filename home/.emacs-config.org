@@ -218,6 +218,19 @@ Disable prettification if cursor is at edge of expression
   :group 'basic-faces)
 #+END_SRC
 
+*** Increase/decrease font size
+#+BEGIN_SRC emacs-lisp
+(defun cpped-zoom-in ()
+  "Increase the font size by 10 points"
+  (interactive)
+  (set-face-attribute 'default nil :height (+ (face-attribute 'default :height) 10)))
+
+(defun cpped-zoom-out ()
+  "Decrease the font size by 10 points"
+  (interactive)
+  (set-face-attribute 'default nil :height (- (face-attribute 'default :height) 10)))
+#+END_SRC
+
 ** Icons
 *** [[https://github.com/domtronn/all-the-icons.el][Show icons]]
 #+BEGIN_SRC emacs-lisp
@@ -4527,15 +4540,15 @@ _e_: enclosed area
   "
 ☰ Window Management
 
-Focus                  ^^^^Close                ^^Split               ^^Align               ^^View
-  _\\^_: Switch window       _x_: Window            _v_: Vertically       _t_: Swap windows     _<left>_: Scroll left
-                         ^^^^_X_: Other windows     _h_: Horizontally     _+_: Enlarge         _<right>_: Scroll right
+Focus                  ^^^^Close                ^^Split               ^^Align               ^^View                                ^^Zoom
+  _\\^_: Switch window       _x_: Window            _v_: Vertically       _t_: Swap windows     _<left>_: Scroll left                 _C-+_: Zoom in
+                         ^^^^_X_: Other windows     _h_: Horizontally     _+_: Enlarge         _<right>_: Scroll right                _C--_: Zoom out
                          ^^^^_q_: Frame                                 ^^_-_: Shrink           _<C-up>_: Scroll other window up
-                                                                                  ^^^^^^^^_<C-down>_: Scroll other window down
-                                                                                  ^^^^^^^^_<C-home>_; Beginning of other window
-                                                                                   ^^^^^^^^_<C-end>_: End of other window
-                                                                                         ^^^^^^^^_1_: Toggle line numbers
-                                                                                         ^^^^^^^^_#_: Toggle relative line numbers
+                                                                                    ^^^^^^^^^^_<C-down>_: Scroll other window down
+                                                                                    ^^^^^^^^^^_<C-home>_; Beginning of other window
+                                                                                     ^^^^^^^^^^_<C-end>_: End of other window
+                                                                                           ^^^^^^^^^^_1_: Toggle line numbers
+                                                                                           ^^^^^^^^^^_#_: Toggle relative line numbers
 "
   ("x" delete-window :exit t)
   ("X" delete-other-windows :exit t)
@@ -4557,7 +4570,9 @@ Focus                  ^^^^Close                ^^Split               ^^Align   
   ("<C-home>" beginning-of-buffer-other-window)
   ("<C-end>" end-of-buffer-other-window)
   ("1" nlinum-mode)
-  ("#" nlinum-relative-mode))
+  ("#" nlinum-relative-mode)
+  ("C-+" cpped-zoom-in)
+  ("C--" cpped-zoom-out))
 
 (global-set-key (kbd "C-^") #'cpped-hydra-windows/body)
 (global-set-key (kbd "C-x C-c") #'delete-frame)
