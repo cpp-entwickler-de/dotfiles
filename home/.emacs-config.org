@@ -1974,6 +1974,9 @@ Open binary files in hexl-mode
         cmake-ide-header-search-first-including nil
         cmake-ide-try-unique-compiler-flags-for-headers nil)
   (cmake-ide-setup))
+
+(with-eval-after-load "aggressive-fill-paragraph"
+  (add-to-list 'afp-fill-comments-only-mode-list 'cmake-mode))
 #+END_SRC
 
 **** Re-/Configure CMake
