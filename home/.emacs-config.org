@@ -3348,6 +3348,7 @@ When using Magit >= 2.4.0
 
 (advice-add 'magit-status :after 'cpped-prettify-magit)
 (advice-add 'magit-refresh-buffer :after 'cpped-prettify-magit)
+(add-hook 'diff-mode-hook #'cpped-prettify-magit)
 #+END_SRC
 
 **** [[https://github.com/tarsius/magit-rockstar][Change commit author and date]]
