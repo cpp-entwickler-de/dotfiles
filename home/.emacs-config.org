@@ -4324,6 +4324,8 @@ Mark                            ^^Modify                        ^^Act
   _W_: Rest of word                 _x_: Exchange mark and point    _d_: Delete
   _s_: S-EXPR                                                     ^^_k_: Kill
   _f_: Function
+  _l_: Rest of line
+  _L_: Line up to here
   _b_: Everything before cursor
   _a_: Everything after cursor
   _e_: Everything
@@ -4336,6 +4338,8 @@ Mark                            ^^Modify                        ^^Act
   ("f" mark-defun)
   ("+" er/expand-region)
   ("x" exchange-point-and-mark)
+  ("l" (end-of-line))
+  ("L" (beginning-of-line))
   ("b" mark-buffer-before-point)
   ("a" mark-buffer-after-point)
   ("e" mark-whole-buffer)
