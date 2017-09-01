@@ -1493,6 +1493,18 @@ Always use a fixed width for line numbers (maximum number length)
   :config (setq markdown-command "multimarkdown"))
 #+END_SRC
 
+***** Editing
+****** Wrap Region
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "wrap-region"
+  (wrap-region-add-wrappers
+   '(("*" "*" "/" (gfm-mode markdown-mode))
+     ("**" "**" "b" (gfm-mode markdown-mode))
+     ("***" "***" "e" (gfm-mode markdown-mode))))
+  (add-hook 'gfm-mode-hook 'wrap-region-mode)
+  (add-hook 'markdown-mode-hook 'wrap-region-mode))
+#+END_SRC
+
 ***** [[https://github.com/mola-T/flymd][Preview]]
 #+BEGIN_SRC emacs-lisp
 (use-package flymd)
@@ -1803,6 +1815,11 @@ Some useful abbreviations
         yas-wrap-around-region t
         yas-use-menu nil)
   (yas-global-mode 1))
+#+END_SRC
+
+*** [[https://github.com/rejeep/wrap-region.el][Wrap Region]]
+#+BEGIN_SRC emacs-lisp
+(use-package wrap-region)
 #+END_SRC
 
 *** Insert Date/Time
@@ -2715,6 +2732,13 @@ Custom error highlighting (colored line under location)
                                  (c-toggle-electric-state 1)))
 #+END_SRC
 
+***** Wrap Region
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "wrap-region"
+  (wrap-region-add-wrappers
+   '(("{" "}" nil (c-mode c++-mode)))))
+#+END_SRC
+
 ***** Auto-completion
 #+BEGIN_SRC emacs-lisp
 (use-package company-c-headers
@@ -2857,6 +2881,17 @@ Translation Files
 #+BEGIN_SRC emacs-lisp
 (use-package cmake-font-lock
   :config (add-hook 'cmake-mode-hook 'cmake-font-lock-activate))
+#+END_SRC
+
+**** Editing
+***** Wrap Region
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "wrap-region"
+  (wrap-region-add-wrappers
+   '(("{" "}" nil cmake-mode)
+     ("${" "}" "$" (cmake-mode c-mode c++-mode))
+     ("@" "@" nil (cmake-mode c-mode c++-mode))))
+  (add-hook 'cmake-mode-hook 'wrap-region-mode))
 #+END_SRC
 
 **** Autocompletion
@@ -3921,6 +3956,19 @@ Archive when done, remove flag if reset to todo.
           (org-todo cpped-org-todo-keyword-todo))))))
 
 (add-hook 'org-checkbox-statistics-hook 'cpped-checkbox-list-complete)
+#+END_SRC
+
+** Wrap Region
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "wrap-region"
+  (wrap-region-add-wrappers
+   '(("*" "*" nil org-mode)
+     ("~" "~" nil org-mode)
+     ("/" "/" nil org-mode)
+     ("=" "=" nil org-mode)
+     ("_" "_" nil org-mode)
+     ("$" "$" nil org-mode)))
+  (add-hook 'org-mode-hook 'wrap-region-mode))
 #+END_SRC
 
 * Utilities
