@@ -4320,14 +4320,18 @@ _C-<right>_: Next word                 _y_: Down block                 _C-t_: Ne
 ☰ Mark
 
 Mark                            ^^Modify                        ^^Act
-  _w_: Word                        _+_: Expand region              _c_: Copy
-  _s_: S-EXPR                      _x_: Exchange mark and point    _d_: Delete
-  _f_: Function                                                  ^^_k_: Kill
+  _w_: Word                         _+_: Expand region              _c_: Copy
+  _W_: Rest of word                 _x_: Exchange mark and point    _d_: Delete
+  _s_: S-EXPR                                                     ^^_k_: Kill
+  _f_: Function
   _b_: Everything before cursor
   _a_: Everything after cursor
   _e_: Everything
 "
-  ("w" mark-word)
+  ("w" (progn
+         (backward-word)
+         (mark-word)))
+  ("W" mark-word)
   ("s" mark-sexp)
   ("f" mark-defun)
   ("+" er/expand-region)
