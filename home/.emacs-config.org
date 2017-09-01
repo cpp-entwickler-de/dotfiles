@@ -3273,7 +3273,7 @@ When using Magit >= 2.4.0
                                          (all-the-icons-faicon "refresh")
                                          `(:family ,(all-the-icons-faicon-family)))
                                    (list (rx bol (+ (in "0-9a-f")) (+ space) bow (group (or "replace" "exchange") (? (in "sd"))) eow)
-                                         (all-the-icons-faicon "random")
+                                         (all-the-icons-faicon "exchange")
                                          `(:family ,(all-the-icons-faicon-family)))
                                    (list (rx bol (+ (in "0-9a-f")) (+ space) bow (group "increase" (? (in "sd"))) eow)
                                          (all-the-icons-faicon "chevron-up")
