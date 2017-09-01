@@ -1828,6 +1828,11 @@ Some useful abbreviations
   (add-hook 'after-init-hook #'synosaurus-mode))
 #+END_SRC
 
+*** [[https://github.com/magnars/change-inner.el][Change inner]]
+#+BEGIN_SRC emacs-lisp
+(use-package change-inner)
+#+END_SRC
+
 *** Utilities
 **** [[https://github.com/mhayashi1120/Emacs-wgrep][Edit grep buffers]]
 #+BEGIN_SRC emacs-lisp
@@ -4480,6 +4485,7 @@ _s_: sentence
 _S_: sentence (back)
 _x_: expression
 _X_: expression (back)
+_e_: enclosed area
 "
 ("k" whole-line-or-region-kill-region :exit t)
 ("K" cpped-backward-kill-dwim)
@@ -4489,6 +4495,7 @@ _X_: expression (back)
 ("S" backward-kill-sentence)
 ("x" kill-sexp)
 ("X" backward-kill-sexp)
+("e" change-inner)
 ("SPC" just-one-space)
 ("C-SPC" delete-blank-lines)
 ("d" delete-duplicate-lines))
