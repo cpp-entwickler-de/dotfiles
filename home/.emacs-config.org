@@ -4388,7 +4388,7 @@ Date         ^^Time         ^^Timestamp    ^^Block          ^^Special
   ("l" cpped-sort-lines-case-insensitive "Lines (case insensitive)")
   ("w" sort-words "Words"))
 
-(defhydra cpped-hydra-edit-move (:exit t :hint nil)
+(defhydra cpped-hydra-edit-move (:exit nil :hint nil)
   "
 ☰ Move
 
