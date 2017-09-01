@@ -4395,7 +4395,7 @@ Date         ^^Time         ^^Timestamp    ^^Block          ^^Special
 ☰ Edit
 
                            ^^Rename           ^^Replace           ^^Change          ^^^Format                ^^Text             ^^Code                         ^^Annotation
-  _d_: Duplicate               _n_: Local         _r_: Regex          _c_: Case         ^_>_: Indentation        _t_: Translate     _c_: Comment                   _a_: Add
+  _d_: Duplicate               _n_: Local         _r_: Regex          _c_: Case         ^_>_: Indentation        _t_: Translate     _/_: Comment                   _a_: Add
   _D_: Duplicate & Comment     _N_: File-wide     _p_: in Project     _\"_: String       _m_: Move               _y_: Synonym       _e_: Evaluate                  _A_: Clear all
   _+_: Insert                                                     ^^^^_+_: Value +      ^_j_: Join lines         _l_: Spelling      _E_: Evaluate & Replace
   _'_: Quoted insert                                              ^^^^_-_: Value -      ^_:_: Fill paragraph     _s_: Sort          _f_: Format (Selection)
@@ -4437,7 +4437,7 @@ Date         ^^Time         ^^Timestamp    ^^Block          ^^Special
   ("s" cpped-hydra-edit-sort/body :exit t)
   ("x" cpped-hydra-edit-transpose/body :exit t)
 
-  ("c" comment-dwim2)
+  ("/" comment-dwim-2)
   ("e" eval-last-sexp)
   ("E" crux-eval-and-replace)
   ("f" clang-format)
