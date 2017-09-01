@@ -1658,6 +1658,11 @@ Always use a fixed width for line numbers (maximum number length)
 #+END_SRC
 
 *** Clipboard
+Keep up to 500 entries
+#+BEGIN_SRC emacs-lisp
+(setq kill-ring-max 500)
+#+END_SRC
+
 Ignore duplicates
 #+BEGIN_SRC emacs-lisp
 (setq kill-do-not-save-duplicates t)
