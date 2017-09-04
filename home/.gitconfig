@@ -129,6 +129,12 @@ xfuncname = "^\\[([a-zA-Z0-9]+)\\]$"
 tool = meld
 
 
+[merge "keep-local"]
+# Pseudo-driver to always keep local changes on merge
+# Needs to be activated with "<file> merge=keep-local" in .gitattributes
+driver = true
+
+
 [commit]
 # Show diff in commit editor
 verbose = true
