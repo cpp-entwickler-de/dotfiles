@@ -128,6 +128,9 @@ xfuncname = "^\\[([a-zA-Z0-9]+)\\]$"
 [merge]
 tool = meld
 
+# Merge upstream branches when called without argument
+defaultToUpstream = true
+
 
 [merge "keep-local"]
 # Pseudo-driver to always keep local changes on merge
