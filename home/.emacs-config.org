@@ -2753,6 +2753,7 @@ Custom error highlighting (colored line under location)
 (define-abbrev-table 'c++-mode-abbrev-table '(
                                               ("breif" "brief")
                                               ("cosnt" "const")
+                                              ("def" "#define")
                                               ("endi " "#endif")
                                               ("fallt " "// fall-through")
                                               ("ifn " "#ifndef ")
