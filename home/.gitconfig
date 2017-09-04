@@ -19,6 +19,9 @@ excludesfile = ~/.gitignore
 # Use custom attributes file
 attributesFile = ~/.gitattributes
 
+# Do not quote characters > 0x80
+quotepath = false
+
 # Use emacs for editing
 editor = "emacsclient --alternate-editor=\"\" --eval '(cpped-maybe-create-new-frame)'"
 
