@@ -2290,9 +2290,7 @@ Handler to close buffer after quitting ccmake.
 #+BEGIN_SRC emacs-lisp
 (use-package origami
   :config
-  (add-hook 'prog-mode-hook 'origami-mode)
-  (add-hook 'origami-mode-hook (lambda ()
-                                 (origami-close-all-nodes))))
+  (add-hook 'prog-mode-hook 'origami-mode))
 #+END_SRC
 
 ***** Subword-navigation in camelCase words
