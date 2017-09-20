@@ -4,7 +4,7 @@ useConfigOnly = true
 
 
 [core]
-# Do not modify line endings
+# Modify line endings on commit only
 autocrlf = input
 
 # Honor executable bit
