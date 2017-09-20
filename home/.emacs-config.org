@@ -3139,6 +3139,7 @@ Translation Files
 Set correct major mode
 #+BEGIN_SRC emacs-lisp
 (push '("#!/bin/bash" . bash-mode) magic-mode-alist)
+(push '("#!/bin/busybox" . bash-mode) magic-mode-alist)
 (push '("\\.bash\\'" . bash-mode) auto-mode-alist)
 #+END_SRC
 
