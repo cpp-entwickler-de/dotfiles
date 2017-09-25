@@ -4557,7 +4557,7 @@ Date         ^^Time         ^^Timestamp    ^^Block          ^^Special
                            ^^Rename           ^^Replace           ^^Change          ^^^Format                ^^Text             ^^Code                         ^^Annotation
   _d_: Duplicate               _n_: Local         _r_: Regex          _c_: Case         ^_>_: Indentation        _t_: Translate     _/_: Comment                   _a_: Add
   _D_: Duplicate & Comment     _N_: File-wide     _p_: in Project     _\"_: String       _m_: Move               _y_: Synonym       _e_: Evaluate                  _A_: Clear all
-  _+_: Insert                                                     ^^^^_+_: Value +      ^_j_: Join lines         _l_: Spelling      _E_: Evaluate & Replace
+  _i_: Insert                                                     ^^^^_+_: Value +      ^_j_: Join lines         _l_: Spelling      _E_: Evaluate & Replace
   _'_: Quoted insert                                              ^^^^_-_: Value -      ^_:_: Fill paragraph     _s_: Sort          _f_: Format (Selection)
   _<_: Complete                                                   ^^^^_#_: Base                               ^^^_x_: Transpose     _F_: Format (File)
   _g_: Edit area                                                  ^^^^_1_: Flip bool                                           ^^^^^_u_: Uncrustify (Selection)
@@ -4566,7 +4566,7 @@ Date         ^^Time         ^^Timestamp    ^^Block          ^^Special
 "
   ("d" crux-duplicate-current-line-or-region)
   ("D" crux-duplicate-and-comment-current-line-or-region)
-  ("+" cpped-hydra-edit-insert/body :exit t)
+  ("i" cpped-hydra-edit-insert/body :exit t)
   ("'" quoted-insert)
   ("<" helm-company)
   ("g" org-edit-special)
