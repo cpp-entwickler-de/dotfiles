@@ -2276,6 +2276,40 @@ Handler to close buffer after quitting ccmake.
                               (hl-todo-mode 1))))
 #+END_SRC
 
+***** Find ToDos in file or project
+#+BEGIN_SRC emacs-lisp
+(defun cpped-find-todos-in-project ()
+  "Show all ToDo items in the project and allow jumping to specific item."
+  (interactive)
+  (let* ((helm-ag-command-option (concat "--all-text --context=0 --after=0 --depth=-1 --follow --numbers --nobreak --nogroup --noheading --case-sensitive"))
+         (current-prefix-arg nil))
+    (cl-letf (((symbol-function 'helm-ag--marked-input) '(lambda (escape)
+                                                           (concat "[[:space:]/*]("
+                                                                   (string-join (mapcar (lambda (element)
+                                                                                          (regexp-quote (car element)))
+                                                                                        hl-todo-keyword-faces) "|")
+                                                                   ")[[:space:]:]"))))
+      (helm-do-ag (if (ignore-errors (projectile-project-p))
+                      (projectile-project-root)
+                    default-directory)))))
+
+(defun cpped-find-todos-in-file ()
+  "Show all ToDo items in the file and allow jumping to specific itqem."
+  (interactive)
+  (let ((original-helm-swoop-pre-input-function helm-swoop-pre-input-function)
+        (helm-case-fold-search nil)
+        (case-fold-search nil))
+    (unwind-protect
+        (progn
+          (setq helm-swoop-pre-input-function (lambda ()
+                                                (concat "[[:space:]/*]\\(" (string-join (mapcar (lambda (element)
+                                                                                                  (regexp-quote (car element)))
+                                                                                                hl-todo-keyword-faces) "\\|")
+                                                        "\\)[[:space:]:]")))
+          (helm-swoop))
+      (setq helm-swoop-pre-input-function original-helm-swoop-pre-input-function))))
+#+END_SRC
+
 ***** Show current function in mode-line
 #+BEGIN_SRC emacs-lisp
 (use-package which-func
@@ -4134,7 +4168,7 @@ Do not use scientific form so quickly
 
 CMake              ^^Git                         ^^Directories         ^^Shell                    ^^Other
   _o_: Load            _g_: Status                   _/_: Project          _#_: Project directory     _l_: Add change log entry
-  _c_: Configure       _G_: Other Project Status     _._: Current          _$_: Current directory
+  _c_: Configure       _G_: Other Project Status     _._: Current          _$_: Current directory     _t_: Show ToDos
   _r_: Reconfigure                                 ^^_d_: Subdirectory     _%_: Build directory
   _-_: Reset                                       ^^_b_: Build
   _x_: Close
@@ -4156,7 +4190,8 @@ CMake              ^^Git                         ^^Directories         ^^Shell  
   ("$" eshell)
   ("%" cpped-eshell-build-dir)
 
-  ("l" add-change-log-entry))
+  ("l" add-change-log-entry)
+  ("t" cpped-find-todos-in-project))
 
 (global-set-key (kbd "C-p") #'cpped-hydra-projects/body)
 #+END_SRC
@@ -4243,9 +4278,9 @@ Open                         ^^Save           ^^Close                  ^^Switch 
 
 Text                    ^^Code                                ^^Version Control         ^^System             ^^Other
   _#_: Number               _y_: Symbol Info                      _c_: Commit Message       _p_: Processes       _a_: Agenda
-  _t_: Translate            _d_: Documentation                    _b_: Blame                _m_: Man page        _n_: Notes
-  _s_: Synonym              _r_: References                                                                  ^^^^_w_: Weather
-  _g_: Google               _-_: Dependencies
+  _x_: Translate            _d_: Documentation                    _b_: Blame                _m_: Man page        _n_: Notes
+  _s_: Synonym              _r_: References                                                                  ^^^^_t_: Show ToDos
+  _g_: Google               _-_: Dependencies                                                                ^^^^_w_: Weather
   _o_: Preview markdown     _v_: Enum value
   _._: Cursor               _i_: Include files for symbol
                           ^^_f_: Functions called
@@ -4255,7 +4290,7 @@ Text                    ^^Code                                ^^Version Control 
                           ^^_D_: Toggle shell documentation
 "
   ("#" describe-number-at-point)
-  ("t" cpped-show-translation)
+  ("x" cpped-show-translation)
   ("s" synosaurus-lookup)
   ("g" helm-google-suggest)
   ("o" flymd-flyit)
@@ -4275,6 +4310,7 @@ Text                    ^^Code                                ^^Version Control 
   ("m" helm-man-woman)
   ("a" (org-agenda nil "d"))
   ("n" (org-agenda nil "n"))
+  ("t" cpped-find-todos-in-file)
   ("D" shelldoc-toggle-doc-window)
   ("w" wttrin))
 
