@@ -3199,10 +3199,9 @@ Set correct major mode
              '("zsh" . sh-mode))
 #+END_SRC
 
-**** DOS
+**** DOS-Batch
 #+BEGIN_SRC emacs-lisp
-(use-package dos
-  :mode ("\\.bat\\'" . dos-mode))
+(push '("\\.bat\\'" . bat-mode) auto-mode-alist)
 #+END_SRC
 
 **** Documentation
