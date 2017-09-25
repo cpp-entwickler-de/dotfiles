@@ -4706,7 +4706,7 @@ Focus                  ^^^^Close                ^^Split               ^^Align   
   ("x" delete-window :exit t)
   ("X" delete-other-windows :exit t)
   ("^" (call-interactively #'switch-window) :exit t)
-  ("q" delete-frame)
+  ("q" cpped-close-editor)
   ("v" split-window-below)
   ("h" split-window-right)
   ("t" crux-transpose-windows)
