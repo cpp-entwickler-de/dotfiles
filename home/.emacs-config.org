@@ -3020,6 +3020,12 @@ Translation Files
   (add-to-list 'org-src-lang-modes '("dot" . graphviz-dot)))
 #+END_SRC
 
+*** [[https://github.com/Wilfred/dockerfile-mode][Dockerfile]]
+#+BEGIN_SRC emacs-lisp
+(use-package dockerfile-mode
+  :config (add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode)))
+#+END_SRC
+
 *** HTML
 #+BEGIN_SRC emacs-lisp
 (push '("\\.x?html?\\'" . html-mode) auto-mode-alist)
