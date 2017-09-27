@@ -459,6 +459,30 @@ Helper function to figure out version control root directory
                   'display '(raise -0.0)))))
 #+END_SRC
 
+*** Key Lock
+#+BEGIN_SRC emacs-lisp
+(defvar cpped-caps-lock-active nil "Indicates if caps lock is enabled.")
+(defvar cpped-num-lock-active nil "Indicates if num lock is enabled.")
+
+(run-with-timer 0 3 '(lambda ()
+                       (with-temp-buffer
+                         (call-process "xset" nil t nil "q")
+                         (let ((led-mask (string-to-number (save-match-data
+                                                             (and (string-match ".*LED mask:[[:space:]]*\\([[:alnum:]]+\\).*" (buffer-string))
+                                                                  (match-string 1 (buffer-string))))
+                                                           16)))
+                           (setq cpped-caps-lock-active (eq (logand led-mask 1) 1)
+                                 cpped-num-lock-active (eq (logand led-mask 2) 2))))))
+
+(defun powerline-key-lock (lock icon icon-face)
+   (when lock
+     (propertize (all-the-icons-faicon icon)
+                 'face `(:family ,(all-the-icons-faicon-family)
+                         :background ,(face-attribute icon-face :background)
+                         :height 1.1)
+                 'display '(raise -0.0))))
+#+END_SRC
+
 *** Buffer size (characters/lines)
 #+BEGIN_SRC emacs-lisp
 (defun powerline-buffersize ()
@@ -667,6 +691,8 @@ Find path of current position in XML docuement
                                 (powerline-raw (powerline-modified (symbol-value 'face2)) face2)
                                 (powerline-raw (powerline-overwrite-mode (symbol-value 'face2)) face2 'l)
                                 (powerline-raw (powerline-typo-mode (symbol-value 'face2)) face2 'l)
+                                (powerline-raw (powerline-key-lock (symbol-value 'cpped-caps-lock-active) "sort-alpha-asc" (symbol-value 'face2)) face2 'l)
+                                (powerline-raw (powerline-key-lock (symbol-value 'cpped-num-lock-active) "sort-numeric-asc" (symbol-value 'face2)) face2 'l)
                                 (powerline-raw (powerline-position-info (symbol-value 'face2)) face2 'l)
                                 (powerline-raw (powerline-region-info (symbol-value 'face2)) face2 'l)
                                 (funcall separator-left face2 mode-line)
