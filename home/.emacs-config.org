@@ -305,8 +305,8 @@ Disable prettification if cursor is at edge of expression
   (let ((icon (all-the-icons-icon-for-buffer)))
     (unless (symbolp icon)
       (propertize icon
-                  'face `(:family ,(all-the-icons-icon-family-for-buffer))
-                  'display '(raise -0.0)
+                  'face `(:family ,(all-the-icons-icon-family-for-buffer) :height 1.2)
+                  'display '(raise -0.1)
                   'help-echo (format "%s" major-mode)))))
 #+END_SRC
 
