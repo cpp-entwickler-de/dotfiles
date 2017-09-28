@@ -1395,19 +1395,27 @@ Always use a fixed width for line numbers (maximum number length)
 (use-package sunrise-commander)
 #+END_SRC
 
-*** [[https://github.com/jaypei/emacs-neotree][NeoTree]]
+*** [[https://github.com/Alexander-Miller/treemacs][Treemacs]]
 #+BEGIN_SRC emacs-lisp
-(use-package neotree
-  :after projectile
-  :bind ("<f1>" . neotree-toggle)
+(use-package treemacs
+  :bind ("<f1>" . treemacs-toggle)
   :config
-  (setq neo-smart-open nil
-        neo-show-updir-line t
-        neo-window-fixed-size nil
-        neo-theme (if window-system
-                      'icons
-                    'arrow))
-  (add-hook 'projectile-after-switch-project-hook 'neotree-projectile-action))
+  (setq treemacs-change-root-without-asking t
+        treemacs-collapse-dirs 3
+        treemacs-file-event-delay 2000
+        treemacs-filewatch-mode t
+        treemacs-follow-after-init t
+        treemacs-follow-mode t
+        treemacs-git-integration t
+        treemacs-is-never-other-window t
+        treemacs-silent-refresh t
+        treemacs-header-function 'treemacs-projectile-create-header)
+  (treemacs-follow-mode t)
+  (treemacs-filewatch-mode t)
+  (push "\\*Treemacs\\*" helm-boring-buffer-regexp-list))
+
+(use-package treemacs-projectile
+  :after treemacs projectile)
 #+END_SRC
 
 * Text
@@ -4301,7 +4309,7 @@ Open                         ^^Save           ^^Close                  ^^Switch 
   ("h" hexl-mode)
   ("c" cpped-copy-file-name-to-clipboard)
   ("." dired-jump)
-  ("+" neotree-toggle))
+  ("+" treemacs-toggle))
 
 (global-set-key (kbd "C-f") 'cpped-hydra-files/body)
 (global-set-key (kbd "M-^") 'cpped-switch-buffer)
