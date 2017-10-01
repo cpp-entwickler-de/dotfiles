@@ -857,6 +857,11 @@ Switch to previous buffer
   (switch-to-buffer (other-buffer (current-buffer) 1)))
 #+END_SRC
 
+*** [[https://github.com/ShingoFukuyama/helm-swoo][In-buffer search]]
+#+BEGIN_SRC emacs-lisp
+(use-package helm-swoop)
+#+END_SRC
+
 *** Scratch Buffer
 **** Always use text mode
 #+BEGIN_SRC emacs-lisp
