@@ -2054,9 +2054,6 @@ Open binary files in hexl-mode
         cmake-ide-header-search-first-including nil
         cmake-ide-try-unique-compiler-flags-for-headers nil)
   (cmake-ide-setup))
-
-(with-eval-after-load "aggressive-fill-paragraph"
-  (add-to-list 'afp-fill-comments-only-mode-list 'cmake-mode))
 #+END_SRC
 
 **** Re-/Configure CMake
@@ -2970,6 +2967,8 @@ Translation Files
   (setq cmake-tab-width 4)
   (push '("CMakeLists\\.txt\\'" . cmake-mode) auto-mode-alist)
   (push '(".\\cmake\\'" . cmake-mode) auto-mode-alist)
+  (with-eval-after-load "aggressive-fill-paragraph"
+    (add-to-list 'afp-fill-comments-only-mode-list 'cmake-mode))
   (with-eval-after-load "all-the-icons"
     (push '(cmake-mode all-the-icons-fileicon "cmake" :v-adjust 0.0) all-the-icons-mode-icon-alist)
     (push '("CMakeLists.txt$" all-the-icons-fileicon "cmake" :v-adjust 0.0) all-the-icons-icon-alist)
