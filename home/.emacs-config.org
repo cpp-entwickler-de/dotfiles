@@ -1829,7 +1829,9 @@ Save system clipboard contents to kill ring before killing
 **** Typographic characters
 #+BEGIN_SRC emacs-lisp
 (use-package typo
-  :config (add-hook 'text-mode-hook 'typo-mode))
+  :config (add-hook 'text-mode-hook '(lambda ()
+                                       (when (not (string-equal (buffer-name) (file-name-nondirectory cpped-config-file)))
+                                         (typo-mode)))))
 #+END_SRC
 
 **** Abbreviations
