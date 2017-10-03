@@ -172,8 +172,22 @@ fetch = +refs/pull/*/head:refs/pull/origin/*
 [url "https://github.com/"]
 insteadOf = github:
 
+
 [url "https://github.com/cpp-entwickler-de/"]
 insteadOf = cpped:
+
+
+[github]
+user = cpp-entwickler-de
+
+
+[credential]
+# store credentials in memoty
+helper = cache
+
+
+[credential "https://github.com"]
+username = cpp-entwickler-de
 
 
 [alias]
