@@ -3171,6 +3171,16 @@ Translation Files
 (push '("\\.mak\\'" . makefile-mode) auto-mode-alist)
 #+END_SRC
 
+*** Perl
+#+BEGIN_SRC emacs-lisp
+(push '("#!/usr/bin/perl" . perl-mode) magic-mode-alist)
+#+END_SRC
+
+*** Prolog
+#+BEGIN_SRC emacs-lisp
+(push '("\\.pl\\'" . prolog-mode) auto-mode-alist)
+#+END_SRC
+
 *** Python
 #+BEGIN_SRC emacs-lisp
 (push '("\\.py\\'" . python-mode) auto-mode-alist)
