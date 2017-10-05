@@ -4743,8 +4743,8 @@ _e_: enclosed area
   "
 ☰ Window Management
 
-Focus                  ^^^^Close                ^^Split               ^^Align               ^^View                                ^^Zoom
-  _\\^_: Switch window       _x_: Window            _v_: Vertically       _t_: Swap windows     _<left>_: Scroll left                 _C-+_: Zoom in
+Focus                  ^^^^Close                ^^Split               ^^Align               ^^View                                ^^Zoom               ^^Size
+  _\\^_: Switch window       _x_: Window            _v_: Vertically       _t_: Swap windows     _<left>_: Scroll left                 _C-+_: Zoom in       _f_: Toggle fullscreen
                          ^^^^_X_: Other windows     _h_: Horizontally     _+_: Enlarge         _<right>_: Scroll right                _C--_: Zoom out
                          ^^^^_q_: Frame                                 ^^_-_: Shrink           _<C-up>_: Scroll other window up
                                                                                     ^^^^^^^^^^_<C-down>_: Scroll other window down
@@ -4775,7 +4775,8 @@ Focus                  ^^^^Close                ^^Split               ^^Align   
   ("1" nlinum-mode)
   ("#" nlinum-relative-mode)
   ("C-+" cpped-zoom-in)
-  ("C--" cpped-zoom-out))
+  ("C--" cpped-zoom-out)
+  ("f" toggle-frame-fullscreen :exit t))
 
 (global-set-key (kbd "C-^") #'cpped-hydra-windows/body)
 (global-set-key (kbd "C-x C-c") #'delete-frame)
