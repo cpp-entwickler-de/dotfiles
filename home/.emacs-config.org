@@ -2462,6 +2462,7 @@ Handler to close buffer after quitting ccmake.
   (setq company-auto-complete nil
         company-auto-complete-chars '(32 95 41 119 46)
         company-frontends '(company-preview-if-just-one-frontend company-pseudo-tooltip-unless-just-one-frontend)
+        company-backends '(company-keywords company-yasnippet company-files company-capf company-dabbrev)
         company-idle-delay 0
         company-selection-wrap-around t
         company-show-numbers
@@ -2861,7 +2862,7 @@ Custom error highlighting (colored line under location)
   :after company)
 
 (add-hook 'c-mode-common-hook (lambda()
-                                (set (make-local-variable 'company-backends) '(company-rtags company-c-headers company-keywords company-dabbrev-code company-yasnippet company-files company-capf cpped-company-line-backend))))
+                                (set (make-local-variable 'company-backends) '(company-rtags company-c-headers company-keywords company-yasnippet company-files company-capf company-dabbrev-code cpped-company-line-backend))))
 #+END_SRC
 
 ***** Abbreviations
@@ -3043,7 +3044,7 @@ Translation Files
 **** Autocompletion
 #+BEGIN_SRC emacs-lisp
 (add-hook 'cmake-mode-hook (lambda()
-                             (set (make-local-variable 'company-backends) '(company-cmake company-dabbrev-code company-yasnippet company-files company-capf cpped-company-line-backend))))
+                             (set (make-local-variable 'company-backends) '(company-cmake company-yasnippet company-files company-capf company-dabbrev-code cpped-company-line-backend))))
 #+END_SRC
 
 **** Documentation
@@ -3174,7 +3175,7 @@ Translation Files
 **** Auto-completion
 #+BEGIN_SRC emacs-lisp
 (add-hook 'elisp-mode-hook (lambda()
-                             (set (make-local-variable 'company-backends) '(company-elisp company-keywords company-dabbrev-code company-yasnippet company-files company-capf cpped-company-line-backend))))
+                             (set (make-local-variable 'company-backends) '(company-elisp company-keywords company-yasnippet company-files company-capf company-dabbrev-code cpped-company-line-backend))))
 #+END_SRC
 
 **** Documentation
@@ -3216,7 +3217,7 @@ Translation Files
 **** Auto-completion
 #+BEGIN_SRC emacs-lisp
 (add-hook 'qml-mode-hook (lambda()
-                           (set (make-local-variable 'company-backends '(company-qml company-keywords company-dabbrev-code company-yasnippet company-files company-capf cpped-company-line-backend)))))
+                           (set (make-local-variable 'company-backends '(company-qml company-keywords company-yasnippet company-files company-capf company-dabbrev-code cpped-company-line-backend)))))
 #+END_SRC
 
 **** Documentation
@@ -3236,7 +3237,7 @@ Translation Files
 (use-package company-shell
   :config
   (add-hook 'sh-mode-hook (lambda()
-                            (set (make-local-variable 'company-backends) '(company-shell company-keywords company-dabbrev-code company-yasnippet company-files company-capf cpped-company-line-backend)))))
+                            (set (make-local-variable 'company-backends) '(company-shell company-keywords company-yasnippet company-files company-capf company-dabbrev-code cpped-company-line-backend)))))
 #+END_SRC
 
 ***** Syntax checkers
@@ -3301,7 +3302,7 @@ Set correct major mode
 ***** Autocompletion
 #+BEGIN_SRC emacs-lisp
 (add-hook 'nxml-mode-hook (lambda() 
-                                  (set (make-local-variable 'company-backends) '(company-nxml company-dabbrev-code company-yasnippet company-files company-capf cpped-company-line-backend))))
+                                  (set (make-local-variable 'company-backends) '(company-nxml company-yasnippet company-files company-capf company-dabbrev-code cpped-company-line-backend))))
 #+END_SRC
 
 ***** XQuery
