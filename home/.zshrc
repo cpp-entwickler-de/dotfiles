@@ -46,6 +46,12 @@ HIST_STAMPS="dd.mm.yyyy"
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
+# Show elapsed time for command if longer than 10 seconds
+REPORTTIME=10
+
+# Show time output in hh:mm:ss.ttt format
+TIMEFMT=$'\nreal   %*E\nuser   %*U\nsystem %*S\ncpu    %P'
+
 # Close shell after 5 minutes of inactivity
 TMOUT=900
 
