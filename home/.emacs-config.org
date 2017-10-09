@@ -837,6 +837,11 @@ Find path of current position in XML docuement
 #+END_SRC
 
 ** Buffers
+*** Disable bidirectional support
+#+BEGIN_SRC emacs-lisp
+(setq-default bidi-display-reordering nil)
+#+END_SRC
+
 *** Go to last position when opening buffer
 #+BEGIN_SRC emacs-lisp
 (save-place-mode 1)
