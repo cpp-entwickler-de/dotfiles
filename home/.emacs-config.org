@@ -2468,7 +2468,7 @@ Handler to close buffer after quitting ccmake.
         company-tooltip-align-annotations
         company-tooltip-flip-when-above nil
         company-transformers '(company-sort-by-backend-importance)
-        company-tooltip-limit 20
+        company-tooltip-limit 30
         company-tooltip-minimum-width 50
         company-tooltip-offset-display 'scrollbar)
   (add-hook 'after-init-hook 'global-company-mode))
