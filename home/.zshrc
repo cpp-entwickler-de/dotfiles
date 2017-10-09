@@ -214,6 +214,7 @@ alias cd..="cd .."
 alias cp="cp -i"
 alias du="du -h"
 alias gti="git"
+alias gitroot='cd $(git root)'
 
 function helm()
 {
