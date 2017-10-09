@@ -4154,6 +4154,11 @@ Archive when done, remove flag if reset to todo.
 #+END_SRC
 
 * Utilities
+** Use rx syntax for regular expression builder
+#+BEGIN_SRC emacs-lisp
+(setq reb-re-syntax 'rx)
+#+END_SRC
+
 ** Calculator
 Do not use scientific form so quickly
 #+BEGIN_SRC emacs-lisp
