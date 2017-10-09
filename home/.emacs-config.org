@@ -2349,7 +2349,7 @@ Handler to close buffer after quitting ccmake.
   (let* ((helm-ag-command-option (concat "--all-text --context=0 --after=0 --depth=-1 --follow --numbers --nobreak --nogroup --noheading --case-sensitive"))
          (current-prefix-arg nil))
     (cl-letf (((symbol-function 'helm-ag--marked-input) '(lambda (escape)
-                                                           (concat "[[:space:]/*]("
+                                                           (concat "[[:space:]/*#;]("
                                                                    (string-join (mapcar (lambda (element)
                                                                                           (regexp-quote (car element)))
                                                                                         hl-todo-keyword-faces) "|")
@@ -2367,7 +2367,7 @@ Handler to close buffer after quitting ccmake.
     (unwind-protect
         (progn
           (setq helm-swoop-pre-input-function (lambda ()
-                                                (concat "[[:space:]/*]\\(" (string-join (mapcar (lambda (element)
+                                                (concat "[[:space:]/*#;]\\(" (string-join (mapcar (lambda (element)
                                                                                                   (regexp-quote (car element)))
                                                                                                 hl-todo-keyword-faces) "\\|")
                                                         "\\)[[:space:]:]")))
