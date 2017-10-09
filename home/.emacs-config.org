@@ -153,6 +153,12 @@ Show below other windows
 #+BEGIN_SRC emacs-lisp
 (setq x-gtk-use-system-tooltips t)
 #+END_SRC
+
+*** Hide mouse pointer
+#+BEGIN_SRC emacs-lisp
+(setq make-pointer-invisible t)
+#+END_SRC
+
 ** Notifications
 #+BEGIN_SRC emacs-lisp
 (use-package notifications)
