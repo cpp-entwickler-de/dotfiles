@@ -2603,7 +2603,23 @@ Custom error highlighting (colored line under location)
 
 ***** Flip booleans
 #+BEGIN_SRC emacs-lisp
-(use-package bool-flip)
+(use-package bool-flip
+  :config
+  (setq bool-flip-alist '(("T" . "F")
+                          ("t" . "f")
+                          ("TRUE" . "FALSE")
+                          ("True" . "False")
+                          ("true" . "false")
+                          ("Y" . "N")
+                          ("y" . "n")
+                          ("YES" . "NO")
+                          ("Yes" . "No")
+                          ("yes" . "no")
+                          ("1" . "0")
+                          ("ON" . "OFF")
+                          ("On" . "Off")
+                          ("ENABLED" . "DISABLED")
+                          ("Enabled" . "Disabled"))))
 #+END_SRC
 
 **** Compilation
