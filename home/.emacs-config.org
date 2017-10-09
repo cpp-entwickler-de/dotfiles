@@ -1099,6 +1099,7 @@ Always use a fixed width for line numbers (maximum number length)
 (setq comint-buffer-maximum-size 10000
       comint-scroll-show-maximum-output t
       comint-input-ring-size 500
+      comint-input-ignoredups t
       comint-output-filter-functions '(ansi-color-process-output
                                        comint-strip-ctrl-m
                                        comint-postoutput-scroll-to-bottom
