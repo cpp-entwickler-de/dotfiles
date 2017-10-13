@@ -1371,8 +1371,7 @@ Always use a fixed width for line numbers (maximum number length)
 #+BEGIN_SRC emacs-lisp
 (use-package dired-subtree
   :bind (:map dired-mode-map
-              ("<tab>" . dired-subtree-insert)
-              ("<backtab>" . dired-subtree-remove)))
+              ("<tab>" . dired-subtree-toggle)))
 #+END_SRC
 
 **** Filtering
