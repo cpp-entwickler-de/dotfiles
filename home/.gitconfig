@@ -219,6 +219,9 @@ clone-recursive = clone --recursive
 # update submodules
 pull-recursive = pull --recurse-submodules
 
+# add with file selection
+add-files = !git add $(git status | sed -e 's/^[[:blank:][:alnum:][:punct:]].[[:blank:]]//g' | peco --prompt 'Files to add:')
+
 # Mark commit as fix for given revision
 fixup = commit --fixup
 
