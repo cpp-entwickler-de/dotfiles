@@ -1553,7 +1553,9 @@ Always use a fixed width for line numbers (maximum number length)
   (("README\\.md\\'" . gfm-mode)
    ("\\.md\\'" . markdown-mode)
    ("\\.markdown\\'" . markdown-mode))
-  :config (setq markdown-command "multimarkdown"))
+  :config (setq markdown-command "multimarkdown")
+          (add-hook 'markdown-mode-hook '(lambda ()
+                                           (typo-mode -1))))
 #+END_SRC
 
 ***** Editing
