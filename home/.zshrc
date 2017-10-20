@@ -252,6 +252,7 @@ function kill()
 }
 
 alias dnf="sudo dnf"
+alias log="sudo lnav"
 
 alias e="emacsclient --no-wait"
 alias r="less -FNMsW"
