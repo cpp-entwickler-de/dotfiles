@@ -273,6 +273,8 @@ alias unix2dos="recode lat1..ibmpc"
 alias unix2mac="recode lat1..mac"
 alias mac2unix="recode mac..lat1"
 
+alias magit='e --eval "(magit-status \"$(pwd)\")" &> /dev/null'
+
 function smart-enter ()
 {
     zle accept-line
