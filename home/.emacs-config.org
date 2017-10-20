@@ -596,7 +596,7 @@ Find path of current position in XML docuement
                                            (`running "refresh")
                                            (`not-checked "power-off")
                                            (`errored "times-circle")
-                                           (`interrupted "flash")
+                                           (`interrupted "bolt")
                                            (`suspicious "exclamation-triangle")
                                            (_ "power-off")))
                    'face (list ':family (all-the-icons-faicon-family)
