@@ -299,6 +299,63 @@ function ssh-connect ()
     eval $SELECTION
 }
 
+function set-password()
+{
+    USER=$(whoami)
+    echo -n "Current Password: "
+    OLD_PASSWORD=$(read -e -s)
+
+    # determine new password
+    PASSWORD=${1:-$(apg -a 0 -n 20 -M SNCL -m 10 -x 10 -y -t | peco | cut --delimiter=\  -f 1)}
+
+    if [ -n "$PASSWORD" -a -n "$OLD_PASSWORD" ]; then
+        if [ -n "$DOMAIN" -a -n "$DOMAIN_CONTROLLER" ]; then
+            # change domain password
+            echo -e -n "\nSetting domain password..."
+            echo -e "$OLD_PASSWORD\n$PASSWORD" | smbpasswd -s -r $DOMAIN_CONTROLLER -U $USER
+            if [ $? -eq 0 ]; then
+                echo "ok"
+
+                # change CIFS password
+                echo -n "Setting CIFS password....."
+                if [ -s ~/.cifs-credentials ]; then
+                    sed -i -e "s/\(password=\).*/\1$PASSWORD/g" ~/.cifs-credentials
+                else
+                    echo "$PASSWORD" > ~/.cifs-credentials
+                fi
+                echo "ok"
+
+                # change proxy password
+                which cntlm
+                if [ $? -eq 0 ]; then
+                    echo -n "Setting proxy password...."
+                    PASSWORD_NTLM=$(echo "$PASSWORD" | cntlm -a NTLM -u $USER -d $(domainname) -H)
+                    PASSWORD_NT=$(echo $PASSWORD_NTLM | grep "PassNT ")
+                    PASSWORD_LM=$(echo $PASSWORD_NTLM | grep "PassLM ")
+                    sudo sed -i -e "s/PassNT.*/$PASSWORD_NT/g" -e "s/PassLM.*/$PASSWORD_LM/g" /etc/cntlm.conf
+                    echo "ok"
+                    echo -n "Restarting Proxy.........."
+                    sudo systemctl restart cntlm
+                    echo "ok"
+                fi
+            else
+                return 1
+            fi
+        else
+            echo "No Domain configured. Set DOMAIN and DOMAIN_CONTROLLER if you also want to change your domain password."
+        fi
+
+        # change linux password
+        echo -n "Setting system password..."
+        echo "$PASSWORD" | sudo passwd --stdin $USER > /dev/null
+        echo "ok"
+
+        echo
+        echo "User:         $(whoami)"
+        echo "New Password: $PASSWORD"
+    fi
+}
+
 alias -s txt=r
 alias -s md=r
 
