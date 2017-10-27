@@ -94,7 +94,7 @@ export LC_MEASUREMENT=de_DE.UTF-8
 
 # Preferred editor for local and remote sessions
 if [[ -z $SSH_CONNECTION ]]; then
-    export EDITOR="emacsclient --alternate-editor=\"\" --eval '(cpped-maybe-create-new-frame)'"
+    export EDITOR="emacsclient"
 else
    export EDITOR=vim
 fi
@@ -254,7 +254,7 @@ function kill()
 alias dnf="sudo dnf"
 alias log="sudo lnav"
 
-alias e="emacsclient --no-wait"
+alias e=$EDITOR --no-wait
 alias r="less -FNMsW"
 alias l="ls -AFhl1v --color --group-directories-first $*"
 alias lstree="l -R $*"

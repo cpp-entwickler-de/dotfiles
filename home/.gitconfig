@@ -23,7 +23,7 @@ attributesFile = ~/.gitattributes
 quotepath = false
 
 # Use emacs for editing
-editor = "emacsclient --alternate-editor=\"\" --eval '(cpped-maybe-create-new-frame)'"
+editor = "emacsclient"
 
 
 [color]

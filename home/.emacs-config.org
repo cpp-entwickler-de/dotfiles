@@ -4,22 +4,16 @@
 
 * Use only one frame
 #+BEGIN_SRC emacs-lisp
-(defun cpped-find-quoted-file (file)
-  "Find-file for single-quoted file names."
-  (let ((unquoted-file (replace-regexp-in-string "'" "" file)))
-    (unless (file-directory-p unquoted-file)
-      (find-file unquoted-file))))
-
-(defun cpped-maybe-create-new-frame (&rest files)
+(defun cpped-maybe-create-new-frame (wrapped-function &rest arguments)
   "Create a new frame if none exists. Takes a file name that is loaded into the frame."
   (let ((display (getenv "DISPLAY")))
-    (when (or display
-              (> (length display) 0))
-      (unless (find-if (lambda (frame)
-                         (assq 'display (frame-parameters frame)))
-                       (frame-list))
-        (make-frame-on-display display))))
-  (apply 'cpped-find-quoted-file files))
+    (if (and display
+             (> (length display) 0))
+        (unless (find-if (lambda (frame)
+                           (assq 'display (frame-parameters frame)))
+                         (frame-list))
+          (funcall wrapped-function `((display . ,display) ,arguments)))
+      (funcall wrapped-function arguments))))
 
 (use-package server
   :config
