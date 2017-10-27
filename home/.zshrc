@@ -96,9 +96,10 @@ export LC_MEASUREMENT=de_DE.UTF-8
 if [[ -z $SSH_CONNECTION ]]; then
     export EDITOR="emacsclient"
 else
-   export EDITOR=vim
+    export EDITOR=nano
 fi
 export VISUAL=$EDITOR
+export ALTERNATE_EDITOR=nano
 
 # Configure pager
 export PAGER=less
