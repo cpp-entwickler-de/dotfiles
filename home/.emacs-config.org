@@ -15,6 +15,8 @@
           (funcall wrapped-function `((display . ,display) ,arguments)))
       (funcall wrapped-function arguments))))
 
+(advice-add #'make-frame :around #'cpped-maybe-create-new-frame)
+
 (use-package server
   :config
   (when (server-running-p)
