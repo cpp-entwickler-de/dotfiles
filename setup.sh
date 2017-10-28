@@ -193,7 +193,7 @@ if [ "$DOCUMENTATION" = TRUE ]; then
 fi
 
 # install zsh plugins
-function  install_zsh_plugin
+function install_zsh_plugin
 {
     PLUGIN_ADDRESS=$1
     PLUGIN_NAME=$(basename "$PLUGIN_ADDRESS")
