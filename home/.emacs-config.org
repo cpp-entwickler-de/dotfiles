@@ -2694,7 +2694,8 @@ Custom error highlighting (colored line under location)
                                                      ";;; Code: \n\n"
                                                      "(provide '" legalese-file ")\n\n"
                                                      ";;; " legalese-file-name " ends here\n"))))
-  (if (not (= 0 (length company-full-name)))
+  (if (and (boundp 'company-full-name)
+           (not (= 0 (length company-full-name))))
       (progn
         (add-to-list 'legalese-templates '(c++-mode (nil
                                                      "/**\n"
