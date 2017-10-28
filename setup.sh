@@ -198,7 +198,7 @@ function install_zsh_plugin
     PLUGIN_ADDRESS=$1
     PLUGIN_NAME=$(basename "$PLUGIN_ADDRESS")
 
-    PLUGIN_DIRECTORY=$OH_MY_ZSH_DIR/plugins/$PLUGIN_NAME
+    PLUGIN_DIRECTORY=$OH_MY_ZSH_DIR/custom/plugins/$PLUGIN_NAME
     if [ ! -d "$PLUGIN_DIRECTORY" ]; then
         git clone --quiet "$PLUGIN_ADDRESS" "$PLUGIN_DIRECTORY"
     else
