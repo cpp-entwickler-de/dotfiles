@@ -263,7 +263,7 @@ alias make="make -j"
 alias mkdir="mkdir -p"
 alias mv="mv -i"
 alias raw-peco=$(which peco)
-alias peco="peco --select-1"
+alias peco="peco --layout=bottom-up --select-1"
 alias p="ps aux"
 alias t="htop"
 alias top="htop"
