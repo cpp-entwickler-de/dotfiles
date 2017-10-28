@@ -59,7 +59,7 @@ TMOUT=900
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(adb autojump bd colored-man-pages colorize command-not-found dirhistory extract git gnu-utils safe-paste setenv sudo systemd up wd zsh-autopair zsh-autosuggestions zsh-dwim zsh-reentry-hook zsh-syntax-highlighting)
+plugins=(adb autojump bd colored-man-pages colorize command-not-found dirhistory extract git gnu-utils safe-paste setenv sudo systemd up wd zsh-autopair zsh-autosuggestions zsh-dwim zsh-peco-history zsh-reentry-hook zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -549,3 +549,6 @@ RPROMPT='%{$(echotc UP 1)%}%{$FX[bold]%}%{$BG[235]%}%{$FG[245]%}$CALENDAR_SYMBOL
 if [ -e ~/.zshrc.user ]; then
     source ~/.zshrc.user
 fi
+
+# Update history on each command
+PROMPT_COMMAND="history -a; history -n;${PROMPT_COMMAND}"
