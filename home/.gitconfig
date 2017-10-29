@@ -200,6 +200,9 @@ stat = status -sb
 markers = log --decorate --oneline --simplify-by-decoration --all
 branch-info = branch -av
 
+df = diff --word-diff=color
+colordiff = diff --word-diff=color
+
 last-commit = log -n1 -p --format=fuller
 diff-log = log -p
 commit-log = log --oneline --graph --decorate
