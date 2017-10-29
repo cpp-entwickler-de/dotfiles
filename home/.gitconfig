@@ -194,6 +194,7 @@ username = cpp-entwickler-de
 root = rev-parse --show-toplevel
 
 # show abbreviated status message
+st = status -sb
 stat = status -sb
 
 markers = log --decorate --oneline --simplify-by-decoration --all
