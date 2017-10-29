@@ -130,7 +130,7 @@ Show below other windows
 (add-hook 'after-make-frame-functions #'cpped-move-frame-below-others t)
 #+END_SRC
 
-** Do not auto-raise
+** Do not auto-raise minibuffer
 #+BEGIN_SRC emacs-lisp
 (setq minibuffer-auto-raise nil)
 #+END_SRC
