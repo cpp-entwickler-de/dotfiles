@@ -100,22 +100,21 @@ Do not load outdated byte code
 (set-frame-parameter nil 'fullscreen 'fullboth)
 #+END_SRC
 ** Frame Setup
-Show fullscreen for single monitor, fullscreen on right side on dual-monitor
+Show normal for single monitor, fullscreen on right side on dual-monitor
 #+BEGIN_SRC emacs-lisp
+(defvar cpped-is-dual-monitor nil "Indicates if a dual monitor setup is available.")
+
 (add-hook 'before-make-frame-hook '(lambda ()
+                                     (setq default-frame-alist `((title . "IDE")
+                                                                 (name . "IDE")))
                                      (let* ((screen-width (x-display-pixel-width))
                                             (screen-height (x-display-pixel-height))
-                                            (aspect-ratio (/ screen-width screen-height))
-                                            (left-space 0))
+                                            (aspect-ratio (/ screen-width screen-height)))
                                        (when (> aspect-ratio 2) ; dual-monitor-setup
-                                         (setq screen-width (/ screen-width 2)
-                                               left-space screen-width))
-                                       (setq default-frame-alist `((width . ,screen-width)
-                                                                   (height . ,screen-height)
-                                                                   (left . ,left-space)
-                                                                   (fullscreen . fullboth)
-                                                                   (title . "IDE")
-                                                                   (name . "IDE"))))))
+                                         (setq cpped-is-dual-monitor t)
+                                         (push `(left . ,screen-width) default-frame-alist)
+                                         (push `(width . ,(/ screen-width 2)) default-frame-alist)
+                                         (push `(fullscreen . ,fullboth) default-frame-alist)))))
 #+END_SRC
 
 Show below other windows
@@ -124,7 +123,8 @@ Show below other windows
   "Move frame below others in window system."
   (interactive)
   (with-selected-frame (or frame (selected-frame))
-    (when window-system
+    (when (and window-system
+               cpped-is-dual-monitor)
       (x-send-client-message nil 0 nil "_NET_WM_STATE" 32 '(1 "_NET_WM_STATE_BELOW" 0)))))
 
 (add-hook 'after-make-frame-functions #'cpped-move-frame-below-others t)
