@@ -1577,6 +1577,18 @@ Always use a fixed width for line numbers (maximum number length)
   (add-hook 'markdown-mode-hook 'wrap-region-mode))
 #+END_SRC
 
+***** Syntax checker
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "flycheck"
+  (flycheck-define-checker cpped-markdownlint
+    "Markdown checker (https://github.com/mivok/markdownlint)"
+    :command ("mdl" source-original)
+    :error-patterns ((warning line-start (file-name) ":" line ": " (message) line-end))
+    :modes (markdown-mode))
+
+  (add-to-list 'flycheck-checkers 'cpped-markdownlint))
+#+END_SRC
+
 ***** [[https://github.com/mola-T/flymd][Preview]]
 #+BEGIN_SRC emacs-lisp
 (use-package flymd)
