@@ -3105,13 +3105,6 @@ Translation Files
         graphviz-dot-indent-width cpped-default-indentation)
   (add-to-list 'org-src-lang-modes '("dot" . graphviz-dot)))
 #+END_SRC
-
-*** [[https://github.com/Wilfred/dockerfile-mode][Dockerfile]]
-#+BEGIN_SRC emacs-lisp
-(use-package dockerfile-mode
-  :config (add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode)))
-#+END_SRC
-
 *** HTML
 #+BEGIN_SRC emacs-lisp
 (push '("\\.x?html?\\'" . html-mode) auto-mode-alist)
@@ -4194,6 +4187,24 @@ Do not use scientific form so quickly
       calendar-mark-holidays-flag t
       calendar-view-holidays-initially-flag t
       calendar-time-display-form '(24-hours ":" minutes (and time-zone (concat " (" time-zone ")"))))
+#+END_SRC
+
+** Docker
+*** [[https://github.com/Silex/docker.el][Control]]
+#+BEGIN_SRC emacs-lisp
+(use-package docker)
+#+END_SRC
+
+*** [[https://github.com/Wilfred/dockerfile-mode][Dockerfile]]
+#+BEGIN_SRC emacs-lisp
+(use-package dockerfile-mode
+  :config (add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode)))
+#+END_SRC
+
+*** [[https://github.com/emacs-pe/docker-tramp.el][TRAMP support]]
+#+BEGIN_SRC emacs-lisp
+(use-package docker-tramp
+  :after tramp)
 #+END_SRC
 
 ** GNUPlot
