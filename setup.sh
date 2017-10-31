@@ -53,6 +53,26 @@ for ARGUMENT in "$@"; do
     shift
 done
 
+# set up symlinks
+function make_link
+{
+    FILE=$1
+    LINK=$2
+    if [ -e "$LINK" ]; then
+        if [ -L "$LINK" ]; then
+            echo "Removing existing link $LINK."
+            rm -Rf "$LINK"
+        else
+            BACKUP="$LINK.bak"
+            echo "Renaming existing $LINK to $BACKUP"
+            mv "$LINK" "$BACKUP"
+        fi
+    fi
+    mkdir -p "$(dirname "$LINK")"
+    echo "Creating $LINK -> $FILE"
+    ln -s "$FILE" "$LINK"
+}
+
 if [ "$PACKAGES" = TRUE ]; then
     # install packages
     sudo dnf install PackageKit-command-not-found adobe-source-code-pro-fonts adobe-source-sans-pro-fonts adobe-source-serif-pro-fonts aspell aspell-de aspell-en autojump-zsh clang clang-analyzer clang-devel cmake cmake-gui colorgcc cppcheck csslint devscripts-checkbashisms ditaa docker emacs-lucid gcc gdb gdouros-symbola-fonts gnuplot htop ImageMagick iotop kcachegrind links llvm llvm-devel lnav mupdf ninja-build npm poppler-devel poppler-glib-devel progress recode saxon ShellCheck sloccount sushi the_silver_searcher uncrustify util-linux-user valgrind wireless-tools wordnet libxml2 xmlstarlet yank zsh
@@ -66,26 +86,6 @@ if [ "$PACKAGES" = TRUE ]; then
 fi
 
 if [ "$LINKS" = TRUE ]; then
-    # set up symlinks
-    function make_link
-    {
-        FILE=$1
-        LINK=$2
-        if [ -e "$LINK" ]; then
-            if [ -L "$LINK" ]; then
-                echo "Removing existing link $LINK."
-                rm -Rf "$LINK"
-            else
-                BACKUP="$LINK.bak"
-                echo "Renaming existing $LINK to $BACKUP"
-                mv "$LINK" "$BACKUP"
-            fi
-        fi
-        mkdir -p "$(dirname "$LINK")"
-        echo "Creating $LINK -> $FILE"
-        ln -s "$FILE" "$LINK"
-    }
-
     DOTFILES_DIRECTORY=$(dirname "$(readlink -f "$0")")
     for FILE in $DOTFILES_DIRECTORY/home/.[!.]*; do
         LINK="$(realpath ~)/$(basename "$FILE")"
@@ -181,6 +181,7 @@ if [ "$FONTS" = TRUE ]; then
     for FONT in $ALL_THE_ICONS_FONTS; do
         wget --quiet --timestamping --no-directories --directory-prefix="$FONT_DIR" "https://github.com/domtronn/all-the-icons.el/raw/master/fonts/$FONT.ttf"
     done
+    make_link "$DOTFILES_DIRECTORY/home/10-symbols.conf" "$(realpath ~)/.config/fontconfig/conf.d/10-symbols.conf"
 fi
 
 if [ "$DOCUMENTATION" = TRUE ]; then

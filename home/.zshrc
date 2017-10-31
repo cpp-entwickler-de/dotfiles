@@ -413,7 +413,7 @@ fi
 if [ -n "$DISPLAY" ]; then
     PROMPT_SYMBOL="▶"
     LINE_BREAK_SYMBOL="↪"
-    CALENDAR_SYMBOL="🗓"
+    CALENDAR_SYMBOL="" # The FontAwesome calendar symbol
     SEPARATOR_SYMBOL=""
 else
     PROMPT_SYMBOL=">"
@@ -504,7 +504,7 @@ function git_info()
         fi
 
         if [ -n "$DISPLAY" ]; then
-            STATUS_SYMBOL=" "
+            STATUS_SYMBOL=" "
         fi
         echo "$STATUS_SYMBOL $REF $MODIFIED$REBASE$SYNC $CONFLICTS"
     fi
