@@ -208,6 +208,14 @@ diff-log = log -p
 commit-log = log --oneline --graph --decorate
 changed-files = diff-tree --no-commit-id --name-only -r
 
+# show commits by curent user
+lastweek = !git log --all --no-merges --since='7 days ago' --abbrev-commit
+lastmonth = !git log --all --no-merges --since='31 days ago' --abbrev-commit
+
+# show all commits in week/month
+worklog = !git log --all --no-merges --since='7 days ago' --format='%<(28,trunc)%Cgreen%cr %C(auto)%d %s' --author=$(git config user.email)
+worklog-month = !git log --all --no-merges --since='31 days ago' --format='%<(28,trunc)%Cgreen%cr %C(auto)%d %s' --author=$(git config user.email)
+
 # switch branch with selection
 switch-branch = !git checkout $(git branch -a | sed -r 's/^[\\* \\(]*([^ ]+).*$/\\1/' | peco --select-1 --prompt 'Branch:')
 
@@ -216,6 +224,9 @@ unpushed = log --branches --not --remotes
 
 # remove deleted files from git
 remove-deleted = !git rm $(git ls-files -d)
+
+# remove selected merged branches
+remove-merged = !git branch -D $(git branch --no-color --merged | grep -Fv '*' | grep -v master | peco --prompt 'Remove:')
 
 # Clone submodules
 clone-recursive = clone --recursive
@@ -229,6 +240,12 @@ add-files = !git add $(git status | sed -e 's/^[[:blank:][:alnum:][:punct:]].[[:
 # Mark commit as fix for given revision
 fix = commit --fixup
 fixup = commit --fixup
+
+# create zip archive
+zip = archive --format zip
+
+# undo last commit
+uncommit = reset soft HEAD~1
 
 # Safe forced push
 force-push = push --force-with-lease
