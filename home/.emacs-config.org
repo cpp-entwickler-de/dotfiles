@@ -843,6 +843,12 @@ Find path of current position in XML docuement
 (setq-default bidi-display-reordering nil)
 #+END_SRC
 
+*** Remember open buffers
+#+BEGIN_SRC emacs-lisp
+(desktop-save-mode 1)
+(setq desktop-path user-emacs-directory)
+#+END_SRC
+
 *** Go to last position when opening buffer
 #+BEGIN_SRC emacs-lisp
 (save-place-mode 1)
