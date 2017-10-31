@@ -3600,6 +3600,13 @@ When using Magit >= 2.4.0
 (use-package helm-ls-git
   :after helm)
 #+END_SRC
+**** Config file support
+#+BEGIN_SRC emacs-lisp
+(use-package gitconfig-mode)
+(use-package gitignore-mode)
+(use-package gitattributes-mode)
+#+END_SRC
+
 * Viewer
 ** Man Pages
 #+BEGIN_SRC emacs-lisp
