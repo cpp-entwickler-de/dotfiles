@@ -257,6 +257,7 @@ alias log="sudo lnav"
 alias sysinfo="glances -1 --tree --fs-free-space --process-short-name -C ~/.config/glances"
 
 alias e="$EDITOR --no-wait"
+alias ag='ag --smart-case --pager="less -MIRFX"'
 alias r="less -FNMsW"
 alias l="ls -AFhl1v --color --group-directories-first $*"
 alias lstree="l -R $*"
