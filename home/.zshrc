@@ -94,7 +94,7 @@ export LC_MEASUREMENT=de_DE.UTF-8
 
 # Preferred editor for local and remote sessions
 if [[ -z $SSH_CONNECTION ]]; then
-    export EDITOR="emacsclient"
+    export EDITOR=emacsclient
 else
     export EDITOR=nano
 fi
@@ -256,7 +256,7 @@ alias dnf="sudo dnf"
 alias log="sudo lnav"
 alias sysinfo="glances -1 --tree --fs-free-space --process-short-name -C ~/.config/glances"
 
-alias e=$EDITOR --no-wait
+alias e="$EDITOR --no-wait"
 alias r="less -FNMsW"
 alias l="ls -AFhl1v --color --group-directories-first $*"
 alias lstree="l -R $*"
