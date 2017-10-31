@@ -1,0 +1,14 @@
+[global]
+check_update=true
+
+[network]
+hide=docker.*,lo
+enp3s0_alias=Ethernet
+
+[wifi]
+hide=lo,docker.*
+
+[ports]
+refresh=30
+timeout=3
+port_default_gateway=true

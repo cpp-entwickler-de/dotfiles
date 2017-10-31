@@ -254,6 +254,7 @@ function kill()
 
 alias dnf="sudo dnf"
 alias log="sudo lnav"
+alias sysinfo="glances -1 --tree --fs-free-space --process-short-name -C ~/.config/glances"
 
 alias e=$EDITOR --no-wait
 alias r="less -FNMsW"

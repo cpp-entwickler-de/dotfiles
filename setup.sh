@@ -55,10 +55,12 @@ done
 
 if [ "$PACKAGES" = TRUE ]; then
     # install packages
-    sudo dnf install PackageKit-command-not-found adobe-source-code-pro-fonts adobe-source-sans-pro-fonts adobe-source-serif-pro-fonts aspell aspell-de aspell-en autojump-zsh clang clang-analyzer clang-devel cmake cmake-gui colorgcc cppcheck csslint devscripts-checkbashisms ditaa docker emacs-lucid gcc gdb gdouros-symbola-fonts gnuplot htop ImageMagick iotop kcachegrind links llvm llvm-devel lnav mupdf ninja-build npm poppler-devel poppler-glib-devel progress recode saxon ShellCheck sloccount sushi the_silver_searcher uncrustify util-linux-user valgrind  wordnet libxml2 xmlstarlet yank zsh
+    sudo dnf install PackageKit-command-not-found adobe-source-code-pro-fonts adobe-source-sans-pro-fonts adobe-source-serif-pro-fonts aspell aspell-de aspell-en autojump-zsh clang clang-analyzer clang-devel cmake cmake-gui colorgcc cppcheck csslint devscripts-checkbashisms ditaa docker emacs-lucid gcc gdb gdouros-symbola-fonts gnuplot htop ImageMagick iotop kcachegrind links llvm llvm-devel lnav mupdf ninja-build npm poppler-devel poppler-glib-devel progress recode saxon ShellCheck sloccount sushi the_silver_searcher uncrustify util-linux-user valgrind wireless-tools wordnet libxml2 xmlstarlet yank zsh
 
     sudo npm install -g stylelint eslint jshint jslint standard jscs
     sudo pip install proselint
+    # glances and modules
+    sudo pip install glances psutil
 
     echo "Install Peco from https://github.com/peco/peco and RTags from https://github.com/Andersbakken/rtags manually."
 fi
@@ -91,6 +93,7 @@ if [ "$LINKS" = TRUE ]; then
     done
 
     make_link "$DOTFILES_DIRECTORY/home/cpp-entwickler.de-theme.el" "$(realpath ~)/.emacs.d/cpp-entwickler.de-theme.el"
+    make_link "$DOTFILES_DIRECTORY/home/glances" "$(realpath ~)/.config/glances"
     make_link "$DOTFILES_DIRECTORY/home/mc" "$(realpath ~)/.config/mc"
     make_link "$DOTFILES_DIRECTORY/home/htoprc" "$(realpath ~)/.config/htop/htoprc"
     make_link "$DOTFILES_DIRECTORY/home/peco.json" "$(realpath ~)/.config/peco/config.json"
