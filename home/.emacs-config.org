@@ -832,6 +832,11 @@ Find path of current position in XML docuement
 (set-default 'imenu-auto-rescan t)
 #+END_SRC
 
+*** Show results from all buffers
+#+BEGIN_SRC emacs-lisp
+(use-package imenu-anywhere)
+#+END_SRC
+
 ** Buffers
 *** Disable bidirectional support
 #+BEGIN_SRC emacs-lisp
@@ -2808,6 +2813,11 @@ Custom error highlighting (colored line under location)
 #+END_SRC
 
 **** Navigation
+***** Share imenu results
+#+BEGIN_SRC emacs-lisp
+(push '(c-mode c++-mode) imenu-anywhere-friendly-modes)
+#+END_SRC
+
 ***** [[https://github.com/Andersbakken/rtags][RTags]]
 #+BEGIN_SRC emacs-lisp
 (use-package rtags
@@ -4491,7 +4501,7 @@ _C-<right>_: Next word                 _y_: Down block                 _C-t_: Ne
   ("C-f" end-of-defun)
   ("C-s" rtags-find-symbol-at-point :exit t)
   ("C-m" helm-imenu :exit t)
-  ("C-S-m" helm-imenu-in-all-buffers :exit t)
+  ("C-S-m" helm-imenu-anywhere :exit t)
 
   ("C-S-i" smartscan-symbol-go-backward)
   ("C-i" smartscan-symbol-go-forward)
