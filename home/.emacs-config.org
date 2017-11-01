@@ -846,7 +846,7 @@ Find path of current position in XML docuement
 *** Remember open buffers
 #+BEGIN_SRC emacs-lisp
 (desktop-save-mode 1)
-(setq desktop-path user-emacs-directory)
+(setq desktop-path `(,user-emacs-directory))
 #+END_SRC
 
 *** Go to last position when opening buffer
