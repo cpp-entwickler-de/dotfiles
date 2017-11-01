@@ -114,7 +114,7 @@ Show normal for single monitor, fullscreen on right side on dual-monitor
                                          (setq cpped-is-dual-monitor t)
                                          (push `(left . ,screen-width) default-frame-alist)
                                          (push `(width . ,(/ screen-width 2)) default-frame-alist)
-                                         (push `(fullscreen . ,fullboth) default-frame-alist)))))
+                                         (push '(fullscreen . fullboth) default-frame-alist)))))
 #+END_SRC
 
 Show below other windows
