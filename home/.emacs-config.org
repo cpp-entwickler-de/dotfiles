@@ -2833,7 +2833,8 @@ Custom error highlighting (colored line under location)
 **** Navigation
 ***** Share imenu results
 #+BEGIN_SRC emacs-lisp
-(push '(c-mode c++-mode) imenu-anywhere-friendly-modes)
+(with-eval-after-load "imenu-anywhere"
+  (push '(c-mode c++-mode) imenu-anywhere-friendly-modes))
 #+END_SRC
 
 ***** [[https://github.com/Andersbakken/rtags][RTags]]
