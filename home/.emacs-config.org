@@ -847,6 +847,20 @@ Find path of current position in XML docuement
 #+BEGIN_SRC emacs-lisp
 (desktop-save-mode 1)
 (setq desktop-path `(,user-emacs-directory))
+
+(defun cpped-yes (wrapped-function &rest arguments)
+  t)
+
+(defun cpped-always-yes (wrapped-function &rest arguments)
+  (advice-add 'yes-or-no-p :around #'cpped-yes)
+  (advice-add 'y-or-n-p :around #'cpped-yes)
+  (let ((result (apply wrapped-function arguments)))
+    (advice-remove 'yes-or-no-p #'cpped-yes)
+    (advice-remove 'y-or-n-p #'cpped-yes)
+    result))
+
+(advice-add 'desktop-save :around #'cpped-always-yes)
+(advice-add 'desktop-read :around #'cpped-always-yes)
 #+END_SRC
 
 *** Go to last position when opening buffer
