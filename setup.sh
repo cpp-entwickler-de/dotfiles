@@ -226,9 +226,9 @@ if [ "$SHELL" = TRUE ]; then
     install_zsh_plugin https://github.com/zsh-users/zsh-autosuggestions
     install_zsh_plugin https://github.com/oknowton/zsh-dwim
     install_zsh_plugin https://github.com/RobSis/zsh-reentry-hook
-    install_zsh_plugin https://github.com/zsh-users/zsh-syntax-highlighting.git
-    install_zsh_plugin https://github.com/chrissicool/zsh-256color.git
-    install_zsh_plugin https://github.com/jimeh/zsh-peco-history.git
+    install_zsh_plugin https://github.com/zsh-users/zsh-syntax-highlighting
+    install_zsh_plugin https://github.com/chrissicool/zsh-256color
+    install_zsh_plugin https://github.com/jimeh/zsh-peco-history
     
     # change default shell
     sudo chsh -s "$(which zsh)" "$(whoami)" 2> /dev/null
