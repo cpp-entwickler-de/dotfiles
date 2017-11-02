@@ -958,7 +958,6 @@ Indicate recursive minibuffer
 (minibuffer-depth-indicate-mode 1)
 #+END_SRC
 
-
 *** Highlight minibuffer when in use
 #+BEGIN_SRC emacs-lisp
 (add-hook 'minibuffer-setup-hook (lambda ()
