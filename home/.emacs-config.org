@@ -2345,6 +2345,12 @@ Handler to close buffer after quitting ccmake.
   :config (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 #+END_SRC
 
+***** [[https://github.com/dgutov/highlight-escape-sequences][Escape sequences]]
+#+BEGIN_SRC emacs-lisp
+(use-package highlight-escape-sequences
+  :config (add-hook 'prog-mode-hook 'hes-mode))
+#+END_SRC
+
 ***** [[https://github.com/tarsius/hl-todo][Highlight TODO/FIXME/...]]
 #+BEGIN_SRC emacs-lisp
 (defface hl-todo-info '((t :inherit info))
