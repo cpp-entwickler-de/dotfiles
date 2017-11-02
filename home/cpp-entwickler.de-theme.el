@@ -1,5 +1,5 @@
 (deftheme cpp-entwickler.de
-  "Created 2017-09-04.")
+  "Created 2017-11-02.")
 
 (custom-theme-set-faces
  'cpp-entwickler.de
@@ -9,7 +9,7 @@
  '(escape-glyph ((((background dark)) (:foreground "cyan")) (((type pc)) (:foreground "magenta")) (t (:foreground "brown"))))
  '(minibuffer-prompt ((t (:foreground "royal blue" :weight bold))))
  '(highlight ((t (:background "gray40" :distant-foreground "black"))))
- '(region ((t (:background "gray20" :distant-foreground "white smoke"))))
+ '(region ((t (:background "gray30" :distant-foreground "white smoke"))))
  '(shadow ((((class color grayscale) (min-colors 88) (background light)) (:foreground "grey50")) (((class color grayscale) (min-colors 88) (background dark)) (:foreground "grey70")) (((class color) (min-colors 8) (background light)) (:foreground "green")) (((class color) (min-colors 8) (background dark)) (:foreground "yellow"))))
  '(secondary-selection ((((class color) (min-colors 88) (background light)) (:background "yellow1")) (((class color) (min-colors 88) (background dark)) (:background "SkyBlue4")) (((class color) (min-colors 16) (background light)) (:background "yellow")) (((class color) (min-colors 16) (background dark)) (:background "SkyBlue4")) (((class color) (min-colors 8)) (:foreground "black" :background "cyan")) (t (:inverse-video t))))
  '(trailing-whitespace ((t (:background "dark gray"))))
@@ -62,9 +62,10 @@
  '(helm-separator ((((background dark)) (:foreground "red")) (((background light)) (:foreground "#ffbfb5"))))
  '(helm-selection ((t (:background "royal blue" :distant-foreground "white smoke"))))
  '(helm-selection-line ((t (:inherit (highlight)))))
- '(org-block-begin-line ((t (:background "gray10" :foreground "gray40" :height 0.7))))
- '(org-block-end-line ((t (:inherit org-block-begin-line :height 0.8))))
- '(org-block ((t (:background "gray10"))))
+ '(org-block-begin-line ((t (:height 0.7 :foreground "gray50" :background "gray20"))))
+ '(org-block-end-line ((t (:inherit org-block-begin-line))))
+ '(org-block ((t (:background "gray20"))))
+ '(org-block-background ((t (:background "gray20"))))
  '(flycheck-error-list-warning ((t (:inherit warning :foreground "DarkOrange"))))
  '(flycheck-error-list-info ((t (:inherit flycheck-error-list-error :foreground "blue1"))))
  '(flycheck-error-list-error ((t (:inherit error))))
@@ -151,7 +152,7 @@
  '(num3-face-even ((t nil)))
  '(num3-face-odd ((t (:inverse-video t))))
  '(magit-branch-current ((t (:inherit magit-branch-local :inverse-video t))))
- '(default ((t (:inherit nil :stipple nil :background "gray5" :foreground "white smoke" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight semi-bold :height 100 :width normal :foundry "ADBO" :family "Source Code Pro"))))
- '(vertical-border ((t (:inherit default :inverse-video t)))))
+ '(vertical-border ((t (:inherit default :inverse-video t))))
+ '(default ((t (:inherit nil :stipple nil :background "gray5" :foreground "white smoke" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight semi-bold :height 100 :width normal :foundry "ADBO" :family "Source Code Pro")))))
 
 (provide-theme 'cpp-entwickler.de)
