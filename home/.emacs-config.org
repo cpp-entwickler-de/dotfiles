@@ -4762,7 +4762,7 @@ Date         ^^Time         ^^Timestamp    ^^Block          ^^Special
 
   ("t" cpped-translate-word-or-region)
   ("y" synosaurus-choose-and-replace)
-  ("l" helm-flyspell-correct)
+  ("l" flyspell-auto-correct-previous-word)
   ("s" cpped-hydra-edit-sort/body :exit t)
   ("x" cpped-hydra-edit-transpose/body :exit t)
 
