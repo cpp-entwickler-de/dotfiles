@@ -493,10 +493,13 @@ Helper function to figure out version control root directory
      (propertize (all-the-icons-faicon "file-text-o")
                  'face `(:family ,(all-the-icons-faicon-family))
                  'display '(raise -0.0))
-     (format-mode-line " %I/")
+     (format-mode-line " %I ")
+     (propertize (all-the-icons-faicon "align-left")
+                 'face `(:family ,(all-the-icons-faicon-family))
+                 'display '(raise -0.0))
      (save-excursion
        (goto-char (point-max))
-       (format-mode-line "%l")))))
+       (format-mode-line " %l")))))
 #+END_SRC
 
 *** File encoding
