@@ -1091,13 +1091,15 @@ Always use a fixed width for line numbers (maximum number length)
 
 ** [[https://www.emacswiki.org/emacs/UndoTree][Undo]]
 #+BEGIN_SRC emacs-lisp
-(use-package undo-tree
-  :after popwin
-  :config
-  (global-undo-tree-mode)
-  (setq undo-tree-visualizer-timestamps t
-        undo-tree-visualizer-diff t)
-  (push '(" *undo-tree*" :dedicated t :width 60 :position right) popwin:special-display-config))
+  (use-package undo-tree
+    :after popwin
+    :config
+    (global-undo-tree-mode)
+    (setq undo-tree-visualizer-timestamps t
+          undo-tree-visualizer-diff t
+          undo-tree-auto-save-history t
+          undo-tree-history-directory-alist `(("." . ,(expand-file-name "~/.cache/emacs-undo"))))
+    (push '(" *undo-tree*" :dedicated t :width 60 :position right) popwin:special-display-config))
 #+END_SRC
 
 *** Keep selection when undoing
