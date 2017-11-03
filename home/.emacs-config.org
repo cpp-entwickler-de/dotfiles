@@ -1999,7 +1999,8 @@ Some useful abbreviations
   (add-hook 'text-mode-hook 'flyspell-mode))
 
 (use-package helm-flyspell
-  :after (helm flyspell))
+  :after (helm flyspell)
+  :config (advice-add #'flyspell-auto-correct-word :override #'helm-flyspell-correct))
 #+END_SRC
 
 *** [[https://github.com/nschum/auto-dictionary-mode][Automatic dictionary selection]]
