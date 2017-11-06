@@ -52,8 +52,26 @@ REPORTTIME=10
 # Show time output in hh:mm:ss.ttt format
 TIMEFMT=$'\nreal   %*E\nuser   %*U\nsystem %*S\ncpu    %P'
 
-# Close shell after 5 minutes of inactivity
-TMOUT=900
+# Close shell after 15 minutes of inactivity if last command finished successfully
+LAST_EXIT_CODE=0
+TIME_SINCE_LAST_COMMAND=0
+
+preexec() {
+    TIME_SINCE_LAST_COMMAND=0
+}
+
+TMOUT=1
+TRAPALRM() {
+    LAST_EXIT_CODE=$?
+    TIME_SINCE_LAST_COMMAND=$(( $TIME_SINCE_LAST_COMMAND+1 ))
+    if [ $TIME_SINCE_LAST_COMMAND -ge 900 -a $LAST_EXIT_CODE -eq 0 ]; then
+        exit
+    fi
+    # Do not update if in completion mode
+    if [ "$WIDGET" != "complete-word" -a "$WIDGET" != "expand-or-complete" ]; then
+        zle reset-prompt
+    fi
+}
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
@@ -546,7 +564,7 @@ $(user_host)%{$FX[bold]%}%{$BG[069]%}%{$FG[252]%}%8~%{$reset_colors%}%{$BG[235]%
 %{$PROMPT_COLOR%}$PROMPT_SYMBOL '
 PROMPT2='%{$PROMPT_COLOR%}$LINE_BREAK_SYMBOL '
 PROMPT3='%{$PROMPT_COLOR%}? '
-RPROMPT='%{$(echotc UP 1)%}%{$FX[bold]%}%{$BG[235]%}%{$FG[245]%}$CALENDAR_SYMBOL %D{%a, %x [%V]} $(emoji-clock) %T%{$reset_color%}%{$(echotc DO 1)%}'
+RPROMPT='%{$(echotc UP 1)%}%{$FX[bold]%}%{$BG[235]%}%{$FG[245]%}$CALENDAR_SYMBOL %D{%a, %x [%V]} $(emoji-clock) %*%{$reset_color%}%{$(echotc DO 1)%}'
 
 if [ -e ~/.zshrc.user ]; then
     source ~/.zshrc.user
