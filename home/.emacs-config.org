@@ -511,20 +511,20 @@ Helper function to figure out version control root directory
 *** File encoding
 #+BEGIN_SRC emacs-lisp
 (defun powerline-encoding ()
-       (concat
-        (propertize (all-the-icons-faicon "language")
-                    'face `(:family ,(all-the-icons-faicon-family))
-                    'display '(raise -0.0))
-        " "
-        (symbol-name (coding-system-type buffer-file-coding-system))
-        " "
-        (propertize (pcase (coding-system-eol-type buffer-file-coding-system)
-                           (`0  (all-the-icons-faicon "linux"))
-                           (`1  (all-the-icons-faicon "windows"))
-                           (`2 (all-the-icons-faicon "apple"))
-                           (_ (all-the-icons-faicon "question"))) 
-                    'face `(:family ,(all-the-icons-faicon-family))
-                    'display '(raise -0.0))))
+  (concat
+   (propertize (all-the-icons-faicon "language")
+               'face `(:family ,(all-the-icons-faicon-family))
+               'display '(raise -0.0))
+   " "
+   (symbol-name (coding-system-type buffer-file-coding-system))
+   " "
+   (propertize (pcase (coding-system-eol-type buffer-file-coding-system)
+                 (`0  (all-the-icons-faicon "linux"))
+                 (`1  (all-the-icons-faicon "windows"))
+                 (`2 (all-the-icons-faicon "apple"))
+                 (_ (all-the-icons-faicon "question")))
+               'face `(:family ,(all-the-icons-faicon-family))
+               'display '(raise -0.0))))
 #+END_SRC
 
 *** Current function
