@@ -3663,7 +3663,10 @@ When using Magit >= 2.4.0
   (push '("%PDF" . pdf-view-mode) magic-mode-alist)
   (setq doc-view-continuous t
         doc-view-ghostscript-program "mudraw"
-        doc-view-pdf->png-converter-function 'doc-view-pdf->png-converter-mupdf)
+        doc-view-pdf->png-converter-function 'doc-view-pdf->png-converter-mupdf
+        pdf-view-display-size 'fit-page
+        pdf-annot-activate-created-annotations t
+        pdf-view-resize-factor 1.1)
   (add-hook 'after-make-frame-functions (lambda ()
                                           (pdf-tools-install t))))
 #+END_SRC
