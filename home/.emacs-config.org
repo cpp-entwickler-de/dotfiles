@@ -3067,6 +3067,14 @@ Translation Files
     (push '("\\.cmake$" all-the-icons-fileicon "cmake" :v-adjust 0.0) all-the-icons-icon-alist)))
 #+END_SRC
 
+**** Imenu integration
+#+BEGIN_SRC emacs-lisp
+(add-hook 'cmake-mode-hook (lambda ()
+                             (setq-local imenu-generic-expression '(("Function" "^ *function *( *\\([^) ]+\\).*$" 1)
+                                                                    ("Macro"  "^ *macro *( *\\([^) ]+\\).*$" 1)))))
+
+#+END_SRC
+
 **** [[https://github.com/Lindydancer/cmake-font-lock][Highlighting]]
 #+BEGIN_SRC emacs-lisp
 (use-package cmake-font-lock
