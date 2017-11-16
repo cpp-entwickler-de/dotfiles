@@ -1656,7 +1656,9 @@ Always use a fixed width for line numbers (maximum number length)
 *** [[- rainbow-mode][Show hex color definitions as color]]
 #+BEGIN_SRC emacs-lisp
 (use-package rainbow-mode
-  :config (rainbow-mode 1))
+  :config
+  (rainbow-mode 1)
+  (add-hook 'prog-mode-hook 'rainbow-mode))
 #+END_SRC
 
 *** Highlight number packs 
