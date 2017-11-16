@@ -1662,9 +1662,18 @@ Always use a fixed width for line numbers (maximum number length)
 #+END_SRC
 
 *** Highlight number packs 
+Use custom regex to ignore color definitions (numbers starting with a # sign)
 #+BEGIN_SRC emacs-lisp
 (use-package num3-mode
-  :config (add-hook 'prog-mode-hook 'num3-mode))
+  :config
+  (setq num3--number-re (concat "[^#]0[xX]\\([[:xdigit:]]+\\)"
+        "\\|"
+        "[^#]\\(?1:\\b\\(?:[0-9]+[a-fA-F]\\|[a-fA-F]+[0-9]\\)[[:xdigit:]]*\\b\\)"
+        "\\|"
+        "[^#]\\([0-9]+\\)"
+        "\\|"
+        "\\.\\([0-9]+\\)"))
+(add-hook 'prog-mode-hook 'num3-mode))
 #+END_SRC
 
 *** Highlight last screen content when navigating
