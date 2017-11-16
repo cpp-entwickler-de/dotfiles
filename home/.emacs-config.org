@@ -3616,6 +3616,51 @@ When using Magit >= 2.4.0
 (add-hook 'diff-mode-hook #'cpped-prettify-magit)
 #+END_SRC
 
+***** Import file from stash or branch
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "magit"
+  (defun cpped-list-refs-and-stashes (wrapped-function &rest arguments)
+    "Create a list of branches and stashes."
+    (append
+     (apply wrapped-function arguments)
+     (magit-list-stashes)))
+
+  (defun cpped-import-git-file ()
+    "Import a git-versioned file from either a branch or the stash."
+    (interactive)
+    (advice-add #'magit-list-refnames :around #'cpped-list-refs-and-stashes)
+    (call-interactively #'magit-file-checkout)
+    (advice-remove #'magit-list-refnames #'cpped-list-refs-and-stashes))
+
+  (magit-define-popup-action 'magit-dispatch-popup
+    ?I "Import" 'cpped-import-git-file ?!)
+  (define-key magit-status-mode-map
+    "I" 'cpped-import-git-file))
+#+END_SRC
+
+***** Open file from stash or branch
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "magit"
+  (defun cpped-open-git-file ()
+    "Open a git-versioned file from either a branch or the stash."
+    (interactive)
+    (advice-add #'magit-list-refnames :around #'cpped-list-refs-and-stashes)
+    (let* ((rev (magit-read-branch-or-commit
+                 "Open from revision" magit-buffer-revision))
+           (file (magit-read-file-from-rev rev "Open file"))
+           (project (magit-toplevel)))
+      (magit-find-file rev file)
+      (let ((name (concat file "-" rev)))
+        (setq buffer-file-name (expand-file-name name project))
+        (rename-buffer (file-name-nondirectory name)))
+      (read-only-mode t)))
+
+  (magit-define-popup-action 'magit-dispatch-popup
+    ?Z "Open" 'cpped-open-git-file ?!)
+  (define-key magit-status-mode-map
+    "Z" 'cpped-open-git-file))
+#+END_SRC
+
 **** [[https://github.com/tarsius/magit-rockstar][Change commit author and date]]
 #+BEGIN_SRC emacs-lisp
 (use-package magit-rockstar
