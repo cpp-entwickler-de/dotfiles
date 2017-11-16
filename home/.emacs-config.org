@@ -2046,15 +2046,6 @@ Some useful abbreviations
   (add-to-list 'flycheck-checkers 'proselint))
 #+END_SRC
 
-** [[https://github.com/bastibe/annotate.el][Annotations]]
-#+BEGIN_SRC emacs-lisp
-(use-package annotate
-  :config
-  (setq annotate-file "~/.emacs.d/annotations")
-  (add-hook 'find-file-hooks (lambda ()
-                               (annotate-mode))))
-#+END_SRC
-
 ** Utilities
 *** [[https://github.com/akicho8/string-inflection][Change lower/upper case]]
 #+BEGIN_SRC emacs-lisp
@@ -4739,9 +4730,9 @@ Date         ^^Time         ^^Timestamp    ^^Block          ^^Special
   "
 ☰ Edit
 
-                           ^^Rename           ^^Replace           ^^Change          ^^^Format                ^^Text             ^^Code                         ^^Annotation
-  _d_: Duplicate               _n_: Local         _r_: Regex          _c_: Case         ^_>_: Indentation        _t_: Translate     _/_: Comment                   _a_: Add
-  _D_: Duplicate & Comment     _N_: File-wide     _p_: in Project     _\"_: String       _m_: Move               _y_: Synonym       _e_: Evaluate                  _A_: Clear all
+                           ^^Rename           ^^Replace           ^^Change          ^^^Format                ^^Text             ^^Code
+  _d_: Duplicate               _n_: Local         _r_: Regex          _c_: Case         ^_>_: Indentation        _t_: Translate     _/_: Comment
+  _D_: Duplicate & Comment     _N_: File-wide     _p_: in Project     _\"_: String       _m_: Move               _y_: Synonym       _e_: Evaluate
   _i_: Insert                                                     ^^^^_+_: Value +      ^_j_: Join lines         _l_: Spelling      _E_: Evaluate & Replace
   _'_: Quoted insert                                              ^^^^_-_: Value -      ^_:_: Fill paragraph     _s_: Sort          _f_: Format (Selection)
   _<_: Complete                                                   ^^^^_#_: Base                               ^^^_x_: Transpose     _F_: Format (File)
@@ -4788,10 +4779,8 @@ Date         ^^Time         ^^Timestamp    ^^Block          ^^Special
   ("f" clang-format)
   ("F" clang-format-buffer)
   ("u" uncrustify)
-  ("U" uncrustify-buffer)
+  ("U" uncrustify-buffer))
 
-  ("a" annotate-annotate)
-  ("A" annotate-clear-annotations))
 
 (global-set-key (kbd "C-e") 'cpped-hydra-edit/body)
 #+END_SRC
