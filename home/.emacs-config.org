@@ -2515,6 +2515,11 @@ Handler to close buffer after quitting ccmake.
 (use-package 0xc)
 #+END_SRC
 
+***** [[https://github.com/emacsfodder/kurecolor][Modify colors]]
+#+BEGIN_SRC emacs-lisp
+(use-package kurecolor)
+#+END_SRC
+
 ***** Auto-completion
 #+BEGIN_SRC emacs-lisp
 (use-package company
@@ -4799,6 +4804,21 @@ Date         ^^Time         ^^Timestamp    ^^Block          ^^Special
      ("p" transpose-paragraphs "Paragraphs")
      ("t" org-table-transpose-table-at-point "Org mode table"))
 
+(defhydra cpped-hydra-color (:exit nil :hint nil)
+  "
+☰ Modify color
+
+Brightness ^^Saturation ^^Hue
+  _b_: +       _s_: +       _h_: +
+  _B_: -       _S_: -       _H_: -
+"
+  ("b" kurecolor-increase-brightness-by-step)
+  ("B" kurecolor-decrease-brightness-by-step)
+  ("s" kurecolor-increase-saturation-by-step)
+  ("S" kurecolor-decrease-saturation-by-step)
+  ("h" kurecolor-increase-hue-by-step)
+  ("H" kurecolor-decrease-hue-by-step))
+
 (defhydra cpped-hydra-edit (:exit t :hint nil)
   "
 ☰ Edit
@@ -4810,7 +4830,7 @@ Date         ^^Time         ^^Timestamp    ^^Block          ^^Special
   _'_: Quoted insert                                              ^^^^_-_: Value -      ^_:_: Fill paragraph     _s_: Sort          _f_: Format (Selection)
   _<_: Complete                                                   ^^^^_#_: Base                               ^^^_x_: Transpose     _F_: Format (File)
   _g_: Edit area                                                  ^^^^_1_: Flip bool                                           ^^^^^_u_: Uncrustify (Selection)
-  ___: Overwrite Mode                                                                                                    ^^^^^^^^^^^_U_: Uncrustify (File)
+  ___: Overwrite Mode                                             ^^^^_C_: Modify color                                        ^^^^^_U_: Uncrustify (File)
   _&_: Typographic Mode
 "
   ("d" crux-duplicate-current-line-or-region)
@@ -4834,6 +4854,7 @@ Date         ^^Time         ^^Timestamp    ^^Block          ^^Special
   ("+" shift-number-up)
   ("-" shift-number-down)
   ("1" bool-flip-do-flip)
+  ("C" cpped-hydra-color/body :exit t)
 
   (">" indent-tools-hydra/body :exit t)
   ("m" cpped-hydra-edit-move/body :exit t)
