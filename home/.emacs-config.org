@@ -3518,7 +3518,8 @@ When using Magit >= 2.4.0
 
 ***** [[https://github.com/terranpro/magit-gerrit][Gerrit integration]]
 #+BEGIN_SRC emacs-lisp
-(use-package magit-gerrit)
+(use-package magit-gerrit
+  :config (setq magit-gerrit-popup-prefix "G"))
 #+END_SRC
 
 ***** Find other projects
