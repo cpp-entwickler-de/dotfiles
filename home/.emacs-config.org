@@ -4703,7 +4703,7 @@ _C-<right>_: Next word                 _y_: Down block                 _C-t_: Ne
 Mark                            ^^Modify                        ^^Act
   _w_: Word                         _+_: Expand region              _c_: Copy
   _W_: Rest of word                 _x_: Exchange mark and point    _d_: Delete
-  _s_: S-EXPR                                                     ^^_k_: Kill
+  _s_: S-EXPR                       _j_: Jump to character          _k_: Kill
   _f_: Function
   _l_: Rest of line
   _L_: Line up to here
@@ -4719,6 +4719,7 @@ Mark                            ^^Modify                        ^^Act
   ("f" mark-defun)
   ("+" er/expand-region)
   ("x" exchange-point-and-mark)
+  ("j" avy-goto-char-timer)
   ("l" (end-of-line))
   ("L" (beginning-of-line))
   ("b" mark-buffer-before-point)
