@@ -226,6 +226,9 @@ unpushed = log --branches --not --remotes
 # remove deleted files from git
 remove-deleted = !git rm $(git ls-files -d)
 
+# list all branches merge into current
+list-merged = branch --merged
+
 # remove selected merged branches
 remove-merged = !git branch -D $(git branch --no-color --merged | grep -Fv '*' | grep -v master | peco --prompt 'Remove:')
 
