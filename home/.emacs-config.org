@@ -3381,6 +3381,24 @@ Set correct major mode
                           (set (make-local-variable 'helm-dash-docsets) '("Bash" "Man Pages"))))
 #+END_SRC
 
+*** [[https://github.com/skuro/plantuml-mode][UML]]
+#+BEGIN_SRC emacs-lisp
+(use-package plantuml-mode
+  :after org popwin
+  :mode "\\.p\\(lant\\)?uml\\'"
+  :config
+  (setq plantuml-jar-path "/usr/share/java/plantuml.jar")
+  (push '("*PLANTUML Preview*" :dedicated t :width 60 :position right :noselect :stick) popwin:special-display-config)
+  (add-to-list 'org-src-lang-modes '("plantuml" . plantuml)))
+#+END_SRC
+
+**** [[https://github.com/alexmurray/flycheck-plantuml][Syntax checker]]
+#+BEGIN_SRC emacs-lisp
+(use-package flycheck-plantuml
+  :after plantuml-mode
+  :config (flycheck-plantuml-setup))
+#+END_SRC
+
 *** XML
 #+BEGIN_SRC emacs-lisp
 (push '("<\\?xml" . nxml-mode) magic-mode-alist)
@@ -3968,6 +3986,7 @@ Disable evaluation confirmation for some languages
            (string= lang "gnuplot")
            (string= lang "latex")
            (string= lang "emacs-lisp")
+           (string= lang "plantuml")
            (string= lang "python")
            (string= lang "sed")
            (string= lang "sh")
@@ -4020,6 +4039,7 @@ Disable evaluation confirmation for some languages
         ("q" "#+BEGIN_QUOTE\n?\n#+END_QUOTE\n" "<quote>\n?\n</quote>")
         ("r" "#+BEGIN_SRC ?\n\n#+END_SRC\n" "<src lang=\"?\">\n\n</src>")
         ("s" "#+BEGIN_SRC shell\n?\n#+END_SRC\n" "<src lang=\"?\">\n\n</src>")
+        ("u" "#+BEGIN_SRC plantuml\n?\n#+END_SRC\n" "<src lang=\"plantuml\">\n\n</src>")
         ("v" "#+BEGIN_VERBATIM\n?\n#+END_VERBATIM\n" "<verbatim>\n?\n</verbatim>")
         ("z" "#+BEGIN_SRC zsh\n?\n#+END_SRC\n" "<src lang=\"?\">\n\n</src>")))
 #+END_SRC
@@ -4957,10 +4977,10 @@ _e_: enclosed area
   "
 ☰ Structure templates
 
-  _q_: Quote                     ^^_b_: Bash
 Format          ^^Markup       ^^Script            ^^Diagram      ^^Other
   _c_: Center       _a_: ASCII     _l_: Emacs Lisp     _d_: Dot       _i_: include
   _e_: Example      _h_: HTML      _z_: Zsh            _D_: Ditaa     _p_: Properties
+  _q_: Quote                     ^^_b_: Bash           _u_: UML
   _v_: Verbatim                  ^^_s_: Shell
                                ^^^^_r_: Source
 "
@@ -4977,6 +4997,7 @@ Format          ^^Markup       ^^Script            ^^Diagram      ^^Other
   ("r" (cpped-org-expand-template "<r"))
   ("d" (cpped-org-expand-template "<d"))
   ("D" (cpped-org-expand-template "<D"))
+  ("u" (cpped-org-expand-template "<u"))
   ("i" (cpped-org-expand-template "<i"))
   ("p" (cpped-org-expand-template "<p")))
 
