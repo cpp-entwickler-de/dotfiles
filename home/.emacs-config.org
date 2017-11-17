@@ -4010,6 +4010,8 @@ Disable evaluation confirmation for some languages
       '(("a" "#+BEGIN_ASCII\n?\n#+END_ASCII\n" "")
         ("b" "#+BEGIN_SRC bash\n?\n#+END_SRC\n" "<src lang=\"?\">\n\n</src>")
         ("c" "#+BEGIN_CENTER\n?\n#+END_CENTER\n" "<center>\n?\n</center>")
+        ("d" "#+BEGIN_SRC dot\n?\n#+END_SRC\n" "<src lang=\"dot\">\n\n</src>")
+        ("D" "#+BEGIN_SRC ditaa\n?\n#+END_SRC\n" "<src lang=\"ditaa\">\n\n</src>")
         ("e" "#+BEGIN_EXAMPLE\n?\n#+END_EXAMPLE\n" "<example>\n?\n</example>")
         ("h" "#+BEGIN_HTML\n?\n#+END_HTML\n" "<literal style=\"html\">\n?\n</literal>")
         ("i" "#+INCLUDE: %file ?\n" "<include file=%file markup=\"?\">")
@@ -4942,6 +4944,49 @@ _e_: enclosed area
 (global-set-key (kbd "C-y") #'cpped-hydra-yank/whole-line-or-region-yank)
 (global-set-key (kbd "M-y") #'helm-show-kill-ring)
 #+END_SRC
+
+** Org-Mode
+*** Structure templates
+#+BEGIN_SRC emacs-lisp
+(defun cpped-org-expand-template (shortcut)
+  "Expand org structure templates."
+  (insert shortcut)
+  (org-try-structure-completion))
+
+(defhydra cpped-hydra-org-structure-template (:exit t :hint nil)
+  "
+☰ Structure templates
+
+  _q_: Quote                     ^^_b_: Bash
+Format          ^^Markup       ^^Script            ^^Diagram      ^^Other
+  _c_: Center       _a_: ASCII     _l_: Emacs Lisp     _d_: Dot       _i_: include
+  _e_: Example      _h_: HTML      _z_: Zsh            _D_: Ditaa     _p_: Properties
+  _v_: Verbatim                  ^^_s_: Shell
+                               ^^^^_r_: Source
+"
+  ("c" (cpped-org-expand-template "<c"))
+  ("e" (cpped-org-expand-template "<e"))
+  ("q" (cpped-org-expand-template "<q"))
+  ("v" (cpped-org-expand-template "<v"))
+  ("a" (cpped-org-expand-template "<a"))
+  ("h" (cpped-org-expand-template "<h"))
+  ("l" (cpped-org-expand-template "<l"))
+  ("z" (cpped-org-expand-template "<z"))
+  ("b" (cpped-org-expand-template "<b"))
+  ("s" (cpped-org-expand-template "<s"))
+  ("r" (cpped-org-expand-template "<r"))
+  ("d" (cpped-org-expand-template "<d"))
+  ("D" (cpped-org-expand-template "<D"))
+  ("i" (cpped-org-expand-template "<i"))
+  ("p" (cpped-org-expand-template "<p")))
+
+(define-key org-mode-map "<" (lambda ()
+                               (interactive)
+                               (if (looking-back "^")
+                                   (cpped-hydra-org-structure-template/body)
+                                 (self-insert-command 1))))
+#+END_SRC
+
 ** Remote
 #+BEGIN_SRC emacs-lisp
 (defhydra cpped-hydra-remote (:exit t :columns 1)
