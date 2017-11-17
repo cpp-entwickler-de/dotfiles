@@ -776,18 +776,8 @@ Find path of current position in XML docuement
     (progn
       (push '("*helm kill ring*" :dedicated t :position bottom :height 40) popwin:special-display-config)
       (push '("*helm calcul*" :dedicated t :position bottom :height 10) popwin:special-display-config)))
-  (helm-mode 1))
-
-(require 'helm-config)
-
-(require 'helm-buffers)
-(push "\\*Messages\\*" helm-boring-buffer-regexp-list)
-(push "\\*Warnings\\*" helm-boring-buffer-regexp-list)
-(push "\\*Completions\\*" helm-boring-buffer-regexp-list)
-(push "\\*Help\\*" helm-boring-buffer-regexp-list)
-(push "\\*compilation\\*" helm-boring-buffer-regexp-list)
-(push "\\*compile.*\\*" helm-boring-buffer-regexp-list)
-(push "\\*Compilation Log\\*" helm-boring-buffer-regexp-list)
+  (helm-mode 1)
+  (require 'helm-config))
 #+END_SRC
 
 *** Projectile Integration
@@ -880,6 +870,18 @@ Find path of current position in XML docuement
 #+END_SRC
 
 *** Buffer switching
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "helm"
+  (require 'helm-buffers)
+  (push "\\*Messages\\*" helm-boring-buffer-regexp-list)
+  (push "\\*Warnings\\*" helm-boring-buffer-regexp-list)
+  (push "\\*Completions\\*" helm-boring-buffer-regexp-list)
+  (push "\\*Help\\*" helm-boring-buffer-regexp-list)
+  (push "\\*compilation\\*" helm-boring-buffer-regexp-list)
+  (push "\\*compile.*\\*" helm-boring-buffer-regexp-list)
+  (push "\\*Compilation Log\\*" helm-boring-buffer-regexp-list))
+#+END_SRC
+
 #+BEGIN_SRC emacs-lisp
 (defun cpped-switch-buffer ()
   (interactive)
@@ -1334,9 +1336,8 @@ Always use a fixed width for line numbers (maximum number length)
 ** File Management
 *** Helm integration
 #+BEGIN_SRC emacs-lisp
-(use-package helm-files
-  :after helm
-  :config
+(with-eval-after-load "helm"
+  (require 'helm-files)
   (define-key helm-find-files-map (kbd "C-d") 'helm-ff-persistent-delete)
   (define-key helm-find-files-map (kbd "C-y") 'helm-copy-to-buffer))
 #+END_SRC
