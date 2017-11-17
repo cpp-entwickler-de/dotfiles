@@ -3771,12 +3771,15 @@ When using Magit >= 2.4.0
                                           (pdf-tools-install t))))
 #+END_SRC
 
-** System Logs
+** [[https://github.com/doublep/logview][System Logs]]
 #+BEGIN_SRC emacs-lisp
-(use-package syslog-mode
-  :mode ("\\.log\\'" . syslog-mode))
-
-(use-package log4j-mode)
+(use-package logview
+  :mode "\\.log\\'"
+  :config
+  (setq logview-auto-revert-mode 'auto-revert-tail-mode)
+  (add-hook 'logview-mode-hook '(lambda()
+                                  (auto-revert-tail-mode)
+                                  (read-only-mode))))
 #+END_SRC
 
 ** STrace Logs
@@ -5006,6 +5009,45 @@ Format          ^^Markup       ^^Script            ^^Diagram      ^^Other
                                (if (looking-back "^")
                                    (cpped-hydra-org-structure-template/body)
                                  (self-insert-command 1))))
+#+END_SRC
+** Logview-Mode
+#+BEGIN_SRC emacs-lisp
+(defhydra cpped-hydra-logview (:exit nil :hint nil :foreign-keys run)
+  "
+☰ Log
+
+Navigation                      ^^Levels                       ^^Filter
+  _p_: Previous entry               _1_: Errors                    _f_: Edit
+  _n_: Next entry                   _2_: Warnings                  _x_: Reset
+                                  ^^_3_: Information
+  _P_: Previous important entry     _4_: Debug                     _h_: Hide entries
+  _N_: Next important entry         _5_: All                       _s_: Show entries
+
+                                  ^^_+_: Show all as important     _d_: Toggle details
+"
+  ("n" logview-next-entry)
+  ("p" logview-previous-entry)
+  ("N" logview-next-as-important-entry)
+  ("P" logview-previous-as-important-entry)
+  ("1" logview-show-only-errors)
+  ("2" logview-show-errors-and-warnings)
+  ("3" logview-show-errors-warnings-and-information)
+  ("4" logview-show-errors-warnings-information-and-debug)
+  ("5" logview-show-all-levels)
+  ("+" logview-show-only-as-important)
+  ("f" logview-edit-filters)
+  ("x" logview-reset-all-filters)
+  ("h" logview-hide-entry)
+  ("s" (if (region-active-p)
+           (logview-show-entries)
+         (logview-show-region-entries)))
+  ("d" (if (region-active-p)
+           (logview-toggle-entry-details)
+         (logview-toggle-region-entry-details)))
+  ("q" cpped-kill-default-buffer :exit t)
+  ("ESC" cpped-kill-default-buffer :exit t))
+
+(add-hook 'logview-mode-hook 'cpped-hydra-logview/body)
 #+END_SRC
 
 ** Remote
