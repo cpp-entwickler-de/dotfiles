@@ -2477,6 +2477,12 @@ Handler to close buffer after quitting ccmake.
 #+END_SRC
 
 **** Editing
+***** Formatting
+#+BEGIN_SRC emacs-lisp
+(defvar-local cpped-format-region-function nil "The function to call to format the current region.")
+(defvar-local cpped-format-buffer-function nil "The function to call to format the whole buffer.")
+#+END_SRC
+
 ***** [[https://github.com/Malabarba/aggressive-indent-mode][Auto-indent]]
 #+BEGIN_SRC emacs-lisp
 (use-package aggressive-indent
@@ -2910,6 +2916,13 @@ Custom error highlighting (colored line under location)
 #+END_SRC
 
 **** Editing
+***** Formatting
+#+BEGIN_SRC emacs-lisp
+(add-hook 'c-mode-common-hook (lambda ()
+                                (setq cpped-format-region-function 'clang-format)
+                                (setq cpped-format-buffer-function 'clang-format-buffer)))
+#+END_SRC
+
 ***** Auto-newline
 #+BEGIN_SRC emacs-lisp
 (add-hook 'c-mode-common-hook '(lambda ()
@@ -4866,10 +4879,10 @@ Brightness ^^Saturation ^^Hue
   _d_: Duplicate               _n_: Local         _r_: Regex          _c_: Case         ^_>_: Indentation        _t_: Translate     _/_: Comment
   _D_: Duplicate & Comment     _N_: File-wide     _p_: in Project     _\"_: String       _m_: Move               _y_: Synonym       _e_: Evaluate
   _i_: Insert                                                     ^^^^_+_: Value +      ^_j_: Join lines         _l_: Spelling      _E_: Evaluate & Replace
-  _'_: Quoted insert                                              ^^^^_-_: Value -      ^_:_: Fill paragraph     _s_: Sort          _f_: Format (Selection)
-  _<_: Complete                                                   ^^^^_#_: Base                               ^^^_x_: Transpose     _F_: Format (File)
-  _g_: Edit area                                                  ^^^^_1_: Flip bool                                           ^^^^^_u_: Uncrustify (Selection)
-  ___: Overwrite Mode                                             ^^^^_C_: Modify color                                        ^^^^^_U_: Uncrustify (File)
+  _'_: Quoted insert                                              ^^^^_-_: Value -      ^_:_: Fill paragraph     _s_: Sort          _f_: Format
+  _<_: Complete                                                   ^^^^_#_: Base                               ^^^_x_: Transpose     _u_: Uncrustify
+  _g_: Edit area                                                  ^^^^_1_: Flip bool
+  ___: Overwrite Mode                                             ^^^^_C_: Modify color
   _&_: Typographic Mode
 "
   ("d" crux-duplicate-current-line-or-region)
@@ -4909,10 +4922,12 @@ Brightness ^^Saturation ^^Hue
   ("/" comment-dwim-2)
   ("e" eval-last-sexp)
   ("E" crux-eval-and-replace)
-  ("f" clang-format)
-  ("F" clang-format-buffer)
-  ("u" uncrustify)
-  ("U" uncrustify-buffer))
+  ("f" (if (region-active-p)
+             (funcall cpped-format-region-function (region-beginning) (region-end))
+           (funcall cpped-format-buffer-function)))
+  ("u" (if (region-active-p)
+           (uncrustify)
+         (uncrustify-buffer))))
 
 
 (global-set-key (kbd "C-e") 'cpped-hydra-edit/body)
