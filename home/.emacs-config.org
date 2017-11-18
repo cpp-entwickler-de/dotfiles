@@ -3265,6 +3265,15 @@ Translation Files
 (use-package json-snatcher)
 #+END_SRC
 
+**** Navigation
+***** Imenu integration
+#+BEGIN_SRC emacs-lisp
+(add-hook 'js-mode-hook (lambda()
+                          (when (derived-mode-p 'json-mode)
+                            (setq imenu-create-index-function #'imenu-default-create-index-function)
+                            (setq imenu-generic-expression '(("Items" "[\"\']\\([[:alnum:]-]+\\)[\"\'][[:space:]]*:[\n[:space:]]*[\\[\\{]" 1))))))
+#+END_SRC
+
 **** Editing
 ***** Formatting
 #+BEGIN_SRC emacs-lisp
