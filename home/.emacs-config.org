@@ -3257,6 +3257,22 @@ Translation Files
                           (flycheck-add-next-checker 'javascript-eslint '(t . javascript-jshint))))
 #+END_SRC
 
+*** JSON
+#+BEGIN_SRC emacs-lisp
+(use-package json-mode
+  :mode "\\.js\\(on\\|[hl]int\\(rc\\)?\\)\\'")
+
+(use-package json-snatcher)
+#+END_SRC
+
+**** Editing
+***** Formatting
+#+BEGIN_SRC emacs-lisp
+(add-hook 'json-mode-hook (lambda ()
+                            (setq cpped-format-region-function 'json-pretty-print)
+                            (setq cpped-format-buffer-function 'json-pretty-print-buffer)))
+#+END_SRC
+
 *** Latex
 #+BEGIN_SRC emacs-lisp
 (push '("\\.tex\\'" . latex-mode) auto-mode-alist)
@@ -4591,6 +4607,7 @@ Text                    ^^Code                                ^^Version Control 
                           ^^_f_: Functions called
                           ^^_+_: Preprocess
                           ^^_l_: Count lines of code
+                          ^^_j_: Copy JSON path
 
                           ^^_D_: Toggle shell documentation
 "
@@ -4609,6 +4626,7 @@ Text                    ^^Code                                ^^Version Control 
   ("f" rtags-find-functions-called-by-this-function)
   ("+" rtags-preprocess-file)
   ("l" cpped-sloccount)
+  ("j" jsons-print-path)
   ("c" git-messenger:popup-message)
   ("b" magit-blame-popup)
   ("p" helm-top)
