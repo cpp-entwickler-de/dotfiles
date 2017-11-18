@@ -75,7 +75,7 @@ function make_link
 
 if [ "$PACKAGES" = TRUE ]; then
     # install packages
-    sudo dnf install PackageKit-command-not-found adobe-source-code-pro-fonts adobe-source-sans-pro-fonts adobe-source-serif-pro-fonts aspell aspell-de aspell-en autojump-zsh clang clang-analyzer clang-devel cmake cmake-gui colorgcc cppcheck csslint devscripts-checkbashisms ditaa docker emacs-lucid gcc gdb gdouros-symbola-fonts gnuplot htop ImageMagick iotop kcachegrind links llvm llvm-devel lnav mupdf ninja-build npm plantuml poppler-devel poppler-glib-devel progress recode rubygems saxon ShellCheck sloccount sushi the_silver_searcher uncrustify util-linux-user valgrind wireless-tools wordnet libxml2 xmlstarlet yank zsh
+    sudo dnf install PackageKit-command-not-found adobe-source-code-pro-fonts adobe-source-sans-pro-fonts adobe-source-serif-pro-fonts aspell aspell-de aspell-en autojump-zsh clang clang-analyzer clang-devel clang-tools-extra cmake cmake-gui colorgcc cppcheck csslint devscripts-checkbashisms ditaa docker emacs-lucid gcc gdb gdouros-symbola-fonts gnuplot htop ImageMagick iotop kcachegrind links llvm llvm-devel lnav mupdf ninja-build npm plantuml poppler-devel poppler-glib-devel progress recode rubygems saxon ShellCheck sloccount sushi the_silver_searcher uncrustify util-linux-user valgrind wireless-tools wordnet libxml2 xmlstarlet yank zsh
 
     sudo npm install -g stylelint eslint jshint jslint standard jscs
     sudo pip install proselint
