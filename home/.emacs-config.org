@@ -983,11 +983,15 @@ Indicate recursive minibuffer
 (defun cpped-kill-default-buffer ()
   "Kill the currently active buffer."
   (interactive)
-  (let (kill-buffer-query-functions)
+  (let ((kill-buffer-query-functions)
+        (name (substring-no-properties (buffer-name))))
     (when (and buffer-file-name
                (buffer-modified-p))
       (save-buffer))
-    (kill-buffer)))
+    (if (or (string= name "*scratch*")
+            (string= name "*Messages*"))
+        (bury-buffer)
+      (kill-buffer))))
 #+END_SRC
 
 *** Do not ask before killing buffer with running processes
