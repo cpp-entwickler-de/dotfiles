@@ -3355,6 +3355,18 @@ Translation Files
   :mode "\\.qml\\'")
 #+END_SRC
 
+**** Imenu integration
+#+BEGIN_SRC emacs-lisp
+(defun cpped-qml-imenu-create-index()
+  (append (imenu-default-create-index-function)
+          (js--imenu-create-index)))
+
+(add-hook 'js-mode-hook (lambda()
+                          (when (derived-mode-p 'qml-mode)
+                            (setq imenu-create-index-function #'cpped-qml-imenu-create-index)
+                            (setq imenu-generic-expression '(("Items" "^[[:space:]]*\\([a-zA-Z0-9]+\\)[[:space:]\n]*{" 1))))))
+#+END_SRC
+
 **** Auto-completion
 #+BEGIN_SRC emacs-lisp
 (add-hook 'qml-mode-hook (lambda()
