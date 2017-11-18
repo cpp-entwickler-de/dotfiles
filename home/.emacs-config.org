@@ -3017,7 +3017,7 @@ Custom error highlighting (colored line under location)
 ****** Clang
 #+BEGIN_SRC emacs-lisp
 (use-package clang-format
-  :config (setq clang-format-executable "clang-format-4.0"))
+  :config (setq clang-format-executable "clang-format"))
 #+END_SRC
 
 ****** [[https://github.com/koko1000ban/emacs-uncrustify-mode][Uncrustify]]
