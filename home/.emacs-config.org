@@ -4049,7 +4049,10 @@ Disable evaluation confirmation for some languages
            (string= lang "sh")
            (string= lang "shell")
            (string= lang "zsh"))))
+#+END_SRC
 
+Note: For this to work, Org must be version 8.3 or higher. Org is bundled with emacs and must be updated manually from the repository.
+#+BEGIN_SRC emacs-lisp
 (org-babel-do-load-languages 'org-babel-load-languages
                              '((calc . t)
                                (ditaa . t)
