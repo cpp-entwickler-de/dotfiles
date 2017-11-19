@@ -5008,7 +5008,48 @@ Brightness ^^Saturation ^^Hue
 
 *** Kill/yank
 #+BEGIN_SRC emacs-lisp
+(defhydra cpped-hydra-copy (:exit t :hint nil)
+  "
+☰ Copy
+
+  _k_: line or region
+  _K_: line (back)
+  _w_: word
+  _W_: word (back)
+  _s_: sentence
+  _S_: sentence (back)
+  _x_: expression
+  _X_: expression (back)
+  _e_: enclosed area
 "
+  ("k" whole-line-or-region-kill-ring-save :exit nil)
+  ("K" (let ((kill-read-only-ok t)
+             (buffer-read-only t))
+         (cpped-backward-kill-dwim)))
+  ("w" (let ((kill-read-only-ok t)
+             (buffer-read-only t))
+         (kill-word 1)))
+  ("W" (let ((kill-read-only-ok t)
+             (buffer-read-only t))
+         (backward-kill-word 1)))
+  ("s" (let ((kill-read-only-ok t)
+           (buffer-read-only t))
+         (kill-sentence)))
+  ("S" (let ((kill-read-only-ok t)
+             (buffer-read-only t))
+         (backward-kill-sentence)))
+  ("x" (let ((kill-read-only-ok t)
+             (buffer-read-only t))
+         (kill-sexp)))
+  ("X" (let ((kill-read-only-ok t)
+             (buffer-read-only t))
+         (backward-kill-sexp)))
+  ("e" (let ((kill-read-only-ok)
+             (buffer-read-only t))
+         (call-interactively 'change-inner))))
+
+(global-set-key (kbd "M-k") #'cpped-hydra-copy/whole-line-or-region-kill-ring-save)
+
 (defhydra cpped-hydra-kill (:exit t :hint nil)
   "
 ☰ Cut / Delete
