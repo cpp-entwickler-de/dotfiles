@@ -5017,7 +5017,7 @@ Cut                   ^^Delete
   _k_: line or region     _SPC_: limit to one space
   _K_: line (back)        _C-SPC_: blank lines
   _w_: word               _d_: Duplicate lines
-  _W_: word (back)
+  _W_: word (back)        _r_: Lines not matching expression
   _s_: sentence
   _S_: sentence (back)
   _x_: expression
@@ -5035,7 +5035,8 @@ Cut                   ^^Delete
   ("e" change-inner)
   ("SPC" just-one-space)
   ("C-SPC" delete-blank-lines)
-  ("d" delete-duplicate-lines))
+  ("d" delete-duplicate-lines)
+  ("r" keep-lines))
 
 (global-set-key (kbd "C-k") #'cpped-hydra-kill/body)
 
