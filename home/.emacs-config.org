@@ -1721,6 +1721,12 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 #+END_SRC
 
 ** Navigation
+*** Smart begin/end
+#+BEGIN_SRC emacs-lisp
+(use-package beginend
+  :config (beginend-global-mode))
+#+END_SRC
+
 *** End sentence with single space
 #+BEGIN_SRC emacs-lisp
 (setq sentence-end-double-space nil)
