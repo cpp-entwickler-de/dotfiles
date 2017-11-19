@@ -4876,9 +4876,13 @@ Date         ^^Time         ^^Timestamp    ^^Block          ^^Special
     ^^↓
 "
   ("w" smart-shift-up)
+  ("<up>" smart-shift-up)
   ("s" smart-shift-down)
+  ("<down>" smart-shift-down)
   ("a" smart-shift-left)
-  ("d" smart-shift-right))
+  ("<left>" smart-shift-left)
+  ("d" smart-shift-right)
+  ("<right>" smart-shift-right))
 
 (defhydra cpped-hydra-edit-transpose (:exit t :columns 1)
   "
