@@ -4050,26 +4050,22 @@ Disable evaluation confirmation for some languages
            (string= lang "shell")
            (string= lang "zsh"))))
 
-(use-package babel
-  :after org graphviz-dot-mode
-  :config
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((calc . t)
-     (ditaa . t)
-     (dot . t)
-     (gnuplot . t)
-     (latex . t)
-     (lisp . t)
-     (python . t)
-     (sed . t)
-     (sh . t)
-     (shell . t)))
+(org-babel-do-load-languages 'org-babel-load-languages
+                             '((calc . t)
+                               (ditaa . t)
+                               (dot . t)
+                               (gnuplot . t)
+                               (latex . t)
+                               (lisp . t)
+                               (python . t)
+                               (sed . t)
+                               (sh . t)
+                               (shell . t)))
 
-  (setq org-confirm-babel-evaluate 'cpped-org-confirm-babel-evaluate
-        org-babel-shell-names '("sh" "bash" "zsh"))
-  (org-babel-shell-initialize)
-  (add-hook 'org-babel-after-execute-hook 'org-display-inline-images))
+(setq org-confirm-babel-evaluate 'cpped-org-confirm-babel-evaluate
+      org-babel-shell-names '("sh" "bash" "zsh"))
+(org-babel-shell-initialize)
+(add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
 #+END_SRC
 
 *** Set file name for edit buffer
