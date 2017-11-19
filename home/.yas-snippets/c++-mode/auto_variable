@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# key: a
+# name: auto variable
+# --
+auto${2:$$(yas-choose-value '(" " " & " " * " " * const "))}${3:name} = ${4:${2:$(when (or (string= yas-text " * ")
+(string= yas-text " * const "))
+'nullptr)}}$0;

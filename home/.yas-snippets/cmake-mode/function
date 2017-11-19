@@ -3,5 +3,10 @@
 # key: fun
 # --
 function(${1:name})
-    $2
-endfunction($1)$0
+    ${2:set(OPTION_ARGUMENTS "$3")
+    set(SINGLE_VALUE_ARGUMENTS "$4")
+    set(MULTI_VALUE_ARGUMENTS "$5")
+    cmake_parse_arguments(${6:prefix} "\${OPTION_ARGUMENTS}" "\${SINGLE_VALUE_ARGUMENTS}" "\${MULTI_VALUE_ARGUMENTS}" \${ARGN})
+    }`yas-selected-text`$7
+endfunction()
+$0

@@ -3,5 +3,6 @@
 # key: if
 # --
 if(${1:cond})
-   $2
-endif()$0
+   `yas-selected-text`$2
+endif()
+$0

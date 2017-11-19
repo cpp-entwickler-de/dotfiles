@@ -1,8 +1,8 @@
 # -*- mode: snippet -*-
-# name: ifdef
-# key: #ifd
+# name: ifndef
+# key: #ifn
 # --
-#ifdef ${1:DEFINE}
+#ifndef ${1:DEFINE}
 
 `yas-selected-text`$0
 
