@@ -3092,6 +3092,11 @@ Custom error highlighting (colored line under location)
 #+END_SRC
 
 **** Utilities
+***** Namespaces
+#+BEGIN_SRC emacs-lisp
+(use-package outrespace)
+#+END_SRC
+
 ***** Qt Support
 Resource Files
 #+BEGIN_SRC emacs-lisp
@@ -4704,9 +4709,9 @@ _C-<right>_: Next word                 _y_: Down block                 _C-t_: Ne
    _<down>_: Next line               _C-s_: Symbol declaration         _C-a_: Next Annotation
    _<C-up>_: Previous paragraph      _C-m_: Function
  _<C-down>_: Next paragraph        _C-S-m_: Function (all buffers)
- _<C-home>_: Begining of file
-  _<C-end>_: End of file
-    _C-S-l_: Previous list
+ _<C-home>_: Begining of file      _C-S-n_: Previous namespace
+  _<C-end>_: End of file             _C-n_: Next namespace
+    _C-S-l_: Previous list           _M-n_: Namespace
       _C-l_: Next list
       _C-j_: jump to character
       _C-l_: Line
@@ -4739,6 +4744,9 @@ _C-<right>_: Next word                 _y_: Down block                 _C-t_: Ne
   ("C-s" rtags-find-symbol-at-point :exit t)
   ("C-m" helm-imenu :exit t)
   ("C-S-m" helm-imenu-anywhere :exit t)
+  ("C-S-n" outre-goto-namespace-previous)
+  ("C-n" outre-goto-namespace-next)
+  ("M-n" outrespace-jump-to-ns)
 
   ("C-S-i" smartscan-symbol-go-backward)
   ("C-i" smartscan-symbol-go-forward)
@@ -4806,6 +4814,7 @@ Mark                            ^^Modify                        ^^Act
   _W_: Rest of word                 _x_: Exchange mark and point    _d_: Delete
   _s_: S-EXPR                       _j_: Jump to character          _k_: Kill
   _f_: Function
+  _n_: Namespace
   _l_: Rest of line
   _L_: Line up to here
   _b_: Everything before cursor
@@ -4818,6 +4827,8 @@ Mark                            ^^Modify                        ^^Act
   ("W" mark-word)
   ("s" mark-sexp)
   ("f" mark-defun)
+  ("n" outre-highlight-ns-by-name)
+  ("r" rectangle-mark-mode)
   ("+" er/expand-region)
   ("x" exchange-point-and-mark)
   ("j" avy-goto-char-timer)
@@ -4919,17 +4930,37 @@ Brightness ^^Saturation ^^Hue
   ("h" kurecolor-increase-hue-by-step)
   ("H" kurecolor-decrease-hue-by-step))
 
+(defhydra cpped-hydra-refactor (:exit t :hint nil)
+  "
+☰ Refactor
+
+Namespace
+  _w_: Wrap function/region
+  _r_: Rename enclosing
+  _R_; Rename
+  _d_: Delete enclosing
+  _D_: Delete
+"
+  ("w" (progn
+         (when (not (region-active-p))
+           (c-mark-function))
+         (call-interactively 'outrespace-wrap-namespace-region)))
+  ("r" outrespace-change-enclosing-ns-name)
+  ("R" outrespace-change-ns-name)
+  ("d" outrespace-delete-enclosing-ns)
+  ("D" outrespace-delete-ns-by-name))
+
 (defhydra cpped-hydra-edit (:exit t :hint nil)
   "
 ☰ Edit
 
                            ^^Rename           ^^Replace           ^^Change          ^^^Format                        ^^Text             ^^Code
   _d_: Duplicate               _n_: Local         _r_: Regex          _c_: Case                 ^_>_: Indentation        _t_: Translate     _/_: Comment
-  _D_: Duplicate & Comment     _N_: File-wide     _p_: in Project     _\"_: String               _m_: Move               _y_: Synonym       _e_: Evaluate
-  _i_: Insert                                                     ^^^^_+_: Value +              ^_j_: Join lines         _l_: Spelling      _E_: Evaluate & Replace
-  _'_: Quoted insert                                              ^^^^_-_: Value -              ^_:_: Fill paragraph     _s_: Sort          _f_: Format
-  _<_: Complete                                                   ^^^^_#_: Base             ^_<tab>_: Spaces → Tabs      _x_: Transpose     _u_: Uncrustify
-  _g_: Edit area                                                  ^^^^_1_: Flip bool    ^_<backtab>_: Tabs → Spaces
+  _D_: Duplicate & Comment     _N_: File-wide     _p_: in Project     _\"_: String               _m_: Move               _y_: Synonym       _f_: Refactor
+  _i_: Insert                                                     ^^^^_+_: Value +              ^_j_: Join lines         _l_: Spelling      _e_: Evaluate
+  _'_: Quoted insert                                              ^^^^_-_: Value -              ^_:_: Fill paragraph     _s_: Sort          _E_: Evaluate & Replace
+  _<_: Complete                                                   ^^^^_#_: Base             ^_<tab>_: Spaces → Tabs      _x_: Transpose     _F_: Format
+  _g_: Edit area                                                  ^^^^_1_: Flip bool    ^_<backtab>_: Tabs → Spaces                         _u_: Uncrustify
   ___: Overwrite Mode                                             ^^^^_C_: Modify color
   _&_: Typographic Mode
 "
@@ -4986,15 +5017,15 @@ Brightness ^^Saturation ^^Hue
   ("x" cpped-hydra-edit-transpose/body :exit t)
 
   ("/" comment-dwim-2)
+  ("f" cpped-hydra-refactor/body :exit t)
   ("e" eval-last-sexp)
   ("E" crux-eval-and-replace)
-  ("f" (if (region-active-p)
+  ("F" (if (region-active-p)
              (funcall cpped-format-region-function (region-beginning) (region-end))
            (funcall cpped-format-buffer-function)))
   ("u" (if (region-active-p)
            (uncrustify)
          (uncrustify-buffer))))
-
 
 (global-set-key (kbd "C-e") 'cpped-hydra-edit/body)
 #+END_SRC
