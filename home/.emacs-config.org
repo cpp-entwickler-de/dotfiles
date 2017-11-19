@@ -5008,33 +5008,34 @@ Brightness ^^Saturation ^^Hue
 
 *** Kill/yank
 #+BEGIN_SRC emacs-lisp
-(defhydra cpped-hydra-kill (:exit nil)
 "
+(defhydra cpped-hydra-kill (:exit t :hint nil)
+  "
 ☰ Cut / Delete
 
 Cut                   ^^Delete
-_k_: line or region       _SPC_: limit to one space
-_K_: line (back)          _C-SPC_: blank lines
-_w_: word                 _d_: Duplicate lines
-_W_: word (back)
-_s_: sentence
-_S_: sentence (back)
-_x_: expression
-_X_: expression (back)
-_e_: enclosed area
+  _k_: line or region     _SPC_: limit to one space
+  _K_: line (back)        _C-SPC_: blank lines
+  _w_: word               _d_: Duplicate lines
+  _W_: word (back)
+  _s_: sentence
+  _S_: sentence (back)
+  _x_: expression
+  _X_: expression (back)
+  _e_: enclosed area
 "
-("k" whole-line-or-region-kill-region :exit t)
-("K" cpped-backward-kill-dwim)
-("w" kill-word)
-("W" backward-kill-word)
-("s" kill-sentence)
-("S" backward-kill-sentence)
-("x" kill-sexp)
-("X" backward-kill-sexp)
-("e" change-inner)
-("SPC" just-one-space)
-("C-SPC" delete-blank-lines)
-("d" delete-duplicate-lines))
+  ("k" whole-line-or-region-kill-region :exit nil)
+  ("K" cpped-backward-kill-dwim)
+  ("w" kill-word)
+  ("W" backward-kill-word)
+  ("s" kill-sentence)
+  ("S" backward-kill-sentence)
+  ("x" kill-sexp)
+  ("X" backward-kill-sexp)
+  ("e" change-inner)
+  ("SPC" just-one-space)
+  ("C-SPC" delete-blank-lines)
+  ("d" delete-duplicate-lines))
 
 (global-set-key (kbd "C-k") #'cpped-hydra-kill/body)
 
