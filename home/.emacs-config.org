@@ -4888,15 +4888,15 @@ Date         ^^Time         ^^Timestamp    ^^Block          ^^Special
   "
 ☰ Transpose
 "
-     ("c" transpose-chars "Characters")
-     ("w" (if (equal major-mode 'org-mode)
-              org-transpose-words
-            transpose-words) "Words")
-     ("l" transpose-lines "Lines")
-     ("s" transpose-sentences "Sentences")
-     ("e" org-transpose-elements "Org mode elements")
-     ("p" transpose-paragraphs "Paragraphs")
-     ("t" org-table-transpose-table-at-point "Org mode table"))
+  ("c" transpose-chars "Characters")
+  ("w" (if (equal major-mode 'org-mode)
+           org-transpose-words
+         transpose-words) "Words")
+  ("l" transpose-lines "Lines")
+  ("s" transpose-sentences "Sentences")
+  ("e" org-transpose-elements "Org mode elements")
+  ("p" transpose-paragraphs "Paragraphs")
+  ("t" org-table-transpose-table-at-point "Org mode table"))
 
 (defhydra cpped-hydra-color (:exit nil :hint nil)
   "
