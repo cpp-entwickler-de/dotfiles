@@ -3,4 +3,4 @@
 # key: fix
 # condition: (not (eq major-mode 'sh-mode))
 # --
-`(yas-with-comment "FIXME: ")`
+`(yas-with-comment "FIXME: ")`$0

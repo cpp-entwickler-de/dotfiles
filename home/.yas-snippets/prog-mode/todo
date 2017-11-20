@@ -2,4 +2,4 @@
 # name: todo
 # key: t
 # --
-`(yas-with-comment "TODO: ")`
+`(yas-with-comment "TODO: ")`$0

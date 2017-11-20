@@ -2,4 +2,4 @@
 # name: refactor
 # key: rf
 # --
-`(yas-with-comment "REFACTOR: ")`
+`(yas-with-comment "REFACTOR: ")`$0
