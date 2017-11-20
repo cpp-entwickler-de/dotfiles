@@ -2513,6 +2513,10 @@ Handler to close buffer after quitting ccmake.
 
 ***** [[https://github.com/victorhge/iedit][Edit all occurences within function]]
 #+BEGIN_SRC emacs-lisp
+(defvar-local cpped-mark-function 'mark-defun "The function to call to mark the current function.")
+(defvar-local cpped-beginning-of-function 'beginning-of-defun "The function to call to jump to the beginning of the current function.")
+(defvar-local cpped-end-of-function 'end-of-defun "The function to call to jump to the end of the current function.")
+
 (use-package iedit)
 
 (defun iedit-dwim (arg)
@@ -2526,14 +2530,10 @@ Handler to close buffer after quitting ccmake.
         (if iedit-mode
             (iedit-done)
           (let ((word (current-word))
-                (end (progn (if (derived-mode-p 'c-mode 'c++-mode)
-                                (c-end-of-defun)
-                              (end-of-defun))
+                (end (progn (funcall cpped-end-of-function)
                             (point)))
-                (begin (progn (if (derived-mode-p 'c-mode 'c++-mode)
-                                  (c-beginning-of-defun)
-                                (beginning-of-defun))
-                            (point))))
+                (begin (progn (funcall cpped-beginning-of-function)
+                              (point))))
             (iedit-start word begin end)))))))
 #+END_SRC
 
@@ -2928,6 +2928,14 @@ Custom error highlighting (colored line under location)
 #+END_SRC
 
 **** Editing
+***** Mark/navigation functions
+#+BEGIN_SRC emacs-lisp
+(add-hook 'c-mode-common-hook (lambda ()
+                                (setq cpped-mark-function 'c-mark-function)
+                                (setq cpped-beginning-of-function 'c-beginning-of-defun)
+                                (setq cpped-end-of-function 'c-end-of-defun)))
+#+END_SRC
+
 ***** Formatting
 #+BEGIN_SRC emacs-lisp
 (add-hook 'c-mode-common-hook (lambda ()
@@ -4837,7 +4845,7 @@ Mark                            ^^Modify                        ^^Act
          (mark-word)))
   ("W" mark-word)
   ("s" mark-sexp)
-  ("f" mark-defun)
+  ("f" (funcall cpped-mark-function))
   ("n" outre-highlight-ns-by-name)
   ("r" rectangle-mark-mode)
   ("+" er/expand-region)
