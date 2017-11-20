@@ -1,5 +1,5 @@
 # -*- mode: snippet -*-
 # name: refactor
-# key: rf
+# key: r
 # --
 `(yas-with-comment "REFACTOR: ")`$0
