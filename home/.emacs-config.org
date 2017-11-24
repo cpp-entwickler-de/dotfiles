@@ -5335,7 +5335,7 @@ Settings                       ^^Snippets            ^^Abbreviations            
 ☰ Tools
 "
   ("c" helm-calcul-expression "Calculator")
-  ("x" helm-regexp "Regex Builder")
+  ("x" re-builder "Regex Builder")
   ("r" repeat "Repeat last command")
   ("f" helm-resume "Resume last command"))
 
