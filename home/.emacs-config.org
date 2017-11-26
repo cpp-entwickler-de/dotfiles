@@ -212,7 +212,8 @@ Disable prettification if cursor is at edge of expression
 (add-hook 'find-file-hooks (lambda ()
                              (push '("\t" . ?⟶) prettify-symbols-alist)
                              (push '("lambda" . ?λ) prettify-symbols-alist)
-                             (push '("" . ?↵) prettify-symbols-alist)
+                             (push '("
+" . ?↵) prettify-symbols-alist)
                              (prettify-symbols-mode)))
 
 (global-prettify-symbols-mode)
@@ -2756,6 +2757,11 @@ Custom error highlighting (colored line under location)
                           ("Enabled" . "Disabled"))))
 #+END_SRC
 
+***** [[https://github.com/atykhonov/emacs-howdoi][Code suggestions]]
+#+BEGIN_SRC emacs-lisp
+(use-package howdoi)
+#+END_SRC
+
 **** Compilation
 ***** [[https://github.com/abo-abo/helm-make][Select make target with helm]]
 #+BEGIN_SRC emacs-lisp
@@ -5046,9 +5052,9 @@ Namespace
   _D_: Duplicate & Comment     _N_: File-wide     _p_: in Project     _\"_: String               _m_: Move               _y_: Synonym       _f_: Refactor
   _i_: Insert                                                     ^^^^_+_: Value +              ^_j_: Join lines         _l_: Spelling      _e_: Evaluate
   _'_: Quoted insert                                              ^^^^_-_: Value -              ^_:_: Fill paragraph     _s_: Sort          _E_: Evaluate & Replace
-  _<_: Complete                                                   ^^^^_#_: Base             ^_<tab>_: Spaces → Tabs      _x_: Transpose     _F_: Format
-  _g_: Edit area                                                  ^^^^_1_: Flip bool    ^_<backtab>_: Tabs → Spaces                         _u_: Uncrustify
-  ___: Overwrite Mode                                             ^^^^_C_: Modify color
+  _<_: Complete                                                   ^^^^_#_: Base             ^_<tab>_: Spaces → Tabs      _x_: Transpose     _._: Suggestion
+  _g_: Edit area                                                  ^^^^_1_: Flip bool    ^_<backtab>_: Tabs → Spaces                       ^^_F_: Format
+  ___: Overwrite Mode                                             ^^^^_C_: Color                                                       ^^^^^_u_: Uncrustify
   _&_: Typographic Mode                                           ^^^^_L_: To Link
 "
   ("d" crux-duplicate-current-line-or-region)
@@ -5100,6 +5106,7 @@ Namespace
 
   ("t" cpped-translate-word-or-region)
   ("y" synosaurus-choose-and-replace)
+  ("." howdoi-query-line-at-point-replace-by-code-snippet)
   ("l" flyspell-auto-correct-previous-word)
   ("s" cpped-hydra-edit-sort/body :exit t)
   ("x" cpped-hydra-edit-transpose/body :exit t)

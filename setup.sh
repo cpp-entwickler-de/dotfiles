@@ -81,6 +81,7 @@ if [ "$PACKAGES" = TRUE ]; then
     sudo pip install proselint
     # glances and modules
     sudo pip install glances psutil
+    sudo pip install howdoi
     # markdownlint
     gem install mdl
 
