@@ -56,20 +56,10 @@ TIMEFMT=$'\nreal   %*E\nuser   %*U\nsystem %*S\ncpu    %P'
 LAST_EXIT_CODE=0
 TIME_SINCE_LAST_COMMAND=0
 
-preexec() {
-    TIME_SINCE_LAST_COMMAND=0
-}
-
-TMOUT=1
+TMOUT=900
 TRAPALRM() {
-    LAST_EXIT_CODE=$?
-    TIME_SINCE_LAST_COMMAND=$(( $TIME_SINCE_LAST_COMMAND+1 ))
-    if [ $TIME_SINCE_LAST_COMMAND -ge 900 -a $LAST_EXIT_CODE -eq 0 ]; then
+    if [ $? -eq 0 ]; then
         exit
-    fi
-    # Do not update if in completion mode
-    if [ "$WIDGET" != "complete-word" -a "$WIDGET" != "expand-or-complete" ]; then
-        zle reset-prompt
     fi
 }
 
