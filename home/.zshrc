@@ -129,7 +129,7 @@ alias -s html=pick-web-browser
 # Set history size
 export HISTSIZE=2000
 export HISTFILESIZE=1000
-export HISTFILE=~/.history
+export HISTFILE=~/.zsh_history
 export HISTIGNORE="ls:ll:cd:fg:j:jobs"
 
 # Show sizes in human readable format
