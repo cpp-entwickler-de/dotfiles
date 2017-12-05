@@ -255,6 +255,13 @@ uncommit = reset soft HEAD~1
 force-push = push --force-with-lease
 
 
+[filter "lfs"]
+smudge = git-lfs smudge -- %f
+process = git-lfs filter-process
+required = true
+clean = git-lfs clean -- %f
+
+
 [include]
 # Read user-specific data from separate file
 path = ~/.gitconfig.user
