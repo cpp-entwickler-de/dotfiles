@@ -159,18 +159,24 @@ setopt autoparamslash
 setopt autoremoveslash
 # List completions horizontally
 setopt listrowsfirst
+# Save timestamps in history
+setopt extended_history
 # Append to history file
 setopt appendhistory
 # Disable history bell
 setopt nohistbeep
+# Remove superfluous whitespace
+setopt histreduceblanks
 # Remove older duplicates from history
-setopt histignorealldups
+setopt histsavenodups
 # Do not add commands beginning with space to history
 setopt histignorespace
 # When expanding history, do not execute immediately
 setopt histverify
 # Write history invrementally instead of at exit
 setopt incappendhistory
+# Share history between processes
+setopt share_history
 # Do not overwrite files
 setopt noclobber
 # Correct spelling
@@ -562,6 +568,3 @@ RPROMPT='%{$(echotc UP 1)%}%{$FX[bold]%}%{$BG[235]%}%{$FG[245]%}$CALENDAR_SYMBOL
 if [ -e ~/.zshrc.user ]; then
     source ~/.zshrc.user
 fi
-
-# Update history on each command
-PROMPT_COMMAND="history -a; history -n;${PROMPT_COMMAND}"
