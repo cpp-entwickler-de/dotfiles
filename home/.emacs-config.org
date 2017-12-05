@@ -4965,7 +4965,7 @@ Brightness ^^Saturation ^^Hue
 Namespace
   _w_: Wrap function/region
   _r_: Rename enclosing
-  _R_; Rename
+  _R_: Rename
   _d_: Delete enclosing
   _D_: Delete
 "
@@ -5267,7 +5267,7 @@ Focus                  ^^^^Close                ^^Split               ^^Align   
                          ^^^^_X_: Other windows     _h_: Horizontally     _+_: Enlarge         _<right>_: Scroll right                _C--_: Zoom out
                          ^^^^_q_: Frame                                 ^^_-_: Shrink           _<C-up>_: Scroll other window up
                                                                                     ^^^^^^^^^^_<C-down>_: Scroll other window down
-                                                                                    ^^^^^^^^^^_<C-home>_; Beginning of other window
+                                                                                    ^^^^^^^^^^_<C-home>_: Beginning of other window
                                                                                      ^^^^^^^^^^_<C-end>_: End of other window
                                                                                            ^^^^^^^^^^_1_: Toggle line numbers
                                                                                            ^^^^^^^^^^_#_: Toggle relative line numbers
