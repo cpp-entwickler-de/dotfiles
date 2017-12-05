@@ -289,10 +289,13 @@ alias magit='e --eval "(magit-status \"$(pwd)\")" &> /dev/null'
 
 function smart-enter ()
 {
-    zle accept-line
-    if [[ -z $BUFFER ]]; then
+    if [[ -n $BUFFER ]]; then
+        zle reset-prompt
+    else
+        echo
         l
     fi
+    zle accept-line
 }
 
 zle -N smart-enter
