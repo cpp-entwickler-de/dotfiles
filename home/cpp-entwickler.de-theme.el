@@ -1,5 +1,5 @@
 (deftheme cpp-entwickler.de
-  "Created 2017-11-09.")
+  "Created 2017-12-05.")
 
 (custom-theme-set-faces
  'cpp-entwickler.de
@@ -65,7 +65,6 @@
  '(org-block-begin-line ((t (:height 0.7 :foreground "gray50" :background "gray20"))))
  '(org-block-end-line ((t (:inherit org-block-begin-line))))
  '(org-block ((t (:background "gray20"))))
- '(org-block-background ((t (:background "gray20"))))
  '(flycheck-error-list-warning ((t (:inherit warning :foreground "DarkOrange"))))
  '(flycheck-error-list-info ((t (:inherit flycheck-error-list-error :foreground "blue1"))))
  '(flycheck-error-list-error ((t (:inherit error))))
