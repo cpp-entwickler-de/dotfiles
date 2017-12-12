@@ -4050,7 +4050,9 @@ When using Magit >= 2.4.0
                                (setq url (read-string "URL: " "http://www.")
                                      begin (car bounds)
                                      end (cdr bounds))))))
-                       (delete-region begin end)
+                       (when (and begin
+                                  end)
+                         (delete-region begin end))
                        url)))
   (org-insert-link nil url (cpped-url-to-title url)))
 
