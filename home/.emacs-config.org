@@ -4904,8 +4904,8 @@ Mark                            ^^Modify                        ^^Act
 ☰ Insert
 
 Date         ^^Time         ^^Timestamp    ^^Block          ^^Special
-  _d_: local     _t_: local     _s_: local     _3_: License     _u_: Unicode Character
-  _D_: ISO                    ^^_S_: ISO       _f_: File
+  _d_: local     _t_: local     _s_: local     _3_: License     _l_: Link
+  _D_: ISO                    ^^_S_: ISO       _f_: File        _u_: Unicode Character
                                          ^^^^^^_c_: Snippet
 "
   ("d" cpped-insert-date)
@@ -4916,6 +4916,7 @@ Date         ^^Time         ^^Timestamp    ^^Block          ^^Special
   ("3" legalese)
   ("f" insert-file)
   ("c" yas-insert-snippet)
+  ("l" cpped-org-insert-link-dwim)
   ("u" helm-ucs :exit nil))
 
 (defhydra cpped-hydra-edit-sort (:exit t :columns 1)
@@ -5006,7 +5007,7 @@ Namespace
   _<_: Complete                                                   ^^^^_#_: Base             ^_<tab>_: Spaces → Tabs      _x_: Transpose     _F_: Format
   _g_: Edit area                                                  ^^^^_1_: Flip bool    ^_<backtab>_: Tabs → Spaces                         _u_: Uncrustify
   ___: Overwrite Mode                                             ^^^^_C_: Modify color
-  _&_: Typographic Mode
+  _&_: Typographic Mode                                           ^^^^_L_: To Link
 "
   ("d" crux-duplicate-current-line-or-region)
   ("D" crux-duplicate-and-comment-current-line-or-region)
@@ -5030,6 +5031,7 @@ Namespace
   ("-" shift-number-down)
   ("1" bool-flip-do-flip)
   ("C" cpped-hydra-color/body :exit t)
+  ("L" cpped-org-convert-to-link-dwim :exit t)
 
   (">" indent-tools-hydra/body :exit t)
   ("m" cpped-hydra-edit-move/body :exit t)
