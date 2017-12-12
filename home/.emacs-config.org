@@ -4693,12 +4693,12 @@ Text                    ^^Code                                ^^Version Control 
   ("+" rtags-preprocess-file)
   ("l" cpped-sloccount)
   ("j" jsons-print-path)
+  ("D" shelldoc-toggle-doc-window)
   ("c" git-messenger:popup-message)
   ("b" magit-blame-popup)
   ("p" helm-top)
   ("m" helm-man-woman)
   ("t" cpped-find-todos-in-file)
-  ("D" shelldoc-toggle-doc-window)
   ("w" wttrin))
 
 (global-set-key (kbd "C-ß") 'cpped-hydra-info/body)
