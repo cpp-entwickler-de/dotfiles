@@ -4605,28 +4605,19 @@ Open                         ^^Save           ^^Close                  ^^Switch 
       _o_: Open                  _s_: Save        _x_: File                _SPC_: Switch file     _v_: Show old version      _h_: Hexadecimal mode           _d_: Delete                      ^^^^_C-d_: DOS
       _r_: Smart/Recent          _a_: Save as     _X_: Other files           _l_: Last file       _D_: Diff                  _!_: Toggle read-only mode      _m_: Rename                      ^^^^_C-u_: UNIX
       _p_: From project                         ^^_w_: File and window       _f_: Find            _g_: Log                                                 ^^_z_: Clear content
-      _P_: From all projects                    ^^_u_: Unused files                             ^^_B_: Blame                                               ^^_c_: Copy name to clipboard
+      _P_: From all projects                    ^^_u_: Unused files                             ^^_b_: Blame                                               ^^_c_: Copy name to clipboard
                                               ^^^^_a_: Close editor                                                                                    ^^^^^^_._: Open directory
       _j_: Header/Source                                                                                                                           ^^^^^^^^^^_+_: Show Directory Tree
-      _T_: Test
+      _t_: Test
   _<RET>_: File under cursor
-
-      _t_: ToDos
-      _b_: Bugs
-      _n_: Notes
-      _e_: Events
 "
   ("o" helm-find-files)
   ("r" helm-for-files)
   ("p" helm-browse-project)
   ("P" helm-projectile-find-file-in-known-projects)
   ("j" helm-projectile-find-other-file :exit nil)
-  ("T" projectile-toggle-between-implementation-and-test :exit nil)
+  ("t" projectile-toggle-between-implementation-and-test :exit nil)
   ("<RET>" helm-projectile-find-file-dwim)
-  ("t" (find-file org-default-todos-file))
-  ("b" (find-file org-default-bugs-file))
-  ("n" (find-file org-default-notes-file))
-  ("e" (find-file org-default-events-file))
 
   ("s" save-buffer)
   ("a" cpped-save-copy)
@@ -4645,7 +4636,7 @@ Open                         ^^Save           ^^Close                  ^^Switch 
   ("v" git-timemachine)
   ("D" magit-diff-buffer-file-popup)
   ("g" magit-log-buffer-file-popup)
-  ("B" magit-blame-popup)
+  ("b" magit-blame-popup)
 
   ("d" crux-delete-file-and-buffer)
   ("m" crux-rename-file-and-buffer)
@@ -4673,10 +4664,10 @@ Open                         ^^Save           ^^Close                  ^^Switch 
 ☰ Information
 
 Text                    ^^Code                                ^^Version Control         ^^System             ^^Other
-  _#_: Number               _y_: Symbol Info                      _c_: Commit Message       _p_: Processes       _a_: Agenda
-  _x_: Translate            _d_: Documentation                    _b_: Blame                _m_: Man page        _n_: Notes
-  _s_: Synonym              _r_: References                                                                  ^^^^_t_: Show ToDos
-  _g_: Google               _-_: Dependencies                                                                ^^^^_w_: Weather
+  _#_: Number               _y_: Symbol Info                      _c_: Commit Message       _p_: Processes       _t_: ToDos
+  _x_: Translate            _d_: Documentation                    _b_: Blame                _m_: Man page        _w_: Weather
+  _s_: Synonym              _r_: References
+  _g_: Google               _-_: Dependencies
   _o_: Preview markdown     _v_: Enum value
   _._: Cursor               _i_: Include files for symbol
                           ^^_f_: Functions called
@@ -4706,8 +4697,6 @@ Text                    ^^Code                                ^^Version Control 
   ("b" magit-blame-popup)
   ("p" helm-top)
   ("m" helm-man-woman)
-  ("a" (org-agenda nil "d"))
-  ("n" (org-agenda nil "n"))
   ("t" cpped-find-todos-in-file)
   ("D" shelldoc-toggle-doc-window)
   ("w" wttrin))
@@ -5392,6 +5381,31 @@ Settings                       ^^Snippets            ^^Abbreviations            
   ("c" cpped-cmake-clean-build-directory "Clean build directory"))
 
 (global-set-key (kbd "C-b") #'cpped-hydra-build/body)
+#+END_SRC
+
+** Planning
+#+BEGIN_SRC emacs-lisp
+(defhydra cpped-hydra-planning (:exit t :hint nil)
+  "
+☰ Planning
+
+Open          ^^Create
+  _a_: Agenda     _c_: Entry
+
+  _t_: ToDos
+  _b_: Bugs
+  _n_: Notes
+  _e_: Events
+"
+  ("a" (org-agenda nil "d"))
+  ("t" (find-file org-default-todos-file))
+  ("b" (find-file org-default-bugs-file))
+  ("n" (find-file org-default-notes-file))
+  ("e" (find-file org-default-events-file))
+
+  ("c" org-capture))
+
+(global-set-key (kbd "C-l") #'cpped-hydra-planning/body)
 #+END_SRC
 
 * Notify when loading is finished
