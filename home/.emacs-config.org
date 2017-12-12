@@ -3630,7 +3630,21 @@ When using Magit >= 2.4.0
   :after helm
   :bind (:map magit-status-mode-map ("q" . magit-quit-session))
   :config
-  (setq magit-log-arguments '("--graph"
+  (setq git-commit-style-convention-checks nil
+        git-commit-summary-max-length 80
+        magit-completing-read-function 'helm--completing-read-default
+        magit-diff-expansion-threshold 3
+        magit-diff-highlight-hunk-region-functions '(magit-diff-highlight-hunk-region-dim-outside magit-diff-highlight-hunk-region-using-underline)
+        magit-diff-highlight-indentation '((".*" . tabs))
+        magit-diff-refine-hunk 'all
+        magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1
+        magit-log-auto-more t
+        magit-popup-manpage-package 'woman
+        magit-popup-show-common-commands nil
+        magit-process-popup-time 3
+        magit-save-repository-buffers 'dontask
+        magit-status-show-hashes-in-headers nil
+        magit-log-arguments '("--graph"
                               "--color"
                               "--decorate"
                               "-n200"))
