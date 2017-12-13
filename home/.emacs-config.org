@@ -2203,21 +2203,13 @@ Open binary files in hexl-mode
 **** Re-/Configure CMake
 Handler to close buffer after quitting ccmake.
 #+BEGIN_SRC emacs-lisp
-(add-hook 'term-exec-hook (lambda ()
-                            (when (equal (buffer-name (current-buffer)) "*CMake Cache*")
-                              (progn
-                                (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix)
-                                (term-char-mode)
-                                (let* ((buff (current-buffer))
-                                       (proc (get-buffer-process buff)))
-                                  (set-process-sentinel proc `(lambda (process event)
-                                                                (if (string= event "finished\n")
-                                                                    (progn
-                                                                      (when (not (boundp cpped-cmake-current-target))
-                                                                          (setq cpped-cmake-current-target 'all))
-                                                                      (kill-buffer ,buff)
-                                                                      (cmake-ide-maybe-start-rdm)
-                                                                      (cmake-ide--on-cmake-finished))))))))))
+(advice-add 'term-sentinel :after (lambda (proc msg)
+                                    (when (and (equal (buffer-name (process-buffer proc)) "*CMake Cache*")
+                                               (memq (process-status proc) '(signal exit)))
+                                      (when (not (boundp cpped-cmake-current-target))
+                                        (setq cpped-cmake-current-target 'all))
+                                      (cmake-ide-maybe-start-rdm)
+                                      (cmake-ide--on-cmake-finished))))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
