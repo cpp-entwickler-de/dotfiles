@@ -1188,11 +1188,11 @@ Always use a fixed width for line numbers (maximum number length)
 
 *** Open shell in project directory
 #+BEGIN_SRC emacs-lisp
-(defun cpped-eshell-project-dir ()
+(defun cpped-shell-project-dir ()
   (interactive)
   (let ((default-directory (cpped-project-dir)))
     (if default-directory
-        (eshell))))
+        (ansi-term))))
 #+END_SRC
 
 *** Popup
@@ -2323,11 +2323,11 @@ Handler to close buffer after quitting ccmake.
 
 **** Open shell in build directory
 #+BEGIN_SRC emacs-lisp
-(defun cpped-eshell-build-dir ()
+(defun cpped-shell-build-dir ()
   (interactive)
   (if cmake-ide-build-dir
       (let ((default-directory cmake-ide-build-dir))
-        (eshell))))
+        (ansi-term))))
 #+END_SRC
 
 **** List targets
@@ -4613,9 +4613,9 @@ CMake              ^^Git                         ^^Directories         ^^Shell  
   ("d" projectile-find-dir)
   ("b" (if cmake-ide-build-dir
            (dired cmake-ide-build-dir)))
-  ("#" cpped-eshell-project-dir)
-  ("$" eshell)
-  ("%" cpped-eshell-build-dir)
+  ("#" cpped-shell-project-dir)
+  ("$" ansi-term)
+  ("%" cpped-shell-build-dir)
 
   ("f" helm-ag-project-root)
   ("l" add-change-log-entry)
