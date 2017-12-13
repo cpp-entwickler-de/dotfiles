@@ -5270,6 +5270,60 @@ Format          ^^Markup       ^^Script            ^^Diagram      ^^Other
                                    (cpped-hydra-org-structure-template/body)
                                  (self-insert-command 1))))
 #+END_SRC
+
+** PDF-View-Mode
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "pdf-tools"
+  (progn
+    (defhydra cpped-hydra-pdf-view (:exit nil :hint nil)
+      "
+☰ PDF
+
+Navigation           ^^Zoom                 ^^Annotations               ^^Information
+  _p_: Previous page     _+_: Zoom in           _l_: List                   _m_: Show metadata
+  _n_: Next page         _-_: Zoom out          _._: List attachments
+
+  _a_: First page        _f_: Fit to page       _t_: Add text
+  _e_: Last page         _w_: Fit to width      _#_: Highlight
+                       ^^_h_: Fit to height     _\__: Underline
+  _g_: Go to page                             ^^_~_: Squiggly underline
+                                            ^^^^_/_: Strikethrough
+  _o_: Show outline
+                                            ^^^^_d_: Delete
+"
+      ("p" pdf-view-previous-page)
+      ("<prior>" pdf-view-previous-page)
+      ("n" pdf-view-next-page)
+      ("<next>" pdf-view-next-page)
+      ("a" pdf-view-first-page)
+      ("<home>" pdf-view-first-page)
+      ("e" pdf-view-last-page)
+      ("<end>" pdf-view-last-page)
+      ("g" pdf-view-goto-page)
+      ("o" pdf-outline)
+
+      ("+" pdf-view-enlarge)
+      ("-" pdf-view-shrink)
+      ("f" pdf-view-fit-page-to-window)
+      ("w" pdf-view-fit-width-to-window)
+      ("h" pdf-view-fit-height-to-window)
+
+      ("l" pdf-annot-list-annotations)
+      ("." pdf-annot-attachment-dired)
+      ("t" pdf-annot-add-text-annotation)
+      ("#" pdf-annot-add-highlight-markup-annotation)
+      ("_" pdf-annot-add-underline-markup-annotation)
+      ("~" pdf-annot-add-squiggly-markup-annotation)
+      ("/" pdf-annot-add-strikeout-markup-annotation)
+      ("d" pdf-annot-delete)
+
+      ("m" (if (get-buffer "*PDF-Metadata*")
+               (kill-buffer "*PDF-Metadata*")
+             (pdf-misc-display-metadata))))
+
+    (add-hook 'pdf-view-mode-hook 'cpped-hydra-pdf-view/body)))
+#+END_SRC
+
 ** Logview-Mode
 #+BEGIN_SRC emacs-lisp
 (defhydra cpped-hydra-logview (:exit nil :hint nil :foreign-keys run)
