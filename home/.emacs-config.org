@@ -5324,6 +5324,42 @@ Navigation           ^^Zoom                 ^^Annotations               ^^Inform
     (add-hook 'pdf-view-mode-hook 'cpped-hydra-pdf-view/body)))
 #+END_SRC
 
+** DocView-Mode
+#+BEGIN_SRC emacs-lisp
+(defhydra cpped-hydra-doc-view (:exit nil :hint nil)
+  "
+☰ Document
+
+Navigation           ^^Zoom
+  _p_: Previous page     _+_: Zoom in
+  _n_: Next page         _-_: Zoom out
+
+  _a_: First page        _f_: Fit to page
+  _e_: Last page         _w_: Fit to width
+                       ^^_h_: Fit to height
+  _g_: Go to page
+"
+  ("p" doc-view-previous-page)
+  ("<prior>" doc-view-previous-page)
+  ("n" doc-view-next-page)
+  ("<next>" doc-view-next-page)
+  ("a" doc-view-first-page)
+  ("<home>" doc-view-first-page)
+  ("e" doc-view-last-page)
+  ("<end>" doc-view-last-page)
+  ("g" doc-view-goto-page)
+
+  ("+" doc-view-enlarge)
+  ("-" doc-view-shrink)
+  ("f" doc-view-fit-page-to-window)
+  ("w" doc-view-fit-width-to-window)
+  ("h" doc-view-fit-height-to-window))
+
+(add-hook 'doc-view-minor-mode-hook 'cpped-hydra-doc-view/body)
+
+;(define-key doc-view-mode-map (kbd "C-s") #'doc-view-search)
+#+END_SRC
+
 ** Logview-Mode
 #+BEGIN_SRC emacs-lisp
 (defhydra cpped-hydra-logview (:exit nil :hint nil :foreign-keys run)
