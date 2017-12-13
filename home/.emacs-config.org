@@ -5355,6 +5355,8 @@ Settings                       ^^Snippets            ^^Abbreviations            
   _t_: Edit theme
   _v_: Customize variable
   _g_: Customize group
+
+  _s_: Set variable
 "
   ("c" (find-file cpped-config-file))
   ("m" (find-file custom-file))
@@ -5365,7 +5367,8 @@ Settings                       ^^Snippets            ^^Abbreviations            
   ("p" list-packages)
   ("t" (custom-theme-visit-theme cpped-theme))
   ("v" customize-variable)
-  ("g" customize-group))
+  ("g" customize-group)
+  ("s" set-variable))
 
 (global-set-key (kbd "C-S-s") #'cpped-hydra-settings/body)
 #+END_SRC
