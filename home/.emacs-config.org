@@ -1195,6 +1195,20 @@ Always use a fixed width for line numbers (maximum number length)
         (eshell))))
 #+END_SRC
 
+*** Popup
+#+BEGIN_SRC emacs-lisp
+(use-package shell-pop
+  :after helm
+  :bind ("C-#" . shell-pop)
+  :config
+  (setq shell-pop-term-shell "/bin/zsh"
+        shell-pop-universal-key "C-#"
+        shell-pop-window-size 60
+        shell-pop-full-span t
+        shell-pop-window-position "bottom")
+  (push "\\*ansi-term-.*\\*" helm-boring-buffer-regexp-list))
+#+END_SRC
+
 *** [[https://github.com/mhayashi1120/Emacs-shelldoc][Show man page for shell commands]]
 #+BEGIN_SRC emacs-lisp
 (use-package shelldoc
