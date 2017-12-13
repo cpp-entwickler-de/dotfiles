@@ -491,6 +491,26 @@ Helper function to figure out version control root directory
                  'display '(raise -0.0))))
 #+END_SRC
 
+*** Line/Character Mode
+#+BEGIN_SRC emacs-lisp
+(make-local-variable 'cpped-term-char-mode)
+
+(advice-add 'term-char-mode :after (lambda ()
+                                     (setq cpped-term-char-mode t)))
+
+(advice-add 'term-line-mode :after (lambda ()
+                                     (setq cpped-term-char-mode nil)))
+
+(defun powerline-term-input-mode (icon-face)
+  (when (and (equal major-mode 'term-mode)
+             cpped-term-char-mode)
+    (propertize (all-the-icons-faicon "terminal")
+                'face `(:family ,(all-the-icons-faicon-family)
+                                :background ,(face-attribute icon-face :background)
+                                :height 1.1)
+                'display '(raise -0.0))))
+#+END_SRC
+
 *** Buffer size (characters/lines)
 #+BEGIN_SRC emacs-lisp
 (defun powerline-buffersize ()
@@ -704,6 +724,7 @@ Find path of current position in XML docuement
                                 (powerline-raw (powerline-typo-mode (symbol-value 'face2)) face2 'l)
                                 (powerline-raw (powerline-key-lock (symbol-value 'cpped-caps-lock-active) "sort-alpha-asc" (symbol-value 'face2)) face2 'l)
                                 (powerline-raw (powerline-key-lock (symbol-value 'cpped-num-lock-active) "sort-numeric-asc" (symbol-value 'face2)) face2 'l)
+                                (powerline-raw (powerline-term-input-mode (symbol-value 'face2)) face2 'l)
                                 (powerline-raw (powerline-position-info (symbol-value 'face2)) face2 'l)
                                 (powerline-raw (powerline-region-info (symbol-value 'face2)) face2 'l)
                                 (funcall separator-left face2 mode-line)
