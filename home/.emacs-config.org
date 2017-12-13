@@ -1168,7 +1168,8 @@ Always use a fixed width for line numbers (maximum number length)
                                        comint-truncate-buffer)
       eshell-scroll-to-bottom-on-input 'this
       eshell-scroll-to-bottom-on-output 'this
-      eshell-kill-processes-on-exit t)
+      eshell-kill-processes-on-exit t
+      term-buffer-maximum-size 100000)
 #+END_SRC
 
 *** Clear buffer
@@ -4562,8 +4563,7 @@ Do not use scientific form so quickly
       (progn
         (serial-term (concat "/dev/" port) 115200)
         (rename-buffer (format "*Serial Terminal %s*" port))
-        (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix)
-        (setq term-buffer-maximum-size 100000))
+        (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))
     (message "No serial port found.")))
 #+END_SRC
 
