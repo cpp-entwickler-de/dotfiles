@@ -1237,7 +1237,7 @@ Always use a fixed width for line numbers (maximum number length)
                               (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)))
 #+END_SRC
 
-*** [[;; https://github.com/xuchunyang/eshell-did-you-mean][Suggestions for wrong commmands]]
+*** [[https://github.com/xuchunyang/eshell-did-you-mean][Suggestions for wrong commmands]]
 #+BEGIN_SRC emacs-lisp
 (use-package eshell-did-you-mean
   :config
