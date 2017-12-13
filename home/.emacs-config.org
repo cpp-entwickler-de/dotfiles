@@ -3913,6 +3913,28 @@ When using Magit >= 2.4.0
                                        (nlinum-mode -1))))
 #+END_SRC
 
+** Doc-View
+
+*** ODF
+#+BEGIN_SRC emacs-lisp
+(push '("\\.odt\\'" . doc-view-mode) auto-mode-alist)
+#+END_SRC
+
+*** DOC
+#+BEGIN_SRC emacs-lisp
+(push '("\\.doc\\'" . doc-view-mode) auto-mode-alist)
+#+END_SRC
+
+*** DVI
+#+BEGIN_SRC emacs-lisp
+(push '("\\.dvi\\'" . doc-view-mode) auto-mode-alist)
+#+END_SRC
+
+*** Postscript
+#+BEGIN_SRC emacs-lisp
+(push '("\\.ps\\'" . doc-view-mode) auto-mode-alist)
+#+END_SRC
+
 ** [[https://github.com/doublep/logview][System Logs]]
 #+BEGIN_SRC emacs-lisp
 (use-package logview
