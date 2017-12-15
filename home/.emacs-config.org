@@ -1170,6 +1170,8 @@ Always use a fixed width for line numbers (maximum number length)
       eshell-scroll-to-bottom-on-output 'this
       eshell-kill-processes-on-exit t
       term-buffer-maximum-size 100000)
+
+(add-hook 'term-exec-hook #'term-char-mode)
 #+END_SRC
 
 *** Clear buffer
