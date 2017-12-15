@@ -5493,7 +5493,8 @@ Settings                       ^^Snippets            ^^Abbreviations            
   ("p" finder-commentary "Package")
   ("y" describe-syntax "Syntax"))
 
-(global-set-key (kbd "C-h") #'cpped-hydra-help/body)
+(global-set-key (kbd "C-h") #'helpful-at-point)
+(global-set-key (kbd "C-S-h") #'cpped-hydra-help/body)
 #+END_SRC
 
 ** Tools
