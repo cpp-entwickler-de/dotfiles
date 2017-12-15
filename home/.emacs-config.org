@@ -5485,7 +5485,7 @@ Settings                       ^^Snippets            ^^Abbreviations            
   "
 ☰ Help
 "
-  ("f" helpful-function "Function")
+  ("f" helpful-callable "Function")
   ("v" describe-variable "Variable")
   ("s" describe-symbol "Symbol")
   ("k" describe-key "Key")
