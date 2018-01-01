@@ -2039,7 +2039,8 @@ Some useful abbreviations
   :config
   (setq yas-snippet-dirs '("~/.yas-snippets")
         yas-wrap-around-region t
-        yas-use-menu nil)
+        yas-use-menu nil
+        yas-triggers-in-field t)
   (yas-global-mode 1))
 #+END_SRC
 
