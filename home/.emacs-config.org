@@ -67,6 +67,102 @@ Do not load outdated byte code
   :after helm)
 #+END_SRC
 
+** [[https://github.com/jabranham/system-packages][System packages]]
+#+BEGIN_SRC emacs-lisp
+(use-package system-packages
+  :config
+  (add-to-list 'system-packages-supported-package-managers
+               '(dnf .
+                     ((default-sudo . t)
+                      (install . "dnf install --assumeyes")
+                      (search . "dnf search")
+                      (uninstall . "dnf remove --assumeyes")
+                      (update . ("dnf upgrade --assumeyes"))
+                      (clean-cache . "dnf clean all --assumeyes")
+                      (log . "dnf history")
+                      (get-info . "rpm -qi")
+                      (get-info-remote . "dnf info")
+                      (list-files-provided-by . "rpm -ql")
+                      (verify-all-packages . "rpm -Va")
+                      (verify-all-dependencies . "dnf repoquery --requires")
+                      (remove-orphaned . "dnf autoremove")
+                      (list-installed-packages . "dnf list --installed")
+                      (list-installed-packages-all . nil)
+                      (list-dependencies-of . "rpm -qR"))))
+  (add-to-list 'system-packages-supported-package-managers
+               '(pip .
+                     ((default-sudo . nil)
+                      (install . "pip install --user")
+                      (search . "pip search")
+                      (uninstall . "pip uninstall --user")
+                      (update . nil)
+                      (clean-cache . nil)
+                      (log . nil)
+                      (get-info . nil)
+                      (get-info-remote . nil)
+                      (list-files-provided-by . nil)
+                      (verify-all-packages . nil)
+                      (verify-all-dependencies . nil)
+                      (remove-orphaned . nil)
+                      (list-installed-packages . "pip list")
+                      (list-installed-packages-all . nil)
+                      (list-dependencies-of . nil)))
+               t)
+  (system-packages-install "python-pip")
+  (defun cpped-pip-install (package)
+    "Install a package via pip."
+    (let ((system-packages-packagemanager 'pip) )
+      (system-packages-install package)))
+  (add-to-list 'system-packages-supported-package-managers
+               '(npm .
+                     ((default-sudo . t)
+                      (install . "npm install")
+                      (search . "npm search")
+                      (uninstall . "npm uninstall")
+                      (update . "npm update")
+                      (clean-cache . "npm cache clean")
+                      (log . nil)
+                      (get-info . nil)
+                      (get-info-remote . nil)
+                      (list-files-provided-by . nil)
+                      (verify-all-packages . nil)
+                      (verify-all-dependencies . nil)
+                      (remove-orphaned . nil)
+                      (list-installed-packages . "npm list")
+                      (list-installed-packages-all . nil)
+                      (list-dependencies-of . nil)))
+               t)
+  (system-packages-install "npm")
+  (defun cpped-npm-install (package)
+    "Install a package via npm."
+    (let ((system-packages-packagemanager 'npm))
+      (system-packages-install package)))
+  (add-to-list 'system-packages-supported-package-managers
+               '(gem .
+                     ((default-sudo . nil)
+                      (install . "gem install")
+                      (search . "gem query")
+                      (uninstall . "gem uninstall")
+                      (update . "gem update")
+                      (clean-cache . "npm cache clean")
+                      (log . nil)
+                      (get-info . "gem query")
+                      (get-info-remote . "gem search")
+                      (list-files-provided-by . nil)
+                      (verify-all-packages . nil)
+                      (verify-all-dependencies . nil)
+                      (remove-orphaned . nil)
+                      (list-installed-packages . "gem list")
+                      (list-installed-packages-all . nil)
+                      (list-dependencies-of . "gem dependency")))
+               t)
+  (system-packages-install "rubygems")
+  (defun cpped-gem-install (package)
+    "Install a package via gem."
+    (let ((system-packages-packagemanager 'gem))
+      (system-packages-install package))))
+#+END_SRC
+
 * Internals
 ** Include cl package
 #+BEGIN_SRC emacs-lisp
@@ -756,7 +852,9 @@ Find path of current position in XML docuement
 
 ** [[https://github.com/bbatsov/projectile][Projectile]]
 #+BEGIN_SRC emacs-lisp
-(use-package ag)
+(use-package ag
+  :after system-packages
+  :config (system-packages-install "the_silver_searcher"))
 
 (use-package projectile
   :after ag
@@ -1675,14 +1773,17 @@ Always use a fixed width for line numbers (maximum number length)
 
 ***** Syntax checker
 #+BEGIN_SRC emacs-lisp
-(with-eval-after-load "flycheck"
-  (flycheck-define-checker cpped-markdownlint
-    "Markdown checker (https://github.com/mivok/markdownlint)"
-    :command ("mdl" source-original)
-    :error-patterns ((warning line-start (file-name) ":" line ": " (message) line-end))
-    :modes (markdown-mode))
+(with-eval-after-load "system-packages"
+  (cpped-gem-install "mdl")
 
-  (add-to-list 'flycheck-checkers 'cpped-markdownlint))
+  (with-eval-after-load "flycheck"
+    (flycheck-define-checker cpped-markdownlint
+      "Markdown checker (https://github.com/mivok/markdownlint)"
+      :command ("mdl" source-original)
+      :error-patterns ((warning line-start (file-name) ":" line ": " (message) line-end))
+      :modes (markdown-mode))
+
+    (add-to-list 'flycheck-checkers 'cpped-markdownlint)))
 #+END_SRC
 
 ***** [[https://github.com/mola-T/flymd][Preview]]
@@ -1779,18 +1880,20 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 
 *** [[https://github.com/amperser/proselint][Prose Linter]]
 #+BEGIN_SRC emacs-lisp
-(with-eval-after-load "flycheck"
-  (flycheck-define-checker proselint
-    "A linter for prose."
-    :command ("proselint" source-inplace)
-    :error-patterns
-    ((warning line-start (file-name) ":" line ":" column ": "
-              (id (one-or-more (not (any " "))))
-              (message (one-or-more not-newline)
-                       (zero-or-more "\n" (any " ") (one-or-more not-newline)))
-              line-end))
-    :modes (text-mode org-mode markdown-mode gfm-mode))
-  (add-to-list 'flycheck-checkers 'proselint))
+(with-eval-after-load "system-packages"
+  (cpped-pip-install "proselint")
+    (with-eval-after-load "flycheck"
+      (flycheck-define-checker proselint
+        "A linter for prose."
+        :command ("proselint" source-inplace)
+        :error-patterns
+        ((warning line-start (file-name) ":" line ":" column ": "
+                  (id (one-or-more (not (any " "))))
+                  (message (one-or-more not-newline)
+                           (zero-or-more "\n" (any " ") (one-or-more not-newline)))
+                  line-end))
+        :modes (text-mode org-mode markdown-mode gfm-mode))
+      (add-to-list 'flycheck-checkers 'proselint)))
 #+END_SRC
 
 *** Diction
@@ -2080,7 +2183,9 @@ Some useful abbreviations
 *** Thesaurus
 #+BEGIN_SRC emacs-lisp
 (use-package synosaurus
+  :after system-packages
   :config
+  (system-packages-install "wordnet")
   (setq-default synosaurus-backend 'synosaurus-backend-wordnet)
   (add-hook 'after-init-hook #'synosaurus-mode))
 #+END_SRC
@@ -2112,8 +2217,11 @@ Some useful abbreviations
 ** [[http://www-sop.inria.fr/members/Manuel.Serrano/flyspell/flyspell.html][Spell checking]]
 #+BEGIN_SRC emacs-lisp
 (use-package flyspell
-  :after helm
+  :after (helm system-packages)
   :config
+  (system-packages-install "aspell")
+  (system-packages-install "aspell-en")
+  (system-packages-install "aspell-de")
   (setq flyspell-issue-welcome-flag nil
         flyspell-issue-message-flag nil
         flyspell-sort-corrections t
@@ -2205,7 +2313,11 @@ Open binary files in hexl-mode
 *** CMake
 #+BEGIN_SRC emacs-lisp
 (use-package cmake-ide
+  :after system-packages
   :config
+  (system-packages-install "cmake")
+  (system-packages-install "ccmake")
+  (system-packages-install "ninja-build")
   (setq cmake-ide-rdm-executable "/usr/local/bin/rdm"
         cmake-ide-build-pool-dir "~/build"
         cmake-ide-header-search-other-file t
@@ -2240,10 +2352,9 @@ Handler to close buffer after quitting ccmake.
                            build-dir
                            (read-directory-name "Build-directory: "
                                                 (concat (file-name-as-directory cmake-ide-build-pool-dir) "build-" (file-name-nondirectory (directory-file-name (file-name-directory source-directory)))))))))
-  (if (executable-find "ccmake")
-      (when (and build-dir
-                 source-dir)
-        (if (file-directory-p source-dir)
+    (when (and build-dir
+               source-dir)
+      (if (file-directory-p source-dir)
           (if (cpped-cmake-source-directory-p source-dir)
               (progn
                 (when (not (file-directory-p build-dir))
@@ -2254,8 +2365,7 @@ Handler to close buffer after quitting ccmake.
                   (ansi-term (getenv "SHELL") "CMake Cache")
                   (term-exec (current-buffer) "ccmake" "ccmake" nil (list "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON" "-G" "Ninja" source-dir))))
             (error "`%s' does not contain a CMake project" source-dir))
-          (error "`%s' is not a directory" source-dir)))
-    (error "Please install ccmake")))
+        (error "`%s' is not a directory" source-dir))))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -2266,42 +2376,38 @@ Handler to close buffer after quitting ccmake.
                          cmake-ide-build-dir)
                      (read-directory-name "Build-directory: "
                                           cmake-ide-build-pool-dir)))
-  (if (executable-find "ccmake")
-      (if (and build-dir
-               (file-directory-p build-dir))
-          (if (cpped-cmake-build-directory-p build-dir)
-              (progn
-                (setq cmake-ide-build-dir build-dir)
-                (projectile-discover-projects-in-directory (cmake-source-dir build-dir))
-                (let ((default-directory build-dir))
-                  (ansi-term (getenv "SHELL") "CMake Cache")
-                  (term-exec (current-buffer) "ccmake" "ccmake" nil (list "."))))
-            (error "`%s' is not a CMake build directory" build-dir))
-        (error "`%s' is not a directory" build-dir))
-    (error "Please install ccmake")))
+  (if (and build-dir
+           (file-directory-p build-dir))
+      (if (cpped-cmake-build-directory-p build-dir)
+          (progn
+            (setq cmake-ide-build-dir build-dir)
+            (projectile-discover-projects-in-directory (cmake-source-dir build-dir))
+            (let ((default-directory build-dir))
+              (ansi-term (getenv "SHELL") "CMake Cache")
+              (term-exec (current-buffer) "ccmake" "ccmake" nil (list "."))))
+        (error "`%s' is not a CMake build directory" build-dir))
+    (error "`%s' is not a directory" build-dir)))
 #+END_SRC
 
 **** Clear CMake Cache
 #+BEGIN_SRC emacs-lisp
-(defun cpped-cmake-reset (build-dir)
-  (interactive (list (or (when (and (boundp 'cmake-ide-build-dir)
-                                    (file-directory-p cmake-ide-build-dir))
-                           cmake-ide-build-dir)
-                         (read-directory-name "Build-directory: "
-                                              (file-name-as-directory cmake-ide-build-pool-dir)))))
-  (if (executable-find "cmake")
-      (if (and build-dir
-               (file-directory-p build-dir))
-          (let ((cache-file (concat (file-name-as-directory build-dir) "CMakeCache.txt")))
-            (if (file-exists-p cache-file)
-                (let ((source-dir (cpped-cmake-source-dir build-dir)))
-                  (if (file-exists-p (concat (file-name-as-directory source-dir) "CMakeLists.txt"))
-                      (progn (delete-file cache-file)
-                             (cpped-cmake-configure source-dir build-dir))
-                    (error "`%s' does not contain a CMake project" source-dir)))
-              (error "`%s' is not a CMake build directory" build-dir)))
-        (error "`%s' is not a directory" build-dir))
-    (error "Please install cmake")))
+  (defun cpped-cmake-reset (build-dir)
+    (interactive (list (or (when (and (boundp 'cmake-ide-build-dir)
+                                      (file-directory-p cmake-ide-build-dir))
+                             cmake-ide-build-dir)
+                           (read-directory-name "Build-directory: "
+                                                (file-name-as-directory cmake-ide-build-pool-dir)))))
+    (if (and build-dir
+             (file-directory-p build-dir))
+        (let ((cache-file (concat (file-name-as-directory build-dir) "CMakeCache.txt")))
+          (if (file-exists-p cache-file)
+              (let ((source-dir (cpped-cmake-source-dir build-dir)))
+                (if (file-exists-p (concat (file-name-as-directory source-dir) "CMakeLists.txt"))
+                    (progn (delete-file cache-file)
+                           (cpped-cmake-configure source-dir build-dir))
+                  (error "`%s' does not contain a CMake project" source-dir)))
+            (error "`%s' is not a CMake build directory" build-dir)))
+      (error "`%s' is not a directory" build-dir)))
 #+END_SRC
 
 **** Open Project
@@ -2770,7 +2876,9 @@ Custom error highlighting (colored line under location)
 
 ***** [[https://github.com/atykhonov/emacs-howdoi][Code suggestions]]
 #+BEGIN_SRC emacs-lisp
-(use-package howdoi)
+(use-package howdoi
+  :after system-packages
+  :config (cpped-pip-install "howdoi"))
 #+END_SRC
 
 **** Compilation
@@ -2903,19 +3011,19 @@ Custom error highlighting (colored line under location)
 
 **** LOC counting/Metrics
 #+BEGIN_SRC emacs-lisp
-(defun cpped-sloccount (argument)
-  "Count lines of code in file or project (with prefix argument)."
-  (interactive "P")
-  (if (executable-find "sloccount")
-      (let* ((project-root (cpped-project-dir))
-             (thing-to-process (if (and project-root
-                                        argument)
-                                   project-root
-                                 (when buffer-file-name 
-                                   (file-truename buffer-file-name)))))
+(with-eval-after-load "system-packages"
+  (system-packages-install "sloccount")
+  (defun cpped-sloccount (argument)
+    "Count lines of code in file or project (with prefix argument)."
+    (interactive "P")
+    (let* ((project-root (cpped-project-dir))
+           (thing-to-process (if (and project-root
+                                      argument)
+                                 project-root
+                               (when buffer-file-name
+                                 (file-truename buffer-file-name)))))
       (when thing-to-process
-        (with-output-to-temp-buffer "*SLOCCount*" (print (shell-command-to-string (concat  "sloccount " thing-to-process))))))
-    (error "Please install sloccount")))
+        (with-output-to-temp-buffer "*SLOCCount*" (print (shell-command-to-string (concat  "sloccount " thing-to-process))))))))
 #+END_SRC
 
 *** C/C++
@@ -3101,7 +3209,9 @@ Custom error highlighting (colored line under location)
 
 ****** [[https://github.com/koko1000ban/emacs-uncrustify-mode][Uncrustify]]
 #+BEGIN_SRC emacs-lisp
-  (use-package uncrustify-mode)
+(use-package uncrustify-mode
+  :after system-packages
+  :config (system-packages-install "uncrustify"))
 #+END_SRC
 
 ***** Syntax checkers
@@ -3142,10 +3252,12 @@ Custom error highlighting (colored line under location)
 
 ****** CPPCheck
 #+BEGIN_SRC emacs-lisp
-(setq flycheck-cppcheck-checks '("warning" "style" "performance" "portability" "information" "missingInclude"))
-(flycheck-add-next-checker 'clang-analyzer '(t . c/c++-cppcheck))
-(add-hook 'c++-mode-hook (lambda ()
-                           (setq flycheck-cppcheck-language-standard "c++11")))
+(with-eval-after-load "system-packages"
+  (system-packages-install "cppcheck")
+  (setq flycheck-cppcheck-checks '("warning" "style" "performance" "portability" "information" "missingInclude"))
+  (flycheck-add-next-checker 'clang-analyzer '(t . c/c++-cppcheck))
+  (add-hook 'c++-mode-hook (lambda ()
+                             (setq flycheck-cppcheck-language-standard "c++11"))))
 #+END_SRC
 
 **** Documentation
@@ -3268,9 +3380,12 @@ Translation Files
 **** Editing
 ***** Syntax checkers
 #+BEGIN_SRC emacs-lisp
-(add-hook 'css-mode-hook (lambda ()
-                          (flycheck-select-checker 'css-csslint)
-                          (flycheck-add-next-checker 'css-csslint '(t . css-stylelint))))
+(with-eval-after-load "system-packages"
+  (system-packages-install "csslint")
+  (cpped-npm-install "stylelint")
+  (add-hook 'css-mode-hook (lambda ()
+                             (flycheck-select-checker 'css-csslint)
+                             (flycheck-add-next-checker 'css-csslint '(t . css-stylelint)))))
 #+END_SRC
 
 **** Documentation
@@ -3334,11 +3449,17 @@ Translation Files
 **** Editing
 ***** Syntax checkers
 #+BEGIN_SRC emacs-lisp
-(add-hook 'js-mode-hook (lambda ()
+(with-eval-after-load "system-packages"
+  (cpped-npm-install "standard")
+  (cpped-npm-install "jscs")
+  (cpped-npm-install "eslint")
+  (cpped-npm-install "jshint")
+  (cpped-npm-install "jslint")
+  (add-hook 'js-mode-hook (lambda ()
                           (flycheck-select-checker 'javascript-standard)
                           (flycheck-add-next-checker 'javascript-standard '(t . javascript-jscs))
                           (flycheck-add-next-checker 'javascript-jscs '(t . javascript-eslint))
-                          (flycheck-add-next-checker 'javascript-eslint '(t . javascript-jshint))))
+                          (flycheck-add-next-checker 'javascript-eslint '(t . javascript-jshint)))))
 #+END_SRC
 
 *** JSON
@@ -3480,14 +3601,16 @@ Translation Files
 ***** Syntax checkers
 #+BEGIN_SRC emacs-lisp
 (use-package flycheck-checkbashisms
-  :after flycheck
-  :config (add-to-list 'flycheck-checkers 'sh-checkbashisms t))
-
-(add-hook 'sh-mode-hook (lambda ()
-                          (flycheck-select-checker 'sh-bash)
-                          (flycheck-add-next-checker 'sh-bash '(t . sh-zsh))
-                          (flycheck-add-next-checker 'sh-zsh '(t . sh-checkbashisms))
-                          (flycheck-add-next-checker 'sh-checkbashisms '(t . sh-shellcheck))))
+  :after (flycheck system-packages)
+  :config
+  (system-packages-install "devscripts-checkbashisms")
+  (system-packages-install "ShellCheck")
+  (add-to-list 'flycheck-checkers 'sh-checkbashisms t)
+  (add-hook 'sh-mode-hook (lambda ()
+                            (flycheck-select-checker 'sh-bash)
+                            (flycheck-add-next-checker 'sh-bash '(t . sh-zsh))
+                            (flycheck-add-next-checker 'sh-zsh '(t . sh-checkbashisms))
+                            (flycheck-add-next-checker 'sh-checkbashisms '(t . sh-shellcheck)))))
 #+END_SRC
 
 **** BASH
@@ -3522,9 +3645,10 @@ Set correct major mode
 *** [[https://github.com/skuro/plantuml-mode][UML]]
 #+BEGIN_SRC emacs-lisp
 (use-package plantuml-mode
-  :after org popwin
+  :after (org popwin system-packages)
   :mode "\\.p\\(lant\\)?uml\\'"
   :config
+  (system-packages-install "plantuml")
   (setq plantuml-jar-path "/usr/share/java/plantuml.jar")
   (push '("*PLANTUML Preview*" :dedicated t :width 60 :position right :noselect :stick) popwin:special-display-config)
   (add-to-list 'org-src-lang-modes '("plantuml" . plantuml)))
@@ -3563,15 +3687,20 @@ Set correct major mode
 ***** XQuery
 #+BEGIN_SRC emacs-lisp
 (use-package xquery-tool
+  :after system-packages
   :config
+  (system-packages-install "saxon")
   (setq xquery-tool-saxonb-jar "/usr/share/java/saxon/saxon.jar"))
 #+END_SRC
 
 ***** Syntax checkers
 #+BEGIN_SRC emacs-lisp
-(add-hook 'nxml-mode-hook (lambda ()
-                            (flycheck-select-checker 'xml-xmllint)))
-(flycheck-add-next-checker 'xml-xmllint '(t . xml-xmlstarlet))
+(with-eval-after-load "system-packages"
+  (system-packages-install "libxml2")
+  (system-packages-install "xmlstarlet")
+  (add-hook 'nxml-mode-hook (lambda ()
+                              (flycheck-select-checker 'xml-xmllint)))
+  (flycheck-add-next-checker 'xml-xmllint '(t . xml-xmlstarlet)))
 #+END_SRC
 
 **** Documentation
@@ -3910,9 +4039,11 @@ When using Magit >= 2.4.0
 ** [[https://github.com/politza/pdf-tools][PDF]]
 #+BEGIN_SRC emacs-lisp
 (use-package pdf-tools
-  :after popwin
+  :after (popwin system-packages)
   :mode ("\\.pdf\\'" . pdf-view-mode)
   :config
+  (system-packages-install "poppler-devel")
+  (system-packages-install "poppler-glib-devel")
   (push '("%PDF" . pdf-view-mode) magic-mode-alist)
   (setq pdf-info-epdfinfo-program "/usr/local/bin/epdfinfo"
         pdf-view-display-size 'fit-page
@@ -4150,7 +4281,14 @@ When using Magit >= 2.4.0
 (setq org-edit-src-auto-save-idle-delay cpped-autosave-delay)
 #+END_SRC
 
-*** Set correct ditaa jar path
+*** Ditaa
+**** Install
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "system-packages"
+  (system-packages-install "ditaa"))
+#+END_SRC
+
+**** Set correct jar path
 #+BEGIN_SRC emacs-lisp
 (setq org-ditaa-jar-path "/usr/share/java/ditaa.jar")
 #+END_SRC
@@ -4543,8 +4681,10 @@ Do not use scientific form so quickly
 ** GNUPlot
 #+BEGIN_SRC emacs-lisp
 (use-package gnuplot
+  :after system-packages
   :mode ("\\.gnuplot\\'" . gnuplot-mode)
   :config
+  (system-packages-install "gnuplot")
   (setq gnuplot-eldoc-mode t
         gnuplot-image-format "svg"
         gnuplot-inline-image-mode 'dedicated
