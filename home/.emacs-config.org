@@ -61,12 +61,6 @@ Do not load outdated byte code
                                               (auto-package-update-maybe)))))
 #+END_SRC
 
-** [[https://github.com/syohex/emacs-helm-package][Helm integration]]
-#+BEGIN_SRC emacs-lisp
-(use-package helm-package
-  :after helm)
-#+END_SRC
-
 ** [[https://github.com/jabranham/system-packages][System packages]]
 #+BEGIN_SRC emacs-lisp
 (use-package system-packages
