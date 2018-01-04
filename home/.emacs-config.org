@@ -3087,7 +3087,7 @@ Custom error highlighting (colored line under location)
         rtags-autostart-diagnostics nil
         rtags-completions-enabled t)
   (push "\\*rdm\\*" helm-boring-buffer-regexp-list)
-  (push "\\*RTags .*" helm-boring-buffer-regexp-list)
+  (push "\\*RTags .*\\*" helm-boring-buffer-regexp-list)
   (add-hook 'c-mode-common-hook 'rtags-start-process-unless-running))
 #+END_SRC
 
