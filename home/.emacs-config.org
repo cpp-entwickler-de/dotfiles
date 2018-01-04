@@ -2304,10 +2304,21 @@ Some useful abbreviations
 * Binaries
 Open binary files in hexl-mode
 #+BEGIN_SRC emacs-lisp
-(add-hook 'find-file-hooks (lambda ()
-                             (with-current-buffer (current-buffer)
-                               (when (eq buffer-file-coding-system 'no-conversion)
-                                 (hexl-mode)))))
+(defvar cpped-no-hexedit-extensions nil "File extensions for which automatic hex editing is disabled")
+
+(add-hook 'find-file-hook (lambda ()
+                            (message(buffer-file-name))
+                            (when (and (eq buffer-file-coding-system 'no-conversion)
+                                       (not (catch 'found
+                                              (mapc (lambda (pattern)
+                                                      (message pattern)
+                                                      (when (and (stringp buffer-file-name)
+                                                                 (string-match pattern buffer-file-name))
+                                                        (message "found")
+                                                        (throw 'found pattern)))
+                                                    cpped-no-hexedit-extensions)
+                                              nil)))
+                              (hexl-mode))))
 #+END_SRC
 
 * Programming
@@ -3722,7 +3733,8 @@ Set correct major mode
 #+BEGIN_SRC emacs-lisp
 (use-package elf-mode
   :config
-  (elf-setup-default))
+  (elf-setup-default)
+  (push "\\.so\\'" cpped-no-hexedit-extensions))
 #+END_SRC
 
 **** [[https://github.com/liblit/demangle-mode][Demangle symbols in ELF files]]
@@ -4052,6 +4064,7 @@ When using Magit >= 2.4.0
         pdf-view-resize-factor 1.1
         pdf-view-midnight-colors `(,(face-attribute 'default :foreground) . ,(face-attribute 'default :background)))
   (pdf-tools-install t t t)
+  (push "\\.pdf\\'" cpped-no-hexedit-extensions)
   (push '("*PDF-Metadata*" :width 60 :position right :noselect t :stick t) popwin:special-display-config)
   (advice-add 'pdf-view-mode :before (lambda (&rest arguments)
                                        (nlinum-mode -1))))
@@ -4062,21 +4075,25 @@ When using Magit >= 2.4.0
 *** ODF
 #+BEGIN_SRC emacs-lisp
 (push '("\\.odt\\'" . doc-view-mode) auto-mode-alist)
+(push "\\.odt\\'" cpped-no-hexedit-extensions)
 #+END_SRC
 
 *** DOC
 #+BEGIN_SRC emacs-lisp
 (push '("\\.doc\\'" . doc-view-mode) auto-mode-alist)
+(push "\\.doc\\'" cpped-no-hexedit-extensions)
 #+END_SRC
 
 *** DVI
 #+BEGIN_SRC emacs-lisp
 (push '("\\.dvi\\'" . doc-view-mode) auto-mode-alist)
+(push "\\.dvi\\'" cpped-no-hexedit-extensions)
 #+END_SRC
 
 *** Postscript
 #+BEGIN_SRC emacs-lisp
 (push '("\\.ps\\'" . doc-view-mode) auto-mode-alist)
+(push "\\.ps\\'" cpped-no-hexedit-extensions)
 #+END_SRC
 
 ** [[https://github.com/doublep/logview][System Logs]]
