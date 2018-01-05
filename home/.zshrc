@@ -63,6 +63,51 @@ TRAPALRM() {
     fi
 }
 
+# Notify user after long running command finishes
+autoload -U add-zsh-hook
+
+COMMAND_START_TIME=0
+function cpped-save-timestamp() {
+    COMMAND_START_TIME=$SECONDS
+}
+
+function cpped-notify-command-finished() {
+    RETURN_CODE=$?
+    TIME_NEEDED=$((SECONDS - COMMAND_START_TIME))
+    if [ $TIME_NEEDED -gt $REPORTTIME ]; then
+        TIME_OUTPUT="Time: "
+
+        DAYS=$((TIME_NEEDED / 60 / 60 / 24))
+        if [ $DAYS -gt 0 ]; then
+            TIME_OUTPUT="${DAYS}d "
+        fi
+
+        HOURS=$((TIME_NEEDED / 60 / 60 % 24))
+        if [ $HOURS -gt 0 ]; then
+            TIME_OUTPUT+="${HOURS}:"
+        fi
+
+        MINUTES=$((TIME_NEEDED / 60 % 60))
+        TIME_OUTPUT+="${MINUTES}:$((TIME_NEEDED % 60))s"
+
+        if [ $RETURN_CODE -eq 0 ]; then
+            ICON="utilities-terminal"
+            RESULT=" successfully"
+            ERROR_INFO=""
+        else
+            ICON="emblem-important"
+            RESULT=" with error"
+            ERROR_INFO="Code: $RETURN_CODE<br><br>"
+        fi
+
+        COMMAND=$(fc -ln -1)
+        notify-send --expire-time=0 --urgency=normal --icon="$ICON" "'$COMMAND' finished$RESULT." "$ERROR_INFO$TIME_OUTPUT"
+    fi
+}
+
+add-zsh-hook preexec cpped-save-timestamp
+add-zsh-hook precmd cpped-notify-command-finished
+
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
