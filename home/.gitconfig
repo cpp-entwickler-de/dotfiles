@@ -41,6 +41,9 @@ short = true
 # Show all untracked files 
 showUntrackedFiles = all
 
+# Show submodule info
+submoduleSummary = true
+
 
 [log]
 # Use short commit IDs
@@ -113,6 +116,9 @@ mnemonicPrefix = true
 
 # Use histogram diff algorithm
 algorithm = histogram
+
+# Show log of submodules
+submodule = log
 
 
 [diff "org"]
