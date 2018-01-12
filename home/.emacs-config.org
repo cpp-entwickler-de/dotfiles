@@ -3412,8 +3412,9 @@ Translation Files
 *** Dot
 #+BEGIN_SRC emacs-lisp
 (use-package graphviz-dot-mode
-  :after org
+  :after (org system-packages)
   :config
+  (cpped-install-system-package "graphviz")
   (setq graphviz-dot-auto-indent-on-braces t
         graphviz-dot-indent-width cpped-default-indentation)
   (add-to-list 'org-src-lang-modes '("dot" . graphviz-dot)))
@@ -3664,6 +3665,7 @@ Set correct major mode
   :mode "\\.p\\(lant\\)?uml\\'"
   :config
   (cpped-install-system-package "plantuml")
+  (cpped-install-system-package "graphviz")
   (setq plantuml-jar-path "/usr/share/java/plantuml.jar")
   (push '("*PLANTUML Preview*" :dedicated t :width 60 :position right :noselect :stick) popwin:special-display-config)
   (add-to-list 'org-src-lang-modes '("plantuml" . plantuml)))
