@@ -881,7 +881,7 @@ Find path of current position in XML docuement
         helm-ff-search-library-in-sexp t        ; search for library in `require' and `declare-function' sexp.
         helm-ff-file-name-history-use-recentf t)
   (define-key helm-map (kbd "M-SPC") 'helm-toggle-all-marks)
-  (define-key helm-map (kbd "C-y") 'helm-copy-to-buffer)
+  (define-key helm-map (kbd "C-M-y") 'helm-copy-to-buffer)
   (cpped-install-system-package "curl")
   (setq helm-google-suggest-use-curl-p t)
   (add-hook 'helm-before-initialize-hook '(lambda () (linum-mode 0)))
@@ -1494,7 +1494,7 @@ Always use a fixed width for line numbers (maximum number length)
 (with-eval-after-load "helm"
   (require 'helm-files)
   (define-key helm-find-files-map (kbd "C-d") 'helm-ff-persistent-delete)
-  (define-key helm-find-files-map (kbd "C-y") 'helm-copy-to-buffer))
+  (define-key helm-find-files-map (kbd "C-M-y") 'helm-copy-to-buffer))
 #+END_SRC
 
 *** [[https://www.emacswiki.org/emacs/RecentFiles][Recent files]]
