@@ -882,8 +882,8 @@ Find path of current position in XML docuement
         helm-ff-file-name-history-use-recentf t)
   (define-key helm-map (kbd "M-SPC") 'helm-toggle-all-marks)
   (define-key helm-map (kbd "C-y") 'helm-copy-to-buffer)
-  (when (executable-find "curl")
-    (setq helm-google-suggest-use-curl-p t))
+  (cpped-install-system-package "curl")
+  (setq helm-google-suggest-use-curl-p t)
   (add-hook 'helm-before-initialize-hook '(lambda () (linum-mode 0)))
   (advice-add 'helm-ff-filter-candidate-one-by-one
               :around (lambda (fcn file)
