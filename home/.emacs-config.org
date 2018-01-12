@@ -3077,6 +3077,14 @@ Custom error highlighting (colored line under location)
 #+END_SRC
 
 **** Navigation
+***** Show includes/namespaces in imenu
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'cc-imenu-c-generic-expression '("Include" "^[[:space:]]*#include[[:space:]]+[<\"]\\([^>\"]+\\)" 1))
+
+(add-to-list 'cc-imenu-c++-generic-expression '("Include" "^[[:space:]]*#include[[:space:]]+[<\"]\\([^>\"]+\\)" 1))
+(add-to-list 'cc-imenu-c++-generic-expression '("Namespace" "^[[:space:]]*namespace[[:space:]]+\\([^/{]+\\)[[:space:]]*$" 1))
+#+END_SRC
+
 ***** Share imenu results
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load "imenu-anywhere"
