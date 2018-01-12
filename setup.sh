@@ -80,6 +80,8 @@ if [ "$PACKAGES" = TRUE ]; then
     # glances and modules
     sudo pip install glances psutil
 
+    sudo pip install howdoi
+
     echo "Install Peco from https://github.com/peco/peco and RTags from https://github.com/Andersbakken/rtags manually."
 fi
 

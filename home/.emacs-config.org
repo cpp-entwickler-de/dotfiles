@@ -2883,9 +2883,7 @@ Custom error highlighting (colored line under location)
 
 ***** [[https://github.com/atykhonov/emacs-howdoi][Code suggestions]]
 #+BEGIN_SRC emacs-lisp
-(use-package howdoi
-  :after system-packages
-  :config (cpped-install-system-package "howdoi" :package-manager 'pip))
+(use-package howdoi)
 #+END_SRC
 
 **** Compilation
