@@ -4837,8 +4837,8 @@ Open                         ^^Save           ^^Close                  ^^Switch 
       _o_: Open                  _s_: Save        _x_: File                _SPC_: Switch file     _v_: Show old version      _h_: Hexadecimal mode           _d_: Delete                      ^^^^_C-d_: DOS
       _r_: Smart/Recent          _S_: Save as     _X_: Other files           _l_: Last file       _D_: Diff                  _!_: Toggle read-only mode      _m_: Rename                      ^^^^_C-u_: UNIX
       _p_: From project                         ^^_w_: File and window       _f_: Find            _g_: Log                                                 ^^_z_: Clear content
-      _P_: From all projects                    ^^_u_: Unused files                             ^^_b_: Blame                                               ^^_c_: Copy name to clipboard
-                                              ^^^^_a_: Close editor                                                                                    ^^^^^^_._: Open directory
+      _P_: From all projects                    ^^_u_: Unused files                             ^^_b_: Blame                 _6_: Decode Base64              _c_: Copy name to clipboard
+                                              ^^^^_a_: Close editor                                                      ^^^^_&_: Encode Base64              _._: Open directory
       _j_: Header/Source                                                                                                                           ^^^^^^^^^^_+_: Show Directory Tree
       _t_: Test
   _<RET>_: File under cursor
@@ -4881,6 +4881,8 @@ Open                         ^^Save           ^^Close                  ^^Switch 
            (unless (file-writable-p buffer-file-name)
              (sudo-edit-current-file)))))
   ("h" hexl-mode)
+  ("6" (base64-decode-region (point-min) (point-max)))
+  ("&" (base64-encode-region (point-min) (point-max)))
   ("c" cpped-copy-file-name-to-clipboard)
   ("." dired-jump)
   ("+" treemacs-toggle))
@@ -5229,6 +5231,8 @@ Namespace
   _g_: Edit area                                                  ^^^^_1_: Flip bool    ^_<backtab>_: Tabs → Spaces                       ^^_F_: Format
   ___: Overwrite Mode                                             ^^^^_C_: Color                                                       ^^^^^_u_: Uncrustify
   _&_: Typographic Mode                                           ^^^^_L_: To Link
+                                                                ^^^^^^_6_: Decode Base64
+                                                                ^^^^^^_&_: Encode Base64
 "
   ("d" crux-duplicate-current-line-or-region)
   ("D" crux-duplicate-and-comment-current-line-or-region)
@@ -5253,6 +5257,8 @@ Namespace
   ("1" bool-flip-do-flip)
   ("C" cpped-hydra-color/body :exit t)
   ("L" cpped-org-convert-to-link-dwim :exit t)
+  ("6" base64-decode-region)
+  ("&" base64-encode-region)
 
   (">" indent-tools-hydra/body :exit t)
   ("m" cpped-hydra-edit-move/body :exit t)
