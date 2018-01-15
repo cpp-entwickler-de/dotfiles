@@ -321,6 +321,7 @@ alias r="less -FNMsW"
 alias l="ls -AFhl1v --color --group-directories-first $*"
 alias lstree="l -R $*"
 alias make="make -j"
+alias mc="mc --nosubshell"
 alias mkdir="mkdir -p"
 alias mv="mv -i"
 alias raw-peco=$(which peco)
