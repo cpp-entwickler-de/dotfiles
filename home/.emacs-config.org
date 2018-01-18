@@ -366,7 +366,7 @@ Disable prettification if cursor is at edge of expression
             (when backend
               (ignore-errors (vc-call-backend backend 'root default-directory)))))))
 
-(defun powerline-project-id (icon-face)
+(defun cpped-powerline-project-id (icon-face)
     (when buffer-file-name
       (let ((project-name (if (and (ignore-errors (projectile-project-p))
                                    (fboundp 'projectile-project-name)
@@ -403,7 +403,7 @@ Disable prettification if cursor is at edge of expression
 
 *** Major mode icon
 #+BEGIN_SRC emacs-lisp
-(defun powerline-mode-icon ()
+(defun cpped-powerline-mode-icon ()
   (let ((icon (all-the-icons-icon-for-buffer)))
     (unless (symbolp icon)
       (propertize icon
@@ -418,7 +418,7 @@ Helper function to figure out version control root directory
 (defvar cpped-special-buffer-names-alist nil "A list of buffer name transformations.")
 
 (with-eval-after-load "projectile"
-  (defun powerline-buffer-id ()
+  (defun cpped-powerline-buffer-id ()
     (let* ((home-dir (getenv "HOME"))
            (buffer-name (let ((name (if (and buffer-file-name
                                              (tramp-tramp-file-p buffer-file-name))
@@ -452,7 +452,7 @@ Helper function to figure out version control root directory
 
 *** Git Info
 #+BEGIN_SRC emacs-lisp
-(defun powerline-version-control ()
+(defun cpped-powerline-version-control ()
   (when vc-mode
     (let* ((branch (mapconcat 'concat (cdr (split-string vc-mode "[:-]")) "-"))
            (branch-head (magit-rev-parse "--short" branch))
@@ -472,7 +472,7 @@ Helper function to figure out version control root directory
 
 *** Show if file is remote
 #+BEGIN_SRC emacs-lisp
-(defun powerline-remote (icon-face)
+(defun cpped-powerline-remote (icon-face)
   (when (cpped-tramp-file-remote-p default-directory)
     (propertize (all-the-icons-faicon "cloud")
                 'face (list ':family (all-the-icons-faicon-family)
@@ -482,7 +482,7 @@ Helper function to figure out version control root directory
 
 *** Show if file is opened in su-mode
 #+BEGIN_SRC emacs-lisp
-(defun powerline-su (icon-face)
+(defun cpped-powerline-su (icon-face)
   (when (string-match "^/su\\(do\\)?:" default-directory)
     (propertize (all-the-icons-faicon "user-plus")
                 'face (list ':family (all-the-icons-faicon-family) 
@@ -493,7 +493,7 @@ Helper function to figure out version control root directory
 
 *** Modification
 #+BEGIN_SRC emacs-lisp
-(defun powerline-modified (icon-face)
+(defun cpped-powerline-modified (icon-face)
   (propertize (pcase (format-mode-line "%*")
                 (`"*" (all-the-icons-faicon "pencil"))
                 (`"-"
@@ -513,7 +513,7 @@ Helper function to figure out version control root directory
 
 *** Cursor position
 #+BEGIN_SRC emacs-lisp
-(defun powerline-position-info (icon-face)
+(defun cpped-powerline-position-info (icon-face)
   (concat
    (propertize (all-the-icons-faicon "arrows-v")
                'face (list ':family (all-the-icons-faicon-family)
@@ -529,7 +529,7 @@ Helper function to figure out version control root directory
 
 *** Selected region
 #+BEGIN_SRC emacs-lisp
-(defun powerline-region-info (icon-face)
+(defun cpped-powerline-region-info (icon-face)
   (when mark-active
     (format "%s %s/%s/%s"
             (propertize (all-the-icons-faicon "crop")
@@ -542,7 +542,7 @@ Helper function to figure out version control root directory
 #+END_SRC
 *** Show if overwrite mode is active
 #+BEGIN_SRC emacs-lisp
-(defun powerline-overwrite-mode (icon-face)
+(defun cpped-powerline-overwrite-mode (icon-face)
   (when overwrite-mode
     (propertize (all-the-icons-faicon "eraser")
                 'face (list ':family (all-the-icons-faicon-family)
@@ -553,7 +553,7 @@ Helper function to figure out version control root directory
 *** Show if typo mode is active
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load "typo"
-  (defun powerline-typo-mode (icon-face)
+  (defun cpped-powerline-typo-mode (icon-face)
     (when typo-mode
       (propertize (all-the-icons-faicon "book")
                   'face (list ':family (all-the-icons-faicon-family)
@@ -576,7 +576,7 @@ Helper function to figure out version control root directory
                            (setq cpped-caps-lock-active (eq (logand led-mask 1) 1)
                                  cpped-num-lock-active (eq (logand led-mask 2) 2))))))
 
-(defun powerline-key-lock (lock icon icon-face)
+(defun cpped-powerline-key-lock (lock icon icon-face)
    (when lock
      (propertize (all-the-icons-faicon icon)
                  'face `(:family ,(all-the-icons-faicon-family)
@@ -595,7 +595,7 @@ Helper function to figure out version control root directory
 (advice-add 'term-line-mode :after (lambda ()
                                      (setq cpped-term-char-mode nil)))
 
-(defun powerline-term-input-mode (icon-face)
+(defun cpped-powerline-term-input-mode (icon-face)
   (when (and (equal major-mode 'term-mode)
              cpped-term-char-mode)
     (propertize (all-the-icons-faicon "terminal")
@@ -607,7 +607,7 @@ Helper function to figure out version control root directory
 
 *** Buffer size (characters/lines)
 #+BEGIN_SRC emacs-lisp
-(defun powerline-buffersize ()
+(defun cpped-powerline-buffersize ()
   (when (not vlf-mode)
     (concat
      (propertize (all-the-icons-faicon "file-text-o")
@@ -624,7 +624,7 @@ Helper function to figure out version control root directory
 
 *** File encoding
 #+BEGIN_SRC emacs-lisp
-(defun powerline-encoding ()
+(defun cpped-powerline-encoding ()
   (concat
    (propertize (all-the-icons-faicon "language")
                'face `(:family ,(all-the-icons-faicon-family))
@@ -644,7 +644,7 @@ Helper function to figure out version control root directory
 *** Current function
 Find path of current position in XML docuement
 #+BEGIN_SRC emacs-lisp
-(defun nxml-where ()
+(defun cpped-nxml-where ()
   "Display the hierarchy of XML elements the point is on as a path."
   (interactive)
   (let ((path nil))
@@ -664,10 +664,10 @@ Find path of current position in XML docuement
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(defun powerline-which-function (icon-face)
+(defun cpped-powerline-which-function (icon-face)
   (when which-function-mode
     (let ((current-function (if (equal major-mode 'nxml-mode)
-                                (nxml-where)
+                                (cpped-nxml-where)
                                 (which-function))))
       (unless (= 0 (length current-function))
         (concat
@@ -696,7 +696,7 @@ Find path of current position in XML docuement
          'flycheck-okay))
     (_ 'flycheck-warning)))
 
-(defun powerline-flycheck-status ()
+(defun cpped-powerline-flycheck-status ()
   (when (and (boundp 'flycheck-last-status-change)
              (not (equal flycheck-last-status-change 'no-checker)))
     (let* ((issues (if (and (equal flycheck-last-status-change 'finished)
@@ -745,7 +745,7 @@ Find path of current position in XML docuement
 
 *** Date
 #+BEGIN_SRC emacs-lisp
-(defun powerline-date ()
+(defun cpped-powerline-date ()
   (concat
    (propertize (all-the-icons-faicon "calendar")
                'face `(:family ,(all-the-icons-faicon-family))
@@ -755,7 +755,7 @@ Find path of current position in XML docuement
 
 *** Time
 #+BEGIN_SRC emacs-lisp
-(defun powerline-time (icon-face)
+(defun cpped-powerline-time (icon-face)
   (let* ((hour (string-to-number (format-time-string "%I")))
          (icon (all-the-icons-wicon (format "time-%s" hour))))
     (concat
@@ -773,7 +773,7 @@ Find path of current position in XML docuement
         powerline-display-hud nil
         powerline-height 20))
 
-(defun powerline-cpp-entwickler-theme ()
+(defun cpped-powerline-theme ()
   "Setup the default mode-line."
   (interactive)
   (setq-default mode-line-format
@@ -795,11 +795,11 @@ Find path of current position in XML docuement
                           (separator-right (intern (format "powerline-%s-%s"
                                                            (powerline-current-separator)
                                                            (car powerline-default-separator-dir))))
-                          (project-id (powerline-project-id (symbol-value 'face1)))
+                          (project-id (cpped-powerline-project-id (symbol-value 'face1)))
                           (show-project (not (= 0 (length project-id))))
-                          (current-function (powerline-which-function (symbol-value 'face1)))
+                          (current-function (cpped-powerline-which-function (symbol-value 'face1)))
                           (show-function (not (= 0 (length current-function))))
-                          (check-status (powerline-flycheck-status))
+                          (check-status (cpped-powerline-flycheck-status))
                           (show-check-status (not (= 0 (length check-status))))
                           (check-face (cpped-flycheck-status-face))
                           (lhs (list
@@ -807,23 +807,23 @@ Find path of current position in XML docuement
                                   (powerline-raw project-id face1 'l))
                                 (when show-project
                                   (funcall separator-left face1 mode-line))
-                                (powerline-raw (powerline-mode-icon) mode-line 'l)
-                                (powerline-raw (powerline-buffer-id) mode-line 'l)
-                                (powerline-raw (powerline-version-control) mode-line 'l)
+                                (powerline-raw (cpped-powerline-mode-icon) mode-line 'l)
+                                (powerline-raw (cpped-powerline-buffer-id) mode-line 'l)
+                                (powerline-raw (cpped-powerline-version-control) mode-line 'l)
                                 (funcall separator-left mode-line face2)
-                                (powerline-raw (powerline-remote (symbol-value 'face2)) face2)
-                                (powerline-raw (powerline-su (symbol-value 'face2)) face2 'r)
-                                (powerline-raw (powerline-modified (symbol-value 'face2)) face2)
-                                (powerline-raw (powerline-overwrite-mode (symbol-value 'face2)) face2 'l)
-                                (powerline-raw (powerline-typo-mode (symbol-value 'face2)) face2 'l)
-                                (powerline-raw (powerline-key-lock (symbol-value 'cpped-caps-lock-active) "sort-alpha-asc" (symbol-value 'face2)) face2 'l)
-                                (powerline-raw (powerline-key-lock (symbol-value 'cpped-num-lock-active) "sort-numeric-asc" (symbol-value 'face2)) face2 'l)
-                                (powerline-raw (powerline-term-input-mode (symbol-value 'face2)) face2 'l)
-                                (powerline-raw (powerline-position-info (symbol-value 'face2)) face2 'l)
-                                (powerline-raw (powerline-region-info (symbol-value 'face2)) face2 'l)
+                                (powerline-raw (cpped-powerline-remote (symbol-value 'face2)) face2)
+                                (powerline-raw (cpped-powerline-su (symbol-value 'face2)) face2 'r)
+                                (powerline-raw (cpped-powerline-modified (symbol-value 'face2)) face2)
+                                (powerline-raw (cpped-powerline-overwrite-mode (symbol-value 'face2)) face2 'l)
+                                (powerline-raw (cpped-powerline-typo-mode (symbol-value 'face2)) face2 'l)
+                                (powerline-raw (cpped-powerline-key-lock (symbol-value 'cpped-caps-lock-active) "sort-alpha-asc" (symbol-value 'face2)) face2 'l)
+                                (powerline-raw (cpped-powerline-key-lock (symbol-value 'cpped-num-lock-active) "sort-numeric-asc" (symbol-value 'face2)) face2 'l)
+                                (powerline-raw (cpped-powerline-term-input-mode (symbol-value 'face2)) face2 'l)
+                                (powerline-raw (cpped-powerline-position-info (symbol-value 'face2)) face2 'l)
+                                (powerline-raw (cpped-powerline-region-info (symbol-value 'face2)) face2 'l)
                                 (funcall separator-left face2 mode-line)
-                                (powerline-raw (powerline-buffersize) mode-line)
-                                (powerline-raw (powerline-encoding) mode-line 'l)
+                                (powerline-raw (cpped-powerline-buffersize) mode-line)
+                                (powerline-raw (cpped-powerline-encoding) mode-line 'l)
                                 (when show-function
                                   (funcall separator-left mode-line face1))
                                 (when show-function
@@ -838,13 +838,13 @@ Find path of current position in XML docuement
                                   (powerline-raw check-status check-face))
                                 (when show-check-status
                                   (funcall separator-right check-face mode-line))
-                                (powerline-raw (powerline-date) mode-line 'l)
+                                (powerline-raw (cpped-powerline-date) mode-line 'l)
                                 (funcall separator-right mode-line face1)
-                                (powerline-raw (powerline-time face1) face1 'r))))
+                                (powerline-raw (cpped-powerline-time face1) face1 'r))))
                      (concat (powerline-render lhs)
                              (powerline-fill mode-line (powerline-width rhs))
                              (powerline-render rhs)))))))
-(powerline-cpp-entwickler-theme)
+(cpped-powerline-theme)
 #+END_SRC
 
 ** [[https://github.com/bbatsov/projectile][Projectile]]
