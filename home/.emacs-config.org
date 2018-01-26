@@ -3896,7 +3896,7 @@ When using Magit >= 2.4.0
                                    (list (rx bol (+ (in "0-9a-f")) (+ (in space punctuation)) bow (group "fixup!"))
                                          (all-the-icons-faicon "wrench")
                                          `(:family ,(all-the-icons-faicon-family) :foreground ,(face-attribute 'warning :foreground)))
-                                   (list (rx bol (+ (in "0-9a-f")) (+ (in space punctuation)) bow (group "clean" (? (or "s" "ed")) (? "up")) eow)
+                                   (list (rx bol (+ (in "0-9a-f")) (+ (in space punctuation)) bow (group "clean" (? (or "s" "ed")) (? " up")) eow)
                                          (all-the-icons-faicon "paint-brush")
                                          `(:family ,(all-the-icons-faicon-family)))
                                    (list (rx bol (+ (in "0-9a-f")) (+ (in space punctuation)) bow (group "update" (? (in "sd"))) eow)
