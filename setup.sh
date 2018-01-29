@@ -190,7 +190,7 @@ if [ "$DOCUMENTATION" = TRUE ]; then
     DOCSET_DIR=~/.docsets
     DOCSETS="Bash Boost C C++ CMake Emacs_Lisp GLib HTML Man_Pages OpenGL_4 Qt_5 SVG XSLT"
     for DOCSET in $DOCSETS; do
-        wget --quiet --timestamping --no-directories --directory-prefix="$DOCSET_DIR" "http://sanfrancisco.kapeli.com/feeds/$DOCSET.tgz"
+        wget --quiet --show-progress --timestamping --no-directories --directory-prefix="$DOCSET_DIR" "http://sanfrancisco.kapeli.com/feeds/$DOCSET.tgz"
         tar xfz "$DOCSET_DIR/$DOCSET.tgz" --overwrite -C "$DOCSET_DIR"
         rm "$DOCSET_DIR/$DOCSET.tgz"
     done
