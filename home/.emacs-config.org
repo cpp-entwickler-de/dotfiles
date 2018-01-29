@@ -3407,6 +3407,29 @@ Translation Files
   :config (add-hook 'css-mode-hook 'turn-on-css-eldoc))
 #+END_SRC
 
+*** Docker
+#+BEGIN_SRC emacs-lisp
+(use-package dockerfile-mode
+  :config (add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode)))
+#+END_SRC
+
+**** Documentation
+#+BEGIN_SRC emacs-lisp
+(add-hook 'dockerfile-mode-hook (lambda()
+                                  (set (make-local-variable 'helm-dash-docsets) '("Docker"))))
+#+END_SRC
+
+**** [[https://github.com/Silex/docker.el][Control]]
+#+BEGIN_SRC emacs-lisp
+(use-package docker)
+#+END_SRC
+
+**** [[https://github.com/emacs-pe/docker-tramp.el][TRAMP support]]
+#+BEGIN_SRC emacs-lisp
+(use-package docker-tramp
+  :after tramp)
+#+END_SRC
+
 *** Dot
 #+BEGIN_SRC emacs-lisp
 (use-package graphviz-dot-mode
@@ -4678,24 +4701,6 @@ Do not use scientific form so quickly
       calendar-mark-holidays-flag t
       calendar-view-holidays-initially-flag t
       calendar-time-display-form '(24-hours ":" minutes (and time-zone (concat " (" time-zone ")"))))
-#+END_SRC
-
-** Docker
-*** [[https://github.com/Silex/docker.el][Control]]
-#+BEGIN_SRC emacs-lisp
-(use-package docker)
-#+END_SRC
-
-*** [[https://github.com/Wilfred/dockerfile-mode][Dockerfile]]
-#+BEGIN_SRC emacs-lisp
-(use-package dockerfile-mode
-  :config (add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode)))
-#+END_SRC
-
-*** [[https://github.com/emacs-pe/docker-tramp.el][TRAMP support]]
-#+BEGIN_SRC emacs-lisp
-(use-package docker-tramp
-  :after tramp)
 #+END_SRC
 
 ** GNUPlot
