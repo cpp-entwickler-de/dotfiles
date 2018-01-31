@@ -2657,6 +2657,16 @@ Handler to close buffer after quitting ccmake.
 (defvar-local cpped-format-buffer-function nil "The function to call to format the whole buffer.")
 #+END_SRC
 
+****** Fill function calls
+#+BEGIN_SRC emacs-lisp
+(use-package prog-fill
+  :config
+  (setq prog-fill-break-method-immediate-p t
+        prog-fill-floating-open-paren-p nil
+        prog-fill-floating-close-paren-p nil
+        prog-fill-auto-indent-p t))
+#+END_SRC
+
 ***** [[https://github.com/Malabarba/aggressive-indent-mode][Auto-indent]]
 #+BEGIN_SRC emacs-lisp
 (use-package aggressive-indent
@@ -5268,7 +5278,11 @@ Namespace
   (">" indent-tools-hydra/body :exit t)
   ("m" cpped-hydra-edit-move/body :exit t)
   ("j" crux-top-join-line)
-  (":" fill-paragraph)
+  (":" (if (derived-mode-p 'prog-mode)
+           (if (nth 4 (syntax-ppss))
+               (fill-paragraph)
+             (prog-fill))
+         (fill-paragraph)))
   ("<tab>" (let* ((region (region-active-p))
                   (begin (if region
                             (region-beginning)
