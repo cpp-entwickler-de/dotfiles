@@ -50,7 +50,7 @@ Do not load outdated byte code
 
 ** [[https://github.com/rranelli/auto-package-update.el][Automatically update packages]]
 #+BEGIN_SRC emacs-lisp 
-(defvar cpped-auto-update-packages t "Enable auto-updating of packages.")
+(defvar cpped-auto-update-packages nil "Enable auto-updating of packages.")
 
 (if cpped-auto-update-packages
     (use-package auto-package-update
