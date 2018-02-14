@@ -1635,7 +1635,8 @@ Always use a fixed width for line numbers (maximum number length)
         treemacs-header-function 'treemacs-projectile-create-header)
   (treemacs-follow-mode t)
   (treemacs-filewatch-mode t)
-  (push "\\*Treemacs\\*" helm-boring-buffer-regexp-list))
+  (push "\\*Treemacs\\*" helm-boring-buffer-regexp-list)
+  (push "\\*Desktop Treemacs Helper\\*" helm-boring-buffer-regexp-list))
 
 (use-package treemacs-projectile
   :after treemacs projectile)
