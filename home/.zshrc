@@ -155,8 +155,11 @@ export VISUAL=$EDITOR
 export ALTERNATE_EDITOR=nano
 
 # Configure pager
-export PAGER=less
+export LESS_COMMAND="less --HILITE-UNREAD --quit-if-one-screen --ignore-case --status-column --LONG-PROMPT --squeeze-blank-lines --tilde +Gg"
+export PAGER=$LESS_COMMAND
+export MANPAGER=$PAGER
 export LESSCHARSET=utf-8
+export GROFF_NO_SGR=1
 
 # Select browser
 if [ -n "$DISPLAY" ]; then
@@ -317,7 +320,7 @@ alias sysinfo="glances -1 --tree --fs-free-space --process-short-name -C ~/.conf
 
 alias e='emacsclient --no-wait'
 alias ag='ag --smart-case --pager="less -MIRFX"'
-alias r="less -FNMsW"
+alias r=$LESS_COMMAND
 alias l="ls -AFhl1v --color --group-directories-first $*"
 alias lstree="l -R $*"
 alias make="make -j"
