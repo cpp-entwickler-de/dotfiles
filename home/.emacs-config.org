@@ -1511,7 +1511,8 @@ Always use a fixed width for line numbers (maximum number length)
 *** Dired
 #+BEGIN_SRC emacs-lisp
 (setq dired-recursive-copies 'always
-      dired-recursive-deletes 'top)
+      dired-recursive-deletes 'top
+      dired-dwim-target t)
 #+END_SRC
 
 **** Re-use dired buffers
