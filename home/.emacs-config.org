@@ -5127,8 +5127,8 @@ _C-<right>_: Next word                 _y_: Down block                 _C-t_: Ne
 ** Finding
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-s") 'helm-swoop)
-(global-set-key (kbd "C-S-s") 'helm-projectile-ag)
 (global-set-key (kbd "M-s") 'helm-ag-buffers)
+(global-set-key (kbd "M-S-s") 'helm-projectile-ag)
 #+END_SRC
 
 ** Mark
