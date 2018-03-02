@@ -499,7 +499,7 @@ function user_host()
         USER_HOST="%n"
     fi
     if [[ -n $USER_HOST ]]; then
-        echo "%{$BG[237]%}%{$FG[245]%}$USER_HOST%{$BG[027]%}%{$FG[237]%}$SEPARATOR_SYMBOL"
+        echo "%{$BG[237]%}%{$FG[245]%}$USER_HOST%{$BG[069]%}%{$FG[237]%}$SEPARATOR_SYMBOL"
     fi
 }
 
