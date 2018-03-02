@@ -47,7 +47,7 @@ HIST_STAMPS="dd.mm.yyyy"
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
 # Show elapsed time for command if longer than 10 seconds
-REPORTTIME=10
+REPORTTIME=30
 
 # Show time output in hh:mm:ss.ttt format
 TIMEFMT=$'\nreal   %*E\nuser   %*U\nsystem %*S\ncpu    %P'
