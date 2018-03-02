@@ -4100,6 +4100,13 @@ When using Magit >= 2.4.0
       woman-use-topic-at-point-default t)
 #+END_SRC
 
+** Info Pages
+*** [[https://github.com/ubolonton/info-colors][Add extra coloring]]
+#+BEGIN_SRC emacs-lisp
+(use-package info-colors
+  :config (add-hook 'Info-selection-hook 'info-colors-fontify-node))
+#+END_SRC
+
 ** [[https://github.com/politza/pdf-tools][PDF]]
 #+BEGIN_SRC emacs-lisp
 (use-package pdf-tools
