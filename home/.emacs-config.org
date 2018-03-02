@@ -2146,6 +2146,11 @@ Some useful abbreviations
   (yas-global-mode 1))
 #+END_SRC
 
+***** [[https://github.com/abo-abo/auto-yasnippet][Automatic snippets]]
+#+BEGIN_SRC emacs-lisp
+(use-package auto-yasnippet)
+#+END_SRC
+
 *** [[https://github.com/rejeep/wrap-region.el][Wrap Region]]
 #+BEGIN_SRC emacs-lisp
 (use-package wrap-region)
@@ -5165,10 +5170,11 @@ Mark                            ^^Modify                        ^^Act
   "
 ☰ Insert
 
-Date         ^^Time         ^^Timestamp    ^^Block          ^^Special
-  _d_: local     _t_: local     _s_: local     _3_: License     _l_: Link
-  _D_: ISO                    ^^_S_: ISO       _f_: File        _u_: Unicode Character
+Date         ^^Time         ^^Timestamp    ^^Block                    ^^Special
+  _d_: local     _t_: local     _s_: local     _3_: License               _l_: Link
+  _D_: ISO                    ^^_S_: ISO       _f_: File                  _u_: Unicode Character
                                          ^^^^^^_c_: Snippet
+                                         ^^^^^^_C_: Automatic snippet
 "
   ("d" cpped-insert-date)
   ("D" cpped-insert-iso-date)
@@ -5178,6 +5184,7 @@ Date         ^^Time         ^^Timestamp    ^^Block          ^^Special
   ("3" legalese)
   ("f" insert-file)
   ("c" yas-insert-snippet)
+  ("C" aya-expand)
   ("l" cpped-org-insert-link-dwim)
   ("u" helm-ucs :exit nil))
 
@@ -5261,17 +5268,17 @@ Namespace
   "
 ☰ Edit
 
-                           ^^Rename           ^^Replace           ^^Change          ^^^Format                        ^^Text             ^^Code
-  _d_: Duplicate               _n_: Local         _r_: Regex          _c_: Case                 ^_>_: Indentation        _t_: Translate     _/_: Comment
-  _D_: Duplicate & Comment     _N_: File-wide     _p_: in Project     _\"_: String               _m_: Move               _y_: Synonym       _f_: Refactor
-  _i_: Insert                                                     ^^^^_+_: Value +              ^_j_: Join lines         _l_: Spelling      _e_: Evaluate
-  _'_: Quoted insert                                              ^^^^_-_: Value -              ^_:_: Fill paragraph     _s_: Sort          _E_: Evaluate & Replace
-  _<_: Complete                                                   ^^^^_#_: Base             ^_<tab>_: Spaces → Tabs      _x_: Transpose     _._: Suggestion
-  _g_: Edit area                                                  ^^^^_1_: Flip bool    ^_<backtab>_: Tabs → Spaces                       ^^_F_: Format
-  ___: Overwrite Mode                                             ^^^^_C_: Color                                                       ^^^^^_u_: Uncrustify
-  _&_: Typographic Mode                                           ^^^^_L_: To Link
-                                                                ^^^^^^_6_: Decode Base64
-                                                                ^^^^^^_&_: Encode Base64
+                                ^^Rename           ^^Replace           ^^Change          ^^^Format                        ^^Text             ^^Code
+  _d_: Duplicate                    _n_: Local         _r_: Regex          _c_: Case                 ^_>_: Indentation        _t_: Translate     _/_: Comment
+  _D_: Duplicate & Comment          _N_: File-wide     _p_: in Project     _\"_: String               _m_: Move               _y_: Synonym       _f_: Refactor
+  _i_: Insert                                                          ^^^^_+_: Value +              ^_j_: Join lines         _l_: Spelling      _e_: Evaluate
+  _'_: Quoted insert                                                   ^^^^_-_: Value -              ^_:_: Fill paragraph     _s_: Sort          _E_: Evaluate & Replace
+  _<_: Complete                                                        ^^^^_#_: Base             ^_<tab>_: Spaces → Tabs      _x_: Transpose     _._: Suggestion
+  _g_: Edit area                                                       ^^^^_1_: Flip bool    ^_<backtab>_: Tabs → Spaces                       ^^_F_: Format
+  ___: Overwrite Mode                                                  ^^^^_C_: Color                                                       ^^^^^_u_: Uncrustify
+  _&_: Typographic Mode                                                ^^^^_L_: To Link
+                                                                     ^^^^^^_6_: Decode Base64
+  _a_: Create Automatic snippet                                        ^^^^_&_: Encode Base64
 "
   ("d" crux-duplicate-current-line-or-region)
   ("D" crux-duplicate-and-comment-current-line-or-region)
@@ -5281,6 +5288,7 @@ Namespace
   ("g" org-edit-special)
   ("_" overwrite-mode)
   ("&" typo-mode)
+  ("a" aya-create)
 
   ("n" iedit-dwim)
   ("N" iedit)
