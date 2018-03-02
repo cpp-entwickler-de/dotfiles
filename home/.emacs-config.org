@@ -3047,7 +3047,8 @@ Custom error highlighting (colored line under location)
                                (when buffer-file-name
                                  (file-truename buffer-file-name)))))
       (when thing-to-process
-        (with-output-to-temp-buffer "*SLOCCount*" (print (shell-command-to-string (concat  "sloccount " thing-to-process))))))))
+        (with-output-to-temp-buffer "*SLOCCount*" (print (shell-command-to-string (concat  "sloccount " thing-to-process)))))))
+  (push "\\*SLOCCount\\*" helm-boring-buffer-regexp-list))
 #+END_SRC
 
 *** C/C++
