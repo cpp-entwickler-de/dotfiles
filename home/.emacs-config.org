@@ -3559,6 +3559,20 @@ Translation Files
 (push '("\\.lsp\\'" . lisp-mode) auto-mode-alist)
 #+END_SRC
 
+**** [[https://github.com/Fanael/highlight-defined][Highlight undefined symbols]]
+#+BEGIN_SRC emacs-lisp
+(defun cpped-highlight-defined--determine-face (symbol)
+  "Return the face SYMBOL should be fontified with. If SYMBOL is not one of the recognized types, return nil."
+  (if (not (or (fboundp symbol) (special-variable-p symbol) (facep symbol)))
+      'warning
+    nil))
+
+(use-package highlight-defined
+  :config
+  (add-hook 'emacs-lisp-mode-hook 'highlight-defined-mode)
+  (advice-add 'highlight-defined--determine-face :override #'cpped-highlight-defined--determine-face))
+#+END_SRC
+
 **** [[https://github.com/cpitclaudel/easy-escape][Simplify Regular Expressions]]
 #+BEGIN_SRC emacs-lisp
 (use-package easy-escape
