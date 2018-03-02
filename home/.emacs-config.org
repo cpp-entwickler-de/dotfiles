@@ -1771,6 +1771,14 @@ Always use a fixed width for line numbers (maximum number length)
   (add-hook 'markdown-mode-hook 'wrap-region-mode))
 #+END_SRC
 
+****** [[https://github.com/ardumont/markdown-toc][Table of contents]]
+#+BEGIN_SRC emacs-lisp
+(use-package markdown-toc
+  :config
+  (setq markdown-toc-header-toc-start nil
+        markdown-toc-header-toc-end nil))
+#+END_SRC
+
 ***** Syntax checker
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load "system-packages"
@@ -5173,7 +5181,7 @@ Mark                            ^^Modify                        ^^Act
 Date         ^^Time         ^^Timestamp    ^^Block                    ^^Special
   _d_: local     _t_: local     _s_: local     _3_: License               _l_: Link
   _D_: ISO                    ^^_S_: ISO       _f_: File                  _u_: Unicode Character
-                                         ^^^^^^_c_: Snippet
+                                         ^^^^^^_c_: Snippet               _T_: Markdown table of contents
                                          ^^^^^^_C_: Automatic snippet
 "
   ("d" cpped-insert-date)
@@ -5186,7 +5194,8 @@ Date         ^^Time         ^^Timestamp    ^^Block                    ^^Special
   ("c" yas-insert-snippet)
   ("C" aya-expand)
   ("l" cpped-org-insert-link-dwim)
-  ("u" helm-ucs :exit nil))
+  ("u" helm-ucs :exit nil)
+  ("T" markdown-toc-generate-or-refresh-toc))
 
 (defhydra cpped-hydra-edit-sort (:exit t :columns 1)
   "
