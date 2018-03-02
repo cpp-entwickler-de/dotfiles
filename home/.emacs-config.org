@@ -3952,7 +3952,7 @@ When using Magit >= 2.4.0
                                    (list (rx bol (+ (in "0-9a-f")) (+ (in space punctuation)) bow (group (or "remove" "delete") (? (in "sd"))) eow)
                                          (all-the-icons-faicon "trash-o")
                                          `(:family ,(all-the-icons-faicon-family)))
-                                   (list (rx bol (+ (in "0-9a-f")) (+ (in space punctuation)) bow (group "fix" (? "e" (in "sd"))) eow)
+                                   (list (rx bol (+ (in "0-9a-f")) (+ (in space punctuation)) bow (group (? "bug") "fix" (? "e" (in "sd"))) eow)
                                          (all-the-icons-faicon "bug")
                                          `(:family ,(all-the-icons-faicon-family)))
                                    (list (rx bol (+ (in "0-9a-f")) (+ (in space punctuation)) bow (group "fixup!"))
