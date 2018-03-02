@@ -94,14 +94,16 @@ function cpped-notify-command-finished() {
             ICON="utilities-terminal"
             RESULT=" successfully"
             ERROR_INFO=""
+            TIMEOUT=7200
         else
             ICON="emblem-important"
             RESULT=" with error"
             ERROR_INFO="Code: $RETURN_CODE<br><br>"
+            TIMEOUT=0
         fi
 
         COMMAND=$(fc -ln -1)
-        notify-send --expire-time=0 --urgency=normal --icon="$ICON" "'$COMMAND' finished$RESULT." "$ERROR_INFO$TIME_OUTPUT"
+        notify-send --expire-time=$TIMEOUT --urgency=normal --icon="$ICON" "'$COMMAND' finished$RESULT." "$ERROR_INFO$TIME_OUTPUT"
     fi
 }
 
