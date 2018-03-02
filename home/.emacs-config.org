@@ -3973,7 +3973,7 @@ When using Magit >= 2.4.0
                                    (list (rx bol (+ (in "0-9a-f")) (+ (in space punctuation)) bow (group "decrease" (? (in "sd"))) eow)
                                          (all-the-icons-faicon "chevron-down")
                                          `(:family ,(all-the-icons-faicon-family)))
-                                   (list (rx bol (+ (in "0-9a-f")) (+ (in space punctuation)) bow (group "enable" (? (in "sd"))) eow)
+                                   (list (rx bol (+ (in "0-9a-f")) (+ (in space punctuation)) bow (group (or "en" "dis") "able" (? (in "sd"))) eow)
                                          (all-the-icons-faicon "power-off")
                                          `(:family ,(all-the-icons-faicon-family)))
                                    (list (rx bol (+ (in "0-9a-f")) (+ (in space punctuation)) bow (group "move" (? (in "sd"))) eow)
