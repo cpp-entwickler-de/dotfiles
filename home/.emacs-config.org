@@ -5720,9 +5720,10 @@ Settings                       ^^Snippets            ^^Abbreviations            
   ("v" describe-variable "Variable")
   ("s" describe-symbol "Symbol")
   ("k" describe-key "Key")
-  ("m" describe-mode "Mode")
   ("p" finder-commentary "Package")
-  ("y" describe-syntax "Syntax"))
+  ("y" describe-syntax "Syntax")
+  ("m" helm-man-woman "Man Page")
+  ("i" info "Info Page"))
 
 (global-set-key (kbd "C-h") #'helpful-at-point)
 (global-set-key (kbd "C-S-h") #'cpped-hydra-help/body)
