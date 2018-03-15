@@ -114,7 +114,7 @@ add-zsh-hook precmd cpped-notify-command-finished
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(adb autojump bd colored-man-pages colorize command-not-found dirhistory docker docker-compose extract git gnu-utils safe-paste setenv sudo systemd up wd web-search zsh-256color zsh-autopair zsh-autosuggestions zsh-dwim zsh-peco-history zsh-reentry-hook zsh-syntax-highlighting)
+plugins=(adb autojump bd colorize command-not-found dirhistory docker docker-compose extract git gnu-utils safe-paste setenv sudo systemd up wd web-search zsh-256color zsh-autopair zsh-autosuggestions zsh-dwim zsh-peco-history zsh-reentry-hook zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -161,7 +161,13 @@ export LESS_COMMAND="less --HILITE-UNREAD --quit-if-one-screen --ignore-case --s
 export PAGER=$LESS_COMMAND
 export MANPAGER=$PAGER
 export LESSCHARSET=utf-8
-export GROFF_NO_SGR=1
+export LESS_TERMCAP_mb=$(printf "\e[0;31m")
+export LESS_TERMCAP_md=$(printf "\e[1;34m")
+export LESS_TERMCAP_so=$(printf "\e[1;33m")
+export LESS_TERMCAP_us=$(printf "\e[0;32m")
+export LESS_TERMCAP_me=$(printf "\e[0m")
+export LESS_TERMCAP_se=$(printf "\e[0m")
+export LESS_TERMCAP_ue=$(printf "\e[0m")
 
 # Select browser
 if [ -n "$DISPLAY" ]; then
