@@ -4543,6 +4543,12 @@ Archive when done, remove flag if reset to todo.
 (setq org-priority-faces '(("A" . org-priority-high)
                            ("B" . org-priority-medium)
                            ("C" . org-priority-low)))
+
+(use-package org-fancy-priorities
+  :hook (org-mode . org-fancy-priorities-mode)
+  :config (setq org-fancy-priorities-list '((?A . "❗")
+                                            (?B . "⬆")
+                                            (?C . "⬇"))))
 #+END_SRC
 
 ** Capture Templates
