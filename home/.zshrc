@@ -114,7 +114,7 @@ add-zsh-hook precmd cpped-notify-command-finished
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(adb autojump bd colored-man-pages colorize command-not-found dirhistory docker docker-compose extract git gnu-utils safe-paste setenv sudo systemd up wd zsh-256color zsh-autopair zsh-autosuggestions zsh-dwim zsh-peco-history zsh-reentry-hook zsh-syntax-highlighting)
+plugins=(adb autojump bd colored-man-pages colorize command-not-found dirhistory docker docker-compose extract git gnu-utils safe-paste setenv sudo systemd up wd web-search zsh-256color zsh-autopair zsh-autosuggestions zsh-dwim zsh-peco-history zsh-reentry-hook zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -336,6 +336,8 @@ alias t="htop"
 alias top="htop"
 alias x="extract"
 alias yank="yank-cli"
+
+alias search='web_search duckduckgo'
 
 alias dos2unix="recode ibmpc..lat1"
 alias unix2dos="recode lat1..ibmpc"
