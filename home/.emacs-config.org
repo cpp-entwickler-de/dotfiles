@@ -304,7 +304,7 @@ Disable prettification if cursor is at edge of expression
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'find-file-hook (lambda ()
-                            (push '("\t" . ?⟶) prettify-symbols-alist)
+                            (push '("\t" . ?⇥) prettify-symbols-alist)
                             (push '("lambda" . ?λ) prettify-symbols-alist)
                             (push '("" . ?↵) prettify-symbols-alist)
                             (prettify-symbols-mode)))
