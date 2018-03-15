@@ -4863,7 +4863,8 @@ Do not use scientific form so quickly
 #+BEGIN_SRC emacs-lisp
 (defhydra cpped-hydra-projects (:exit t :hint nil)
   "
-☰ Project 📁 %s(projectile-project-root)%s(if cmake-ide-build-dir
+☰ Project 📁 %s(or (ignore-errors (projectile-project-root))
+                   default-directory)%s(if cmake-ide-build-dir
                                 (concat \" 🛠 \" cmake-ide-build-dir)
                                \"\")
 
