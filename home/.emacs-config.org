@@ -4464,6 +4464,7 @@ Note: For this to work, Org must be version 8.3 or higher. Org is bundled with e
         ("i" "#+INCLUDE: %file ?\n" "<include file=%file markup=\"?\">")
         ("l" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC\n" "<src lang=\"emacs-lisp\">\n\n</src>")
         ("p" ":PROPERTIES:\n?\n:END:\n")
+        ("/" "#+BEGIN_COMMENT\n?\n#+END_COMMENT\n" "<!--\n?\n-->")
         ("q" "#+BEGIN_QUOTE\n?\n#+END_QUOTE\n" "<quote>\n?\n</quote>")
         ("r" "#+BEGIN_SRC ?\n\n#+END_SRC\n" "<src lang=\"?\">\n\n</src>")
         ("s" "#+BEGIN_SRC shell\n?\n#+END_SRC\n" "<src lang=\"?\">\n\n</src>")
