@@ -507,9 +507,25 @@ function user_host()
                 USER_HOST="%n"
             fi
         fi
+
+        DOCKER_CONTAINER=$(cat /proc/self/cgroup | grep docker | head -n 1 | cut -d '/' -f3)
+        if [ -n "$(command -v docker)" -a -n "$DOCKER_CONTAINER" ]; then
+            DOCKER_CONTAINER=$(docker inspect -f '{{.Config.Image}}' $DOCKER_CONTAINER)
+        fi
+
+        if [ -n "$DOCKER_CONTAINER" ]; then
+            if [ -n "$DISPLAY" ]; then
+                DOCKER_ICON="" # The FontAwesome docker symbol
+            else
+                DOCKER_ICON="D"
+            fi
+
+            USER_HOST="$USER_HOST $DOCKER_ICON $DOCKER_CONTAINER"
+        fi
     fi
+
     if [[ -n $USER_HOST ]]; then
-        echo "%{$BG[237]%}%{$FG[245]%}$USER_HOST%{$BG[069]%}%{$FG[237]%}$SEPARATOR_SYMBOL"
+        echo "%{$BG[237]%}%{$FG[245]%}$USER_HOST  %{$BG[069]%}%{$FG[237]%}$SEPARATOR_SYMBOL"
     fi
 }
 
