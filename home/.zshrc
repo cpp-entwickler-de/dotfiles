@@ -494,9 +494,19 @@ fi
 function user_host()
 {
     if [[ -n $SSH_CONNECTION ]]; then
-        USER_HOST="%n@%M"
-    elif [[ $LOGNAME != $USER ]]; then
-        USER_HOST="%n"
+        if [ -n "$DISPLAY" ]; then
+            USER_HOST=" %n %m" # The FontAwesome user and desktop symbols
+        else
+            DOCKER_ICON="%n@%M"
+        fi
+    else
+        if [[ $LOGNAME != $USER ]]; then
+            if [ -n "$DISPLAY" ]; then
+                USER_HOST=" %n" # The FontAwesome user symbol
+            else
+                USER_HOST="%n"
+            fi
+        fi
     fi
     if [[ -n $USER_HOST ]]; then
         echo "%{$BG[237]%}%{$FG[245]%}$USER_HOST%{$BG[069]%}%{$FG[237]%}$SEPARATOR_SYMBOL"
