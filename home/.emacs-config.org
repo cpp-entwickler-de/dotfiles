@@ -4295,7 +4295,7 @@ When using Magit >= 2.4.0
                              (org-autolist-mode t))))
 #+END_SRC
 
-*** Show actual bullets for list items
+*** Show actual bullets for header items
 #+BEGIN_SRC emacs-lisp
 (use-package org-bullets
   :after org
@@ -4303,6 +4303,13 @@ When using Magit >= 2.4.0
   (setq org-bullets-bullet-list '("○"))
   (add-hook 'org-mode-hook (lambda ()
                              (org-bullets-mode 1))))
+#+END_SRC
+
+*** Show actual bullets for list items
+#+BEGIN_SRC emacs-lisp
+(font-lock-add-keywords 'org-mode
+                        '(("^[ \t]*\\(-\\) "
+                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 #+END_SRC
 
 ** Use current heading as function name
