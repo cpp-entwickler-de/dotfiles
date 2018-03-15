@@ -131,6 +131,11 @@ xfuncname = "^(\\*+ [a-zA-Z0-9]+.+)$"
 xfuncname = "^\\[([a-zA-Z0-9]+)\\]$"
 
 
+[difftool]
+# Do not ask to start diff tool
+prompt = false
+
+
 [merge]
 tool = meld
 
