@@ -149,6 +149,10 @@ defaultToUpstream = true
 driver = true
 
 
+[mergetool "meld"]
+cmd = meld --auto-merge "$LOCAL" "$MERGED" "$REMOTE" --output "$MERGED"
+
+
 [commit]
 # Show diff in commit editor
 verbose = true
