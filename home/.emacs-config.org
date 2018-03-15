@@ -2587,6 +2587,20 @@ Handler to close buffer after quitting ccmake.
   :config (add-hook 'prog-mode-hook 'hes-mode))
 #+END_SRC
 
+***** Pretty symbols
+#+BEGIN_SRC emacs-lisp
+(add-hook 'prog-mode-hook
+          (lambda ()
+            (push '("!=" . ?≠) prettify-symbols-alist)
+            (push '("==" . ?⩵) prettify-symbols-alist)
+            (push '(">=" . ?≧) prettify-symbols-alist)
+            (push '("<=" . ?≦) prettify-symbols-alist)
+            (push '("->" . ?➔) prettify-symbols-alist)
+            (push '("return" . ?⮠) prettify-symbols-alist)
+            (push '("true" . ?✓) prettify-symbols-alist)
+            (push '("false" . ?🚫) prettify-symbols-alist)))
+#+END_SRC
+
 ***** [[https://github.com/tarsius/hl-todo][Highlight TODO/FIXME/...]]
 #+BEGIN_SRC emacs-lisp
 (defface hl-todo-info '((t :inherit info))
@@ -3099,17 +3113,6 @@ Custom error highlighting (colored line under location)
 #+BEGIN_SRC emacs-lisp
 (use-package never-comment
   :config (never-comment-init))
-#+END_SRC
-
-***** Pretty symbols
-#+BEGIN_SRC emacs-lisp
-(add-hook 'c-mode-common-hook
-          (lambda ()
-            (push '("!=" . ?≠) prettify-symbols-alist)
-            (push '("==" . ?⩵) prettify-symbols-alist)
-            (push '(">=" . ?≧) prettify-symbols-alist)
-            (push '("<=" . ?≦) prettify-symbols-alist)
-            (push '("->" . ?➔) prettify-symbols-alist)))
 #+END_SRC
 
 **** Navigation
