@@ -152,6 +152,7 @@
  '(num3-face-odd ((t (:inverse-video t))))
  '(magit-branch-current ((t (:inherit magit-branch-local :inverse-video t))))
  '(vertical-border ((t (:inherit default :inverse-video t))))
+ '(helm-non-file-buffer ((t (:inherit italic :weight light))))
  '(default ((t (:inherit nil :stipple nil :background "gray5" :foreground "white smoke" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight semi-bold :height 100 :width normal :foundry "ADBO" :family "Source Code Pro"))))
  '(org-ellipsis ((t nil))))
 
