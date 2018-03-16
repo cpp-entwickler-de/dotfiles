@@ -114,7 +114,7 @@ add-zsh-hook precmd cpped-notify-command-finished
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(adb autojump bd colorize command-not-found dirhistory docker docker-compose extract git gnu-utils safe-paste setenv sudo systemd up wd web-search zsh-256color zsh-autopair zsh-autosuggestions zsh-dwim zsh-peco-history zsh-reentry-hook zsh-syntax-highlighting)
+plugins=(adb autojump bd colorize command-not-found dirhistory docker docker-compose emacs extract git gnu-utils safe-paste setenv sudo systemd up wd web-search zsh-256color zsh-autopair zsh-autosuggestions zsh-dwim zsh-peco-history zsh-reentry-hook zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -149,7 +149,7 @@ export LC_MEASUREMENT=de_DE.UTF-8
 
 # Preferred editor for local and remote sessions
 if [[ -z $SSH_CONNECTION ]]; then
-    export EDITOR=emacsclient
+    export EDITOR=${EMACS_PLUGIN_LAUNCHER}
 else
     export EDITOR=nano
 fi
@@ -326,7 +326,6 @@ alias dnf="sudo dnf"
 alias log="sudo lnav"
 alias sysinfo="glances -1 --tree --fs-free-space --process-short-name -C ~/.config/glances"
 
-alias e='emacsclient --no-wait'
 alias ag='ag --smart-case --pager="less -MIRFX"'
 alias r=$LESS_COMMAND
 alias l="ls -AFhl1v --color --group-directories-first $*"
