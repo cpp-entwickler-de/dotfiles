@@ -3313,7 +3313,7 @@ Custom error highlighting (colored line under location)
   (setq flycheck-cppcheck-checks '("warning" "style" "performance" "portability" "information" "missingInclude"))
   (flycheck-add-next-checker 'clang-analyzer '(t . c/c++-cppcheck))
   (add-hook 'c++-mode-hook (lambda ()
-                             (setq flycheck-cppcheck-language-standard "c++11"))))
+                             (setq flycheck-cppcheck-standards "c++11"))))
 #+END_SRC
 
 **** Documentation
