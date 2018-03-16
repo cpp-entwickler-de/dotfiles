@@ -2557,10 +2557,12 @@ Handler to close buffer after quitting ccmake.
 ** Languages
 *** Common
 **** Highlighting
-***** [[https://github.com/ikirill/hl-indent][Scope background]]
+***** [[https://github.com/larstvei/Focus][Dim inactive regions]]
 #+BEGIN_SRC emacs-lisp
-(use-package hl-indent
-  :config (add-hook 'prog-mode-hook 'hl-indent-mode-blocks))
+(use-package focus
+  :config
+  (setq focus-dimness -2)
+  (add-hook 'prog-mode-hook 'focus-mode))
 #+END_SRC
 
 ***** Current S-EXP
