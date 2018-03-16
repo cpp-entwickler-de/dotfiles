@@ -4899,7 +4899,8 @@ CMake              ^^Git                         ^^Directories         ^^Shell  
   (":" ansi-term)
   ("B" cpped-shell-build-dir)
 
-  ("f" helm-ag-project-root)
+  ("f" (helm-ag (or (helm-ag--project-root)
+                    default-directory)))
   ("l" add-change-log-entry)
   ("t" cpped-find-todos-in-project))
 
