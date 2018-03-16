@@ -5425,7 +5425,8 @@ Namespace
   "
 ☰ Copy
 
-  _k_: line or region
+Copy                     ^^Other
+  _k_: line or region        _a_: Append next copy
   _K_: line (back)
   _w_: word
   _W_: word (back)
@@ -5459,7 +5460,8 @@ Namespace
          (backward-kill-sexp)))
   ("e" (let ((kill-read-only-ok)
              (buffer-read-only t))
-         (call-interactively 'change-inner))))
+         (call-interactively 'change-inner)))
+  ("a" append-next-kill :exit nil))
 
 (global-set-key (kbd "M-k") #'cpped-hydra-copy/whole-line-or-region-kill-ring-save)
 
@@ -5467,8 +5469,8 @@ Namespace
   "
 ☰ Cut / Delete
 
-Cut                   ^^Delete
-  _k_: line or region     _SPC_: limit to one space
+Cut                   ^^Delete                               ^^Other
+  _k_: line or region     _SPC_: limit to one space              _a_: Append next kill
   _K_: line (back)        _C-SPC_: blank lines
   _w_: word               _d_: Duplicate lines
   _W_: word (back)        _r_: Lines not matching expression
@@ -5490,7 +5492,8 @@ Cut                   ^^Delete
   ("SPC" just-one-space)
   ("C-SPC" delete-blank-lines)
   ("d" delete-duplicate-lines)
-  ("r" keep-lines))
+  ("r" keep-lines)
+  ("a" append-next-kill :exit nil))
 
 (global-set-key (kbd "C-k") #'cpped-hydra-kill/body)
 
