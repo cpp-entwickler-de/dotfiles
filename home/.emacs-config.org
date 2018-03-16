@@ -4947,7 +4947,6 @@ Open                         ^^Save           ^^Close                  ^^Switch 
   ("a" cpped-close-editor)
 
   ("SPC" helm-buffers-list :exit nil);cpped-switch-buffer :exit nil)  ;; in helm ("S-o" switch-to-buffer-other-window "switch buffer in other window")
-;helm-buffers-list
   ("l" cpped-previous-buffer :exit nil)
   ("f" helm-ag-buffers)
 
