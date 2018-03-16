@@ -3285,7 +3285,7 @@ Custom error highlighting (colored line under location)
       flycheck-clang-warnings '("all" "extra" "ctor-dtor-privacy" "effc++" "old-style-cast" "overloaded-virtual" "format=2" "null-dereference" "missing-include-dirs" "switch-default" "switch-enum" "unused-parameter" "uninitialized" "float-equal" "shadow" "cast-qual" "conversion" "extra-tokens" "ambiguous-member-template" "bind-to-temporary-copy"))
 (flycheck-add-next-checker 'rtags '(t . c/c++-clang))
 (add-hook 'c++-mode-hook (lambda ()
-                           (setq flycheck-clang-language-standard "c++11")))
+                           (setq flycheck-clang-language-standard "c++17")))
 (push "\\*clang-.*\\*" helm-boring-buffer-regexp-list)
 #+END_SRC
 
@@ -3296,7 +3296,7 @@ Custom error highlighting (colored line under location)
       flycheck-gcc-warnings '("all" "extra" "ctor-dtor-privacy" "effc++" "old-style-cast" "overloaded-virtual" "format=2" "missing-include-dirs" "switch-default" "switch-enum" "unused-parameter" "uninitialized" "float-equal" "shadow" "cast-qual" "conversion" "double-promotion" "zero-as-null-pointer-constant" "useless-cast" "logical-op"))
 (flycheck-add-next-checker 'c/c++-clang '(t . c/c++-gcc))
 (add-hook 'c++-mode-hook (lambda ()
-                           (setq flycheck-gcc-language-standard "c++11")))
+                           (setq flycheck-gcc-language-standard "c++17")))
 #+END_SRC
 
 ****** [[https://clang-analyzer.llvm.org/][Clang Analyzer]]
