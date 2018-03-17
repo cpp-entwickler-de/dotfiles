@@ -322,6 +322,38 @@ function kill()
     fi
 }
 
+function largest() {
+    local FILTER_VALUE=d
+    local MAXDEPTH=-maxdepth
+    local DEPTH=1
+    for ARGUMENT in "$@"; do
+        case $ARGUMENT in
+            -f|--files)
+                local FILTER_VALUE=f
+                ;;
+            -d|--directories)
+                ;;
+            -r|--recursive)
+                local MAXDEPTH=
+                local DEPTH=
+                ;;
+            *)
+                local DIRECTORY=$ARGUMENT/
+                ;;
+        esac
+    done
+
+    local DIRECTORY=${DIRECTORY:-.}
+
+    if [ -z "$DEPTH" -a "$FILTER_VALUE" = "f" ]; then
+        MODE=+
+    else
+        MODE=';'
+    fi
+
+    find $DIRECTORY $MAXDEPTH $DEPTH -type $FILTER_VALUE -exec du --summarize --human-readable {} "$MODE" 2>/dev/null | sort --reverse --human-numeric-sort | uniq | head --lines=10 | sed -r -e 's%/$%%' -e 's%\./+(.)%\1%'
+}
+
 alias dnf="sudo dnf"
 alias log="sudo lnav"
 alias sysinfo="glances -1 --tree --fs-free-space --process-short-name -C ~/.config/glances"
