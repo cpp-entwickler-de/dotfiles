@@ -4184,6 +4184,11 @@ TODO fix install; not in melpa
 #+END_SRC
 
 ** Info Pages
+Hide info buffer in buffer list
+#+BEGIN_SRC emacs-lisp
+(push "\\*info\\*" helm-boring-buffer-regexp-list)
+#+END_SRC
+
 *** [[https://github.com/ubolonton/info-colors][Add extra coloring]]
 #+BEGIN_SRC emacs-lisp
 (use-package info-colors
