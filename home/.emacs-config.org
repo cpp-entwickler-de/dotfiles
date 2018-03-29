@@ -3951,7 +3951,7 @@ When using Magit >= 2.4.0
                               "--color"
                               "--decorate"
                               "-n200"))
-  (push "^\\*magit.*" helm-boring-buffer-regexp-list))
+  (push "^\\*?magit.*" helm-boring-buffer-regexp-list))
 #+END_SRC
 
 ***** Full screen magit-status
