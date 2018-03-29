@@ -4203,6 +4203,7 @@ Hide info buffer in buffer list
 #+BEGIN_SRC emacs-lisp
 (use-package pdf-tools
   :after (popwin system-packages)
+  :bind (:map pdf-view-mode-map ("q" . kill-this-buffer))
   :mode ("\\.pdf\\'" . pdf-view-mode)
   :config
   (cpped-install-system-package "poppler-devel")
@@ -4222,6 +4223,9 @@ Hide info buffer in buffer list
 #+END_SRC
 
 ** Doc-View
+#+BEGIN_SRC emacs-lisp
+(define-key doc-view-mode-map (kbd "q") 'doc-view-kill-proc-and-buffer)
+#+END_SRC
 
 *** ODF
 #+BEGIN_SRC emacs-lisp
