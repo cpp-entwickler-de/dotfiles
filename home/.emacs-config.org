@@ -4280,7 +4280,29 @@ TODO fix install; not in melpa
                              (org-indent-mode))))
 #+END_SRC
 
-** Hide default org files in buffer list
+** Default files
+*** Create agenda files if necessary
+#+BEGIN_SRC emacs-lisp
+(defvar cpped-org-default-todo-id "eb155a82-92b2-4f25-a3c6-0304591af2f9" "The ID of the default todo item.")
+
+(defun cpped-create-default-file (file &optional content)
+  "Create a file with given default content."
+  (when (not (file-exists-p file))
+    (with-temp-buffer
+      (when content
+        (insert content))
+      (when (string-equal file org-default-todos-file)
+        (insert (concat "* Misc\n:PROPERTIES:\n:CLOCK_MODELINE_TOTAL: today\n:ID: " cpped-org-default-todo-id "\n:END:\n")))
+      (write-file file)
+      (cpped-kill-default-buffer))))
+
+(cpped-create-default-file org-default-bugs-file "#+CATEGORY: Bugs\n\n")
+(cpped-create-default-file org-default-todos-file "#+CATEGORY: ToDos\n\n")
+(cpped-create-default-file org-default-events-file)
+(cpped-create-default-file org-default-notes-file "#+CATEGORY: Notes\n\n")
+#+END_SRC
+
+*** Hide default org files in buffer list
 #+BEGIN_SRC emacs-lisp
 (push (regexp-quote (file-name-nondirectory org-default-bugs-file)) helm-boring-buffer-regexp-list)
 (push (regexp-quote (file-name-nondirectory org-default-todos-file)) helm-boring-buffer-regexp-list)
@@ -4288,7 +4310,7 @@ TODO fix install; not in melpa
 (push (regexp-quote (file-name-nondirectory org-default-notes-file)) helm-boring-buffer-regexp-list)
 #+END_SRC
 
-** Show special name for default buffers in mode line
+*** Show special name for default buffers in mode line
 #+BEGIN_SRC emacs-lisp
 (push `(,(file-name-nondirectory org-default-bugs-file) . "*Bugs*") cpped-special-buffer-names-alist)
 (push `(,(file-name-nondirectory org-default-todos-file) . "*ToDos*") cpped-special-buffer-names-alist)
@@ -4296,20 +4318,19 @@ TODO fix install; not in melpa
 (push `(,(file-name-nondirectory org-default-notes-file) . "*Notes*") cpped-special-buffer-names-alist)
 #+END_SRC
 
-** Create agenda files if necessary
+*** Never kill todo buffer
 #+BEGIN_SRC emacs-lisp
-(defun cpped-create-default-file (file &optional content)
-  "Create a file with given default content."
-  (when (not (file-exists-p file))
-    (with-temp-buffer
-      (when content
-        (insert content))
-      (write-file file))))
+(push (file-name-nondirectory org-default-todos-file) cpped-bury-buffers-list)
+#+END_SRC
 
-(cpped-create-default-file org-default-bugs-file "#+CATEGORY: Bugs\n\n")
-(cpped-create-default-file org-default-todos-file "#+CATEGORY: ToDos\n\n")
-(cpped-create-default-file org-default-events-file)
-(cpped-create-default-file org-default-notes-file "#+CATEGORY: Notes\n\n")
+Remove check on buffer close
+#+BEGIN_SRC emacs-lisp
+(defun cpped-silence-org-clock (wrapped-function &rest arguments)
+  "Do not ask to clock out when closing todo buffer."
+  (when (not (string= (substring-no-properties (buffer-name)) (file-name-nondirectory org-default-todos-file)))
+    (apply wrapped-function arguments)))
+
+(advice-add 'org-check-running-clock :around #'cpped-silence-org-clock)
 #+END_SRC
 
 ** Lists
