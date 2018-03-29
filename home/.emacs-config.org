@@ -4211,6 +4211,7 @@ Hide info buffer in buffer list
         pdf-view-midnight-colors `(,(face-attribute 'default :foreground) . ,(face-attribute 'default :background)))
   (pdf-tools-install t t t)
   (push "\\.pdf\\'" cpped-no-hexedit-extensions)
+  (add-hook 'pdf-view-mode-hook 'pdf-view-midnight-minor-mode)
   (push '("*PDF-Metadata*" :width 60 :position right :noselect t :stick t) popwin:special-display-config)
   (advice-add 'pdf-view-mode :before (lambda (&rest arguments)
                                        (nlinum-mode -1))))
