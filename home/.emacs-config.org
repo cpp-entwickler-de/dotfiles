@@ -5582,6 +5582,12 @@ Namespace
 
   ("/" comment-dwim-2)
   ("f" cpped-hydra-refactor/body :exit t)
+  ("F" (if (region-active-p)
+             (funcall cpped-format-region-function (region-beginning) (region-end))
+           (funcall cpped-format-buffer-function)))
+  ("u" (if (region-active-p)
+           (uncrustify)
+         (uncrustify-buffer)))
   ("e" (if (region-active-p)
            (eval-region (region-beginning) (region-end))
          (eval-last-sexp)))
@@ -5591,13 +5597,7 @@ Namespace
                   (expression (buffer-substring-no-properties beginning end)))
              (kill-region beginning end)
              (eval-expression (car (read-from-string (format "(progn %s)" expression))) t))
-           (crux-eval-and-replace)))
-  ("F" (if (region-active-p)
-             (funcall cpped-format-region-function (region-beginning) (region-end))
-           (funcall cpped-format-buffer-function)))
-  ("u" (if (region-active-p)
-           (uncrustify)
-         (uncrustify-buffer))))
+           (crux-eval-and-replace))))
 
 (global-set-key (kbd "C-e") 'cpped-hydra-edit/body)
 #+END_SRC
