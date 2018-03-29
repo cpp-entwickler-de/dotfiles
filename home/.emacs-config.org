@@ -4231,6 +4231,7 @@ TODO fix install; not in melpa
   (require 'helm-org)
   (setq org-blank-before-new-entry '((heading . t))
         org-catch-invisible-edits 'error
+        org-columns-default-format "%50ITEM(Task) %2PRIORITY %10Effort(Effort){:} %10CLOCKSUM"
         org-default-notes-file "~/.notes.org"
         org-ellipsis " ▼"
         org-enforce-todo-checkbox-dependencies t
@@ -4244,8 +4245,9 @@ TODO fix install; not in melpa
         org-log-redeadline 'time
         org-log-reschedule 'time
         org-outline-path-complete-in-steps nil
+        org-pretty-entities t
         org-refile-targets '((nil . (:maxlevel . 6))
-                             (org-agenda-files . (:maxlevel . 3)))
+                             (org-agenda-files . (:maxlevel . 5)))
         org-refile-use-outline-path 'file
         org-refile-allow-creating-parent-nodes 'confirm
         org-src-fontify-natively t
@@ -4253,6 +4255,9 @@ TODO fix install; not in melpa
         org-fontify-done-headline t
         org-fontify-quote-and-verse-blocks t
         org-fontify-whole-heading-line t
+        org-remove-highlights-with-change t
+        org-special-ctrl-a/e nil
+        org-special-ctrl-k nil
         org-src-preserve-indentation t
         org-src-strip-leading-and-trailing-blank-lines t
         org-src-tab-acts-natively t
@@ -4261,7 +4266,9 @@ TODO fix install; not in melpa
         org-startup-folded t
         org-startup-indented t
         org-support-shift-select t
-        org-use-speed-commands t)
+        org-time-clocksum-use-effort-durations t
+        org-use-speed-commands t
+        org-yank-adjusted-subtrees t)
   (push "\\*Org Agenda\\*" helm-boring-buffer-regexp-list)
   (push '("*Agenda Commands*" :dedicated t :position bottom :height 20) popwin:special-display-config)
   (push '("*Org Agenda*" :position bottom :height 30) popwin:special-display-config)
