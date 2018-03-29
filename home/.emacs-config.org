@@ -5050,8 +5050,6 @@ Do not use scientific form so quickly
   (if (= (length (frame-list)) 1)
       (kill-emacs)
     (delete-frame)))
-
-(global-set-key (kbd "\C-x \C-c") 'cpped-close-editor)
 #+END_SRC
 
 ** Helm
@@ -5929,7 +5927,8 @@ Focus                  ^^^^Close                ^^Split               ^^Align   
   ("f" toggle-frame-fullscreen :exit t))
 
 (global-set-key (kbd "C-^") #'cpped-hydra-windows/body)
-(global-set-key (kbd "C-x C-c") #'delete-frame)
+(global-set-key (kbd "C-x C-c") #'cpped-close-editor)
+
 #+END_SRC
 
 ** Settings
