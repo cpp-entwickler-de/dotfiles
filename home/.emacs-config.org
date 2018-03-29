@@ -2184,6 +2184,8 @@ Some useful abbreviations
 **** [[https://github.com/joaotavora/yasnippet][Templates]]
 #+BEGIN_SRC emacs-lisp
 (use-package yasnippet
+  :bind (:map yas-keymap (("ESC" . yas-abort-snippet)
+                          ("DEL" . yas-skip-and-clear-or-delete-char)))
   :config
   (setq yas-snippet-dirs '("~/.yas-snippets")
         yas-wrap-around-region t
