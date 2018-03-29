@@ -5534,12 +5534,12 @@ Namespace
                                 ^^Rename           ^^Replace           ^^Change          ^^^Format                        ^^Text             ^^Code
   _d_: Duplicate                    _n_: Local         _r_: Regex          _c_: Case                 ^_>_: Indentation        _t_: Translate     _/_: Comment
   _D_: Duplicate & Comment          _N_: File-wide     _p_: in Project     _\"_: String               _m_: Move               _y_: Synonym       _f_: Refactor
-  _i_: Insert                                                          ^^^^_+_: Value +              ^_j_: Join lines         _l_: Spelling      _e_: Evaluate
-  _'_: Quoted insert                                                   ^^^^_-_: Value -              ^_:_: Fill paragraph     _s_: Sort          _E_: Evaluate & Replace
-  _<_: Complete                                                        ^^^^_#_: Base             ^_<tab>_: Spaces → Tabs      _x_: Transpose     _._: Suggestion
-  _g_: Edit area                                                       ^^^^_1_: Flip bool    ^_<backtab>_: Tabs → Spaces                       ^^_F_: Format
-  ___: Overwrite Mode                                                  ^^^^_C_: Color                                                       ^^^^^_u_: Uncrustify
-  _&_: Typographic Mode                                                ^^^^_L_: To Link
+  _i_: Insert                                                          ^^^^_+_: Value +              ^_j_: Join lines         _l_: Spelling      _X_: Fixit
+  _'_: Quoted insert                                                   ^^^^_-_: Value -              ^_:_: Fill paragraph     _s_: Sort          _e_: Evaluate
+  _<_: Complete                                                        ^^^^_#_: Base             ^_<tab>_: Spaces → Tabs      _x_: Transpose     _E_: Evaluate & Replace
+  _g_: Edit area                                                       ^^^^_1_: Flip bool    ^_<backtab>_: Tabs → Spaces                       ^^_._: Suggestion
+  ___: Overwrite Mode                                                  ^^^^_C_: Color                                                       ^^^^^_F_: Format
+  _&_: Typographic Mode                                                ^^^^_L_: To Link                                                     ^^^^^_u_: Uncrustify
                                                                      ^^^^^^_6_: Decode Base64
   _a_: Create Automatic snippet                                        ^^^^_&_: Encode Base64
 "
@@ -5605,6 +5605,7 @@ Namespace
   ("x" cpped-hydra-edit-transpose/body :exit t)
 
   ("/" comment-dwim-2)
+  ("X" rtags-fixit)
   ("f" cpped-hydra-refactor/body :exit t)
   ("F" (if (region-active-p)
              (funcall cpped-format-region-function (region-beginning) (region-end))
