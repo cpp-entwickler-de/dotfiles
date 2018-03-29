@@ -5203,9 +5203,11 @@ Text                    ^^Code                                ^^Version Control 
   _x_: Translate            _d_: Documentation                    _b_: Blame                _m_: Man page        _w_: Weather
   _s_: Synonym              _r_: References                                               ^^_I_: Info page
   _g_: Google               _-_: Dependencies
-  _o_: Preview markdown     _v_: Enum value
+  _o_: Preview markdown     _e_: Enum value
   _._: Cursor               _i_: Include files for symbol
+                          ^^_P_: Dependencies
                           ^^_f_: Functions called
+                          ^^_v_: Virtual functions
                           ^^_+_: Preprocess
                           ^^_l_: Count lines of code
                           ^^_j_: Copy JSON path
@@ -5222,9 +5224,11 @@ Text                    ^^Code                                ^^Version Control 
   ("d" helm-dash-at-point)
   ("r" rtags-find-all-references-at-point)
   ("-" rtags-dependencies-tree)
-  ("v" rtags-print-enum-value-at-point)
+  ("e" rtags-print-enum-value-at-point)
   ("i" rtags-get-include-files-for-symbol)
+  ("P" rtags-print-dependencies)
   ("f" rtags-find-functions-called-by-this-function)
+  ("v" rtags-find-virtuals-at-point)
   ("+" rtags-preprocess-file)
   ("l" cpped-sloccount)
   ("j" jsons-print-path)
