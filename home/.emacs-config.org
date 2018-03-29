@@ -1952,7 +1952,7 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 *** URIs
 **** Allow clicking on URIs
 #+BEGIN_SRC emacs-lisp
-(goto-address-mode 1)
+(goto-address-prog-mode 1)
 #+END_SRC
 
 **** [[https://github.com/abo-abo/ace-link][Jump to link address via keys]]
