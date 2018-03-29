@@ -4692,14 +4692,6 @@ Archive when done, remove flag if reset to todo.
   (setq org-dashboard-omit-completed t))
 #+END_SRC
 
-** Show Notes
-#+BEGIN_SRC emacs-lisp
-(defun cpped-show-notes ()
-  "Open the default org-mode notes file."
-  (interactive)
-  (find-file org-default-notes-file))
-#+END_SRC
-
 ** Alert messages
 #+BEGIN_SRC emacs-lisp
 (use-package org-alert
