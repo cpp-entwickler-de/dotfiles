@@ -3515,6 +3515,13 @@ Translation Files
         graphviz-dot-indent-width cpped-default-indentation)
   (add-to-list 'org-src-lang-modes '("dot" . graphviz-dot)))
 #+END_SRC
+
+*** Groovy
+#+BEGIN_SRC emacs-lisp
+(use-package groovy-mode
+  :mode "Jenkinsfile")
+#+END_SRC
+
 *** HTML
 #+BEGIN_SRC emacs-lisp
 (push '("\\.x?html?\\'" . html-mode) auto-mode-alist)
