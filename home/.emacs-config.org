@@ -1104,13 +1104,13 @@ Indicate recursive minibuffer
   (interactive)
   (let ((kill-buffer-query-functions)
         (name (substring-no-properties (buffer-name))))
-    (when (and buffer-file-name
-               (buffer-modified-p))
-      (save-buffer))
     (if (or (string= name "*scratch*")
             (string= name "*Messages*")
             (member name cpped-bury-buffers-list))
         (bury-buffer)
+      (when (and buffer-file-name
+               (buffer-modified-p))
+        (save-buffer))
       (kill-buffer))))
 #+END_SRC
 
