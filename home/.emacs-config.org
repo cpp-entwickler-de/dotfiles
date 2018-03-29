@@ -1229,6 +1229,17 @@ Always use a fixed width for line numbers (maximum number length)
       (kill-new filename))))
 #+END_SRC
 
+** Screen 
+*** Lock screen
+#+BEGIN_SRC emacs-lisp
+(require 'dbus)
+
+(defun cpped-lock-screen ()
+  "Lock the screen."
+  (interactive)
+  (dbus-call-method :session "org.freedesktop.ScreenSaver" "/org/freedesktop/ScreenSaver" "org.freedesktop.ScreenSaver" "Lock"))
+#+END_SRC
+
 ** Cursor
 *** Center Cursor
 #+BEGIN_SRC emacs-lisp
@@ -5893,8 +5904,8 @@ Navigation                      ^^Levels                       ^^Filter
   "
 ☰ Window Management
 
-Focus                  ^^^^Close                ^^Split               ^^Align               ^^View                                ^^Zoom               ^^Size
-  _\\^_: Switch window       _x_: Window            _v_: Vertically       _t_: Swap windows     _<left>_: Scroll left                 _C-+_: Zoom in       _f_: Toggle fullscreen
+Focus                  ^^^^Close                ^^Split               ^^Align               ^^View                                ^^Zoom               ^^Size                    ^^Misc
+  _\\^_: Switch window       _x_: Window            ^_v_: Vertically       _t_: Swap windows     _<left>_: Scroll left                 _C-+_: Zoom in       _f_: Toggle fullscreen    _l_: Lock screen
                          ^^^^_X_: Other windows     _h_: Horizontally     _+_: Enlarge         _<right>_: Scroll right                _C--_: Zoom out
                          ^^^^_q_: Frame                                 ^^_-_: Shrink           _<C-up>_: Scroll other window up
                                                                                     ^^^^^^^^^^_<C-down>_: Scroll other window down
@@ -5926,7 +5937,8 @@ Focus                  ^^^^Close                ^^Split               ^^Align   
   ("#" nlinum-relative-mode)
   ("C-+" cpped-zoom-in)
   ("C--" cpped-zoom-out)
-  ("f" toggle-frame-fullscreen :exit t))
+  ("f" toggle-frame-fullscreen :exit t)
+  ("l" cpped-lock-screen :exit t))
 
 (global-set-key (kbd "C-^") #'cpped-hydra-windows/body)
 (global-set-key (kbd "C-x C-c") #'cpped-close-editor)
