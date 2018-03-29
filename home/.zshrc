@@ -679,7 +679,9 @@ $(user_host)%B%{$BG[069]%}%{$FG[252]%}%8~%b%{$reset_colors%}%{$BG[235]%}%{$FG[06
 %{$PROMPT_COLOR%}$PROMPT_SYMBOL '
 PROMPT2='%{$PROMPT_COLOR%}$LINE_BREAK_SYMBOL '
 PROMPT3='%{$PROMPT_COLOR%}? '
-RPROMPT='%{$(echotc UP 1)%}%B%{$BG[235]%}%{$FG[245]%}$CALENDAR_SYMBOL %D{%a, %x [%V]} $(emoji-clock) %*%b%{$reset_color%}%{$(echotc DO 1)%}'
+if [ -z "$INSIDE_EMACS" ]; then
+    RPROMPT='%{$(echotc UP 1)%}%B%{$BG[235]%}%{$FG[245]%}$CALENDAR_SYMBOL %D{%a, %x [%V]} $(emoji-clock) %*%b%{$reset_color%}%{$(echotc DO 1)%}'
+fi
 
 if [ -e ~/.zshrc.user ]; then
     source ~/.zshrc.user
