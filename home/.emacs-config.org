@@ -5205,6 +5205,8 @@ Open                         ^^Save           ^^Close                  ^^Switch 
 
 (global-set-key (kbd "C-f") 'cpped-hydra-files/body)
 (global-set-key (kbd "M-^") 'cpped-switch-buffer)
+
+(define-key term-raw-map (kbd "C-f") 'cpped-hydra-files/body)
 #+END_SRC
 
 ** Info
@@ -5739,6 +5741,11 @@ Cut                   ^^Delete                               ^^Other
 
 (global-set-key (kbd "C-y") #'cpped-hydra-yank/whole-line-or-region-yank)
 (global-set-key (kbd "M-y") #'helm-show-kill-ring)
+
+(define-key term-raw-map (kbd "C-c C-y") 'term-paste)
+(define-key term-raw-map (kbd "C-c C-s") (lambda ()
+                                           (interactive)
+                                           (term-send-raw-string (substring-no-properties (helm-show-kill-ring)))))
 #+END_SRC
 
 ** Org-Mode
