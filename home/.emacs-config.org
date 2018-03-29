@@ -1987,14 +1987,16 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 
 **** [[https://github.com/abo-abo/ace-link][Jump to link address via keys]]
 #+BEGIN_SRC emacs-lisp
-(defun cpped-jump-to-url ()
-  (let ((url (url-get-url-at-point)))
-    (if url
-        (browse-url url)
-      (ace-link-addr))))
-
 (use-package ace-link
-  :config (ace-link-setup-default))
+  :config
+  (ace-link-setup-default)
+  (defun cpped-jump-to-url ()
+    "Jump to the URL at point."
+    (interactive)
+    (let ((url (url-get-url-at-point)))
+      (if url
+          (browse-url url)
+        (ace-link-addr)))))
 #+END_SRC
 
 ** Editing
