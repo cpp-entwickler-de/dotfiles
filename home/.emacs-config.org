@@ -2593,6 +2593,21 @@ Handler to close buffer after quitting ccmake.
 
 ** Languages
 *** Common
+#+BEGIN_SRC emacs-lisp
+(use-package lsp-mode
+  :after helm-buffers
+  :config
+  (setq lsp-ui-doc-include-signature nil
+        lsp-ui-sideline-show-symbol nil)
+  (require 'lsp-imenu)
+  (add-hook 'lsp-after-open-hook 'lsp-enable-imenu)
+  (push "^\\*lsp-.+" helm-boring-buffer-regexp-list))
+
+(use-package lsp-ui
+  :config
+  (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+#+END_SRC
+
 **** Highlighting
 ***** [[https://github.com/larstvei/Focus][Dim inactive regions]]
 #+BEGIN_SRC emacs-lisp
@@ -2713,6 +2728,12 @@ Handler to close buffer after quitting ccmake.
 #+END_SRC
 
 **** Navigation
+***** [[https://github.com/brotzeit/helm-xref][Helm interface for xref]]
+#+BEGIN_SRC emacs-lisp
+(use-package helm-xref
+  :config (setq xref-show-xrefs-function 'helm-xref-show-xrefs))
+#+END_SRC
+
 ***** [[https://github.com/gregsexton/origami.el][Folding]]
 #+BEGIN_SRC emacs-lisp
 (use-package origami
@@ -2832,6 +2853,15 @@ Handler to close buffer after quitting ccmake.
 
 (use-package company-quickhelp
   :config (company-quickhelp-mode 1))
+
+(use-package company-lsp
+  :after company
+  :config
+  (setq company-transformers nil
+        company-lsp-async t
+        company-lsp-cache-candidates nil
+        company-lsp-enable-snippet t
+        company-lsp-enable-recompletion t))
 #+END_SRC
 
 ****** Line completion backend
@@ -3135,13 +3165,22 @@ Custom error highlighting (colored line under location)
 (push '("\\.hpp\\'". c++-mode) auto-mode-alist)
 #+END_SRC
 
-**** Highlighting
-***** [[https://github.com/ludwigpacifici/modern-cpp-font-lock][Additional font lock settings for C++-11+]]
 #+BEGIN_SRC emacs-lisp
-(use-package modern-cpp-font-lock
-  :config (add-hook 'c++-mode-hook #'modern-c++-font-lock-mode))
+(use-package cquery
+  :after helm-buffers
+  :config
+  (setq cquery-executable (let ((cquery "/usr/bin/cquery"))
+                            (if (file-exists-p cquery)
+                                cquery
+                              (expand-file-name "~/.local/bin/cquery")))
+        cquery-extra-init-params '(:completion (:detailedLabel t))
+        cquery-sem-highlight-method 'font-lock)
+  (cquery-use-default-rainbow-sem-highlight)
+  (add-hook 'c-mode-common-hook 'lsp-cquery-enable)
+  (push "^\\*cquery-.+" helm-boring-buffer-regexp-list))
 #+END_SRC
 
+**** Highlighting
 ***** [[https://github.com/Lindydancer/preproc-font-lock][Highlight macros]]
 #+BEGIN_SRC emacs-lisp
 (use-package preproc-font-lock
@@ -3167,19 +3206,6 @@ Custom error highlighting (colored line under location)
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load "imenu-anywhere"
   (push '(c-mode c++-mode) imenu-anywhere-friendly-modes))
-#+END_SRC
-
-***** [[https://github.com/Andersbakken/rtags][RTags]]
-#+BEGIN_SRC emacs-lisp
-(use-package rtags
-  :after (helm helm-buffers)
-  :config
-  (setq rtags-use-helm t
-        rtags-autostart-diagnostics nil
-        rtags-completions-enabled t)
-  (push "\\*rdm\\*" helm-boring-buffer-regexp-list)
-  (push "\\*RTags .*\\*" helm-boring-buffer-regexp-list)
-  (add-hook 'c-mode-common-hook 'rtags-start-process-unless-running))
 #+END_SRC
 
 **** Editing
@@ -3252,7 +3278,7 @@ Custom error highlighting (colored line under location)
   :after company)
 
 (add-hook 'c-mode-common-hook (lambda()
-                                (set (make-local-variable 'company-backends) '((company-yasnippet company-rtags company-c-headers company-keywords company-files company-capf company-dabbrev-code cpped-company-line-backend)))))
+                                (set (make-local-variable 'company-backends) '((company-yasnippet company-lsp company-files company-capf company-dabbrev-code cpped-company-line-backend)))))
 #+END_SRC
 
 ***** Abbreviations
@@ -3308,19 +3334,12 @@ Custom error highlighting (colored line under location)
 #+END_SRC
 
 ***** Syntax checkers
-****** RTags
-#+BEGIN_SRC emacs-lisp
-(use-package flycheck-rtags
-  :config
-  (add-hook 'c-mode-common-hook (lambda ()
-                                  (flycheck-select-checker 'rtags))))
-#+END_SRC
-
 ****** Clang
 #+BEGIN_SRC emacs-lisp
 (setq flycheck-clang-pedantic t
       flycheck-clang-warnings '("all" "extra" "ctor-dtor-privacy" "effc++" "old-style-cast" "overloaded-virtual" "format=2" "null-dereference" "missing-include-dirs" "switch-default" "switch-enum" "unused-parameter" "uninitialized" "float-equal" "shadow" "cast-qual" "conversion" "extra-tokens" "ambiguous-member-template" "bind-to-temporary-copy"))
-(flycheck-add-next-checker 'rtags '(t . c/c++-clang))
+(add-hook 'c-mode-common-hook (lambda ()
+                                (flycheck-select-checker 'c/c++-clang)))
 (add-hook 'c++-mode-hook (lambda ()
                            (setq flycheck-clang-language-standard "c++17")))
 (push "\\*clang-.*\\*" helm-boring-buffer-regexp-list)
@@ -3354,13 +3373,6 @@ Custom error highlighting (colored line under location)
 #+END_SRC
 
 **** Documentation
-***** ELDoc
-#+BEGIN_SRC emacs-lisp
-(add-hook 'c-mode-common-hook (lambda()
-                                (set (make-local-variable 'eldoc-documentation-function) 'rtags-eldoc)
-                                (eldoc-mode)))
-#+END_SRC
-
 ***** DASH
 #+BEGIN_SRC emacs-lisp
 (add-hook 'c-mode-common-hook (lambda()
@@ -5216,15 +5228,12 @@ Open                         ^^Save           ^^Close                  ^^Switch 
 ☰ Information
 
 Text                    ^^Code                                ^^Version Control         ^^System             ^^Other
-  _#_: Number               _y_: Symbol Info                      _c_: Commit Message       _p_: Processes       _t_: ToDos
-  _x_: Translate            _d_: Documentation                    _b_: Blame                _m_: Man page        _w_: Weather
-  _s_: Synonym              _r_: References                                               ^^_I_: Info page
-  _g_: Google               _-_: Dependencies
-  _o_: Preview markdown     _e_: Enum value
-  _._: Cursor               _i_: Include files for symbol
-                          ^^_P_: Dependencies
-                          ^^_f_: Functions called
-                          ^^_v_: Virtual functions
+  _._: Character            _d_: Documentation                    _c_: Commit Message       _p_: Processes       _t_: ToDos
+  _#_: Number               _r_: References                       _b_: Blame                _M_: Man page        _w_: Weather
+  _x_: Translate            _h_: Caller hierarchy                                         ^^_I_: Info page
+  _s_: Synonym              _m_: Member hierarchy
+  _g_: Google               _i_: Inheritance hierarchy
+  _o_: Preview markdown
                           ^^_+_: Preprocess
                           ^^_l_: Count lines of code
                           ^^_j_: Copy JSON path
@@ -5237,24 +5246,25 @@ Text                    ^^Code                                ^^Version Control 
   ("g" helm-google-suggest)
   ("o" flymd-flyit)
   ("." what-cursor-position)
-  ("y" rtags-summary)
+
   ("d" helm-dash-at-point)
-  ("r" rtags-find-all-references-at-point)
-  ("-" rtags-dependencies-tree)
-  ("e" rtags-print-enum-value-at-point)
-  ("i" rtags-get-include-files-for-symbol)
-  ("P" rtags-print-dependencies)
-  ("f" rtags-find-functions-called-by-this-function)
-  ("v" rtags-find-virtuals-at-point)
-  ("+" rtags-preprocess-file)
+  ("r" lsp-ui-peek-find-references)
+  ("h" (cquery-call-hierarchy nil))
+  ("m" cquery-member-hierarchy)
+  ("i" cquery-inheritance-hierarchy)
+
+  ("+" cquery-preprocess-file)
   ("l" cpped-sloccount)
   ("j" jsons-print-path)
   ("D" shelldoc-toggle-doc-window)
+
   ("c" git-messenger:popup-message)
   ("b" magit-blame-popup)
+
   ("p" helm-top)
-  ("m" helm-man-woman)
+  ("M" helm-man-woman)
   ("I" info)
+
   ("t" cpped-find-todos-in-file)
   ("w" wttrin))
 
@@ -5331,7 +5341,7 @@ _C-<right>_: Next word                 _y_: Down block                 _C-t_: Ne
   ("d" smart-right)
   ("C-S-f" beginning-of-defun)
   ("C-f" end-of-defun)
-  ("C-s" rtags-find-symbol-at-point :exit t)
+  ("C-s" lsp-ui-peek-find-definitions :exit t)
   ("C-m" helm-imenu :exit t)
   ("C-S-m" helm-imenu-anywhere :exit t)
   ("C-S-n" outre-goto-namespace-previous)
@@ -5551,12 +5561,12 @@ Namespace
                                 ^^Rename           ^^Replace           ^^Change          ^^^Format                        ^^Text             ^^Code
   _d_: Duplicate                    _n_: Local         _r_: Regex          _c_: Case                 ^_>_: Indentation        _t_: Translate     _/_: Comment
   _D_: Duplicate & Comment          _N_: File-wide     _p_: in Project     _\"_: String               _m_: Move               _y_: Synonym       _f_: Refactor
-  _i_: Insert                                                          ^^^^_+_: Value +              ^_j_: Join lines         _l_: Spelling      _X_: Fixit
-  _'_: Quoted insert                                                   ^^^^_-_: Value -              ^_:_: Fill paragraph     _s_: Sort          _e_: Evaluate
-  _<_: Complete                                                        ^^^^_#_: Base             ^_<tab>_: Spaces → Tabs      _x_: Transpose     _E_: Evaluate & Replace
-  _g_: Edit area                                                       ^^^^_1_: Flip bool    ^_<backtab>_: Tabs → Spaces                       ^^_._: Suggestion
-  ___: Overwrite Mode                                                  ^^^^_C_: Color                                                       ^^^^^_F_: Format
-  _&_: Typographic Mode                                                ^^^^_L_: To Link                                                     ^^^^^_u_: Uncrustify
+  _i_: Insert                                                          ^^^^_+_: Value +              ^_j_: Join lines         _l_: Spelling      _e_: Evaluate
+  _'_: Quoted insert                                                   ^^^^_-_: Value -              ^_:_: Fill paragraph     _s_: Sort          _E_: Evaluate & Replace
+  _<_: Complete                                                        ^^^^_#_: Base             ^_<tab>_: Spaces → Tabs      _x_: Transpose     _._: Suggestion
+  _g_: Edit area                                                       ^^^^_1_: Flip bool    ^_<backtab>_: Tabs → Spaces                       ^^_F_: Format
+  ___: Overwrite Mode                                                  ^^^^_C_: Color                                                       ^^^^^_u_: Uncrustify
+  _&_: Typographic Mode                                                ^^^^_L_: To Link
                                                                      ^^^^^^_6_: Decode Base64
   _a_: Create Automatic snippet                                        ^^^^_&_: Encode Base64
 "
@@ -5622,7 +5632,6 @@ Namespace
   ("x" cpped-hydra-edit-transpose/body :exit t)
 
   ("/" comment-dwim-2)
-  ("X" rtags-fixit)
   ("f" cpped-hydra-refactor/body :exit t)
   ("F" (if (region-active-p)
              (funcall cpped-format-region-function (region-beginning) (region-end))

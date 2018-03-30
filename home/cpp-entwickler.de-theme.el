@@ -1,5 +1,5 @@
 (deftheme cpp-entwickler.de
-  "Created 2017-12-05.")
+  "Created 2018-03-30.")
 
 (custom-theme-set-faces
  'cpp-entwickler.de
@@ -147,6 +147,12 @@
  '(magit-branch-current ((t (:inherit magit-branch-local :inverse-video t))))
  '(vertical-border ((t (:inherit default :inverse-video t))))
  '(helm-non-file-buffer ((t (:inherit italic :weight light))))
+ '(cquery-sem-local-face ((t (:weight normal))))
+ '(cquery-sem-member-face ((t (:weight bold))))
+ '(cquery-sem-static-face ((t (:slant italic))))
+ '(cquery-sem-global-variable-face ((t (:underline t))))
+ '(cquery-sem-local-function-face ((t (:inherit cquery-sem-local-face))))
+ '(cquery-sem-static-method-face ((t (:inherit cquery-sem-static-face))))
  '(default ((t (:inherit nil :stipple nil :background "gray5" :foreground "white smoke" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight semi-bold :height 100 :width normal :foundry "ADBO" :family "Source Code Pro"))))
  '(org-ellipsis ((t nil))))
 
