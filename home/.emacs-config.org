@@ -3189,7 +3189,7 @@ Custom error highlighting (colored line under location)
                                                           c-lineup-streamop))
                                    (arglist-cont-nonempty . (add c-lineup-argcont
                                                                  c-lineup-cascaded-calls
-                                                                 c-linueup-string-cont))))))
+                                                                 c-lineup-string-cont))))))
 
 (setq c-default-style '((c-mode . "cpped-style")
                         (c++-mode . "cpped-style")
