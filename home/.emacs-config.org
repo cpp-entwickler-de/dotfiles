@@ -2377,18 +2377,9 @@ Open binary files in hexl-mode
 ** Projects
 *** CMake
 #+BEGIN_SRC emacs-lisp
-(use-package cmake-ide
-  :after system-packages
-  :config
-  (cpped-install-system-package "cmake")
-  (cpped-install-system-package "ccmake")
-  (cpped-install-system-package "ninja-build")
-  (setq cmake-ide-rdm-executable "/usr/local/bin/rdm"
-        cmake-ide-build-pool-dir "~/build"
-        cmake-ide-header-search-other-file t
-        cmake-ide-header-search-first-including nil
-        cmake-ide-try-unique-compiler-flags-for-headers nil)
-  (cmake-ide-setup))
+(cpped-install-system-package "cmake")
+(cpped-install-system-package "ccmake")
+(cpped-install-system-package "ninja-build")
 #+END_SRC
 
 **** Re-/Configure CMake
@@ -2397,26 +2388,28 @@ Handler to close buffer after quitting ccmake.
 (advice-add 'term-sentinel :after (lambda (proc msg)
                                     (when (and (equal (buffer-name (process-buffer proc)) "*CMake Cache*")
                                                (memq (process-status proc) '(signal exit)))
-                                      (when (not (boundp cpped-cmake-current-target))
-                                        (setq cpped-cmake-current-target 'all))
-                                      (cmake-ide-maybe-start-rdm)
-                                      (cmake-ide--on-cmake-finished))))
+                                      (cquery-freshen-index))))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
+(defvar cpped-build-base-directory "~/Build" "The default build directory.")
+(defvar cpped-build-directories nil "An alist of all build directories per source directory.")
+(defvar cpped-current-build-directories nil "An alist of the selected build directory per source directory.")
+
 (defun cpped-cmake-configure (source-dir build-dir)
+  "Configure the CMake project for the current file."
   (interactive (let ((source-directory (if (and (boundp 'source-dir)
                                                 source-dir
                                                 (file-directory-p source-dir))
                                            source-dir
                                            (read-directory-name "Source Directory: "
-                                                                default-directory))))
+                                                                (cpped-project-dir)))))
                  (list source-directory
                        (if (and (boundp 'build-dir)
                                 build-dir)
                            build-dir
                            (read-directory-name "Build-directory: "
-                                                (concat (file-name-as-directory cmake-ide-build-pool-dir) "build-" (file-name-nondirectory (directory-file-name (file-name-directory source-directory)))))))))
+                                                (concat (file-name-as-directory cpped-build-base-directory) (file-name-nondirectory (directory-file-name (file-name-directory source-directory)))))))))
     (when (and build-dir
                source-dir)
       (if (file-directory-p source-dir)
@@ -2424,127 +2417,172 @@ Handler to close buffer after quitting ccmake.
               (progn
                 (when (not (file-directory-p build-dir))
                   (make-directory build-dir t))
-                (setq cmake-ide-build-dir build-dir)
-                (projectile-discover-projects-in-directory source-dir)
                 (let ((default-directory build-dir))
-                  (ansi-term (getenv "SHELL") "CMake Cache")
-                  (term-exec (current-buffer) "ccmake" "ccmake" nil (list "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON" "-G" "Ninja" source-dir))))
+                  (ansi-term (getenv "SHELL") (concat "*CMake Cache (" build-dir ")*"))
+                  (term-exec (current-buffer) "ccmake" "ccmake" nil (list "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON" "-G" "Ninja" source-dir))
+                  (cpped-load-project build-dir)))
             (error "`%s' does not contain a CMake project" source-dir))
         (error "`%s' is not a directory" source-dir))))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 (defun cpped-cmake-reconfigure (build-dir)
-  (interactive (list (or (when (and (boundp 'cmake-ide-build-dir)
-                                    (file-directory-p cmake-ide-build-dir))
-                           cmake-ide-build-dir)
-                         cmake-ide-build-dir)
-                     (read-directory-name "Build-directory: "
-                                          cmake-ide-build-pool-dir)))
+  "Reconfigure the CMake project for the current file and build directory."
+  (interactive (list (or (cpped-build-dir)
+                         (read-directory-name "Build-directory: "
+                                              (file-name-as-directory cpped-build-base-directory)))))
   (if (and build-dir
            (file-directory-p build-dir))
       (if (cpped-cmake-build-directory-p build-dir)
-          (progn
-            (setq cmake-ide-build-dir build-dir)
-            (projectile-discover-projects-in-directory (cmake-source-dir build-dir))
-            (let ((default-directory build-dir))
-              (ansi-term (getenv "SHELL") "CMake Cache")
-              (term-exec (current-buffer) "ccmake" "ccmake" nil (list "."))))
+          (let ((default-directory build-dir))
+            (ansi-term (getenv "SHELL") "CMake Cache")
+            (term-exec (current-buffer) "ccmake" "ccmake" nil (list "."))
+            (cpped-load-project build-dir))
         (error "`%s' is not a CMake build directory" build-dir))
     (error "`%s' is not a directory" build-dir)))
 #+END_SRC
 
 **** Clear CMake Cache
 #+BEGIN_SRC emacs-lisp
-  (defun cpped-cmake-reset (build-dir)
-    (interactive (list (or (when (and (boundp 'cmake-ide-build-dir)
-                                      (file-directory-p cmake-ide-build-dir))
-                             cmake-ide-build-dir)
-                           (read-directory-name "Build-directory: "
-                                                (file-name-as-directory cmake-ide-build-pool-dir)))))
-    (if (and build-dir
-             (file-directory-p build-dir))
-        (let ((cache-file (concat (file-name-as-directory build-dir) "CMakeCache.txt")))
-          (if (file-exists-p cache-file)
-              (let ((source-dir (cpped-cmake-source-dir build-dir)))
-                (if (file-exists-p (concat (file-name-as-directory source-dir) "CMakeLists.txt"))
-                    (progn (delete-file cache-file)
-                           (cpped-cmake-configure source-dir build-dir))
-                  (error "`%s' does not contain a CMake project" source-dir)))
-            (error "`%s' is not a CMake build directory" build-dir)))
-      (error "`%s' is not a directory" build-dir)))
+(defun cpped-cmake-reset (build-dir)
+  "Reset the current CMake configuration."
+  (interactive (list (or (cpped-build-dir)
+                         (read-directory-name "Build-directory: "
+                                              (file-name-as-directory cpped-build-base-directory)))))
+  (if (and build-dir
+           (file-directory-p build-dir))
+      (let ((cache-file (concat (file-name-as-directory build-dir) "CMakeCache.txt")))
+        (if (file-exists-p cache-file)
+            (progn (delete-file cache-file)
+                   (cpped-cmake-configure (cpped-cmake-source-dir build-dir) build-dir))
+          (error "`%s' is not a CMake build directory" build-dir)))
+    (error "`%s' is not a directory" build-dir)))
 #+END_SRC
 
 **** Open Project
 #+BEGIN_SRC emacs-lisp
-(defconst cpped-last-project-file (concat (file-name-as-directory user-emacs-directory) "last_project") "The last CMake project loaded.")
-
-(defun cpped-find-last-project-path ()
-  (with-temp-buffer
-    (when (file-exists-p cpped-last-project-file)
-      (insert-file-contents cpped-last-project-file)
-      (buffer-string))))
-
 (defun cpped-load-project (build-dir)
+  "Load a project."
   (interactive (list (read-directory-name "Build-directory: "
-                                          (file-name-as-directory cmake-ide-build-pool-dir))))
-  (if (cpped-cmake-build-directory-p build-dir)
-      (progn
-        (setq cmake-ide-build-dir build-dir)
-        (projectile-discover-projects-in-directory (cpped-cmake-source-dir build-dir))
-        (cmake-ide-maybe-start-rdm)
-        (cmake-ide--on-cmake-finished)
-        (with-temp-file cpped-last-project-file
-          (insert build-dir)))
-    (error "`%s' is not a CMake build directory" build-dir)))
+                                          (file-name-as-directory cpped-build-base-directory))))
+  (if (cpped-build-directory-p build-dir)
+      (let ((source-dir (if (cpped-cmake-build-directory-p (build-dir))
+                            (cpped-cmake-source-dir build-dir)
+                          build-dir)))
+        (projectile-discover-projects-in-directory source-dir)
+        (when (not (boundp cpped-cmake-current-target))
+                                        (setq cpped-cmake-current-target 'all))
+        (push '(source-dir . build-dir) cpped-current-build-directories))
+    (error "`%s' is not a build directory" build-dir)))
+#+END_SRC
+
+**** Select configuration
+#+BEGIN_SRC emacs-lisp
+(setq cpped-build-directories '(("/home/player/.dotfiles/" . "/home/player/test") ("/home/player" . "/home/player/bla")))
+
+(defun cpped-select-project-config (source-dir)
+  "Select a project configuration for the current source directory."
+  (interactive (list (read-directory-name "Source Directory: "
+                                          (cpped-project-dir))))
+  (let ((build-dir (helm :sources (helm-build-sync-source "Configurations"
+                                         :candidates
+                                         (mapc (lambda (dir)
+                                                 ((file-name-nondirectory (directory-file-name dir)) . dir))
+                                               (cdr (assoc source-dir cpped-build-directories))))
+                         :prompt "Configuration: "
+                         :buffer "*helm project*")))
+    (cpped-load-project build-dir)
+    build-dir))
+#+END_SRC
+
+**** Delete configuration
+#+BEGIN_SRC emacs-lisp
+(defun cpped-delete-cmake-build-dir (build-dir)
+  "Delete the currently set build directory."
+  (interactive (list (or (cpped-build-dir)
+                         (read-directory-name "Build-directory: "
+                                              (file-name-as-directory cpped-build-base-directory)))))
+  (when (cpped-cmake-build-directory-p build-dir)
+    (delete-directory build-dir t t)
+    (projectile-remove-known-project (cpped-cmake-source-dir build-dir))))
 #+END_SRC
 
 **** Open shell in build directory
 #+BEGIN_SRC emacs-lisp
 (defun cpped-shell-build-dir ()
+  "Open a shell in the current build directory."
   (interactive)
-  (if cmake-ide-build-dir
-      (let ((default-directory cmake-ide-build-dir))
-        (ansi-term))))
+  (let ((build-dir (cpped-build-dir)))
+    (when build-dir
+      (let ((default-directory (cpped-cmake-build-dir)))
+        (ansi-term)))))
 #+END_SRC
 
 **** List targets
 #+BEGIN_SRC emacs-lisp
-(defvar cpped-cmake-current-target nil "The currently selected build target.")
+(defvar cpped-current-targets nil "An alist of the currently selected build target per build directory.")
 
-(defun cpped-cmake-select-target (build-dir)
-  (interactive (list (or cmake-ide-build-dir
+(defun cpped-get-cmake-targets (build-dir)
+  "List all CMake targets for build-dir."
+  (save-match-data
+    (let ((output (shell-command-to-string (concat "cmake --build " build-dir " --target help")))
+          (position 0)
+          (targets (list "all")))
+      (while (string-match "^[\\. ]*\\([^\\[: ]+\\)" output position)
+        (let ((target (match-string 1 output)))
+          (unless (or (not target)
+                      (string= target "edit_cache"))
+            (push target targets))
+          (setq position (match-end 0))))
+      targets)))
+
+(defun cpped-get-make-targets (build-dir)
+  "List all make targets for build-dir."
+  (let ((targets (list "all")))
+    (with-temp-buffer
+      (insert (shell-command-to-string (concat "LANG=C make -C " build-dir " -nqp .DEFAULT 2>/dev/null")))
+      (goto-char (point-min))
+      (save-match-data
+        (when (re-search-forward "^# Files" nil t)
+          (while (re-search-forward "^\\([^/%$:#\n\t ]+\\):\\([^=]\\|$\\)" nil t)
+            (setq target (match-string 1))
+            (unless (or (save-excursion
+                          (goto-char (match-beginning 0))
+                          (forward-line -1)
+                          (looking-at "^# Not a target:"))
+                        (string-match "\\.[hoc]p*$" target))
+              (push target targets))))
+        targets))))
+
+(defun cpped-select-target (build-dir)
+  "Select a build target for the current build directory."
+  (interactive (list (or (cpped-build-dir)
                          (read-directory-name "Build-directory: "
-                                              (file-name-as-directory cmake-ide-build-pool-dir)))))
-  (if (cpped-cmake-build-directory-p build-dir)
-      (progn
-        (setq cpped-cmake-current-target (helm :sources (helm-build-sync-source "CMake Targets"
-                                                          :candidates
-                                                          (save-match-data
-                                                            (let ((output (shell-command-to-string (concat "cmake --build " build-dir " --target help")))
-                                                                  (position 0)
-                                                                  (targets (list "all")))
-                                                              (while (string-match "^[\\. ]*\\([^\\[: ]+\\)" output position)
-                                                                (let ((target (match-string 1 output)))
-                                                                  (unless (or (not target)
-                                                                              (string= target "edit_cache"))
-                                                                    (push target targets))
-                                                                  (setq position (match-end 0))))
-                                                              (remove-duplicates (sort targets #'string-lessp) :test 'string=))))
-                                               :prompt "Target: "
-                                               :preselect (or cpped-cmake-current-target
-                                                              "all")
-                                               :buffer "*helm target*"))
-        cpped-cmake-current-target)
-    (error "`%s' is not a CMake build directory" build-dir)))
+                                              (file-name-as-directory cpped-build-base-directory)))))
+  (let ((current-target (helm :sources (helm-build-sync-source "Targets"
+                                         :candidates
+                                         (remove-duplicates (sort (if (cpped-cmake-build-directory-p build-dir)
+                                                                      (cpped-get-cmake-targets build-dir)
+                                                                    (cpped-get-make-targets build-dir)) #'string-lessp) :test 'string=))
+                              :prompt "Target: "
+                              :preselect (or (cdr (assoc build-dir cpped-current-targets))
+                                             "all")
+                              :buffer "*helm target*")))
+    (push '(build-dir . current-target) cpped-current-targets)
+    current-target))
+
+(defun cpped-build-target ()
+  "Get the selected build target for the curent build directory."
+  (cdr (assoc (cpped-build-dir) cpped-current-targets)))
 #+END_SRC
 
 **** Utilities
 ***** Find source directory
 #+BEGIN_SRC emacs-lisp
 (defun cpped-cmake-source-dir (build-dir)
+  "Find the corresponding source directory for build-dir."
   (interactive (list (read-directory-name "Build-directory: "
-                                          (file-name-as-directory cmake-ide-build-pool-dir))))
+                                          (file-name-as-directory cpped-build-base-directory))))
   (let ((cache-file (concat (file-name-as-directory build-dir) "CMakeCache.txt")))
     (if (file-exists-p cache-file)
         (let ((source-dir (with-temp-buffer
@@ -2555,7 +2593,8 @@ Handler to close buffer after quitting ccmake.
                                (search-forward-regexp "CMAKE_HOME_DIRECTORY[^=]*=[:blank:]*\\(.*\\)[:blank:]*$"
                                                       (point-max) nil 1)
                                (match-string 1))))))
-          (if source-dir
+          (if (and source-dir
+                   (cpped-cmake-source-directory-p source-dir))
               (if (called-interactively-p 'any)
                   (message (format "The source directory for `%s' is `%s'." build-dir source-dir))
                 source-dir)
@@ -2563,30 +2602,71 @@ Handler to close buffer after quitting ccmake.
       (error "`%s' is not a CMake build directory" build-dir))))
 #+END_SRC
 
+***** Get build directory
+#+BEGIN_SRC emacs-lisp
+(defun cpped-build-dir ()
+  "Get the current build directory."
+  (interactive)
+  (cdr (assoc (cpped-project-dir) cpped-current-build-directories)))
+#+END_SRC
+
 ***** Check if directory is source directory
 #+BEGIN_SRC emacs-lisp
 (defun cpped-cmake-source-directory-p (source-dir)
+  "Check if source-dir is a CMake source directory."
   (file-exists-p (concat (file-name-as-directory source-dir) "CMakeLists.txt")))
 #+END_SRC
 
 ***** Check if directory is build directory
 #+BEGIN_SRC emacs-lisp
 (defun cpped-cmake-build-directory-p (build-dir)
-  (file-exists-p (concat (file-name-as-directory build-dir) "CMakeCache.txt")))
+  "Check if build-dir is a CMake build directory."
+  (or (file-exists-p (concat (file-name-as-directory build-dir) "CMakeCache.txt"))))
+
+(defun cpped-ninja-build-directory-p (build-dir)
+  "Check if build-dir is a ninja build directory."
+  (or (file-exists-p (concat (file-name-as-directory build-dir) "build.ninja"))))
+
+(defun cpped-make-build-directory-p (build-dir)
+  "Check if build-dir is a make build directory."
+  (or (file-exists-p (concat (file-name-as-directory build-dir) "Makefile"))))
+
+(defun cpped-build-directory-p (build-dir)
+  "Check if build-dir is a build directory."
+  (or (cpped-cmake-build-directory-p)
+      (cpped-ninja-build-directory-p)
+      (cpped-make-build-directory-p)))
+#+END_SRC
+
+***** Check if directory is build directory for the current project
+#+BEGIN_SRC emacs-lisp
+(defun cpped-project-build-directory-p (build-dir)
+  "Check if build-dir is a build directory for the current project."
+  (and (cpped-cmake-build-directory-p build-dir)
+       (if (cpped-cmake-build-directory-p build-dir)
+           (string-equal (cpped-cmake-source-dir build-dir)
+                         (cpped-project-dir))
+         (string-equal build-dir
+                       (cpped-project-dir)))))
 #+END_SRC
 
 *** Build
 #+BEGIN_SRC emacs-lisp
 (defun cpped-build-target (target)
-  (interactive (list (or cpped-cmake-current-target
-                         (call-interactively 'cpped-cmake-select-target))))
-  (when target
-    (compile (concat "cmake --build " cmake-ide-build-dir " --target " target))
-    (cmake-ide--run-rc)))
+  "Build the current target in the current build directory. Ask for target if not set."
+  (interactive (list (or (or (cpped-build-target)
+                             (call-interactively 'cpped-select-target)))))
+  (let ((build-dir (cpped-build-dir)))
+    (when (and build-dir target)
+      (cond
+       ((cpped-cmake-build-directory-p) (compile (concat "cmake --build " build-dir " --target " target)))
+       ((cpped-ninja-build-directory-p) (compile (concat "ninja -C " build-dir " " target)))
+       ((cpped-cmake-build-directory-p) (compile (concat "make -C " build-dir " " target)))))))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 (defun cpped-clean-build-directory ()
+  "Build the clean target in the current build directory."
   (interactive)
   (cpped-build-target "clean"))
 #+END_SRC
