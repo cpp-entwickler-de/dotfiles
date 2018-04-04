@@ -4738,9 +4738,9 @@ Archive when done, remove flag if reset to todo.
 
 (use-package org-fancy-priorities
   :hook (org-mode . org-fancy-priorities-mode)
-  :config (setq org-fancy-priorities-list '((?A . "❗")
-                                            (?B . "⬆")
-                                            (?C . "⬇"))))
+  :config (setq org-fancy-priorities-list '((?A . "⚠")
+                                            (?B . "⏲")
+                                            (?C . "☕"))))
 #+END_SRC
 
 ** Capture Templates
