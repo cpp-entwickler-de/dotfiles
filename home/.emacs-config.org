@@ -193,6 +193,7 @@ Do not load outdated byte code
 #+BEGIN_SRC emacs-lisp
 (set-frame-parameter nil 'fullscreen 'fullboth)
 #+END_SRC
+
 ** Frame Setup
 Show normal for single monitor, fullscreen on right side on dual-monitor
 #+BEGIN_SRC emacs-lisp
