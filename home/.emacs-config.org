@@ -5201,10 +5201,11 @@ Do not use scientific form so quickly
 
 CMake              ^^Git                         ^^Directories         ^^Shell                    ^^Other
   _o_: Load            _g_: Status                   _/_: Project          _#_: Project directory     _f_: Find
-  _c_: Configure       _G_: Other Project Status     _._: Current          _:_: Current directory     _l_: Add change log entry
-  _r_: Reconfigure                                 ^^_d_: Subdirectory                              ^^_t_: Show ToDos
-  _-_: Reset           _v_: Clone                    _b_: Build            _B_: Build directory
-  _x_: Close           _V_: Clone from GitHub
+  _c_: Configure       _G_: Other Project Status     _._: Current          _:_: Current directory     _L_: Add change log entry
+  _r_: Reconfigure     _l_: Log                      _d_: Subdirectory                              ^^_t_: Show ToDos
+  _-_: Reset                                       ^^_b_: Build            _B_: Build directory
+  _x_: Close           _v_: Clone
+                     ^^_V_: Clone from GitHub
 "
   ("o" cpped-load-project)
   ("c" cpped-cmake-configure)
@@ -5214,6 +5215,7 @@ CMake              ^^Git                         ^^Directories         ^^Shell  
   ("g" magit-status)
   ("G" (let ((current-prefix-arg 4))
          (call-interactively #'magit-status)))
+  ("l" magit-log-popup)
   ("v" magit-clone)
   ("V" magithub-clone)
   ("/" projectile-dired)
@@ -5227,7 +5229,7 @@ CMake              ^^Git                         ^^Directories         ^^Shell  
 
   ("f" (helm-ag (or (helm-ag--project-root)
                     default-directory)))
-  ("l" add-change-log-entry)
+  ("L" add-change-log-entry)
   ("t" cpped-find-todos-in-project))
 
 (global-set-key (kbd "C-p") #'cpped-hydra-projects/body)
