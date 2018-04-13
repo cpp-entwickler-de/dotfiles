@@ -2786,7 +2786,7 @@ Handler to close buffer after quitting ccmake.
                     default-directory)))))
 
 (defun cpped-find-todos-in-file ()
-  "Show all ToDo items in the file and allow jumping to specific itqem."
+  "Show all ToDo items in the file and allow jumping to specific item."
   (interactive)
   (let ((original-helm-swoop-pre-input-function helm-swoop-pre-input-function)
         (helm-case-fold-search nil)
