@@ -883,6 +883,8 @@ Find path of current position in XML docuement
 #+BEGIN_SRC emacs-lisp
 (use-package helm
   :after popwin
+  :bind (:map helm-map (("M-SPC" . helm-toggle-all-marks)
+                        ("C-M-y" . helm-copy-to-buffer)))
   :config
   (setq helm-buffer-max-length nil
         helm-buffers-fuzzy-matching t
@@ -897,8 +899,6 @@ Find path of current position in XML docuement
         helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
         helm-ff-search-library-in-sexp t        ; search for library in `require' and `declare-function' sexp.
         helm-ff-file-name-history-use-recentf t)
-  (define-key helm-map (kbd "M-SPC") 'helm-toggle-all-marks)
-  (define-key helm-map (kbd "C-M-y") 'helm-copy-to-buffer)
   (cpped-install-system-package "curl")
   (setq helm-google-suggest-use-curl-p t)
   (add-hook 'helm-before-initialize-hook '(lambda () (linum-mode 0)))
