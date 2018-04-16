@@ -4380,6 +4380,7 @@ Hide info buffer in buffer list
         org-catch-invisible-edits 'error
         org-columns-default-format "%50ITEM(Task) %2PRIORITY %10Effort(Effort){:} %10CLOCKSUM"
         org-default-notes-file "~/.notes.org"
+        org-duration-format 'h:mm
         org-ellipsis " ▼"
         org-enforce-todo-checkbox-dependencies t
         org-enforce-todo-dependencies t
