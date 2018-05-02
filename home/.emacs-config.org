@@ -5086,6 +5086,12 @@ Archive when done, remove flag if reset to todo.
                                                                                                      (float-time org-clock-start-time)) 60)))))
 #+END_SRC
 
+*** [[https://github.com/unhammer/org-mru-clock][Switch to last used clock]]
+#+BEGIN_SRC emacs-lisp
+(use-package org-mru-clock
+  :config (setq org-mru-clock-how-many 100))
+#+END_SRC
+
 * Utilities
 ** Use rx syntax for regular expression builder
 #+BEGIN_SRC emacs-lisp
@@ -6162,12 +6168,12 @@ Settings                       ^^Snippets            ^^Abbreviations            
   "
 ☰ Planning
 
-Open                ^^Create       ^^Task                     ^^Chart
-  _a_: Agenda           _c_: Entry     _i_: Clock in              _d_: Daily timesheet
-  _u_: Current Task                  ^^_o_: Clock out             _m_: Monthly timesheet
-                                   ^^^^_e_: Set estimate
-  _t_: ToDos                         ^^_+_: Increase estimate
-  _b_: Bugs
+Open                ^^Create       ^^Work             ^^Task                      ^^Chart
+  _a_: Agenda           _c_: Entry     _I_: Punch in    _r_: Clock in recent task     _d_: Daily timesheet
+  _u_: Current Task                  ^^_O_: Punch out   _i_: Clock in                 _m_: Monthly timesheet
+                                                  ^^^^^^_o_: Clock out
+  _t_: ToDos                                        ^^^^_e_: Set estimate
+  _b_: Bugs                                         ^^^^_+_: Increase estimate
   _n_: Notes
   _e_: Events
 "
@@ -6180,6 +6186,10 @@ Open                ^^Create       ^^Task                     ^^Chart
 
   ("c" helm-org-capture-templates)
 
+  ("I" cpped-punch-in)
+  ("O" cpped-punch-out)
+
+  ("r" org-mru-clock-in)
   ("i" org-clock-in)
   ("o" org-clock-out)
   ("e" (when (and (org-clocking-p)
