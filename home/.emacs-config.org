@@ -6169,11 +6169,11 @@ Settings                       ^^Snippets            ^^Abbreviations            
 ☰ Planning
 
 Open                ^^Create       ^^Work             ^^Task                      ^^Chart
-  _a_: Agenda           _c_: Entry     _I_: Punch in    _r_: Clock in recent task     _d_: Daily timesheet
-  _u_: Current Task                  ^^_O_: Punch out   _i_: Clock in                 _m_: Monthly timesheet
-                                                  ^^^^^^_o_: Clock out
-  _t_: ToDos                                        ^^^^_e_: Set estimate
-  _b_: Bugs                                         ^^^^_+_: Increase estimate
+  _a_: Agenda           _c_: Entry     _I_: Punch in      _r_: Clock in recent task     _d_: Daily timesheet
+  _u_: Current Task                  ^^_O_: Punch out     _i_: Clock in                 _m_: Monthly timesheet
+                                   ^^^^_l_: Lunch break   _o_: Clock out
+  _t_: ToDos                                          ^^^^_e_: Set estimate
+  _b_: Bugs                                           ^^^^_+_: Increase estimate
   _n_: Notes
   _e_: Events
 "
@@ -6188,6 +6188,9 @@ Open                ^^Create       ^^Work             ^^Task                    
 
   ("I" cpped-punch-in)
   ("O" cpped-punch-out)
+  ("l" (progn
+         (cpped-punch-out)
+         (cpped-lock-screen)))
 
   ("r" org-mru-clock-in)
   ("i" org-clock-in)
