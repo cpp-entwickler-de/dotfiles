@@ -3542,8 +3542,7 @@ Translation Files
                                                 ("ccfdi" "CMAKE_CXX_FLAGS_DEBUG_INIT")
                                                 ("ccfi" "CMAKE_CXX_FLAGS_INIT")
                                                 ("ccfr" "CMAKE_CXX_FLAGS_RELEASE")
-                                                ("ccfri" "CMAKE_CXX_FLAGS_RELEASE_INIT")
-                                                ))
+                                                ("ccfri" "CMAKE_CXX_FLAGS_RELEASE_INIT")))
 #+END_SRC
 
 ***** Wrap Region
