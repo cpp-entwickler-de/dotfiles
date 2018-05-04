@@ -4375,9 +4375,7 @@ Hide info buffer in buffer list
 (use-package org
   :after (helm helm-buffers popwin)
   :mode ("\\.org\\'" . org-mode)
-  :bind (("C-c l" . org-store-link)
-         ("C-c s" . org-capture)
-         ("C-c a" . org-agenda))
+  :bind (("C-c l" . org-store-link))
   :config
   (defvar org-default-bugs-file "~/.bugs.org" "The default file for bug tasks.")
   (defvar org-default-todos-file "~/.todos.org" "The default file for todo tasks.")
