@@ -2741,7 +2741,9 @@ Handler to close buffer after quitting ccmake.
             (push '("->" . ?➔) prettify-symbols-alist)
             (push '("return" . ?⮠) prettify-symbols-alist)
             (push '("true" . ?✓) prettify-symbols-alist)
-            (push '("false" . ?🚫) prettify-symbols-alist)))
+            (push '("TRUE" . ?✓) prettify-symbols-alist)
+            (push '("false" . ?🚫) prettify-symbols-alist)
+            (push '("FALSE" . ?🚫) prettify-symbols-alist)))
 #+END_SRC
 
 ***** [[https://github.com/tarsius/hl-todo][Highlight TODO/FIXME/...]]
