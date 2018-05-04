@@ -287,40 +287,42 @@ alias du="du -h"
 alias gti="git"
 alias gitroot='cd $(git root)'
 
-function helm()
-{
-    "$@" | peco --select-1
-}
+if command -v peco > /dev/null; then
+    function helm()
+    {
+        "$@" | peco --select-1
+    }
 
-KILL_COMMAND=$(which kill)
-function kill()
-{
-    for ARGUMENT in "$@"; do
-        case $ARGUMENT in
-            -*)
-            local KILL_ARGUMENTS=($KILL_ARGUMENTS $ARGUMENT)
-            ;;
-            *)
-            local PROCESS_ARGUMENTS=($PROCESS_ARGUMENTS $ARGUMENT)
-            ;;
-        esac
-    done
-    for ARGUMENT in $PROCESS_ARGUMENTS; do
-        if [[ "$ARGUMENT" =~ "^[0-9]+$" ]]; then
-            local PIDS=($PIDS $ARGUMENT)
-        else
-            local PROCESS_NAMES=($PROCESS_NAMES $ARGUMENT)
+    KILL_COMMAND=$(which kill)
+    function kill()
+    {
+        for ARGUMENT in "$@"; do
+            case $ARGUMENT in
+                -*)
+                    local KILL_ARGUMENTS=($KILL_ARGUMENTS $ARGUMENT)
+                    ;;
+                *)
+                    local PROCESS_ARGUMENTS=($PROCESS_ARGUMENTS $ARGUMENT)
+                    ;;
+            esac
+        done
+        for ARGUMENT in $PROCESS_ARGUMENTS; do
+            if [[ "$ARGUMENT" =~ "^[0-9]+$" ]]; then
+                local PIDS=($PIDS $ARGUMENT)
+            else
+                local PROCESS_NAMES=($PROCESS_NAMES $ARGUMENT)
+            fi
+        done
+        if [[ -n "$PROCESS_NAMES" || -z "$PIDS" ]]; then
+            local PIDS=($PIDS $(ps aux | peco --query "$PROCESS_NAMES" | while IFS= read -r LINE; do 
+                                    echo $LINE | tr -s " " | cut --delimiter=\  -f 2; 
+                                done))
         fi
-    done
-    if [[ -n "$PROCESS_NAMES" || -z "$PIDS" ]]; then
-        local PIDS=($PIDS $(ps aux | peco --query "$PROCESS_NAMES" | while IFS= read -r LINE; do 
-                                                                         echo $LINE | tr -s " " | cut --delimiter=\  -f 2; 
-                                                                     done))
-    fi
-    if [[ -n "$PIDS" ]]; then
-        $KILL_COMMAND $KILL_ARGUMENTS $PIDS
-    fi
-}
+        if [[ -n "$PIDS" ]]; then
+            $KILL_COMMAND $KILL_ARGUMENTS $PIDS
+        fi
+    }
+fi
 
 function largest() {
     local FILTER_VALUE=d
@@ -358,7 +360,12 @@ alias dnf="sudo dnf"
 alias log="sudo lnav"
 alias sysinfo="glances -1 --tree --fs-free-space --process-short-name -C ~/.config/glances"
 
-alias ag='ag --smart-case --pager="less -MIRFX"'
+if command -v ag > /dev/null; then
+    alias ag='ag --smart-case --pager="less -MIRFX"'
+else
+    alias ag="grep"
+fi
+
 alias r=$LESS_COMMAND
 alias l="ls -AFhl1v --color --group-directories-first $*"
 alias lstree="l -R $*"
@@ -366,8 +373,10 @@ alias make="make -j"
 alias mc="mc --nosubshell"
 alias mkdir="mkdir -p"
 alias mv="mv -i"
-alias raw-peco=$(which peco)
-alias peco="peco --layout=bottom-up --select-1"
+if command -v peco > /dev/null; then
+    alias raw-peco=$(which peco)
+    alias peco="peco --layout=bottom-up --select-1"
+fi
 alias p="ps aux"
 alias t="htop"
 alias top="htop"
@@ -397,74 +406,76 @@ function smart-enter ()
 zle -N smart-enter
 bindkey "^M" smart-enter
 
-function ssh-connect ()
-{
-    CONNECTIONS=$(fc -ln -10000 | grep -E "^ssh\s" | sed -e 's/\s*$//' | sort | uniq -c | sort -nr | sed -e "s/^\s*[0-9]*\s//")
-    if [ "$CONNECTIONS" ]; then
-        SELECTION=$(echo "$CONNECTIONS" | raw-peco --prompt "Select a connection")
-    else
-        echo "No previous connections found."
-    fi
-    print -S "$SELECTION"
-    eval $SELECTION
-}
+if command -v peco > /dev/null; then
+    function ssh-connect ()
+    {
+        CONNECTIONS=$(fc -ln -10000 | grep -E "^ssh\s" | sed -e 's/\s*$//' | sort | uniq -c | sort -nr | sed -e "s/^\s*[0-9]*\s//")
+        if [ "$CONNECTIONS" ]; then
+            SELECTION=$(echo "$CONNECTIONS" | raw-peco --prompt "Select a connection")
+        else
+            echo "No previous connections found."
+        fi
+        print -S "$SELECTION"
+        eval $SELECTION
+    }
 
-function set-password()
-{
-    USER=$(whoami)
-    echo -n "Current Password: "
-    OLD_PASSWORD=$(read -e -s)
+    function set-password()
+    {
+        USER=$(whoami)
+        echo -n "Current Password: "
+        OLD_PASSWORD=$(read -e -s)
 
-    # determine new password
-    PASSWORD=${1:-$(apg -a 0 -n 20 -M SNCL -m 10 -x 10 -y -t | peco | cut --delimiter=\  -f 1)}
+        # determine new password
+        PASSWORD=${1:-$(apg -a 0 -n 20 -M SNCL -m 10 -x 10 -y -t | peco | cut --delimiter=\  -f 1)}
 
-    if [ -n "$PASSWORD" -a -n "$OLD_PASSWORD" ]; then
-        if [ -n "$DOMAIN" -a -n "$DOMAIN_CONTROLLER" ]; then
-            # change domain password
-            echo -e -n "\nSetting domain password..."
-            echo -e "$OLD_PASSWORD\n$PASSWORD" | smbpasswd -s -r $DOMAIN_CONTROLLER -U $USER
-            if [ $? -eq 0 ]; then
-                echo "ok"
-
-                # change CIFS password
-                echo -n "Setting CIFS password....."
-                if [ -s ~/.cifs-credentials ]; then
-                    sed -i -e "s/\(password=\).*/\1$PASSWORD/g" ~/.cifs-credentials
-                else
-                    echo "$PASSWORD" > ~/.cifs-credentials
-                fi
-                echo "ok"
-
-                # change proxy password
-                which cntlm
+        if [ -n "$PASSWORD" -a -n "$OLD_PASSWORD" ]; then
+            if [ -n "$DOMAIN" -a -n "$DOMAIN_CONTROLLER" ]; then
+                # change domain password
+                echo -e -n "\nSetting domain password..."
+                echo -e "$OLD_PASSWORD\n$PASSWORD" | smbpasswd -s -r $DOMAIN_CONTROLLER -U $USER
                 if [ $? -eq 0 ]; then
-                    echo -n "Setting proxy password...."
-                    PASSWORD_NTLM=$(echo "$PASSWORD" | cntlm -a NTLM -u $USER -d $(domainname) -H)
-                    PASSWORD_NT=$(echo $PASSWORD_NTLM | grep "PassNT ")
-                    PASSWORD_LM=$(echo $PASSWORD_NTLM | grep "PassLM ")
-                    sudo sed -i -e "s/PassNT.*/$PASSWORD_NT/g" -e "s/PassLM.*/$PASSWORD_LM/g" /etc/cntlm.conf
                     echo "ok"
-                    echo -n "Restarting Proxy.........."
-                    sudo systemctl restart cntlm
+
+                    # change CIFS password
+                    echo -n "Setting CIFS password....."
+                    if [ -s ~/.cifs-credentials ]; then
+                        sed -i -e "s/\(password=\).*/\1$PASSWORD/g" ~/.cifs-credentials
+                    else
+                        echo "$PASSWORD" > ~/.cifs-credentials
+                    fi
                     echo "ok"
+
+                    # change proxy password
+                    which cntlm
+                    if [ $? -eq 0 ]; then
+                        echo -n "Setting proxy password...."
+                        PASSWORD_NTLM=$(echo "$PASSWORD" | cntlm -a NTLM -u $USER -d $(domainname) -H)
+                        PASSWORD_NT=$(echo $PASSWORD_NTLM | grep "PassNT ")
+                        PASSWORD_LM=$(echo $PASSWORD_NTLM | grep "PassLM ")
+                        sudo sed -i -e "s/PassNT.*/$PASSWORD_NT/g" -e "s/PassLM.*/$PASSWORD_LM/g" /etc/cntlm.conf
+                        echo "ok"
+                        echo -n "Restarting Proxy.........."
+                        sudo systemctl restart cntlm
+                        echo "ok"
+                    fi
+                else
+                    return 1
                 fi
             else
-                return 1
+                echo "No Domain configured. Set DOMAIN and DOMAIN_CONTROLLER if you also want to change your domain password."
             fi
-        else
-            echo "No Domain configured. Set DOMAIN and DOMAIN_CONTROLLER if you also want to change your domain password."
+
+            # change linux password
+            echo -n "Setting system password..."
+            echo "$PASSWORD" | sudo passwd --stdin $USER > /dev/null
+            echo "ok"
+
+            echo
+            echo "User:         $(whoami)"
+            echo "New Password: $PASSWORD"
         fi
-
-        # change linux password
-        echo -n "Setting system password..."
-        echo "$PASSWORD" | sudo passwd --stdin $USER > /dev/null
-        echo "ok"
-
-        echo
-        echo "User:         $(whoami)"
-        echo "New Password: $PASSWORD"
-    fi
-}
+    }
+fi
 
 alias -s txt=r
 alias -s md=r
