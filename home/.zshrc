@@ -508,8 +508,10 @@ export LS_COLORS="di=1;0;1:ln=35:so=37:pi=37:ex=1;32:bd=33:cd=33:su=1;31;1:sg=1;
 
 # Ninja-build
 export NINJA_STATUS="[%p] "
-alias ninja=ninja-build
-alias -s ninja=ninja-build
+if command -v ninja-build > /dev/null; then
+    alias ninja=ninja-build
+fi
+alias -s ninja=ninja
 
 # Theme
 if [[ $USER == "root" ]]; then
