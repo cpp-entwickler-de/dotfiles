@@ -6083,7 +6083,6 @@ Focus                  ^^^^Close                ^^Split               ^^Align   
 
 (global-set-key (kbd "C-^") #'cpped-hydra-windows/body)
 (global-set-key (kbd "C-x C-c") #'cpped-close-editor)
-
 #+END_SRC
 
 ** Settings
