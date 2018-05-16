@@ -5208,10 +5208,11 @@ Do not use scientific form so quickly
 #+BEGIN_SRC emacs-lisp
 (defhydra cpped-hydra-projects (:exit t :hint nil)
   "
-☰ Project 📁 %s(or (ignore-errors (projectile-project-root))
-                   default-directory)%s(if cmake-ide-build-dir
-                                (concat \" 🛠 \" cmake-ide-build-dir)
-                               \"\")
+☰ Project 🗁 %s(or (ignore-errors (projectile-project-root))
+                   default-directory)%s(let ((build-dir (cpped-build-dir)))
+                                          (if build-dir
+                                              (concat \" 🛠 \" build-dir)
+                                            \"\"))
 
 CMake              ^^Git                         ^^Directories         ^^Shell                    ^^Other
   _o_: Load            _g_: Status                   _/_: Project          _#_: Project directory     _f_: Find
