@@ -551,7 +551,7 @@ function user_host()
         if [ -n "$DISPLAY" ]; then
             USER_HOST=" %n %m" # The FontAwesome user and desktop symbols
         else
-            DOCKER_ICON="%n@%M"
+            USER_HOST="%n@%M"
         fi
     else
         if [[ $LOGNAME != $USER ]]; then
