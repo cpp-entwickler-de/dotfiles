@@ -25,6 +25,9 @@ quotepath = false
 # Use emacs for editing
 editor = "emacsclient"
 
+# Use filesystem cache on Windows
+fscache = true
+
 
 [color]
 # Detect color availability
