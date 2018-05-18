@@ -4819,9 +4819,11 @@ Archive when done, remove flag if reset to todo.
                                                                       4
                                                                     2))))
                                      (todo cpped-org-todo-keyword-waiting
-                                           ((org-agenda-overriding-header cpped-org-todo-keyword-waiting)))
+                                           ((org-agenda-overriding-header cpped-org-todo-keyword-waiting)
+                                            (org-agenda-todo-keyword-format "")))
                                      (todo cpped-org-todo-keyword-suspended
-                                           ((org-agenda-overriding-header cpped-org-todo-keyword-suspended)))
+                                           ((org-agenda-overriding-header cpped-org-todo-keyword-suspended)
+                                            (org-agenda-todo-keyword-format "")))
                                      (todo (concat cpped-org-todo-keyword-bug "|" cpped-org-todo-keyword-fixme "|" cpped-org-todo-keyword-analysis "|" cpped-org-todo-keyword-correction "|" cpped-org-todo-keyword-review)
                                            ((org-agenda-skip-function '(org-agenda-skip-entry-if 'done 'scheduled))
                                             (org-agenda-overriding-header cpped-org-todo-keyword-bug)
