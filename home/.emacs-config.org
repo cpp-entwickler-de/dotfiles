@@ -4785,10 +4785,10 @@ Archive when done, remove flag if reset to todo.
                              org-default-notes-file)
       org-agenda-format-date "%A, %e.%m.%Y"
       org-agenda-include-diary t
-      org-agenda-prefix-format '((agenda  . "  %-8(org-format-outline-path (org-get-outline-path)) %-10T%?-12t% s  ")
+      org-agenda-prefix-format '((agenda  . "  %-24(org-format-outline-path (org-get-outline-path)) %-8T%?-12t% s  ")
                                  (timeline  . "  %l% s")
-                                 (todo  . "  %-16(org-format-outline-path (org-get-outline-path)) %-6T%?-12t")
-                                 (tags  . "  %-16(org-format-outline-path (org-get-outline-path)) %-6T")
+                                 (todo  . "  %-26(org-format-outline-path (org-get-outline-path)) %-6T%?-12t")
+                                 (tags  . "  %-26(org-format-outline-path (org-get-outline-path)) %-6T")
                                  (search . "  %(org-format-outline-path (org-get-outline-path))%-6T"))
       org-agenda-remove-tags 'prefix
       org-agenda-restore-windows-after-quit t
@@ -4828,11 +4828,11 @@ Archive when done, remove flag if reset to todo.
                                      (todo cpped-org-todo-keyword-todo
                                            ((org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline 'done))
                                             (org-agenda-overriding-header cpped-org-todo-keyword-todo)
-                                            (org-agenda-prefix-format '((todo  . "  %(org-format-outline-path (org-get-outline-path))%?-12t")))
                                             (org-agenda-todo-keyword-format "")))
                                      (tags "+CATEGORY=\"Notes\""
                                            ((org-agenda-overriding-header "Notes")
-                                            (org-agenda-prefix-format '((tags . "%(org-format-outline-path (org-get-outline-path)) ")))))))
+                                            (org-agenda-prefix-format '((tags . "%(org-format-outline-path (org-get-outline-path)) ")))
+                                            (org-agenda-todo-keyword-format "")))))
                                    ("n" "Notes" tags "+CATEGORY=\"Notes\""
                                     ((org-agenda-overriding-header "Notes")
                                      (org-agenda-prefix-format '((tags . "%(org-format-outline-path (org-get-outline-path)) ")))))
