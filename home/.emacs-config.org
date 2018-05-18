@@ -5268,13 +5268,13 @@ CMake              ^^Git                         ^^Directories         ^^Shell  
 ☰ File
 
 Open                         ^^Save           ^^Close                  ^^Switch               ^^Version                    ^^Display                       ^^File                           ^^^^^^Encoding
-      _o_: Open                  _s_: Save        _x_: File                _SPC_: Switch file     _v_: Show old version        _h_: Hexadecimal mode           _d_: Delete                      ^^^^_C-d_: DOS
-      _r_: Smart/Recent          _S_: Save as     _X_: Other files           _l_: Last file       _D_: Diff                    _!_: Toggle read-only mode      _m_: Rename                      ^^^^_C-u_: UNIX
-      _p_: From project                         ^^_w_: File and window       _f_: Find            _g_: Log                                                   ^^_z_: Clear content
-      _P_: From all projects                    ^^_u_: Unused files                             ^^_b_: Blame                   _6_: Decode Base64              _c_: Copy name to clipboard
-                                              ^^^^_a_: Close editor                             ^^_i_: Create public gist      _&_: Encode Base64              _._: Open directory
-      _j_: Header/Source                                                                    ^^^^^^_I_: Create private gist                                   ^^_+_: Show Directory Tree
-      _t_: Test
+      _o_: Open                  _s_: Save        _x_: File                _SPC_: Switch file     _v_: Show old version        _h_: Hexadecimal mode       _<DEL>_: Delete                      ^^^^_C-d_: DOS
+      _r_: Smart/Recent          _S_: Save as     _X_: Other files           _l_: Last file       _d_: Diff                    _!_: Toggle read-only mode      _m_: Rename                      ^^^^_C-u_: UNIX
+      _p_: From project                         ^^_w_: File and window       _f_: Find            _g_: Log                                                   ^^_D_: Diff to
+      _P_: From all projects                    ^^_u_: Unused files                             ^^_b_: Blame                   _6_: Decode Base64              _z_: Clear content
+                                              ^^^^_a_: Close editor                             ^^_i_: Create public gist      _&_: Encode Base64              _c_: Copy name to clipboard
+      _j_: Header/Source                                                                    ^^^^^^_I_: Create private gist                                   ^^_._: Open directory
+      _t_: Test                                                                                                                                      ^^^^^^^^^^_+_: Show Directory Tree
   _<RET>_: File under cursor
       _k_: Gist
 "
@@ -5301,15 +5301,16 @@ Open                         ^^Save           ^^Close                  ^^Switch 
   ("f" helm-ag-buffers)
 
   ("v" git-timemachine)
-  ("D" magit-diff-buffer-file-popup)
+  ("d" magit-diff-buffer-file-popup)
   ("g" magit-log-buffer-file-popup)
   ("b" magit-blame-popup)
   ("i" gist-region-or-buffer)
   ("I" gist-region-or-buffer-private)
 
-  ("d" crux-delete-file-and-buffer)
+  ("<DEL>" crux-delete-file-and-buffer)
   ("m" crux-rename-file-and-buffer)
   ("z" erase-buffer)
+  ("D" ediff-files)
   ("C-d" cpped-unix2dos)
   ("C-u" cpped-dos2unix)
   ("!" (progn (read-only-mode)
