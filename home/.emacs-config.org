@@ -307,7 +307,7 @@ Disable prettification if cursor is at edge of expression
 (add-hook 'find-file-hook (lambda ()
                             (push '("\t" . ?⇥) prettify-symbols-alist)
                             (push '("lambda" . ?λ) prettify-symbols-alist)
-                            (push '("" . ?↵) prettify-symbols-alist)
+                            (push '("\r" . ?↵) prettify-symbols-alist)
                             (prettify-symbols-mode)))
 
 (global-prettify-symbols-mode)
