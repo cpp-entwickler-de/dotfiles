@@ -58,7 +58,7 @@ TIME_SINCE_LAST_COMMAND=0
 
 TMOUT=1800
 TRAPALRM() {
-    if [ $? -eq 0 ]; then
+    if [ $? -eq 0 -a ! -f /.dockerenv ]; then
         exit
     fi
 }
