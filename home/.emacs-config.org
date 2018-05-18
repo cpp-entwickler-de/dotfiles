@@ -1661,11 +1661,6 @@ Always use a fixed width for line numbers (maximum number length)
 (define-key dired-mode-map "C" 'dired-do-compress-to)
 #+END_SRC
 
-*** [[https://www.emacswiki.org/emacs/Sunrise_Commander][Sunrise Commander]]
-#+BEGIN_SRC emacs-lisp
-(use-package sunrise-commander)
-#+END_SRC
-
 *** [[https://github.com/Alexander-Miller/treemacs][Treemacs]]
 #+BEGIN_SRC emacs-lisp
 (use-package treemacs

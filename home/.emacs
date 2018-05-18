@@ -2,8 +2,6 @@
 (require 'package)
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.org/packages/") t)
-(add-to-list 'package-archives
-             '("SC"    . "http://joseito.republika.pl/sunrise-commander/") t)
 (setq load-prefer-newer t)
 (package-initialize)
 
