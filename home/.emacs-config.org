@@ -4146,6 +4146,9 @@ When using Magit >= 2.4.0
                                    (list (rx bol (+ (in "0-9a-f")) (+ (in space punctuation)) bow (group "optimize" (? (in "sd"))) eow)
                                          (all-the-icons-faicon "forward")
                                          `(:family ,(all-the-icons-faicon-family)))
+                                   (list (rx bol (+ (in "0-9a-f")) (+ (in space punctuation)) bow (group "set" (? "s")) eow)
+                                         "="
+                                         '(:weight 'black :height 1.3))
                                    (list (rx bol (not (in "+@-")) (+ any) bow (group "master") eow)
                                          (all-the-icons-faicon "home")
                                          `(:family ,(all-the-icons-faicon-family)))
