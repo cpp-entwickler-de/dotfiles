@@ -2772,7 +2772,15 @@ Handler to close buffer after quitting ccmake.
                                 ("TODO" . hl-todo-warning)
                                 ("XXX" . hl-todo-warning)))
   (add-hook 'prog-mode-hook (lambda ()
-                              (hl-todo-mode 1))))
+                              (hl-todo-mode 1)))
+  (add-hook 'prog-mode-hook
+            (lambda ()
+              (push '("???" . ?🛈) prettify-symbols-alist)
+              (push '("FAIL" . ?⛐) prettify-symbols-alist)
+              (push '("FIXME" . ?🛠) prettify-symbols-alist)
+              (push '("HACK" . ?☢) prettify-symbols-alist)
+              (push '("INFO" . ?🛈) prettify-symbols-alist)
+              (push '("NOTE" . ?🗈) prettify-symbols-alist))))
 #+END_SRC
 
 ***** Find ToDos in file or project
