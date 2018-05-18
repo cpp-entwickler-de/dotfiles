@@ -4832,10 +4832,6 @@ Archive when done, remove flag if reset to todo.
                                      (todo (concat cpped-org-todo-keyword-todo "|" cpped-org-todo-keyword-in-progress)
                                            ((org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline 'done))
                                             (org-agenda-overriding-header cpped-org-todo-keyword-todo)
-                                            (org-agenda-todo-keyword-format "")))
-                                     (tags "+CATEGORY=\"Notes\""
-                                           ((org-agenda-overriding-header "Notes")
-                                            (org-agenda-prefix-format '((tags . "%(org-format-outline-path (org-get-outline-path)) ")))
                                             (org-agenda-todo-keyword-format "")))))
                                    ("n" "Notes" tags "+CATEGORY=\"Notes\""
                                     ((org-agenda-overriding-header "Notes")
