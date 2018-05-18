@@ -5312,11 +5312,11 @@ Open                         ^^Save           ^^Close                  ^^Switch 
   ("z" erase-buffer)
   ("C-d" cpped-unix2dos)
   ("C-u" cpped-dos2unix)
-  ("!" (when buffer-read-only
-         (read-only-mode)
-         (when buffer-file-name
-           (unless (file-writable-p buffer-file-name)
-             (sudo-edit-current-file)))))
+  ("!" (progn (read-only-mode)
+              (when (and buffer-read-only
+                         buffer-file-name)
+                (unless (file-writable-p buffer-file-name)
+                  (sudo-edit-current-file)))))
   ("h" hexl-mode)
   ("6" (base64-decode-region (point-min) (point-max)))
   ("&" (base64-encode-region (point-min) (point-max)))
