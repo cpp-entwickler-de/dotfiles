@@ -4815,17 +4815,17 @@ Archive when done, remove flag if reset to todo.
                                                                                       (member "Birthday" tags)
                                                                                       (member "Holiday" tags))
                                                                                   nil
-                                                                                (org-agenda-skip-entry-if 'done))))))
+                                                                                (org-agenda-skip-entry-if 'done 'todo `(,cpped-org-todo-keyword-waiting ,cpped-org-todo-keyword-suspended)))))))
                                      (todo cpped-org-todo-keyword-waiting
                                            ((org-agenda-overriding-header cpped-org-todo-keyword-waiting)))
                                      (todo cpped-org-todo-keyword-suspended
                                            ((org-agenda-overriding-header cpped-org-todo-keyword-suspended)))
-                                     (todo cpped-org-todo-keyword-bug
+                                     (todo (concat cpped-org-todo-keyword-bug "|" cpped-org-todo-keyword-fixme "|" cpped-org-todo-keyword-analysis "|" cpped-org-todo-keyword-correction "|" cpped-org-todo-keyword-review)
                                            ((org-agenda-skip-function '(org-agenda-skip-entry-if 'done 'scheduled))
                                             (org-agenda-overriding-header cpped-org-todo-keyword-bug)
                                             (org-agenda-prefix-format '((todo  . "  %(org-format-outline-path (org-get-outline-path))%?-12t")))
                                             (org-agenda-todo-keyword-format "")))
-                                     (todo cpped-org-todo-keyword-todo
+                                     (todo (concat cpped-org-todo-keyword-todo "|" cpped-org-todo-keyword-in-progress)
                                            ((org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline 'done))
                                             (org-agenda-overriding-header cpped-org-todo-keyword-todo)
                                             (org-agenda-todo-keyword-format "")))
