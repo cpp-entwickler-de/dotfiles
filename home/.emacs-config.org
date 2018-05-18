@@ -3637,6 +3637,26 @@ Translation Files
   :mode "Jenkinsfile")
 #+END_SRC
 
+**** Editing
+***** Syntax checkers
+#+BEGIN_SRC emacs-lisp
+(defvar cpped-jenkins-url "" "The URL of the Jenkins server.")
+
+(when cpped-jenkins-url
+    (flycheck-define-checker jenkinscheck
+      "A Jenkins pipeline syntax checker."
+      :command ("/usr/bin/curl"
+                "-s" "-X" "POST" "-H" (eval (shell-command-to-string (concat "/usr/bin/curl '-s' '" cpped-jenkins-url "/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,\":\",//crumb)'")))
+                "-F" (eval (concat "jenkinsfile=<" (car (flycheck-substitute-argument 'source 'jenkinscheck))))
+                (eval (concat cpped-jenkins-url "/pipeline-model-converter/validate")))
+      :error-patterns ((warning line-start (file-name) ":" (message) "@ line " line ", column " column))
+      :modes (groovy-mode)
+      :predicate (lambda()
+                   (string= (file-name-nondirectory buffer-file-name) "Jenkinsfile")))
+
+  (add-to-list 'flycheck-checkers 'jenkinscheck))
+#+END_SRC
+
 *** HTML
 #+BEGIN_SRC emacs-lisp
 (push '("\\.x?html?\\'" . html-mode) auto-mode-alist)
