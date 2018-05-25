@@ -5270,9 +5270,10 @@ Open                         ^^Save           ^^Close                  ^^Switch 
       _r_: Smart/Recent          _S_: Save as     _X_: Other files           _l_: Last file       _d_: Diff                    _!_: Toggle read-only mode      _m_: Rename                      ^^^^_C-u_: UNIX
       _p_: From project                         ^^_w_: File and window       _f_: Find            _g_: Log                                                   ^^_D_: Diff to
       _P_: From all projects                    ^^_u_: Unused files                             ^^_b_: Blame                   _6_: Decode Base64              _z_: Clear content
-                                              ^^^^_a_: Close editor                             ^^_i_: Create public gist      _&_: Encode Base64              _c_: Copy name to clipboard
-      _j_: Header/Source                                                                    ^^^^^^_I_: Create private gist                                   ^^_._: Open directory
-      _t_: Test                                                                                                                                      ^^^^^^^^^^_+_: Show Directory Tree
+      _C_: From docker container                ^^_a_: Close editor                             ^^_i_: Create public gist      _&_: Encode Base64              _c_: Copy name to clipboard
+                                                                                          ^^^^^^^^_I_: Create private gist                                   ^^_._: Open directory
+      _j_: Header/Source                                                                                                                             ^^^^^^^^^^_+_: Show Directory Tree
+      _t_: Test
   _<RET>_: File under cursor
       _k_: Gist
 "
@@ -5280,6 +5281,7 @@ Open                         ^^Save           ^^Close                  ^^Switch 
   ("r" helm-for-files)
   ("p" helm-browse-project)
   ("P" helm-projectile-find-file-in-known-projects)
+  ("C" docker-find-file)
   ("j" helm-projectile-find-other-file :exit nil)
   ("t" projectile-toggle-between-implementation-and-test :exit nil)
   ("<RET>" helm-projectile-find-file-dwim)
@@ -6201,23 +6203,112 @@ Settings                       ^^Snippets            ^^Abbreviations            
 
 ** Tools
 #+BEGIN_SRC emacs-lisp
+(defhydra cpped-hydra-tools-docker (:exit t :hint nil)
+  "
+☰ Docker
+
+  _i_: Images
+  _c_: Containers
+  _v_: Volumes
+  _n_: Networks
+  _m_: Machines
+"
+  ("i" docker-images)
+  ("c" docker-containers)
+  ("v" docker-volumes)
+  ("n" docker-networks)
+  ("m" docker-machines))
+
 (defhydra cpped-hydra-tools (:exit t :hint nil)
   "
 ☰ Tools
 
   _c_: Calculator
+  _d_: Docker
   _x_: Regex Builder
   _e_: Evaluate expression
   _r_: Repeat last command
   _f_: Resume last command
 "
   ("c" helm-calcul-expression)
+  ("d" cpped-hydra-tools-docker/body)
   ("x" re-builder)
   ("e" eval-expression)
   ("r" repeat)
   ("f" helm-resume))
 
 (global-set-key (kbd "C-t") #'cpped-hydra-tools/body)
+#+END_SRC
+
+*** Docker
+**** Images
+#+BEGIN_SRC emacs-lisp
+(defhydra cpped-hydra-docker-images (:exit nil :hint nil :foreign-keys run)
+  "
+☰ Docker Images
+
+              ^^Sync        ^^Info
+  _r_: Run        _f_: Pull     _ß_: Inspect
+              ^^^^_p_: Push
+  _k_: Remove     _t_: Tag
+"
+  ("r" docker-images-run-popup)
+  ("k" docker-images-rmi-popup)
+  ("f" docker-images-pull-popup)
+  ("p" docker-images-push-popup)
+  ("t" docker-images-tag-entry)
+  ("ß" docker-images-inspect-popup)
+  ("q" nil :exit t))
+
+(add-hook 'docker-images-mode-hook 'cpped-hydra-docker-images/body)
+#+END_SRC
+
+**** Containers
+#+BEGIN_SRC emacs-lisp
+(defhydra cpped-hydra-docker-containers (:exit nil :hint nil :foreign-keys run)
+  "
+☰ Docker Containers
+
+Run            ^^Info
+  _s_: Start       _ß_: Inspect
+  _t_: Stop        _d_: Diff
+  _p_: Pause
+  _r_: Restart
+  _k_: Kill
+"
+  ("s" docker-containers-start-popup)
+  ("t" docker-containers-stop-popup)
+  ("p" docker-containers-pause-popup)
+  ("r" docker-containers-restart-popup)
+  ("k" docker-containers-kill-popup)
+  ("ß" docker-containers-inspect-popup)
+  ("D" docker-containers-diff-popup)
+  ("q" nil :exit t))
+
+(add-hook 'docker-containers-mode-hook 'cpped-hydra-docker-containers/body)
+#+END_SRC
+
+**** Machines
+#+BEGIN_SRC emacs-lisp
+(defhydra cpped-hydra-docker-machines (:exit nil :hint nil :foreign-keys run)
+  "
+☰ Docker Machines
+
+              ^^Run           ^^Info
+  _c_: Create    _s_: Start       _ß_: Inspect
+               ^^_t_: Stop        _e_: Environment
+  _k_: Remove    _r_: Restart
+"
+  ("c" docker-machine-create)
+  ("k" docker-machine-rm-popup)
+  ("s" docker-machine-start-popup)
+  ("t" docker-machine-stop-popup)
+  ("r" docker-machine-restart-popup)
+  ("ß" docker-machine-inspect)
+  ("e" docker-machine-env-popup)
+  ("q" nil :exit t))
+
+(add-hook 'docker-machines-mode-hook 'cpped-hydra-docker-machines/body)
 #+END_SRC
 
 ** Build
