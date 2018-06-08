@@ -4848,7 +4848,7 @@ Archive when done, remove flag if reset to todo.
                                      (org-agenda-include-diary nil)
                                      (org-agenda-clockreport-parameter-plist '(:scope agenda-with-archives :indent t :link t :emphasize t :tcolumns 1 :maxlevel 6 :fileskip0 t :formula %))))
                                    ("p" "Monthly Timesheet" agenda ""
-                                    ((org-agenda-overriding-header (concat (if (< (nth 3 (decode-time)) 4)
+                                    ((org-agenda-overriding-header (concat (if (< (nth 3 (decode-time)) 25)
                                                                                "Last"
                                                                              "This")
                                                                            " Month"))
@@ -4857,7 +4857,7 @@ Archive when done, remove flag if reset to todo.
                                                                   (day (nth 3 time))
                                                                   (month (nth 4 time))
                                                                   (year (nth 5 time)))
-                                                             (when (< day 4)
+                                                             (when (< day 25)
                                                                (setq month (if (= 1 month)
                                                                                (progn
                                                                                  (setq year (- year 1))
