@@ -126,7 +126,7 @@ submodule = log
 
 [diff "org"]
 # Use org headline in diff
-xfuncname = "^(\\*+ [a-zA-Z0-9]+.+)$"
+xfuncname = "^\\*+ ([a-zA-Z0-9]+.+)$"
 
 
 [diff "ini"]
