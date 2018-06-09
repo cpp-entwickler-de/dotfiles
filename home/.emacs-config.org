@@ -2,32 +2,6 @@
 #+OPTIONS: toc:4
 #+PROPERTY: header-args :results silent
 
-* Use only one frame
-#+BEGIN_SRC emacs-lisp
-(defun cpped-maybe-create-new-frame (wrapped-function &rest arguments)
-  "Create a new frame if none exists. Takes a file name that is loaded into the frame."
-  (let ((display (getenv "DISPLAY")))
-    (if (and display
-             (> (length display) 0))
-        (unless (find-if (lambda (frame)
-                           (assq 'display (frame-parameters frame)))
-                         (frame-list))
-          (funcall wrapped-function `((display . ,display) ,arguments)))
-      (funcall wrapped-function arguments))))
-
-(advice-add #'make-frame :around #'cpped-maybe-create-new-frame)
-
-(use-package server
-  :config
-  (when (server-running-p)
-    (let ((file (last (cdr command-line-args)))
-          (file-argument ""))
-      (when file
-        (setq file-argument (format " %S" (car file)))
-        (shell-command (format "emacsclient --no-wait --alternate-editor=nano %s" file-argument)))
-      (kill-emacs))))
-#+END_SRC
-
 * Custom configuration
 #+BEGIN_SRC emacs-lisp
 (load "~/.emacs.user" t t)
