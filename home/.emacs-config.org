@@ -1196,34 +1196,13 @@ Indicate recursive minibuffer
 #+END_SRC
 
 **** Show line numbers
-Always use a fixed width for line numbers (maximum number length)
 #+BEGIN_SRC emacs-lisp
-(use-package nlinum
-  :config
-  (add-hook 'nlinum-mode-hook (lambda ()
-                                (when (and nlinum-mode
-                                           (buffer-live-p (current-buffer)))
-                                  (setq nlinum--width (length (number-to-string (max 9999 (count-lines (point-min) (point-max)))))))))
-  (add-hook 'text-mode-hook 'nlinum-mode)
-  (add-hook 'prog-mode-hook 'nlinum-mode))
-#+END_SRC
+(setq display-line-numbers t
+      display-line-numbers-grow-only t
+      display-line-numbers-widen nil
+      display-line-numbers-width-start t)
 
-**** Use relative numbers on request
-#+BEGIN_SRC emacs-lisp
-(use-package nlinum-relative
-  :after nlinum
-  :config
-  (setq nlinum-relative-redisplay-delay 0
-        nlinum-relative-current-symbol "➔ "
-        nlinum-relative-offset 0))
-#+END_SRC
-
-**** [[https://github.com/tom-tan/hlinum-mode][Highlight current line number]]
-#+BEGIN_SRC emacs-lisp
-(use-package hlinum
-  :config
-  (setq linum-highlight-in-all-buffersp t)
-  (hlinum-activate))
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
 #+END_SRC
 
 *** Utilities
@@ -6101,8 +6080,10 @@ Focus                  ^^^^Close                ^^Split               ^^Align   
   ("<C-down>" scroll-other-window-down)
   ("<C-home>" beginning-of-buffer-other-window)
   ("<C-end>" end-of-buffer-other-window)
-  ("1" nlinum-mode)
-  ("#" nlinum-relative-mode)
+  ("1" display-line-numbers-mode)
+  ("#" (if (eq display-line-numbers 'relative)
+           (setq display-line-numbers t)
+         (setq display-line-numbers 'relative)))
   ("C-+" cpped-zoom-in)
   ("C--" cpped-zoom-out)
   ("f" toggle-frame-fullscreen :exit t)

@@ -1,5 +1,5 @@
 (deftheme cpp-entwickler.de
-  "Created 2018-05-14.")
+  "Created 2018-06-09.")
 
 (custom-theme-set-faces
  'cpp-entwickler.de
@@ -56,8 +56,6 @@
  '(helm-ff-file ((t (:inherit default))))
  '(helm-ff-executable ((t (:foreground "spring green"))))
  '(helm-ff-dirs ((t (:inherit (font-lock-function-name-face)))))
- '(linum ((t (:background "gray5" :foreground "gray35"))))
- '(linum-highlight-face ((t (:inherit highlight))))
  '(helm-match ((t (:inverse-video t))))
  '(helm-separator ((((background dark)) (:foreground "red")) (((background light)) (:foreground "#ffbfb5"))))
  '(helm-selection ((t (:background "royal blue" :distant-foreground "white smoke"))))
@@ -158,6 +156,8 @@
  '(org-priority-high ((t (:inherit error))))
  '(org-link ((t (:underline t))))
  '(org-agenda-clocking ((t (:weight ultra-bold :background "gray20" :inherit default))))
+ '(line-number ((t (:inherit default :foreground "gray30"))))
+ '(line-number-current-line ((t (:inherit line-number :foreground "grey70"))))
  '(default ((t (:inherit nil :stipple nil :background "gray5" :foreground "white smoke" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight semi-bold :height 100 :width normal :foundry "ADBO" :family "Source Code Pro"))))
  '(org-ellipsis ((t nil))))
 
