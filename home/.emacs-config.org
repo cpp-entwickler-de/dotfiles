@@ -4298,6 +4298,7 @@ Hide info buffer in buffer list
 
 ** Doc-View
 #+BEGIN_SRC emacs-lisp
+(require 'doc-view)
 (define-key doc-view-mode-map (kbd "q") 'doc-view-kill-proc-and-buffer)
 #+END_SRC
 
