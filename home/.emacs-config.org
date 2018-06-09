@@ -838,6 +838,12 @@ Find path of current position in XML docuement
 (cpped-powerline-theme)
 #+END_SRC
 
+*** Update every second
+#+BEGIN_SRC emacs-lisp
+(run-with-timer 0 1 '(lambda()
+                       (force-mode-line-update t)))
+#+END_SRC
+
 ** [[https://github.com/bbatsov/projectile][Projectile]]
 #+BEGIN_SRC emacs-lisp
 (use-package ag
