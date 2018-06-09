@@ -1817,14 +1817,6 @@ Indicate recursive minibuffer
   (add-hook 'org-mode-hook 'auto-highlight-symbol-mode))
 #+END_SRC
 
-*** [[- rainbow-mode][Show hex color definitions as color]]
-#+BEGIN_SRC emacs-lisp
-(use-package rainbow-mode
-  :config
-  (rainbow-mode 1)
-  (add-hook 'prog-mode-hook 'rainbow-mode))
-#+END_SRC
-
 *** Highlight number packs 
 Use custom regex to ignore color definitions (numbers starting with a # sign)
 #+BEGIN_SRC emacs-lisp
