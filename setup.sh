@@ -153,7 +153,6 @@ if [ "$LINKS" = TRUE ]; then
     fi
 
     make_link "$DOTFILES_DIRECTORY/home/IDE.desktop" "$(realpath ~)/.local/share/applications/IDE.desktop"
-    make_link "$DOTFILES_DIRECTORY/home/emacs.service" "$(realpath ~)/.config/systemd/user/emacs.service"
     systemctl enable --user emacs
 fi
 
