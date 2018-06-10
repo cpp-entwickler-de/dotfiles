@@ -2727,7 +2727,10 @@ Handler to close buffer after quitting ccmake.
               (push '("FIXME" . ?🛠) prettify-symbols-alist)
               (push '("HACK" . ?☢) prettify-symbols-alist)
               (push '("INFO" . ?🛈) prettify-symbols-alist)
-              (push '("NOTE" . ?🗈) prettify-symbols-alist))))
+              (push '("NOTE" . ?🗈) prettify-symbols-alist)
+              (push '("TODO" . ?🛠) prettify-symbols-alist)
+              (push '("XXX" . ?☓) prettify-symbols-alist)
+)))
 #+END_SRC
 
 ***** Find ToDos in file or project
