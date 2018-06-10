@@ -527,59 +527,62 @@ fi
 alias -s ninja=ninja
 
 # Theme
-if [[ $USER == "root" ]]; then
-    PROMPT_COLOR=$fg[red]
-else
-    PROMPT_COLOR=$FG[250]
-fi
-
 if [ -n "$DISPLAY" ]; then
     PROMPT_SYMBOL="▶"
     LINE_BREAK_SYMBOL="↪"
     CALENDAR_SYMBOL="" # The FontAwesome calendar symbol
     SEPARATOR_SYMBOL=""
+    RETURN_SYMBOL=" ⚠ "
+    USER_SYMBOL=" "
+    ROOT_SYMBOL="🔑 "
+    MACHINE_SYMBOL=" "
+    DOCKER_SYMBOL=" "
 else
     PROMPT_SYMBOL=">"
     LINE_BREAK_SYMBOL="L"
     CALENDAR_SYMBOL="[1]"
     SEPARATOR_SYMBOL=""
+    RETURN_SYMBOL=" ! "
+    USER_SYMBOL=""
+    ROOT_SYMBOL="ROOT"
+    MACHINE_SYMBOL="@"
+    DOCKER_SYMBOL="D:"
 fi
 
-function user_host()
+function prompt_left()
 {
+    RETURN_VALUE=$?
+    if [[ $RETURN_VALUE -ne 0 ]]; then
+        RETURN_INFO="%{$FG[000]%}%{$BG[196]%}$RETURN_SYMBOL%{$FG[237]%}$RETURN_VALUE %{$FG[196]%}"
+        echo -n $RETURN_INFO
+    fi
+
+    if [[ $USER == "root" ]]; then
+        USER_MACHINE_INFO="%{$FG[208]%}$ROOT_SYMBOL%{$FG[245]%}"
+    elif [[ $LOGNAME != $USER ]]; then
+        USER_MACHINE_INFO="$USER_SYMBOL%n"
+    fi
+
     if [[ -n $SSH_CONNECTION ]]; then
-        if [ -n "$DISPLAY" ]; then
-            USER_HOST=" %n %m" # The FontAwesome user and desktop symbols
-        else
-            USER_HOST="%n@%M"
-        fi
-    else
-        if [[ $LOGNAME != $USER ]]; then
-            if [ -n "$DISPLAY" ]; then
-                USER_HOST=" %n" # The FontAwesome user symbol
-            else
-                USER_HOST="%n"
-            fi
-        fi
+        USER_MACHINE_INFO="$USER_MACHINE_INFO$MACHINE_SYMBOL%m"
+    fi
 
-        DOCKER_CONTAINER=$(cat /proc/self/cgroup | grep docker | head -n 1 | cut -d '/' -f3)
-        if [ -n "$(command -v docker)" -a -n "$DOCKER_CONTAINER" ]; then
-            DOCKER_CONTAINER=$(docker inspect -f '{{.Config.Image}}' $DOCKER_CONTAINER)
-        fi
-
+    DOCKER_ID=$(cat /proc/self/cgroup | grep docker | head -n 1 | cut -d '/' -f3)
+    if [ -n "$(command -v docker)" -a -n "$DOCKER_ID" ]; then
+        DOCKER_CONTAINER=$(docker inspect -f '{{.Config.Image}}' $DOCKER_ID)
         if [ -n "$DOCKER_CONTAINER" ]; then
-            if [ -n "$DISPLAY" ]; then
-                DOCKER_ICON="" # The FontAwesome docker symbol
-            else
-                DOCKER_ICON="D"
-            fi
-
-            USER_HOST="$USER_HOST $DOCKER_ICON $DOCKER_CONTAINER"
+            USER_MACHINE_INFO="$USER_MACHINE_INFO $DOCKER_SYMBOL$DOCKER_CONTAINER"
         fi
     fi
 
-    if [[ -n $USER_HOST ]]; then
-        echo "%{$BG[237]%}%{$FG[245]%}$USER_HOST  %{$BG[069]%}%{$FG[237]%}$SEPARATOR_SYMBOL"
+    if [[ -n $USER_MACHINE_INFO ]]; then
+        if [[ -n $RETURN_INFO ]]; then
+            echo %{$FG[196]%}%{$BG[250]%}$SEPARATOR_SYMBOL%{$FG[240]%}%{$BG[250]%}$USER_MACHINE_INFO%{$FG[250]%}%{$BG[069]%}$SEPARATOR_SYMBOL
+        else
+            echo %{$FG[240]%}%{$BG[250]%}$USER_MACHINE_INFO%{$FG[250]%}%{$BG[069]%}$SEPARATOR_SYMBOL
+        fi
+    elif [[ -n $RETURN_INFO ]]; then
+        echo %{$FG[196]%}%{$BG[069]%}$SEPARATOR_SYMBOL
     fi
 }
 
@@ -689,11 +692,10 @@ function emoji-clock() {
     fi
 }
 
-PROMPT='
-$(user_host)%B%{$BG[069]%}%{$FG[252]%}%8~%b%{$reset_colors%}%{$BG[235]%}%{$FG[069]%}$SEPARATOR_SYMBOL%{$FG[245]%}$(git_info)%E%{$reset_color%}
-%{$PROMPT_COLOR%}$PROMPT_SYMBOL '
-PROMPT2='%{$PROMPT_COLOR%}$LINE_BREAK_SYMBOL '
-PROMPT3='%{$PROMPT_COLOR%}? '
+PROMPT='$(prompt_left)%B%{$BG[069]%}%{$FG[252]%}%8~%b%{$reset_colors%}%{$BG[235]%}%{$FG[069]%}$SEPARATOR_SYMBOL%{$FG[245]%}$(git_info)%E%{$reset_color%}
+%{$FG[250]%}$PROMPT_SYMBOL '
+PROMPT2='%{$FG[250]%}$LINE_BREAK_SYMBOL '
+PROMPT3='%{$FG[250]%}? '
 if [ -z "$INSIDE_EMACS" ]; then
     RPROMPT='%{$(echotc UP 1)%}%B%{$BG[235]%}%{$FG[245]%}$CALENDAR_SYMBOL %D{%a, %x [%V]} $(emoji-clock) %*%b%{$reset_color%}%{$(echotc DO 1)%}'
 fi
