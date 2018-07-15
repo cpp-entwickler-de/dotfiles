@@ -116,7 +116,7 @@ fi
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(adb autojump bd colorize command-not-found dirhistory docker docker-compose emacs extract git gnu-utils safe-paste setenv sudo systemd up wd web-search zsh-256color zsh-autopair zsh-autosuggestions zsh-dwim zsh-peco-history zsh-reentry-hook zsh-syntax-highlighting)
+plugins=(adb autojump bd colorize command-not-found dirhistory docker docker-compose emacs extract git gnu-utils safe-paste setenv sudo systemd up wd web-search zsh-256color zsh-autopair zsh-autosuggestions zsh-dwim zsh-reentry-hook zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -279,6 +279,17 @@ function chpwd() {
     fi
 }
 
+source /usr/share/fzf/shell/key-bindings.zsh
+
+export FZF_DEFAULT_OPTS='--reverse --inline-info --prompt="▶ " --select-1 --exit-0'
+
+function edit() {
+    local FILES
+    FILES="$*"
+    [[ ! -a $@ ]] && IFS=$'\n' FILES=($(fzf-tmux --query="$FILES" --multi))
+    [[ -n "$FILES" ]] && ${EDITOR} "${FILES[@]}"
+}
+alias e=edit
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
@@ -375,10 +386,6 @@ alias make="make -j"
 alias mc="mc --nosubshell"
 alias mkdir="mkdir -p"
 alias mv="mv -i"
-if command -v peco > /dev/null; then
-    alias raw-peco=$(which peco)
-    alias peco="peco --layout=bottom-up --select-1"
-fi
 alias p="ps aux"
 alias t="htop"
 alias top="htop"

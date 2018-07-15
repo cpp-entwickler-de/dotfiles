@@ -75,14 +75,12 @@ function make_link
 
 if [ "$PACKAGES" = TRUE ]; then
     # install packages
-    sudo dnf install PackageKit-command-not-found adobe-source-code-pro-fonts adobe-source-sans-pro-fonts adobe-source-serif-pro-fonts autojump-zsh clang clang-analyzer clang-devel clang-tools-extra cmake-gui colorgcc docker emacs-lucid gcc gdb gdouros-symbola-fonts git git-lfs htop ImageMagick iotop kcachegrind links llvm llvm-devel lnav progress pv recode rubygems sushi util-linux-user valgrind wireless-tools yank zsh
+    sudo dnf install PackageKit-command-not-found adobe-source-code-pro-fonts adobe-source-sans-pro-fonts adobe-source-serif-pro-fonts autojump-zsh clang clang-analyzer clang-devel clang-tools-extra cmake-gui colorgcc docker emacs-lucid fzf gcc gdb gdouros-symbola-fonts git git-lfs htop ImageMagick iotop kcachegrind links llvm llvm-devel lnav progress pv recode rubygems sushi util-linux-user valgrind wireless-tools yank zsh
 
     # glances and modules
     sudo pip install glances psutil
 
     sudo pip install howdoi
-
-    echo "Install Peco from https://github.com/peco/peco and RTags from https://github.com/Andersbakken/rtags manually."
 fi
 
 if [ "$LINKS" = TRUE ]; then
@@ -96,8 +94,7 @@ if [ "$LINKS" = TRUE ]; then
     make_link "$DOTFILES_DIRECTORY/home/glances" "$(realpath ~)/.config/glances"
     make_link "$DOTFILES_DIRECTORY/home/mc" "$(realpath ~)/.config/mc"
     make_link "$DOTFILES_DIRECTORY/home/htoprc" "$(realpath ~)/.config/htop/htoprc"
-    make_link "$DOTFILES_DIRECTORY/home/peco.json" "$(realpath ~)/.config/peco/config.json"
-    
+
     EMACS_USER_FILE=~/.emacs.user
     GIT_USER_FILE=~/.gitconfig.user
     if [ ! -s "$EMACS_USER_FILE" ] || [ ! -s "$GIT_USER_FILE" ]; then
@@ -225,8 +222,7 @@ if [ "$SHELL" = TRUE ]; then
     install_zsh_plugin https://github.com/RobSis/zsh-reentry-hook
     install_zsh_plugin https://github.com/zsh-users/zsh-syntax-highlighting
     install_zsh_plugin https://github.com/chrissicool/zsh-256color
-    install_zsh_plugin https://github.com/jimeh/zsh-peco-history
-    
+
     # change default shell
     sudo chsh -s "$(which zsh)" "$(whoami)" 2> /dev/null
 fi

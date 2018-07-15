@@ -2271,6 +2271,11 @@ Some useful abbreviations
 (use-package describe-number)
 #+END_SRC
 
+*** [[https://github.com/abo-abo/define-word][Define word]]
+#+BEGIN_SRC emacs-lisp
+(use-package define-word)
+#+END_SRC
+
 *** [[https://github.com/cqql/dictcc.el][Translate text]]
 #+BEGIN_SRC emacs-lisp
 (use-package dictcc
@@ -5311,17 +5316,18 @@ Open                         ^^Save           ^^Close                  ^^Switch 
 Text                    ^^Code                                ^^Version Control         ^^System             ^^Other
   _._: Character            _d_: Documentation                    _c_: Commit Message       _p_: Processes       _t_: ToDos
   _#_: Number               _r_: References                       _b_: Blame                _M_: Man page        _w_: Weather
-  _x_: Translate            _h_: Caller hierarchy                                         ^^_I_: Info page
-  _s_: Synonym              _m_: Member hierarchy
-  _g_: Google               _i_: Inheritance hierarchy
-  _o_: Preview markdown
-                          ^^_+_: Preprocess
+  _f_: Define               _h_: Caller hierarchy                                         ^^_I_: Info page
+  _x_: Translate            _m_: Member hierarchy
+  _s_: Synonym              _i_: Inheritance hierarchy
+  _g_: Google
+  _o_: Preview markdown     _+_: Preprocess
                           ^^_l_: Count lines of code
                           ^^_j_: Copy JSON path
 
                           ^^_D_: Toggle shell documentation
 "
   ("#" describe-number-at-point)
+  ("f" define-word-at-point)
   ("x" cpped-show-translation)
   ("s" synosaurus-lookup)
   ("g" helm-google-suggest)
