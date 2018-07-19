@@ -535,6 +535,8 @@ fi
 alias -s ninja=ninja
 
 # Theme
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=5'
+
 if [ -n "$DISPLAY" ]; then
     PROMPT_SYMBOL="▶"
     LINE_BREAK_SYMBOL="↪"
