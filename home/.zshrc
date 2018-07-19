@@ -541,8 +541,8 @@ if [ -n "$DISPLAY" ]; then
     CALENDAR_SYMBOL="" # The FontAwesome calendar symbol
     SEPARATOR_SYMBOL=""
     RETURN_SYMBOL=" ⚠ "
-    USER_SYMBOL=" "
-    ROOT_SYMBOL="🔑 "
+    USER_SYMBOL="  "
+    ROOT_SYMBOL=" 🔑 "
     MACHINE_SYMBOL=" "
     DOCKER_SYMBOL=" "
 else
@@ -552,7 +552,7 @@ else
     SEPARATOR_SYMBOL=""
     RETURN_SYMBOL=" ! "
     USER_SYMBOL=""
-    ROOT_SYMBOL="ROOT"
+    ROOT_SYMBOL=" ROOT "
     MACHINE_SYMBOL="@"
     DOCKER_SYMBOL="D:"
 fi
