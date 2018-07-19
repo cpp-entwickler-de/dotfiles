@@ -888,3 +888,6 @@ __pycache__/
 ### VisualStudio Patch ###
 build/
 
+# cquery
+.cquery_cached_index/
+compile_commands.json
