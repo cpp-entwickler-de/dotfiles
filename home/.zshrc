@@ -458,13 +458,14 @@ if command -v peco > /dev/null; then
                     which cntlm
                     if [ $? -eq 0 ]; then
                         echo -n "Setting proxy password...."
+                        sudo systemctl stop cntlm
                         PASSWORD_NTLM=$(echo "$PASSWORD" | cntlm -a NTLM -u $USER -d $(domainname) -H)
                         PASSWORD_NT=$(echo $PASSWORD_NTLM | grep "PassNT ")
                         PASSWORD_LM=$(echo $PASSWORD_NTLM | grep "PassLM ")
                         sudo sed -i -e "s/PassNT.*/$PASSWORD_NT/g" -e "s/PassLM.*/$PASSWORD_LM/g" /etc/cntlm.conf
                         echo "ok"
                         echo -n "Restarting Proxy.........."
-                        sudo systemctl restart cntlm
+                        sudo systemctl start cntlm
                         echo "ok"
                     fi
                 else
