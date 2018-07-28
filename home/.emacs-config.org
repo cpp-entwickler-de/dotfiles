@@ -5754,6 +5754,26 @@ Namespace
 #+END_SRC
 
 *** Kill/yank
+Insert at position
+#+BEGIN_SRC emacs-lisp
+(cua-selection-mode 1)
+(delete-selection-mode 0)
+(setq cua-global-mark-keep-visible nil)
+
+(global-set-key (kbd "C-M-y") #'cua-toggle-global-mark)
+
+(defun cpped-yank-to-global-mark (prefix)
+  (interactive "P")
+  (if (cua--global-mark-active)
+      (with-current-buffer (marker-buffer cua--global-mark-marker)
+        (goto-char (marker-position cua--global-mark-marker))
+        (whole-line-or-region-yank prefix)
+        (cua--activate-global-mark)
+        (message "Copied to global mark in %s:%d"
+	         (buffer-name (marker-buffer cua--global-mark-marker))
+	         (marker-position cua--global-mark-marker)))))
+#+END_SRC
+
 #+BEGIN_SRC emacs-lisp
 (defhydra cpped-hydra-copy (:exit t :hint nil)
   "
@@ -5773,30 +5793,42 @@ Copy                     ^^Other
   ("k" whole-line-or-region-kill-ring-save :exit nil)
   ("K" (let ((kill-read-only-ok t)
              (buffer-read-only t))
-         (cpped-backward-kill-dwim)))
+         (cpped-backward-kill-dwim)
+         (cpped-yank-to-global-mark)))
   ("w" (let ((kill-read-only-ok t)
              (buffer-read-only t))
-         (kill-word 1)))
+         (kill-word 1)
+         (cpped-yank-to-global-mark)))
   ("W" (let ((kill-read-only-ok t)
              (buffer-read-only t))
-         (backward-kill-word 1)))
+         (backward-kill-word 1)
+         (cpped-yank-to-global-mark)))
   ("s" (let ((kill-read-only-ok t)
            (buffer-read-only t))
-         (kill-sentence)))
+         (kill-sentence)
+         (cpped-yank-to-global-mark)))
   ("S" (let ((kill-read-only-ok t)
              (buffer-read-only t))
-         (backward-kill-sentence)))
+         (backward-kill-sentence)
+         (cpped-yank-to-global-mark)))
   ("x" (let ((kill-read-only-ok t)
              (buffer-read-only t))
-         (kill-sexp)))
+         (kill-sexp)
+         (cpped-yank-to-global-mark)))
   ("X" (let ((kill-read-only-ok t)
              (buffer-read-only t))
-         (backward-kill-sexp)))
+         (backward-kill-sexp)
+         (cpped-yank-to-global-mark)))
   ("e" (let ((kill-read-only-ok)
              (buffer-read-only t))
-         (call-interactively 'change-inner)))
+         (call-interactively 'change-inner)
+         (cpped-yank-to-global-mark)))
   ("a" append-next-kill :exit nil))
 
+(global-set-key (kbd "M-w") '(lambda(prefix)
+                               (interactive "P")
+                               (whole-line-or-region-call-with-region 'kill-ring-save prefix t)
+                               (cpped-yank-to-global-mark prefix)))
 (global-set-key (kbd "M-k") #'cpped-hydra-copy/whole-line-or-region-kill-ring-save)
 
 (defhydra cpped-hydra-kill (:exit t :hint nil)
@@ -5815,20 +5847,40 @@ Cut                   ^^Delete                               ^^Other
   _e_: enclosed area
 "
   ("k" whole-line-or-region-kill-region :exit nil)
-  ("K" cpped-backward-kill-dwim)
-  ("w" kill-word)
-  ("W" backward-kill-word)
-  ("s" kill-sentence)
-  ("S" backward-kill-sentence)
-  ("x" kill-sexp)
-  ("X" backward-kill-sexp)
-  ("e" change-inner)
+  ("K" (progn
+         (cpped-backward-kill-dwim)
+         (cpped-yank-to-global-mark)))
+  ("w" (progn
+         (kill-word)
+         (cpped-yank-to-global-mark)))
+  ("W" (progn
+         (backward-kill-word)
+         (cpped-yank-to-global-mark)))
+  ("s" (progn
+         (kill-sentence)
+         (cpped-yank-to-global-mark)))
+  ("S" (progn
+         (backward-kill-sentence)
+         (cpped-yank-to-global-mark)))
+  ("x" (progn
+         (kill-sexp)
+         (cpped-yank-to-global-mark)))
+  ("X" (progn
+         (backward-kill-sexp)
+         (cpped-yank-to-global-mark)))
+  ("e" (progn
+         (change-inner)
+         (cpped-yank-to-global-mark)))
   ("SPC" just-one-space)
   ("C-SPC" delete-blank-lines)
   ("d" delete-duplicate-lines)
   ("r" keep-lines)
   ("a" append-next-kill :exit nil))
 
+(global-set-key (kbd "C-w") '(lambda(prefix)
+                               (interactive "P")
+                               (whole-line-or-region-call-with-region 'kill-region prefix t)
+                               (cpped-yank-to-global-mark prefix)))
 (global-set-key (kbd "C-k") #'cpped-hydra-kill/body)
 
 (defhydra cpped-hydra-yank (:hint nil :exit nil)
