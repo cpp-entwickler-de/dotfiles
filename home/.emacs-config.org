@@ -3886,6 +3886,10 @@ Set correct major mode
   (setq plantuml-jar-path "/usr/share/java/plantuml.jar")
   (push '("*PLANTUML Preview*" :dedicated t :width 60 :position right :noselect :stick) popwin:special-display-config)
   (add-to-list 'org-src-lang-modes '("plantuml" . plantuml)))
+
+(add-hook 'after-save-hook (lambda ()
+                             (when (equal major-mode 'plantuml-mode)
+                               (plantuml-preview-string 4 (buffer-string)))))
 #+END_SRC
 
 **** [[https://github.com/alexmurray/flycheck-plantuml][Syntax checker]]
