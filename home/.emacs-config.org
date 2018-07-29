@@ -3271,6 +3271,17 @@ Custom error highlighting (colored line under location)
                                 (setq cpped-end-of-function 'c-end-of-defun)))
 #+END_SRC
 
+***** Clang include fixer
+#+BEGIN_SRC emacs-lisp
+(require 'clang-include-fixer)
+(add-hook 'after-save-hook #'(lambda()
+                               (when (or (equal major-mode 'c-mode)
+                                         (equal major-mode 'c++-mode))
+                                 (let ((directory (cpped-build-dir)))
+                                   (call-process "find-all-symbols" nil nil nil (concat "-merge-dir=" directory) (concat "-output-dir=" directory) (concat "-p" directory) (file-truename buffer-file-name)))
+                                 (clang-include-fixer))))
+#+END_SRC
+
 ***** Formatting
 #+BEGIN_SRC emacs-lisp
 (add-hook 'c-mode-common-hook (lambda ()
