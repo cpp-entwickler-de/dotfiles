@@ -3282,13 +3282,6 @@ Custom error highlighting (colored line under location)
                                  (clang-include-fixer))))
 #+END_SRC
 
-***** Formatting
-#+BEGIN_SRC emacs-lisp
-(add-hook 'c-mode-common-hook (lambda ()
-                                (setq cpped-format-region-function 'clang-format)
-                                (setq cpped-format-buffer-function 'clang-format-buffer)))
-#+END_SRC
-
 ***** Auto-newline
 #+BEGIN_SRC emacs-lisp
 (add-hook 'c-mode-common-hook '(lambda ()
@@ -3385,17 +3378,13 @@ Custom error highlighting (colored line under location)
 #+END_SRC
 
 ***** Formatting
-****** Clang
 #+BEGIN_SRC emacs-lisp
 (use-package clang-format
-  :config (setq clang-format-executable "clang-format"))
-#+END_SRC
-
-****** [[https://github.com/koko1000ban/emacs-uncrustify-mode][Uncrustify]]
-#+BEGIN_SRC emacs-lisp
-(use-package uncrustify-mode
-  :after system-packages
-  :config (cpped-install-system-package "uncrustify"))
+  :config
+  (setq clang-format-executable "clang-format")
+  (add-hook 'c-mode-common-hook (lambda ()
+                                  (setq cpped-format-region-function 'clang-format)
+                                  (setq cpped-format-buffer-function 'clang-format-buffer))))
 #+END_SRC
 
 ***** Syntax checkers
@@ -5676,7 +5665,7 @@ Namespace
   _'_: Quoted insert                                                   ^^^^_-_: Value -              ^_:_: Fill paragraph     _s_: Sort          _E_: Evaluate & Replace
   _<_: Complete                                                        ^^^^_#_: Base             ^_<tab>_: Spaces → Tabs      _x_: Transpose     _._: Suggestion
   _g_: Edit area                                                       ^^^^_1_: Flip bool    ^_<backtab>_: Tabs → Spaces                       ^^_F_: Format
-  ___: Overwrite Mode                                                  ^^^^_C_: Color                                                       ^^^^^_u_: Uncrustify
+  ___: Overwrite Mode                                                  ^^^^_C_: Color
   _&_: Typographic Mode                                                ^^^^_L_: To Link
                                                                      ^^^^^^_6_: Decode Base64
   _a_: Create Automatic snippet                                        ^^^^_&_: Encode Base64
@@ -5747,9 +5736,6 @@ Namespace
   ("F" (if (region-active-p)
              (funcall cpped-format-region-function (region-beginning) (region-end))
            (funcall cpped-format-buffer-function)))
-  ("u" (if (region-active-p)
-           (uncrustify)
-         (uncrustify-buffer)))
   ("e" (if (region-active-p)
            (eval-region (region-beginning) (region-end))
          (eval-last-sexp)))
