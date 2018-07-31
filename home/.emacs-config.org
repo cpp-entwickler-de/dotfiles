@@ -3384,7 +3384,11 @@ Custom error highlighting (colored line under location)
   (setq clang-format-executable "clang-format")
   (add-hook 'c-mode-common-hook (lambda ()
                                   (setq cpped-format-region-function 'clang-format)
-                                  (setq cpped-format-buffer-function 'clang-format-buffer))))
+                                  (setq cpped-format-buffer-function 'clang-format-buffer)))
+  (add-hook 'before-save-hook #'(lambda()
+                                  (when (or (equal major-mode 'c-mode)
+                                            (equal major-mode 'c++-mode))
+                                    (clang-format-buffer)))))
 #+END_SRC
 
 ***** Syntax checkers
