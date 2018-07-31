@@ -1,0 +1,90 @@
+---
+Language: Cpp
+Standard: Cpp11
+UseTab: Never # Do not use tabs 
+IndentWidth: 4 # Indent by 4 spaces per level
+CommentPragmas: '.*' # Do not format comments
+BreakBeforeBraces: Custom
+BraceWrapping: # Write scope braces on their own line
+  AfterClass: true
+  AfterControlStatement: true
+  AfterEnum: true
+  AfterFunction: true
+  AfterNamespace: true 
+  AfterStruct: true
+  AfterUnion: true
+  AfterExternBlock: true
+  BeforeCatch: true
+  BeforeElse: true
+  IndentBraces: false
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
+  SplitEmptyNamespace: false
+#
+ColumnLimit: 0 # Allow all line lenghts to prevent argument/parameters always being on one line
+AlwaysBreakBeforeMultilineStrings: false 
+AccessModifierOffset: -4
+MaxEmptyLinesToKeep: 1 # Separate source code blocks by one empty line where appropriate
+PointerBindsToType: true
+IndentCaseLabels: true
+NamespaceIndentation: None # Do not indent namespace content
+AllowShortBlocksOnASingleLine: false
+IndentPPDirectives: None # Do not indent preprocessor directives
+#clang-tidy: Enclose the body of a conditional or loop statement in braces 
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+Cpp11BracedListStyle: true
+BreakBeforeTernaryOperators: true
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeParens: Never
+SpaceInEmptyParentheses: false
+AlignAfterOpenBracket: Align # Separate function parameters and arguments
+BinPackArguments: false
+BinPackParameters: false
+ExperimentalAutoDetectBinPacking: false
+AllowAllParametersOfDeclarationOnNextLine: false
+FixNamespaceComments: true # Follow the closing brace of a namespace by a comment containing the namespace name
+SpacesInAngles: false
+SpaceAfterTemplateKeyword: false
+IncludeBlocks: Regroup
+IncludeCategories:
+  - Regex:    '^<Q[A-Z]+>'               # Qt includes
+    Priority: 3
+  - Regex:    '^<[A-Z].+/[A-Z].+\.h>'    # Project-specific includes
+    Priority: 4
+  - Regex:    '^<[:alnum:]+>'            # Standard library includes
+    Priority: 2
+  - Regex:    '^<[[:alnum:]/]+\.h[px]*>' # Non-project includes
+    Priority: 2
+  - Regex:    '^"[A-Z].+\.h"'            # Local (private interface) includes
+    Priority: 5
+  - Regex:    '.*'
+    Priority: 1
+IncludeIsMainRegex: "(Test)?"
+AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: true
+AlignEscapedNewlines: true
+AlignOperands: true
+AlignTrailingComments: true
+AlwaysBreakTemplateDeclarations: true
+BreakBeforeBinaryOperators: NonAssignment
+BreakConstructorInitializers: BeforeColon
+CompactNamespaces: false
+ConstructorInitializerIndentWidth: 4
+IndentWrappedFunctionNames: true
+KeepEmptyLinesAtTheStartOfBlocks: false
+ReflowComments: false
+SortIncludes: true
+SortUsingDeclarations: true
+SpaceAfterCStyleCast: false
+SpaceAfterTemplateKeyword: false
+SpaceBeforeAssignmentOperators: true
+SpaceInEmptyParentheses: false
+SpacesBeforeTrailingComments: 1
+SpacesInAngles: false
+SpacesInCStyleCastParentheses: false
+SpacesInContainerLiterals: true
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
