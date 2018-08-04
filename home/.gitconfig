@@ -120,6 +120,9 @@ mnemonicPrefix = true
 # Use histogram diff algorithm
 algorithm = histogram
 
+# Highlight moved text
+colorMoved = default
+
 # Show log of submodules
 submodule = log
 
