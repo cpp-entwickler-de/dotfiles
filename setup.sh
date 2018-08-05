@@ -94,6 +94,9 @@ if [ "$PACKAGES" = TRUE ]; then
     sudo pip install glances psutil
 
     sudo pip install howdoi
+
+    # git-undo
+    git_install https://github.com/jwiegley/git-undo-el.git ~/.emacs.d/elpa/git-undo
 fi
 
 if [ "$LINKS" = TRUE ]; then

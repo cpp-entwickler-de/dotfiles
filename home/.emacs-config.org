@@ -4264,10 +4264,8 @@ When using Magit >= 2.4.0
 (use-package git-timemachine)
 #+END_SRC
 **** [[https://github.com/jwiegley/git-undo-el][Git undo]]
-
-TODO fix install; not in melpa
 #+BEGIN_SRC emacs-lisp
-(use-package git-undo)
+(load (concat (file-name-as-directory user-emacs-directory) "elpa/git-undo/git-undo.el"))
 #+END_SRC
 
 **** [[https://github.com/emacs-helm/helm-ls-git][Browse other git projects with helm]]
@@ -5680,17 +5678,17 @@ Namespace
   "
 ☰ Edit
 
-                                ^^Rename           ^^Replace           ^^Change          ^^^Format                        ^^Text             ^^Code
-  _d_: Duplicate                    _n_: Local         _r_: Regex          _c_: Case                 ^_>_: Indentation        _t_: Translate     _/_: Comment
-  _D_: Duplicate & Comment          _N_: File-wide     _p_: in Project     _\"_: String               _m_: Move               _y_: Synonym       _f_: Refactor
-  _i_: Insert                                                          ^^^^_+_: Value +              ^_j_: Join lines         _l_: Spelling      _e_: Evaluate
-  _'_: Quoted insert                                                   ^^^^_-_: Value -              ^_:_: Fill paragraph     _s_: Sort          _E_: Evaluate & Replace
-  _<_: Complete                                                        ^^^^_#_: Base             ^_<tab>_: Spaces → Tabs      _x_: Transpose     _._: Suggestion
-  _g_: Edit area                                                       ^^^^_1_: Flip bool    ^_<backtab>_: Tabs → Spaces                       ^^_F_: Format
-  ___: Overwrite Mode                                                  ^^^^_C_: Color
-  _&_: Typographic Mode                                                ^^^^_L_: To Link
-                                                                     ^^^^^^_6_: Decode Base64
-  _a_: Create Automatic snippet                                        ^^^^_&_: Encode Base64
+                                ^^Rename           ^^Replace                     ^^Change          ^^^Format                        ^^Text             ^^Code
+  _d_: Duplicate                    _n_: Local         _r_: Regex                    _c_: Case          _>_: Indentation                _t_: Translate     _/_: Comment
+  _D_: Duplicate & Comment          _N_: File-wide     _p_: in Project               _\"_: String       _m_: Move                       _y_: Synonym       _f_: Refactor
+  _i_: Insert                                        ^^_G_: With previous commit     _+_: Value +       _j_: Join lines                 _l_: Spelling      _e_: Evaluate
+  _'_: Quoted insert                                                             ^^^^_-_: Value -       _:_: Fill paragraph             _s_: Sort          _E_: Evaluate & Replace
+  _<_: Complete                                                                  ^^^^_#_: Base          _<tab>_: Spaces → Tabs          _x_: Transpose     _._: Suggestion
+  _g_: Edit area                                                                 ^^^^_1_: Flip bool     _<backtab>_: Tabs → Spaces                       ^^_F_: Format
+  ___: Overwrite Mode                                                            ^^^^_C_: Color
+  _&_: Typographic Mode                                                          ^^^^_L_: To Link
+                                                                               ^^^^^^_6_: Decode Base64
+  _a_: Create Automatic snippet                                                  ^^^^_&_: Encode Base64
 "
   ("d" crux-duplicate-current-line-or-region)
   ("D" crux-duplicate-and-comment-current-line-or-region)
@@ -5707,6 +5705,7 @@ Namespace
 
   ("r" vr/query-replace)
   ("p" projectile-replace)
+  ("G" git-undo)
 
   ("c" cpped-hydra-edit-case/body :exit t)
   ("\"" string-edit-at-point)
