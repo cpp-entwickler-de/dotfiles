@@ -5270,9 +5270,9 @@ Open                         ^^Save           ^^Close                  ^^Switch 
       _p_: From project                         ^^_w_: File and window       _f_: Find            _g_: Log                                                   ^^_D_: Diff to
       _P_: From all projects                    ^^_u_: Unused files                             ^^_G_: Autocommit-Log          _6_: Decode Base64              _z_: Clear content
       _C_: From docker container                ^^_a_: Close editor                             ^^_b_: Blame                   _&_: Encode Base64              _c_: Copy name to clipboard
-                                                                                            ^^^^^^_i_: Create public gist                                    ^^_._: Open directory
-      _j_: Header/Source                                                                      ^^^^_I_: Create private gist                                   ^^_+_: Show Directory Tree
-      _t_: Test
+                                                                                          ^^^^^^^^_T_: Trace lines                                           ^^_._: Open directory
+      _j_: Header/Source                                                                    ^^^^^^_i_: Create public gist                                    ^^_+_: Show Directory Tree
+      _t_: Test                                                                             ^^^^^^_I_: Create private gist
   _<RET>_: File under cursor
       _k_: Gist
 "
@@ -5304,6 +5304,17 @@ Open                         ^^Save           ^^Close                  ^^Switch 
   ("g" magit-log-buffer-file-popup)
   ("G" magit-wip-log-current)
   ("b" magit-blame-popup)
+  ("T" (when (region-active-p)
+         (let ((magit-log-arguments
+                (magit-popup-import-file-args
+                 `(,(format "-L %d,%d:%s"
+                            (line-number-at-pos (region-beginning))
+                            (line-number-at-pos (region-end))
+                            buffer-file-name)
+                   "--decorate"
+                   "--simplify-by-decoration")
+                 (list (magit-file-relative-name)))))
+           (magit-invoke-popup 'magit-log-popup nil nil))))
   ("i" gist-region-or-buffer)
   ("I" gist-region-or-buffer-private)
 
