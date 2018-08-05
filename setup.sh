@@ -73,6 +73,19 @@ function make_link
     ln -s "$FILE" "$LINK"
 }
 
+# clone/update git repository
+function git_install
+{
+    REPOSITORY=$1
+    DIRECTORY=$2
+    if [ ! -d "$DIRECTORY" ]; then
+        git clone --quiet --depth 1 "$REPOSITORY" "$DIRECTORY"
+    else
+        cd "$DIRECTORY" || exit
+        git pull --quiet
+    fi
+}
+
 if [ "$PACKAGES" = TRUE ]; then
     # install packages
     sudo dnf install PackageKit-command-not-found adobe-source-code-pro-fonts adobe-source-sans-pro-fonts adobe-source-serif-pro-fonts autojump-zsh clang clang-analyzer clang-devel clang-tools-extra cmake-gui colorgcc docker emacs-lucid fzf gcc gdb gdouros-symbola-fonts git git-lfs htop ImageMagick iotop kcachegrind links llvm llvm-devel lnav progress pv recode rubygems sushi util-linux-user valgrind wireless-tools yank zsh
@@ -197,14 +210,9 @@ function install_zsh_plugin
 {
     PLUGIN_ADDRESS=$1
     PLUGIN_NAME=$(basename "$PLUGIN_ADDRESS")
-
     PLUGIN_DIRECTORY=$OH_MY_ZSH_DIR/custom/plugins/$PLUGIN_NAME
-    if [ ! -d "$PLUGIN_DIRECTORY" ]; then
-        git clone --quiet "$PLUGIN_ADDRESS" "$PLUGIN_DIRECTORY"
-    else
-        cd "$PLUGIN_DIRECTORY" || exit
-        git pull --quiet
-    fi
+
+    git_install "$PLUGIN_ADDRESS" "$PLUGIN_DIRECTORY"
 }
 
 if [ "$SHELL" = TRUE ]; then
