@@ -3483,7 +3483,6 @@ Translation Files
 (add-hook 'cmake-mode-hook (lambda ()
                              (setq-local imenu-generic-expression '(("Function" "^ *function *( *\\([^) ]+\\).*$" 1)
                                                                     ("Macro"  "^ *macro *( *\\([^) ]+\\).*$" 1)))))
-
 #+END_SRC
 
 **** [[https://github.com/Lindydancer/cmake-font-lock][Highlighting]]
@@ -5393,7 +5392,6 @@ Text                    ^^Code                                ^^Version Control 
 (global-set-key (kbd "C-c m") (lambda ()
                                 (interactive)
                                 (popwin:display-buffer "*Messages*")))
-
 #+END_SRC
 
 ** Navigation
