@@ -3840,7 +3840,7 @@ Translation Files
 (use-package company-shell
   :config
   (add-hook 'sh-mode-hook (lambda()
-                            (set (make-local-variable 'company-backends) '((company-yasnippet company-shell company-keywords company-files company-capf company-dabbrev-code cpped-company-line-backend))))))
+                            (set (make-local-variable 'company-backends) '((company-yasnippet company-lsp company-shell company-keywords company-files company-capf company-dabbrev-code cpped-company-line-backend))))))
 #+END_SRC
 
 ***** Syntax checkers
@@ -3864,6 +3864,19 @@ Set correct major mode
 (push '("#!/bin/bash" . bash-mode) magic-mode-alist)
 (push '("#!/bin/busybox" . bash-mode) magic-mode-alist)
 (push '("\\.bash\\'" . bash-mode) auto-mode-alist)
+#+END_SRC
+
+***** Language server
+#+BEGIN_SRC emacs-lisp
+(cpped-install-system-package "bash-language-server" :package-manager 'npm)
+
+(lsp-define-stdio-client lsp-bash
+                         "sh"
+                         (lambda ()
+                           default-directory)
+                         '("bash-language-server" "start"))
+
+(add-hook 'bash-mode-hook #'lsp-bash-enable)
 #+END_SRC
 
 **** ZSH
