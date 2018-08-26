@@ -3627,6 +3627,26 @@ Translation Files
 (push '("\\.x?html?\\'" . html-mode) auto-mode-alist)
 #+END_SRC
 
+**** Editing
+***** Language server
+#+BEGIN_SRC emacs-lisp
+(cpped-install-system-package "vscode-html-languageserver-bin" :package-manager 'npm)
+
+(lsp-define-stdio-client lsp-html
+                         "html"
+                         (lambda ()
+                           default-directory)
+                         '("html-languageserver" "--stdio"))
+
+(add-hook 'html-mode-hook #'lsp-html-enable)
+#+END_SRC
+
+***** Auto-completion
+#+BEGIN_SRC emacs-lisp
+(add-hook 'c-mode-common-hook (lambda()
+                                (set (make-local-variable 'company-backends) '((company-yasnippet company-lsp company-files company-capf company-dabbrev-code cpped-company-line-backend)))))
+#+END_SRC
+
 *** Ini
 #+BEGIN_SRC emacs-lisp
 (defvar ini-mode-syntax-table
