@@ -5656,19 +5656,20 @@ Brightness ^^Saturation ^^Hue
   "
 ☰ Refactor
 
-Namespace
-  _w_: Wrap function/region
-  _r_: Rename enclosing
-  _R_: Rename
-  _d_: Delete enclosing
-  _D_: Delete
+Identifier    ^^Namespace
+  _r_: Rename     _w_: Wrap function/region
+                ^^_n_: Rename enclosing
+                ^^_N_: Rename
+                ^^_d_: Delete enclosing
+                ^^_D_: Delete
 "
+  ("r" lsp-rename)
   ("w" (progn
          (when (not (region-active-p))
            (c-mark-function))
          (call-interactively 'outrespace-wrap-namespace-region)))
-  ("r" outrespace-change-enclosing-ns-name)
-  ("R" outrespace-change-ns-name)
+  ("n" outrespace-change-enclosing-ns-name)
+  ("N" outrespace-change-ns-name)
   ("d" outrespace-delete-enclosing-ns)
   ("D" outrespace-delete-ns-by-name))
 
