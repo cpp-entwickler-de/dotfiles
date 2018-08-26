@@ -3095,7 +3095,7 @@ Custom error highlighting (colored line under location)
 #+BEGIN_SRC emacs-lisp
 (use-package helm-dash
   :config
-  (setq helm-dash-browser-func 'browse-url
+  (setq helm-dash-browser-func 'eww
         helm-dash-docsets-url "https://api.github.com/repos/Kapeli/feeds/contents/"))
 #+END_SRC
 
