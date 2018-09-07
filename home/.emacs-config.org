@@ -6327,7 +6327,7 @@ Run            ^^Info
   ("r" docker-containers-restart-popup)
   ("k" docker-containers-kill-popup)
   ("ß" docker-containers-inspect-popup)
-  ("D" docker-containers-diff-popup)
+  ("d" docker-containers-diff-popup)
   ("q" nil :exit t))
 
 (add-hook 'docker-containers-mode-hook 'cpped-hydra-docker-containers/body)
