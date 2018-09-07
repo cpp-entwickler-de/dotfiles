@@ -4298,6 +4298,7 @@ When using Magit >= 2.4.0
 #+BEGIN_SRC emacs-lisp
 (use-package git-timemachine)
 #+END_SRC
+
 **** [[https://github.com/jwiegley/git-undo-el][Git undo]]
 #+BEGIN_SRC emacs-lisp
 (load (concat (file-name-as-directory user-emacs-directory) "elpa/git-undo/git-undo.el"))
@@ -4308,6 +4309,7 @@ When using Magit >= 2.4.0
 (use-package helm-ls-git
   :after helm)
 #+END_SRC
+
 **** [[https://github.com/defunkt/gist.el][Gist support]]
 #+BEGIN_SRC emacs-lisp
 (use-package gist)
