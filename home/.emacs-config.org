@@ -2281,6 +2281,7 @@ Some useful abbreviations
 *** [[https://github.com/cqql/dictcc.el][Translate text]]
 #+BEGIN_SRC emacs-lisp
 (use-package dictcc
+  :after popwin
   :config
   (defconst cpped-translation-buffer "*Translations*")
   (push `(,cpped-translation-buffer :dedicated t :position bottom :height 20) popwin:special-display-config)
