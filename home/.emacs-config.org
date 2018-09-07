@@ -5952,6 +5952,7 @@ Cut                   ^^Delete                               ^^Other
 (global-set-key (kbd "C-k") #'cpped-hydra-kill/body)
 
 (defhydra cpped-hydra-yank (:hint nil :exit nil)
+  "Yank"
   ("C-y" whole-line-or-region-yank :exit nil)
   ("M-y" helm-show-kill-ring :exit t))
 
