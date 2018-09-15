@@ -580,42 +580,6 @@ Helper function to figure out version control root directory
                 'display '(raise -0.0))))
 #+END_SRC
 
-*** Buffer size (characters/lines)
-#+BEGIN_SRC emacs-lisp
-(defun cpped-powerline-buffersize ()
-  (when (not vlf-mode)
-    (concat
-     (propertize (all-the-icons-faicon "file-text-o")
-                 'face `(:family ,(all-the-icons-faicon-family))
-                 'display '(raise -0.0))
-     (format-mode-line " %I ")
-     (propertize (all-the-icons-faicon "align-left")
-                 'face `(:family ,(all-the-icons-faicon-family))
-                 'display '(raise -0.0))
-     (save-excursion
-       (goto-char (point-max))
-       (format-mode-line " %l")))))
-#+END_SRC
-
-*** File encoding
-#+BEGIN_SRC emacs-lisp
-(defun cpped-powerline-encoding ()
-  (concat
-   (propertize (all-the-icons-faicon "language")
-               'face `(:family ,(all-the-icons-faicon-family))
-               'display '(raise -0.0))
-   " "
-   (symbol-name (coding-system-type buffer-file-coding-system))
-   " "
-   (propertize (pcase (coding-system-eol-type buffer-file-coding-system)
-                 (`0  (all-the-icons-faicon "linux"))
-                 (`1  (all-the-icons-faicon "windows"))
-                 (`2 (all-the-icons-faicon "apple"))
-                 (_ (all-the-icons-faicon "question")))
-               'face `(:family ,(all-the-icons-faicon-family))
-               'display '(raise -0.0))))
-#+END_SRC
-
 *** Current function
 Find path of current position in XML docuement
 #+BEGIN_SRC emacs-lisp
@@ -812,8 +776,6 @@ Find path of current position in XML docuement
                                 (powerline-raw (cpped-powerline-position-info (symbol-value 'face2)) face2 'l)
                                 (powerline-raw (cpped-powerline-region-info (symbol-value 'face2)) face2 'l)
                                 (funcall separator-left face2 mode-line)
-                                (powerline-raw (cpped-powerline-buffersize) mode-line)
-                                (powerline-raw (cpped-powerline-encoding) mode-line 'l)
                                 (when show-function
                                   (funcall separator-left mode-line face1))
                                 (when show-function
@@ -5295,9 +5257,43 @@ CMake              ^^Git                         ^^Directories         ^^Shell  
 
 ** Files
 #+BEGIN_SRC emacs-lisp
+(defun cpped-buffersize ()
+  (when (not vlf-mode)
+    (concat
+     (propertize (all-the-icons-faicon "file-text-o")
+                 'face `(:family ,(all-the-icons-faicon-family))
+                 'display '(raise -0.0))
+     (format-mode-line " %I ")
+     (propertize (all-the-icons-faicon "align-left")
+                 'face `(:family ,(all-the-icons-faicon-family))
+                 'display '(raise -0.0))
+     (save-excursion
+       (goto-char (point-max))
+       (format-mode-line " %l")))))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun cpped-file-encoding ()
+  (concat
+   (propertize (all-the-icons-faicon "language")
+               'face `(:family ,(all-the-icons-faicon-family))
+               'display '(raise -0.0))
+   " "
+   (symbol-name (coding-system-type buffer-file-coding-system))
+   " "
+   (propertize (pcase (coding-system-eol-type buffer-file-coding-system)
+                 (`0  (all-the-icons-faicon "linux"))
+                 (`1  (all-the-icons-faicon "windows"))
+                 (`2 (all-the-icons-faicon "apple"))
+                 (_ (all-the-icons-faicon "question")))
+               'face `(:family ,(all-the-icons-faicon-family))
+               'display '(raise -0.0))))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
 (defhydra cpped-hydra-files (:exit t :hint nil)
   "
-☰ File
+☰ File %s(concat (cpped-powerline-mode-icon) \" \" (cpped-powerline-buffer-id) \" \" (cpped-buffersize) \" \"  (cpped-file-encoding))
 
 Open                         ^^Save           ^^Close                  ^^Switch               ^^Version                    ^^Display                       ^^File                           ^^^^^^Encoding
       _o_: Open                  _s_: Save        _x_: File                _SPC_: Switch file     _v_: Show old version        _h_: Hexadecimal mode       _<DEL>_: Delete                      ^^^^_C-d_: DOS
