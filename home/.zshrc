@@ -267,7 +267,7 @@ function chpwd() {
     if [[ ! $history[$HISTCMD] =~ "cd +[\./]+" ]]; then
         ITEMS=$(ls -A)
         ITEM_COUNT=$(echo $ITEMS | wc -l)
-        if [[ $ITEM_COUNT = "1" && -d $ITEMS ]]; then
+        if [[ $ITEM_COUNT = "1" && -d $ITEMS && "$ITEMS" != ".git" ]]; then
             cd "$ITEMS"
             LIST=false
         fi
