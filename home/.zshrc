@@ -287,7 +287,7 @@ function edit() {
     local FILES
     FILES="$*"
     [[ ! -a $@ ]] && IFS=$'\n' FILES=($(fzf-tmux --query="$FILES" --multi))
-    [[ -n "$FILES" ]] && ${EDITOR} "${FILES[@]}"
+    [[ -n "$FILES" ]] && e "${FILES[@]}"
 }
 alias e=edit
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
