@@ -257,7 +257,7 @@ list-merged = branch --merged
 remove-merged = !git branch -D $(git branch --no-color --merged | grep -Fv '*' | grep -v master | peco --prompt 'Remove:')
 
 # Clone submodules
-clone-recursive = clone --recursive
+clone-recursive = clone --recurse-submodules
 
 # update submodules
 pull-recursive = pull --recurse-submodules
