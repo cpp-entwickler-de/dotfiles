@@ -261,6 +261,7 @@ clone-recursive = clone --recurse-submodules
 
 # update submodules
 pull-recursive = pull --recurse-submodules
+update-submodules = submodule update --init --recursive
 
 # add with file selection
 add-files = !git add $(git status | sed -e 's/^[[:blank:][:alnum:][:punct:]].[[:blank:]]//g' | peco --prompt 'Files to add:')
