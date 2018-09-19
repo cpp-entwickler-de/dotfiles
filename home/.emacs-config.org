@@ -3460,9 +3460,6 @@ Handler to close buffer after quitting ccmake.
         company-tooltip-offset-display 'scrollbar)
   (add-hook 'after-init-hook 'global-company-mode))
 
-(use-package helm-company
-  :after (helm company))
-
 (use-package company-statistics
   :after company
   :config (company-statistics-mode))
