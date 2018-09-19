@@ -4442,6 +4442,14 @@ https://github.com/google/googletest
   (add-hook 'emacs-lisp-mode-hook 'hl-sexp-mode))
 #+END_SRC
 
+**** [[https://github.com/alphapapa/highlight-function-calls][Highlight function calls]]
+#+BEGIN_SRC emacs-lisp
+(use-package highlight-function-calls
+  :config
+  (setq highlight-function-calls-not t)
+  (add-hook 'emacs-lisp-mode-hook 'highlight-function-calls-mode))
+#+END_SRC
+
 **** [[https://github.com/Fanael/highlight-defined][Highlight undefined symbols]]
 #+BEGIN_SRC emacs-lisp
 (defun cpped-highlight-defined--determine-face (symbol)
