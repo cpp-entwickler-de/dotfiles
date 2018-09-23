@@ -2582,7 +2582,7 @@ Handler to close buffer after quitting ccmake.
       (cond
        ((cpped-cmake-build-directory-p) (compile (concat "cmake --build " build-dir " --target " target)))
        ((cpped-ninja-build-directory-p) (compile (concat "ninja -C " build-dir " " target)))
-       ((cpped-cmake-build-directory-p) (compile (concat "make -C " build-dir " " target)))))))
+       ((cpped-make-build-directory-p) (compile (concat "make -C " build-dir " " target)))))))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
