@@ -1329,11 +1329,6 @@ Indicate recursive minibuffer
   :config (push "\\*helpful.*\\*" helm-boring-buffer-regexp-list))
 #+END_SRC
 
-*** Show unbound keys
-#+BEGIN_SRC emacs-lisp
-(use-package unbound)
-#+END_SRC
-
 ** Utilites
 [[https://github.com/bbatsov/crux][A Collection of Ridiculously Useful eXtensions]]
 #+BEGIN_SRC emacs-lisp
