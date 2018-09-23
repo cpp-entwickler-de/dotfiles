@@ -1329,12 +1329,6 @@ Indicate recursive minibuffer
   :config (push "\\*helpful.*\\*" helm-boring-buffer-regexp-list))
 #+END_SRC
 
-*** [[https://github.com/justbur/emacs-which-key][Show available keys after entering prefix]]
-#+BEGIN_SRC emacs-lisp
-(use-package which-key
-  :config (which-key-mode +1))
-#+END_SRC
-
 *** Show unbound keys
 #+BEGIN_SRC emacs-lisp
 (use-package unbound)
