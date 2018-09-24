@@ -3433,7 +3433,14 @@ Handler to close buffer after quitting ccmake.
 
 ***** [[https://github.com/AdamNiederer/0xc][Convert number formats]]
 #+BEGIN_SRC emacs-lisp
-(use-package 0xc)
+(use-package 0xc
+  :config (defun cpped-convert-number (base)
+            (interactive (list (string-to-number (helm :sources (helm-build-sync-source "Bases"
+                                                                  :candidates '("2" "8" "10" "16"))
+                                                       :prompt "Base: "
+                                                       :buffer "*helm number base*"))))
+
+            (0xc-convert-point base)))
 #+END_SRC
 
 ***** [[https://github.com/emacsfodder/kurecolor][Modify colors]]
@@ -6566,7 +6573,7 @@ Identifier    ^^Namespace
 
   ("c" cpped-hydra-edit-case/body :exit t)
   ("\"" string-edit-at-point)
-  ("#" 0xc-convert-point)
+  ("#" cpped-convert-number)
   ("+" shift-number-up)
   ("-" shift-number-down)
   ("1" bool-flip-do-flip)
