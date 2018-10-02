@@ -88,7 +88,7 @@ function git_install
 
 if [ "$PACKAGES" = TRUE ]; then
     # install packages
-    sudo dnf install PackageKit-command-not-found adobe-source-code-pro-fonts adobe-source-sans-pro-fonts adobe-source-serif-pro-fonts autojump-zsh clang clang-analyzer clang-devel clang-tools-extra cmake-gui colorgcc docker emacs-lucid fzf gcc gdb gdouros-symbola-fonts git git-lfs htop ImageMagick iotop kcachegrind links llvm llvm-devel lnav progress pv recode rubygems sushi the_silver_searcher util-linux-user valgrind wget wireless-tools yank zsh
+    sudo dnf install PackageKit-command-not-found adobe-source-code-pro-fonts adobe-source-sans-pro-fonts adobe-source-serif-pro-fonts autojump-zsh clang clang-analyzer clang-devel clang-tools-extra cmake-gui colorgcc docker emacs-lucid fzf gcc gdb gdouros-symbola-fonts git git-lfs htop ImageMagick iotop kcachegrind links llvm llvm-devel lnav progress pv python-devel recode rubygems sushi the_silver_searcher util-linux-user valgrind wget wireless-tools yank zsh
 
     # glances and modules
     sudo pip install glances psutil
