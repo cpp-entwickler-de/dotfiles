@@ -3812,6 +3812,23 @@ Translation Files
 #+END_SRC
 
 **** Editing
+***** Formatting
+#+BEGIN_SRC emacs-lisp
+(cpped-install-system-package "beautysh" :package-manager 'pip)
+
+(defun cpped-beautysh-format-region (start end)
+  "Format a shell buffer with beautysh."
+  (interactive
+   (if (use-region-p)
+       (list (region-beginning) (region-end))
+     (list (beginning-of-buffer) (point))))
+  (call-process-region start end "beautysh" t t t "-" (buffer-file-name)))
+
+(add-hook 'sh-mode-hook (lambda ()
+                          (setq cpped-format-region-function 'cpped-beautysh-format-region)
+                          (setq cpped-format-buffer-function 'cpped-beautysh-format-region)))
+#+END_SRC
+
 ***** Autocompletion
 #+BEGIN_SRC emacs-lisp
 (use-package company-shell
