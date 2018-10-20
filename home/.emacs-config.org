@@ -3443,7 +3443,9 @@ Handler to close buffer after quitting ccmake.
                (save-excursion
                  (move-beginning-of-line nil)
                  (looking-at "#!")))           ; shebang
-          (looking-at "#include")              ; inside an include directive
+          (save-excursion
+            (move-beginning-of-line nil)
+            (looking-at "#include"))           ; inside an include directive
           (nth 4 (syntax-ppss)))               ; inside a comment
       (insert "/")
     (electric-spacing-insert "/")))
