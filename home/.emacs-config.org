@@ -5732,17 +5732,17 @@ Identifier    ^^Namespace
   "
 ☰ Edit
 
-                                ^^Rename           ^^Replace                     ^^Change          ^^^Format                        ^^Text             ^^Code
-  _d_: Duplicate                    _n_: Local         _r_: Regex                    _c_: Case          _>_: Indentation                _t_: Translate     _/_: Comment
-  _D_: Duplicate & Comment          _N_: File-wide     _p_: in Project               _\"_: String       _m_: Move                       _y_: Synonym       _f_: Refactor
-  _i_: Insert                                        ^^_G_: With previous commit     _+_: Value +       _j_: Join lines                 _l_: Spelling      _e_: Evaluate
-  _'_: Quoted insert                                                             ^^^^_-_: Value -       _:_: Fill paragraph             _s_: Sort          _E_: Evaluate & Replace
-  _<_: Complete                                                                  ^^^^_#_: Base          _<tab>_: Spaces → Tabs          _x_: Transpose     _._: Suggestion
+                                ^^Rename           ^^Replace                     ^^Change          ^^^Format                        ^^Text             ^^Transform            ^^Code
+  _d_: Duplicate                    _n_: Local         _r_: Regex                    _c_: Case          _>_: Indentation                _t_: Translate     _6_: Encode Base64     _/_: Comment
+  _D_: Duplicate & Comment          _N_: File-wide     _p_: in Project               _\"_: String       _m_: Move                       _y_: Synonym       _&_: Decode Base64     _f_: Refactor
+  _i_: Insert                                        ^^_G_: With previous commit     _+_: Value +       _j_: Join lines                 _l_: Spelling                             _e_: Evaluate
+  _'_: Quoted insert                                                             ^^^^_-_: Value -       _:_: Fill paragraph             _s_: Sort                                 _E_: Evaluate & Replace
+  _<_: Complete                                                                  ^^^^_#_: Base          _<tab>_: Spaces → Tabs          _x_: Transpose                            _._: Suggestion
   _g_: Edit area                                                                 ^^^^_1_: Flip bool     _<backtab>_: Tabs → Spaces
   ___: Overwrite Mode                                                            ^^^^_C_: Color
   _&_: Typographic Mode                                                          ^^^^_L_: To Link
-                                                                               ^^^^^^_6_: Decode Base64
-  _a_: Create Automatic snippet                                                  ^^^^_&_: Encode Base64
+
+  _a_: Create Automatic snippet
 "
   ("d" crux-duplicate-current-line-or-region)
   ("D" crux-duplicate-and-comment-current-line-or-region)
@@ -5769,9 +5769,7 @@ Identifier    ^^Namespace
   ("1" bool-flip-do-flip)
   ("C" cpped-hydra-color/body :exit t)
   ("L" cpped-org-convert-to-link-dwim :exit t)
-  ("6" base64-decode-region)
-  ("&" base64-encode-region)
-
+  
   (">" indent-tools-hydra/body :exit t)
   ("m" cpped-hydra-edit-move/body :exit t)
   ("j" crux-top-join-line)
@@ -5805,6 +5803,9 @@ Identifier    ^^Namespace
   ("l" flyspell-auto-correct-previous-word)
   ("s" cpped-hydra-edit-sort/body :exit t)
   ("x" cpped-hydra-edit-transpose/body :exit t)
+
+  ("6" base64-encode-region)
+  ("&" base64-decode-region)
 
   ("/" comment-dwim-2)
   ("f" cpped-hydra-refactor/body :exit t)
