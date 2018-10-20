@@ -887,9 +887,7 @@ Find path of current position in XML docuement
 (use-package helm
   :after popwin
   :bind (:map helm-map (("M-SPC" . helm-toggle-all-marks)
-                        ("C-M-y" . helm-copy-to-buffer)
-                        ("<up>" . helm-follow-action-backward)
-                        ("<down>" . helm-follow-action-forward)))
+                        ("C-M-y" . helm-copy-to-buffer)))
   :config
   (setq helm-buffer-max-length nil
         helm-buffers-fuzzy-matching t
