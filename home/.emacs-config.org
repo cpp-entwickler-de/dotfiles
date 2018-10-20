@@ -4271,15 +4271,6 @@ When using Magit >= 2.4.0
   (magit-wip-after-save-mode))
 #+END_SRC
 
-**** [[https://github.com/tarsius/magit-rockstar][Change commit author and date]]
-#+BEGIN_SRC emacs-lisp
-(use-package magit-rockstar
-  :after magit
-  :config
-  (magit-define-popup-action 'magit-rebase-popup ?R "Rockstar" 'magit-rockstar)
-  (magit-define-popup-action 'magit-commit-popup ?n "Reshelve" 'magit-reshelve))
-#+END_SRC
-
 **** [[https://github.com/syohex/emacs-git-messenger][Show commit message of line on request]]
 #+BEGIN_SRC emacs-lisp
 (use-package git-messenger)
