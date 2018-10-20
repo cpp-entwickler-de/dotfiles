@@ -486,6 +486,17 @@ Helper function to figure out version control root directory
               'display '(raise -0.0)))
 #+END_SRC
 
+*** Auto-format
+#+BEGIN_SRC emacs-lisp
+(defun cpped-powerline-auto-format (icon-face)
+  (when (and cpped-auto-format-enabled-p
+             cpped-format-buffer-function)
+    (propertize (all-the-icons-faicon "indent")
+                'face (list ':family (all-the-icons-faicon-family)
+                            ':background (face-attribute icon-face :background))
+                'display '(raise -0.0))))
+#+END_SRC
+
 *** Cursor position
 #+BEGIN_SRC emacs-lisp
 (defun cpped-powerline-position-info (icon-face)
@@ -769,6 +780,7 @@ Find path of current position in XML docuement
                                 (powerline-raw (cpped-powerline-su (symbol-value 'face2)) face2 'r)
                                 (powerline-raw (cpped-powerline-modified (symbol-value 'face2)) face2)
                                 (powerline-raw (cpped-powerline-overwrite-mode (symbol-value 'face2)) face2 'l)
+                                (powerline-raw (cpped-powerline-auto-format (symbol-value 'face2)) face2 'l)
                                 (powerline-raw (cpped-powerline-typo-mode (symbol-value 'face2)) face2 'l)
                                 (powerline-raw (cpped-powerline-key-lock (symbol-value 'cpped-caps-lock-active) "sort-alpha-asc" (symbol-value 'face2)) face2 'l)
                                 (powerline-raw (cpped-powerline-key-lock (symbol-value 'cpped-num-lock-active) "sort-numeric-asc" (symbol-value 'face2)) face2 'l)
@@ -2770,6 +2782,15 @@ Handler to close buffer after quitting ccmake.
 #+BEGIN_SRC emacs-lisp
 (defvar-local cpped-format-region-function nil "The function to call to format the current region.")
 (defvar-local cpped-format-buffer-function nil "The function to call to format the whole buffer.")
+(defvar-local cpped-auto-format-enabled-p t "Whether to enable auto-formatting for the current buffer.")
+#+END_SRC
+
+****** Auto-format
+#+BEGIN_SRC emacs-lisp
+(add-hook 'before-save-hook #'(lambda()
+                                (when (and cpped-auto-format-enabled-p
+                                           cpped-format-buffer-function)
+                                  (funcall cpped-format-buffer-function))))
 #+END_SRC
 
 ****** Fill function calls
@@ -3344,11 +3365,7 @@ Custom error highlighting (colored line under location)
   (setq clang-format-executable "clang-format")
   (add-hook 'c-mode-common-hook (lambda ()
                                   (setq cpped-format-region-function 'clang-format)
-                                  (setq cpped-format-buffer-function 'clang-format-buffer)))
-  (add-hook 'before-save-hook #'(lambda()
-                                  (when (or (equal major-mode 'c-mode)
-                                            (equal major-mode 'c++-mode))
-                                    (clang-format-buffer)))))
+                                  (setq cpped-format-buffer-function 'clang-format-buffer))))
 #+END_SRC
 
 ***** Syntax checkers
@@ -5290,14 +5307,14 @@ CMake              ^^Git                         ^^Directories         ^^Shell  
   "
 ☰ File %s(concat (cpped-powerline-mode-icon) \" \" (cpped-powerline-buffer-id) \" \" (cpped-buffersize) \" \"  (cpped-file-encoding))
 
-Open                             ^^Save                ^^Close                  ^^Switch             ^^Version                    ^^Display                       ^^File                           ^^^^^^Encoding
-      _o_: Open                      _s_: Save             _x_: File                _l_: Last file       _v_: Show old version        _h_: Hexadecimal mode       _<DEL>_: Delete                      ^^^^_C-d_: DOS
-      _C_: From docker container     _S_: Save as          _X_: Other files         _f_: Find            _d_: Diff                    _!_: Toggle read-only mode      _m_: Rename                      ^^^^_C-u_: UNIX
-                                                       ^^^^_w_: File and window                        ^^_g_: Log                                                   ^^_D_: Diff to
-      _j_: Header/Source             _i_: Public gist      _u_: Unused files                           ^^_G_: Autocommit-Log          _6_: Decode Base64              _z_: Clear content
-      _t_: Test                      _I_: Private gist     _a_: Close editor                           ^^_b_: Blame                   _&_: Encode Base64              _c_: Copy name to clipboard
-  _<RET>_: File under cursor                                                                          ^^^^^^_T_: Trace lines                                           ^^_._: Open directory
-      _k_: Gist                                                                                                                       ^^_+_: Show Directory Tree
+Open                             ^^Save                      ^^Close                  ^^Switch             ^^Version                    ^^Display                       ^^File                           ^^^^^^Encoding
+      _o_: Open                      _s_: Save                   _x_: File                _l_: Last file       _v_: Show old version        _h_: Hexadecimal mode       _<DEL>_: Delete                      ^^^^_C-d_: DOS
+      _C_: From docker container     _S_: Save as                _X_: Other files         _f_: Find            _d_: Diff                    _!_: Toggle read-only mode      _m_: Rename                      ^^^^_C-u_: UNIX
+                                                             ^^^^_w_: File and window                        ^^_g_: Log                                                   ^^_D_: Diff to
+      _j_: Header/Source             _i_: Public gist            _u_: Unused files                           ^^_G_: Autocommit-Log          _6_: Decode Base64              _z_: Clear content
+      _t_: Test                      _I_: Private gist           _a_: Close editor                           ^^_b_: Blame                   _&_: Encode Base64              _c_: Copy name to clipboard
+  _<RET>_: File under cursor                                                                             ^^^^^^_T_: Trace lines                                           ^^_._: Open directory
+      _k_: Gist                      _F_: Toggle auto-format                                                                                                        ^^^^^^^^_+_: Show Directory Tree
 "
   ("o" cpped-helm-find-files)
   ("C" docker-find-file)
@@ -5310,6 +5327,9 @@ Open                             ^^Save                ^^Close                  
   ("S" cpped-save-copy)
   ("i" gist-region-or-buffer)
   ("I" gist-region-or-buffer-private)
+  ("F" (if cpped-auto-format-enabled-p
+           (setq-local cpped-auto-format-enabled-p nil)
+         (setq-local cpped-auto-format-enabled-p t)))
 
   ("x" cpped-kill-default-buffer)
   ("X" crux-kill-other-buffers)
@@ -5358,7 +5378,7 @@ Open                             ^^Save                ^^Close                  
 (global-set-key (kbd "C-f") 'cpped-hydra-files/body)
 (global-set-key (kbd "M-^") 'cpped-switch-buffer)
 
-(define-key term-raw-map (kbd "C-f") 'cpped-hydra-files/body)
+;(define-key term-raw-map (kbd "C-f") 'cpped-hydra-files/body)
 #+END_SRC
 
 ** Info
@@ -5705,7 +5725,7 @@ Identifier    ^^Namespace
   _i_: Insert                                        ^^_G_: With previous commit     _+_: Value +       _j_: Join lines                 _l_: Spelling      _e_: Evaluate
   _'_: Quoted insert                                                             ^^^^_-_: Value -       _:_: Fill paragraph             _s_: Sort          _E_: Evaluate & Replace
   _<_: Complete                                                                  ^^^^_#_: Base          _<tab>_: Spaces → Tabs          _x_: Transpose     _._: Suggestion
-  _g_: Edit area                                                                 ^^^^_1_: Flip bool     _<backtab>_: Tabs → Spaces                       ^^_F_: Format
+  _g_: Edit area                                                                 ^^^^_1_: Flip bool     _<backtab>_: Tabs → Spaces
   ___: Overwrite Mode                                                            ^^^^_C_: Color
   _&_: Typographic Mode                                                          ^^^^_L_: To Link
                                                                                ^^^^^^_6_: Decode Base64
@@ -5775,9 +5795,6 @@ Identifier    ^^Namespace
 
   ("/" comment-dwim-2)
   ("f" cpped-hydra-refactor/body :exit t)
-  ("F" (if (region-active-p)
-             (funcall cpped-format-region-function (region-beginning) (region-end))
-           (funcall cpped-format-buffer-function)))
   ("e" (if (region-active-p)
            (eval-region (region-beginning) (region-end))
          (eval-last-sexp)))
