@@ -2034,6 +2034,7 @@ Save system clipboard contents to kill ring before killing
       (call-interactively #'kill-region)
     (kill-region (line-beginning-position) (point))))
 #+END_SRC
+
 *** [[https://github.com/lewang/ws-butler][Remove trailing whitespace in changed lines]]
 #+BEGIN_SRC emacs-lisp
 (use-package ws-butler
@@ -2062,6 +2063,7 @@ Save system clipboard contents to kill ring before killing
 #+BEGIN_SRC emacs-lisp
 (use-package duplicate-thing)
 #+END_SRC
+
 *** Case-insensitive line sorting
 #+BEGIN_SRC emacs-lisp
 (defun cpped-sort-lines-case-insensitive ()
@@ -3937,8 +3939,8 @@ Set correct major mode
 
 ***** Autocompletion
 #+BEGIN_SRC emacs-lisp
-(add-hook 'nxml-mode-hook (lambda() 
-                                  (set (make-local-variable 'company-backends) '((company-yasnippet company-nxml company-files company-capf company-dabbrev-code cpped-company-line-backend)))))
+(add-hook 'nxml-mode-hook (lambda()
+                            (set (make-local-variable 'company-backends) '((company-yasnippet company-nxml company-files company-capf company-dabbrev-code cpped-company-line-backend)))))
 #+END_SRC
 
 ***** XQuery
@@ -3987,6 +3989,7 @@ Set correct major mode
   :config
   (advice-add 'elf-mode :after 'demangle-mode))
 #+END_SRC
+
 ** Diff/Merge
 *** Re-use current frame for all diff contents (including command frame)
 #+BEGIN_SRC emacs-lisp
