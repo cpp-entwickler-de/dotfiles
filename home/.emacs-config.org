@@ -4498,8 +4498,10 @@ Hide info buffer in buffer list
 (push `(,(file-name-nondirectory org-default-notes-file) . "*Notes*") cpped-special-buffer-names-alist)
 #+END_SRC
 
-*** Never kill todo buffer
+*** Never kill special buffers
 #+BEGIN_SRC emacs-lisp
+(push (file-name-nondirectory org-default-bugs-file) cpped-bury-buffers-list)
+(push (file-name-nondirectory org-default-events-file) cpped-bury-buffers-list)
 (push (file-name-nondirectory org-default-todos-file) cpped-bury-buffers-list)
 #+END_SRC
 
