@@ -425,6 +425,18 @@ Helper function to figure out version control root directory
                      'face (list ':weight 'black)))))))
 #+END_SRC
 
+*** Docker project
+#+BEGIN_SRC emacs-lisp
+(cpped-install-system-package "docker")
+
+(defun cpped-powerline-docker-project (icon-face)
+  (when (cpped-is-docker-project-p)
+    (propertize "\xf395" ; docker
+                'face (list ':family (all-the-icons-faicon-family)
+                            ':background (face-attribute icon-face :background))
+                'display '(raise -0.0))))
+#+END_SRC
+
 *** Git Info
 #+BEGIN_SRC emacs-lisp
 (defun cpped-powerline-version-control ()
@@ -774,6 +786,8 @@ Find path of current position in XML docuement
                                   (funcall separator-left face1 mode-line))
                                 (powerline-raw (cpped-powerline-mode-icon) mode-line 'l)
                                 (powerline-raw (cpped-powerline-buffer-id) mode-line 'l)
+                                (when show-project
+                                  (powerline-raw (cpped-powerline-docker-project (symbol-value 'face2)) face2 'l))
                                 (powerline-raw (cpped-powerline-version-control) mode-line 'l)
                                 (funcall separator-left mode-line face2)
                                 (powerline-raw (cpped-powerline-remote (symbol-value 'face2)) face2)
@@ -2310,6 +2324,41 @@ Open binary files in hexl-mode
 
 * Programming
 ** Projects
+*** Use docker to run tools for docker-based projects
+#+BEGIN_SRC emacs-lisp
+(defvar default-docker-compose-file "docker-compose.yml" "The default name for the docker-compose file.")
+
+(defun cpped-docker-compose-file (project-root)
+  "Find the compose file in the project root."
+  (let ((compose-file (when default-docker-compose-file
+                        (concat (file-name-as-directory project-root) default-docker-compose-file))))
+    (when (and compose-file
+             (file-exists-p compose-file))
+        compose-file)))
+
+(defun cpped-is-docker-project-p ()
+  "Check if the current project is supports docker."
+  (if (cpped-docker-compose-file (if (ignore-errors (projectile-project-p))
+                                     (projectile-project-root)
+                                   default-directory))
+      t
+    nil))
+
+(defun cpped-maybe-run-in-docker (project-root command)
+  "Run a command in docker if supported by the project."
+  (let* ((compose-file (cpped-docker-compose-file project-root)))
+    (if compose-file
+        (append `(docker-compose --file ,compose-file --exec) command)
+      command)))
+
+(with-eval-after-load "flycheck"
+  (setq flycheck-command-wrapper-function #'(lambda (command)
+                                              (cpped-maybe-run-in-docker (if (ignore-errors (projectile-project-p))
+                                                                             (projectile-project-root)
+                                                                           default-directory)
+                                                                         command))))
+#+END_SRC
+
 *** CMake
 #+BEGIN_SRC emacs-lisp
 (cpped-install-system-package "cmake")
@@ -2354,7 +2403,10 @@ Handler to close buffer after quitting ccmake.
                   (make-directory build-dir t))
                 (let ((default-directory build-dir))
                   (ansi-term (getenv "SHELL") (concat "*CMake Cache (" build-dir ")*"))
-                  (term-exec (current-buffer) "ccmake" "ccmake" nil (list "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON" "-G" "Ninja" source-dir))
+                  (let* ((full-command (cpped-maybe-run-in-docker source-dir `(ccmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -G Ninja ,source-dir)))
+                         (command (car full-command))
+                         (arguments (cdr full-command)))
+                    (term-exec (current-buffer) command command nil arguments))
                   (cpped-load-project build-dir)))
             (error "`%s' does not contain a CMake project" source-dir))
         (error "`%s' is not a directory" source-dir))))
@@ -2371,7 +2423,10 @@ Handler to close buffer after quitting ccmake.
       (if (cpped-cmake-build-directory-p build-dir)
           (let ((default-directory build-dir))
             (ansi-term (getenv "SHELL") "CMake Cache")
-            (term-exec (current-buffer) "ccmake" "ccmake" nil (list "."))
+            (let* ((full-command (cpped-maybe-run-in-docker (cpped-cmake-source-dir build-dir) '(ccmake .)))
+                   (command (car full-command))
+                   (arguments (cdr full-command)))
+              (term-exec (current-buffer) command command nil arguments))
             (cpped-load-project build-dir))
         (error "`%s' is not a CMake build directory" build-dir))
     (error "`%s' is not a directory" build-dir)))
@@ -2460,7 +2515,7 @@ Handler to close buffer after quitting ccmake.
 (defun cpped-get-cmake-targets (build-dir)
   "List all CMake targets for build-dir."
   (save-match-data
-    (let ((output (shell-command-to-string (concat "cmake --build " build-dir " --target help")))
+    (let ((output (shell-command-to-string (cpped-maybe-run-in-docker (cpped-cmake-source-dir build-dir) `(cmake --build ,build-dir --target help))))
           (position 0)
           (targets (list "all")))
       (while (string-match "^[\\. ]*\\([^\\[: ]+\\)" output position)
@@ -2475,7 +2530,7 @@ Handler to close buffer after quitting ccmake.
   "List all make targets for build-dir."
   (let ((targets (list "all")))
     (with-temp-buffer
-      (insert (shell-command-to-string (concat "LANG=C make -C " build-dir " -nqp .DEFAULT 2>/dev/null")))
+      (insert (shell-command-to-string (cpped-maybe-run-in-docker (cpped-cmake-source-dir build-dir) `(LANG=C make -C ,build-dir -nqp .DEFAULT 2>/dev/null))))
       (goto-char (point-min))
       (save-match-data
         (when (re-search-forward "^# Files" nil t)
@@ -2594,9 +2649,18 @@ Handler to close buffer after quitting ccmake.
   (let ((build-dir (cpped-build-dir)))
     (when (and build-dir target)
       (cond
-       ((cpped-cmake-build-directory-p) (compile (concat "cmake --build " build-dir " --target " target)))
-       ((cpped-ninja-build-directory-p) (compile (concat "ninja -C " build-dir " " target)))
-       ((cpped-make-build-directory-p) (compile (concat "make -C " build-dir " " target)))))))
+       ((cpped-cmake-build-directory-p) (compile (string-join
+                                                  (cpped-maybe-run-in-docker
+                                                   (cpped-cmake-source-dir build-dir)
+                                                   `(cmake --build ,build-dir --target ,target)))))
+       ((cpped-ninja-build-directory-p) (compile (string-join
+                                                  (cpped-maybe-run-docker
+                                                   (cpped-cmake-source-dir build-dir)
+                                                   `(ninja -C ,build-dir ,target)))))
+       ((cpped-cmake-build-directory-p) (compile (string-join
+                                                  (cpped-maybe-run-docker
+                                                   (cpped-cmake-source-dir build-dir)
+                                                   `(make -C ,build-dir ,target)))))))))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
