@@ -808,13 +808,22 @@ Find path of current position in XML docuement
 (defvar cpped-clocked-time-today 0 "The work time clocked today.")
 (defconst cpped-daily-work-minutes (* 8 60) "The number of hours of work per day.")
 
-(defun cpped-remaining-work-time ()
+(defun cpped-remaining-work-time (font-face)
   (when (and cpped-show-work-time
              (org-clock-is-active))
       (let* ((clocked-time (+ cpped-clocked-time-today (floor (- (float-time)
                                                                  (float-time org-clock-start-time)) 60)))
-             (difference (- clocked-time cpped-daily-work-minutes)))
-        (format "%+d:%02d" (/ difference 60) (abs (% difference 60))))))
+             (difference (- clocked-time cpped-daily-work-minutes))
+             (display-text (format "%d:%02d"
+                                   (abs (/ difference 60))
+                                   (abs (% difference 60)))))
+        (if (< difference 0)
+            (propertize (concat "-" display-text)
+                        'face (list ':foreground (face-attribute 'error :foreground)
+                                    ':background (face-attribute font-face :background)))
+          (propertize (concat "+" display-text)
+                      'face (list ':foreground (face-attribute 'info :foreground)
+                                  ':background (face-attribute font-face :background)))))))
 #+END_SRC
 
 *** Powerline
@@ -891,7 +900,7 @@ Find path of current position in XML docuement
                                 (powerline-raw (cpped-powerline-date) mode-line 'l)
                                 (funcall separator-right mode-line face1)
                                 (powerline-raw (cpped-powerline-time face1) face1 'r)
-                                (powerline-raw (cpped-remaining-work-time) face1 'r))))
+                                (powerline-raw (cpped-remaining-work-time (symbol-value 'face1)) face1 'r))))
                      (concat (powerline-render lhs)
                              (powerline-fill mode-line (powerline-width rhs))
                              (powerline-render rhs)))))))
