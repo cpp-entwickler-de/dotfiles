@@ -4907,6 +4907,8 @@ Archive when done, remove flag if reset to todo.
         ("f" "Fixme" entry (function cpped-select-bug-topic) ,(concat "* " cpped-org-todo-keyword-fixme " [#A] %?\n%U\nSCHEDULED: %t\n[[file:%F::%(with-current-buffer (org-capture-get :original-buffer) (number-to-string (line-number-at-pos)))]]\n%i\n") :empty-lines 1 :kill-buffer t)
         ("s" "Support" entry (function cpped-select-support-topic) ,(concat "* " cpped-org-todo-keyword-in-progress " [#B] %?\n%U\n%i\n") :empty-lines 1 :kill-buffer t :clock-in t :clock-keep t)
         ("n" "Note" entry (function cpped-select-note-topic) "* %?\n%U\n%i\n" :empty-lines 1 :kill-buffer t)
+        ("m" "Meeting" entry (function cpped-select-event-topic) ,(concat "* " cpped-org-todo-keyword-todo " [#A] %?\n%T\n%i\n") :empty-lines 1 :kill-buffer t)
+        ("i" "Instant Meeting" entry (function cpped-select-event-topic) ,(concat "* " cpped-org-todo-keyword-in-progress " [#A] %?\n%T\n%i\n") :empty-lines 1 :kill-buffer t :clock-in t :clock-keep t)
         ("c" "Changelog" entry (file (expand-file-name change-log-default-name (cpped-project-dir)) "") "* %?" :empty-lines 1 :kill-buffer t)))
 #+END_SRC
 
