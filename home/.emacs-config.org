@@ -837,7 +837,8 @@ Find path of current position in XML docuement
 (use-package projectile
   :after ag
   :config
-  (setq projectile-enable-caching t
+  (setq projectile-indexing-method 'turbo-alien
+        projectile-enable-caching nil
         projectile-completion-system 'helm
         projectile-switch-project-action 'helm-projectile)
   (projectile-global-mode))
