@@ -774,7 +774,7 @@ Find path of current position in XML docuement
                                                            (car powerline-default-separator-dir))))
                           (project-id (cpped-powerline-project-id (symbol-value 'face1)))
                           (show-project (not (= 0 (length project-id))))
-                          (current-function (cpped-powerline-which-function (symbol-value 'face1)))
+                          (current-function (cpped-powerline-which-function (symbol-value 'mode-line)))
                           (show-function (not (= 0 (length current-function))))
                           (check-status (cpped-powerline-flycheck-status))
                           (show-check-status (not (= 0 (length check-status))))
@@ -803,11 +803,7 @@ Find path of current position in XML docuement
                                 (powerline-raw (cpped-powerline-region-info (symbol-value 'face2)) face2 'l)
                                 (funcall separator-left face2 mode-line)
                                 (when show-function
-                                  (funcall separator-left mode-line face1))
-                                (when show-function
-                                  (powerline-raw current-function face1))
-                                (when show-function
-                                  (funcall separator-left face1 mode-line))
+                                  (powerline-raw current-function mode-line))
                                 (powerline-raw (format-mode-line 'global-mode-string) mode-line)))
                           (rhs (list
                                 (when show-check-status
