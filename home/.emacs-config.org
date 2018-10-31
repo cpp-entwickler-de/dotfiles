@@ -4884,6 +4884,10 @@ Archive when done, remove flag if reset to todo.
   "Select a todo topic."
   (cpped-select-topic "" org-default-todos-file))
 
+(defun cpped-select-support-topic ()
+  "Select a support topic."
+  (cpped-select-topic "Support" org-agenda-files))
+
 (defun cpped-select-bug-topic ()
   "Select a bug topic."
   (cpped-select-topic "" org-default-bugs-file))
@@ -4901,6 +4905,7 @@ Archive when done, remove flag if reset to todo.
         ("p" "Priority To Do" entry (function cpped-select-todo-topic) ,(concat "* " cpped-org-todo-keyword-todo " [#A] %?\n%T\nDEADLINE: %t\n%i\n") :empty-lines 1 :kill-buffer t)
         ("b" "Bug" entry (function cpped-select-bug-topic) ,(concat "* " cpped-org-todo-keyword-bug " [#B] %?\n%U\n%i\n") :empty-lines 1 :kill-buffer t)
         ("f" "Fixme" entry (function cpped-select-bug-topic) ,(concat "* " cpped-org-todo-keyword-fixme " [#A] %?\n%U\nSCHEDULED: %t\n[[file:%F::%(with-current-buffer (org-capture-get :original-buffer) (number-to-string (line-number-at-pos)))]]\n%i\n") :empty-lines 1 :kill-buffer t)
+        ("s" "Support" entry (function cpped-select-support-topic) ,(concat "* " cpped-org-todo-keyword-in-progress " [#B] %?\n%U\n%i\n") :empty-lines 1 :kill-buffer t :clock-in t :clock-keep t)
         ("n" "Note" entry (function cpped-select-note-topic) "* %?\n%U\n%i\n" :empty-lines 1 :kill-buffer t)
         ("c" "Changelog" entry (file (expand-file-name change-log-default-name (cpped-project-dir)) "") "* %?" :empty-lines 1 :kill-buffer t)))
 #+END_SRC
