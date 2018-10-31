@@ -4847,12 +4847,61 @@ Archive when done, remove flag if reset to todo.
 
 ** Capture Templates
 #+BEGIN_SRC emacs-lisp
+(defun cpped-select-topic (name files)
+  "Select an agenda topic."
+  (let ((helm-org-headings-fontify nil)
+        (helm-org-headings-actions (helm-make-actions
+                                    "Select topic"
+                                    (lexical-let ((_files files))
+                                      (lambda (candidate)
+                                        (if (markerp candidate)
+                                            (progn (set-buffer (marker-buffer candidate))
+                                                   (org-capture-put-target-region-and-position)
+	                                           (widen)
+	                                           (goto-char candidate)
+	                                           (set-marker candidate nil))
+                                          (progn (set-buffer (org-capture-target-buffer (if (listp _files)
+                                                                                            (car _files)
+                                                                                          _files)))
+                                                 (goto-char (point-max))
+                                                 (org-capture-put-target-region-and-position)
+                                                 (widen))))))))
+    (or (helm :sources (list (helm-source-org-headings-for-files (if (listp files)
+                                                                     files
+                                                                   (list files)))
+                             (helm-build-dummy-source
+                                 "Create top-level entry"
+                               :action helm-org-headings-actions))
+              :candidate-number-limit 99999
+              :preselect name
+              :truncate-lines helm-org-truncate-lines
+              :input name
+              :prompt "Topic: "
+              :buffer "*helm org headings*")
+        (error "Aborted"))))
+
+(defun cpped-select-todo-topic ()
+  "Select a todo topic."
+  (cpped-select-topic "" org-default-todos-file))
+
+(defun cpped-select-bug-topic ()
+  "Select a bug topic."
+  (cpped-select-topic "" org-default-bugs-file))
+
+(defun cpped-select-note-topic ()
+  "Select a note topic."
+  (cpped-select-topic "" org-default-notes-file))
+
+(defun cpped-select-event-topic ()
+  "Select a event topic."
+  (cpped-select-topic "" org-default-events-file))
+
 (setq org-capture-templates
-      `(("t" "To Do" entry (file+headline org-default-todos-file "") ,(concat "* " cpped-org-todo-keyword-todo " [#B] %?\n%U\n%i\n") :empty-lines 1 :kill-buffer t)
-        ("p" "Priority To Do" entry (file+headline org-default-todos-file "") ,(concat "* " cpped-org-todo-keyword-todo " [#A] %?\n%T\nDEADLINE: %t\n%i\n") :empty-lines 1 :kill-buffer t)
-        ("b" "Bug" entry (file+headline org-default-bugs-file "") ,(concat "* " cpped-org-todo-keyword-bug " [#B] %?\n%U\n%i\n") :empty-lines 1 :kill-buffer t)
-        ("f" "Fixme" entry (file+headline org-default-bugs-file "") ,(concat "* " cpped-org-todo-keyword-fixme " [#A] %?\n%U\nSCHEDULED: %t\n[[file:%F::%(with-current-buffer (org-capture-get :original-buffer) (number-to-string (line-number-at-pos)))]]\n%i\n") :empty-lines 1 :kill-buffer t)
-        ("n" "Note" entry (file+headline org-default-notes-file "") "* %?\n%U\n%i\n" :empty-lines 1 :kill-buffer t)
+      `(("t" "To Do" entry (function cpped-select-todo-topic) ,(concat "* " cpped-org-todo-keyword-todo " [#B] %?\n%U\n%i\n") :empty-lines 1 :kill-buffer t)
+        ("p" "Priority To Do" entry (function cpped-select-todo-topic) ,(concat "* " cpped-org-todo-keyword-todo " [#A] %?\n%T\nDEADLINE: %t\n%i\n") :empty-lines 1 :kill-buffer t)
+        ("b" "Bug" entry (function cpped-select-bug-topic) ,(concat "* " cpped-org-todo-keyword-bug " [#B] %?\n%U\n%i\n") :empty-lines 1 :kill-buffer t)
+        ("f" "Fixme" entry (function cpped-select-bug-topic) ,(concat "* " cpped-org-todo-keyword-fixme " [#A] %?\n%U\nSCHEDULED: %t\n[[file:%F::%(with-current-buffer (org-capture-get :original-buffer) (number-to-string (line-number-at-pos)))]]\n%i\n") :empty-lines 1 :kill-buffer t)
+        ("n" "Note" entry (function cpped-select-note-topic) "* %?\n%U\n%i\n" :empty-lines 1 :kill-buffer t)
         ("c" "Changelog" entry (file (expand-file-name change-log-default-name (cpped-project-dir)) "") "* %?" :empty-lines 1 :kill-buffer t)))
 #+END_SRC
 
