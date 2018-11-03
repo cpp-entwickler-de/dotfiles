@@ -1453,6 +1453,14 @@ Indicate recursive minibuffer
   (setq vlf-application 'dont-ask))
 #+END_SRC
 
+** Execute command on file
+#+BEGIN_SRC emacs-lisp
+(defun cpped-execute-command-on-buffer-file (command)
+  (interactive "sCommand: ")
+  (when buffer-file-name
+    (shell-command (concat command " " buffer-file-name))))
+#+END_SRC
+
 ** Allow editing compressed files
 #+BEGIN_SRC emacs-lisp
 (auto-compression-mode 1)
@@ -5442,10 +5450,10 @@ Open                             ^^Save                      ^^Close            
       _C_: From docker container     _S_: Save as                _X_: Other files         _f_: Find            _d_: Diff                    _!_: Toggle read-only mode      _m_: Rename                      ^^^^_C-u_: UNIX
                                                              ^^^^_w_: File and window                        ^^_g_: Log                                                   ^^_D_: Diff to
       _j_: Header/Source             _i_: Public gist            _u_: Unused files                           ^^_G_: Autocommit-Log          _6_: Decode Base64              _z_: Clear content
-      _t_: Test                      _I_: Private gist           _a_: Close editor                           ^^_b_: Blame                   _&_: Encode Base64              _c_: Copy name to clipboard
-  _<RET>_: File under cursor                                                                             ^^^^^^_T_: Trace lines                                           ^^_._: Open directory
-      _k_: Gist                      _e_: Encrypt                                                                                                                   ^^^^^^^^_+_: Show Directory Tree
-
+      _t_: Test                      _I_: Private gist           _a_: Close editor                           ^^_b_: Blame                   _&_: Encode Base64              _r_: Run command
+  _<RET>_: File under cursor                                                                             ^^^^^^_T_: Trace lines                                           ^^_c_: Copy name to clipboard
+      _k_: Gist                      _e_: Encrypt                                                                                                                   ^^^^^^^^_._: Open directory
+                                                                                                                                                                ^^^^^^^^^^^^_+_: Show Directory Tree
                                    ^^_F_: Toggle auto-format
 "
   ("o" cpped-helm-find-files)
@@ -5493,6 +5501,7 @@ Open                             ^^Save                      ^^Close            
   ("<DEL>" crux-delete-file-and-buffer)
   ("m" crux-rename-file-and-buffer)
   ("z" erase-buffer)
+  ("r" cpped-execute-command-on-buffer-file)
   ("D" ediff-files)
   ("C-d" cpped-unix2dos)
   ("C-u" cpped-dos2unix)
