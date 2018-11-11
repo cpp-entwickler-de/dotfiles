@@ -1751,6 +1751,47 @@ Indicate recursive minibuffer
                                                (force-mode-line-update t)))
 #+END_SRC
 
+*** Notify when long-running command finishes
+#+BEGIN_SRC emacs-lisp
+(defcustom cpped-eshell-minimum-interesting-run-time 30 "The minimum time a command has to take to be interesting.")
+
+(defun cpped-eshell-current-command-start ()
+  "Save timestamp on command start."
+  (setq cpped-eshell-current-command-start-time (current-time)))
+
+(defun cpped-eshell-current-command-stop ()
+  "Show notification when command stops."
+  (when cpped-eshell-current-command-start-time
+    (let ((run-time (truncate (float-time (cpped-get-run-time)))))
+      (unless (< run-time cpped-eshell-minimum-interesting-run-time)
+        (let ((time-string (cpped-format-run-time (cpped-get-run-time)))
+              (command (s-join " " (eshell-flatten-list (list eshell-last-command-name eshell-last-arguments)))))
+          (eshell-interactive-print (format "\nRunning time: %s\n"
+                                            time-string))
+          (notifications-notify :title (format "'%s' finished"
+                                               command)
+                                :body (format "The eshell command '%s' finished %s%s"
+                                              command
+                                              (if (= 0 eshell-last-command-status)
+                                                  "successfully."
+                                                "with error.")
+                                              (if (= 0 eshell-last-command-status)
+                                                  ""
+                                                (format "<br><br>Error code: %d"
+                                                        eshell-last-command-status)))
+                                :app-icon (if (= 0 eshell-last-command-status)
+                                              "utilities-terminal"
+                                            "emblem-important")
+                                :timeout (if (= 0 eshell-last-command-status)
+                                             7200
+                                           0)))))
+    (setq cpped-eshell-current-command-start-time nil)))
+
+(add-hook 'eshell-mode-hook #'(lambda ()
+                                (add-hook 'eshell-pre-command-hook #'cpped-eshell-current-command-start nil t)
+                                (add-hook 'eshell-post-command-hook #'cpped-eshell-current-command-stop nil t)))
+#+END_SRC
+
 ** Help
 *** [[https://github.com/Wilfred/helpful][Better Help Buffer]]
 #+BEGIN_SRC emacs-lisp
