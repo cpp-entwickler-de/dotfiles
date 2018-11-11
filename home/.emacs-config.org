@@ -310,7 +310,6 @@ Disable prettification if cursor is at edge of expression
 ** Icons
 *** [[https://github.com/domtronn/all-the-icons.el][Show icons]]
 #+BEGIN_SRC emacs-lisp
-(use-package font-lock+)
 (use-package all-the-icons)
 #+END_SRC
 
