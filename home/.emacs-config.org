@@ -2431,8 +2431,7 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 #+BEGIN_SRC emacs-lisp
 (use-package aggressive-fill-paragraph
   :config
-  (setq afp-fill-comments-only-mode-list '(prog-mode))
-  (add-hook 'prog-mode-hook #'aggressive-fill-paragraph-mode))
+  (setq afp-fill-comments-only-mode-list '(prog-mode)))
 #+END_SRC
 
 *** Easier escaping
