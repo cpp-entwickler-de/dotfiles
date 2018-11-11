@@ -3670,6 +3670,25 @@ Translation Files
   (add-to-list 'flycheck-checkers 'jenkinscheck))
 #+END_SRC
 
+**** Jenkinsfile
+***** Imenu support
+#+BEGIN_SRC emacs-lisp
+(add-hook 'groovy-mode-hook (lambda()
+                              (setq imenu-create-index-function #'imenu-default-create-index-function)
+                              (setq imenu-generic-expression `(("Stages" ,(rx (0+ space)
+                                                                              "stage"
+                                                                              (0+ space)
+                                                                              (? "(")
+                                                                              (in "'\"")
+                                                                              (group (+ (not (in "'\""))))
+                                                                              (in "'\"")
+                                                                              (? ")")
+                                                                              (0+ space)
+                                                                              (? "{")
+                                                                              (0+ space))
+                                                                1)))))
+#+END_SRC
+
 *** HTML
 #+BEGIN_SRC emacs-lisp
 (push '("\\.x?html?\\'" . html-mode) auto-mode-alist)
