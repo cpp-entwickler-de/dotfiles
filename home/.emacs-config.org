@@ -1923,7 +1923,7 @@ Indicate recursive minibuffer
         recentf-max-menu-items 15
         recentf-auto-save-timer (run-with-idle-timer 300 t
                                                      'recentf-save-list))
-  (recentf-mode t))
+  (recentf-mode))
 #+END_SRC
 
 *** Helm integration
