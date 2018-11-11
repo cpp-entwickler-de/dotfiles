@@ -1687,7 +1687,7 @@ Indicate recursive minibuffer
 **** Company (commands)
 #+BEGIN_SRC emacs-lisp
 (add-hook 'eshell-mode-hook (lambda()
-                              (set (make-local-variable 'company-backends) '((company-yasnippet company-shell company-keywords company-files company-capf company-dabbrev-code cpped-company-line-backend)))))
+                              (set (make-local-variable 'company-backends) '((company-yasnippet company-shell company-keywords company-files company-capf company-dabbrev-code)))))
 #+END_SRC
 
 **** Helm (files/folders)
