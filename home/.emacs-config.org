@@ -3267,7 +3267,6 @@ Handler to close buffer after quitting ccmake.
 #+BEGIN_SRC emacs-lisp
 (use-package which-func
   :config
-  (add-to-list 'which-func-modes 'prog-mode)
   (setq which-func-unknown "n/a")
   (which-function-mode 1))
 #+END_SRC
