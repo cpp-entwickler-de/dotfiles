@@ -454,6 +454,44 @@ Helper function to figure out version control root directory
                                                            (concat revision ".." branch-head)))))))))
 #+END_SRC
 
+*** Running process
+#+BEGIN_SRC emacs-lisp
+(defvar-local cpped-eshell-process-running nil "Flag to indicate if a process is running for the current buffer.")
+(defvar-local cpped-eshell-current-command-start-time nil)
+
+(defun cpped-get-run-time ()
+  (time-subtract (current-time)
+                 cpped-eshell-current-command-start-time))
+
+(defun cpped-format-run-time (time)
+  (let* ((run-time (truncate (float-time time)))
+         (days (/ run-time 60 60 24))
+         (hours (% (/ run-time 60 60) 24))
+         (minutes (% (/ run-time 60) 60))
+         (seconds (% run-time 60)))
+    (concat (when (> days 0)
+              (format "%d days " days))
+            (when (or (> days 0)
+                      (> hours 0))
+              (format "%d:" hours))
+            (if (or (> days 0)
+                    (> hours 0))
+                (format "%02d:" minutes)
+              (when (> minutes 0)
+                (format "%d:" minutes)))
+            (if (or (> days 0)
+                    (> hours 0)
+                    (> minutes 0))
+                (format "%02ds" seconds)
+              (format "%ds" seconds)))))
+
+(defun cpped-powerline-eshell-process-running ()
+  (when cpped-eshell-process-running
+    (concat (propertize "\xf085" ; cogs
+                        'face `(:family ,(all-the-icons-faicon-family))
+                        'display '(raise -0.1))
+            " "
+            (cpped-format-run-time (cpped-get-run-time)))))
 #+END_SRC
 
 *** Show if file is remote
@@ -788,6 +826,7 @@ Find path of current position in XML docuement
                                 (when show-project
                                   (powerline-raw (cpped-powerline-docker-project (symbol-value 'face2)) face2 'l))
                                 (powerline-raw (cpped-powerline-version-control) mode-line 'l)
+                                (powerline-raw (cpped-powerline-eshell-process-running) mode-line 'l)
                                 (funcall separator-left mode-line face2)
                                 (powerline-raw (cpped-powerline-remote (symbol-value 'face2)) face2)
                                 (powerline-raw (cpped-powerline-su (symbol-value 'face2)) face2 'r)
@@ -1699,6 +1738,17 @@ Indicate recursive minibuffer
 #+BEGIN_SRC emacs-lisp
 (use-package bifocal
   :config (bifocal-global-mode 1))
+#+END_SRC
+
+*** Show running command status in mode line
+#+BEGIN_SRC emacs-lisp
+(advice-add 'eshell-command-started :before (lambda ()
+                                              (setq cpped-eshell-process-running t)
+                                              (force-mode-line-update t)))
+
+(advice-add 'eshell-command-finished :before (lambda ()
+                                               (setq cpped-eshell-process-running nil)
+                                               (force-mode-line-update t)))
 #+END_SRC
 
 ** Help
