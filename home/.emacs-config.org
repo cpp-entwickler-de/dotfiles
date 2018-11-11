@@ -281,8 +281,7 @@ Disable prettification if cursor is at edge of expression
 (add-hook 'find-file-hook (lambda ()
                             (push '("\t" . ?⇥) prettify-symbols-alist)
                             (push '("lambda" . ?λ) prettify-symbols-alist)
-                            (push '("\r" . ?↵) prettify-symbols-alist)
-                            (prettify-symbols-mode)))
+                            (push '("\r" . ?↵) prettify-symbols-alist)))
 
 (global-prettify-symbols-mode)
 #+END_SRC
