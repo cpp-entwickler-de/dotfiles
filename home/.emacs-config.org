@@ -1235,20 +1235,297 @@ Indicate recursive minibuffer
                                        comint-postoutput-scroll-to-bottom
                                        comint-watch-for-password-prompt
                                        comint-truncate-buffer)
-      eshell-scroll-to-bottom-on-input 'this
-      eshell-scroll-to-bottom-on-output 'this
-      eshell-kill-processes-on-exit t
       term-buffer-maximum-size 100000)
-
 (add-hook 'term-exec-hook #'term-char-mode)
+
+(use-package eshell
+  :config
+  (setq eshell-banner-message ""
+        eshell-scroll-to-bottom-on-input 'this
+        eshell-scroll-to-bottom-on-output 'this
+        eshell-kill-processes-on-exit t
+        eshell-error-if-no-glob t
+        eshell-hist-ignoredups t
+        eshell-history-size 20000
+        eshell-save-history-o7n-exit t
+        eshell-input-filter 'eshell-input-filter-initial-space
+        eshell-prefer-lisp-functions nil
+        eshell-list-files-after-cd t
+        eshell-destroy-buffer-when-process-dies t
+        eshell-cmpl-cycle-completions t
+        eshell-buffer-maximum-lines 2000
+        eshell-cd-shows-directory t
+        eshell-cmpl-autolist t
+        eshell-cmpl-dir-ignore "\\`\\(\\.\\.?\\|CVS\\|.git\\|.svn\\|.bzr\\)/\\'"
+        eshell-cmpl-expand-before-complete t
+        eshell-cmpl-ignore-case t
+        eshell-command-completions-alist '(("e" . "\\.pdf\\'")
+                                           ("ar" . "\\.[ao]\\'")
+                                           ("e" . "\\.[Cc]\\([Cc]\\|[PpXx][PpXx]\\)?\\'")
+                                           ("e" . "\\.[Hh]\\([Hh]\\|[PpXx][PpXx]\\)?\\'")
+                                           ("readelf" . "\\(\\`[^.]*\\|\\.\\([ao]\\|so\\)\\)\\'")
+                                           ("objdump" . "\\(\\`[^.]*\\|\\.\\([ao]\\|so\\)\\)\\'")
+                                           ("nm" . "\\(\\`[^.]*\\|\\.\\([ao]\\|so\\)\\)\\'")
+                                           ("gdb" . "\\`\\([^.]*\\|a\\.out\\)\\'")
+                                           ("e" . "\.txt\'")
+                                           ("e" . "\.md\'")
+                                           ("e" . "\.bat\'")
+                                           ("e" . "\.bin\'")
+                                           ("e" . "\.cfg\'")
+                                           ("e" . "\.config\'")
+                                           ("e" . "\.ini\'")
+                                           ("e" . "\.el\'")
+                                           ("e" . "\.org\'")
+                                           ("e" . "\.log\'")
+                                           ("gv" . "\.ps\'")
+                                           ("xdvi" . "\.dvi\'")
+                                           ("e" . "\.png\'")
+                                           ("e" . "\.jpe?g\'")
+                                           ("e" . "\.svg\'")
+                                           ("e" . "\.xml\'")
+                                           ("e" . "\.xslt?\'")
+                                           ("unzip -l" . "\.zip\'")
+                                           ("unrar l" . "\.rar\'")
+                                           ("tar tf" . "\.tar\'")
+                                           ("tar ztf" . "\.tar.gz\'")
+                                           ("tar jtf" . "\.tar.bz2\'")
+                                           ("unace l" . "\.ace\'"))
+        eshell-glob-include-dot-files t
+        eshell-ls-initial-args '("-A"
+                                 "-F"
+                                 "-h"
+                                 "-l"
+                                 "-1"
+                                 "-v"
+                                 "--color"
+                                 "--group-directories-first")
+        eshell-modules-list '(eshell-alias
+                              eshell-banner
+                              eshell-basic
+                              eshell-cmpl
+                              eshell-dirs
+                              eshell-glob
+                              eshell-hist
+                              eshell-ls
+                              eshell-pred
+                              eshell-prompt
+                              eshell-script
+                              eshell-smart
+                              eshell-term
+                              eshell-tramp
+                              eshell-unix)
+        eshell-output-filter-functions '(eshell-truncate-buffer
+                                         eshell-postoutput-scroll-to-bottom
+                                         eshell-handle-control-codes
+                                         eshell-handle-ansi-color
+                                         eshell-watch-for-password-prompt)
+        eshell-review-quick-commands t
+        eshell-scroll-to-bottom-on-output 'all
+        eshell-show-lisp-completions t))
+#+END_SRC
+
+*** Environment
+#+BEGIN_SRC emacs-lisp
+(setenv "PAGER" "cat")
+(setenv "LANG" "en_US.UTF-8")
+(setenv "LC_CTYPE" "de_DE.UTF-8")
+(setenv "LC_NUMERIC" "de_DE.UTF-8")
+(setenv "LC_TIME" "de_DE.UTF-8")
+(setenv "LC_MONETARY" "de_DE.UTF-8")
+(setenv "LC_PAPER" "de_DE.UTF-8")
+(setenv "LC_NAME" "de_DE.UTF-8")
+(setenv "LC_ADDRESS" "de_DE.UTF-8")
+(setenv "LC_TELEPHONE" "de_DE.UTF-8")
+(setenv "LC_MEASUREMENT" "de_DE.UTF-8")
+(setenv "BROWSER" "eww")
+(setenv "NINJA_STATUS" "[%p] ")
+#+END_SRC
+
+*** Aliases
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "em-alias"
+  (eshell/alias "d" "dired $1")
+  (eshell/alias "cd.." "cd ..")
+  (eshell/alias "cp" "cp -i $*")
+  (eshell/alias "du" "du -h $*")
+  (eshell/alias "gti" "git $*")
+
+  (eshell/alias "dnf" "sudo dnf $*")
+  (eshell/alias "log" "sudo lnav")
+  (eshell/alias "sysinfo" "glances -1 --tree --fs-free-space --process-short-name -C ~/.config/glances")
+  (eshell/alias "lstree" "l -R $*")
+  (eshell/alias "make" "make -j $*")
+  (eshell/alias "mkdir" "mkdir -p $*")
+  (eshell/alias "mv" "mv -i $*")
+  (eshell/alias "p" "ps aux $*")
+  (eshell/alias "x" "extract $*")
+  (eshell/alias "ag" "ag --smart-case $*")
+
+  (when (executable-find "ninja-build")
+    (eshell/alias "ninja" "ninja-build $*"))
+
+  (eshell/alias "dos2unix" "recode ibmpc..lat1 $*")
+  (eshell/alias "unix2dos" "recode lat1..ibmpc $*")
+  (eshell/alias "unix2mac" "recode lat1..mac $*")
+  (eshell/alias "mac2unix" "recode mac..lat1 $*")
+  (eshell/alias "dos2mac" "recode ibmpc..mac $*")
+  (eshell/alias "mac2dos" "recode mac..ibmpc $*"))
+
+(defun eshell/l (&rest args)
+  (eshell/ls args))
+
+(defun eshell/e (file)
+  (find-file file))
+
+(defun eshell/mcd (directory)
+  "Create a directory and enter it."
+  (eshell/mkdir directory)
+  (eshell/cd directory))
+
+(defun eshell/top ()
+  "Use helm-top instead of top."
+  (helm-top))
+
+(defun eshell/kill ()
+  "Use helm-top to kill processes."
+  (helm-top))
+#+END_SRC
+
+**** Git support
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "magit"
+  (defun eshell/gitroot ()
+    "chnage directory to current project root."
+    (eshell/cd (vc-git-root default-directory)))
+
+  (defun eshell/git-log (&rest arguments)
+    "Use magit instead of git log."
+    (magit-mode-setup #'magit-log-mode arguments)
+    (magit-log-goto-same-commit)
+    (eshell/echo))
+
+  (defun eshell/git (command &rest arguments)
+    "use magit for git status and log commands."
+    (pcase command
+      ("log" (apply #'eshell/git-log arguments))
+      ("status" (progn
+                  (magit-status)
+                  (eshell/echo)))
+      (_ (shell-command-to-string (s-join " " (append (list "git"
+                                                            command)
+                                                      arguments)))))))
+#+END_SRC
+
+*** Smart-open new eshell buffers
+#+BEGIN_SRC emacs-lisp
+(defun cpped-eshell-maybe-new-session (&optional argument)
+  "Create a new interactive Eshell buffer if the current buffer is an Eshell buffer."
+  (interactive "P")
+  (if (eq major-mode 'eshell-mode)
+      (eshell (or argument
+                  t))
+    (eshell argument)))
+#+END_SRC
+
+*** Prompt
+#+BEGIN_SRC emacs-lisp
+(defun cpped-eshell-prompt-concat (&rest contents)
+  (let ((items (-flatten (-non-nil contents))))
+    (when items
+      (s-join " " items))))
+
+(defun cpped-eshell-prompt-section (section-face next-section-face &rest contents)
+  (when contents
+    (concat (propertize (cpped-eshell-prompt-concat " "
+                                                    contents
+                                                    " ")
+                        'face section-face)
+            (propertize ""
+                        'face `(:foreground ,(face-attribute section-face :background)
+                                            :background ,(face-attribute next-section-face :background))))))
+
+(defun cpped-eshell-prompt-result ()
+  (unless (= 0 0)
+    (propertize (cpped-eshell-prompt-concat (propertize (all-the-icons-faicon "exclamation-triangle")
+                                                        'face `(:family ,(all-the-icons-faicon-family))
+                                                        'display '(raise -0.1))
+                                            eshell-last-command-status)
+                'face '(:foreground ,(face-attribute 'warning :foreground)
+                                    :weight 'bold))))
+
+(defun cpped-eshell-prompt-user ()
+  (if (string= "root"
+               (getenv "USER"))
+      (concat (propertize (all-the-icons-faicon "user-plus")
+                          'face `(:family ,(all-the-icons-faicon-family)
+                                          :foreground ,(face-attribute 'warning :foreground))
+                          'display '(raise -0.0)))
+    (unless (string= (getenv "LOGNAME")
+                     (getenv "USER"))
+        (cpped-eshell-prompt-concat (propertize (all-the-icons-faicon "user")
+                                                'face `(:family ,(all-the-icons-faicon-family))
+                                                'display '(raise -0.0))
+                                    (user-login-name)))))
+
+(defun cpped-eshell-prompt-host ()
+  (when (let ((host (getenv "SSH_CONNECTION")))
+          (and host
+               (not (string= "" host))))
+    (cpped-eshell-prompt-concat (propertize (all-the-icons-faicon "desktop")
+                                            'face `(:family ,(all-the-icons-faicon-family))
+                                            'display '(raise -0.1))
+                                (system-name))))
+
+(defun cpped-eshell-prompt-docker ()
+  (let* ((id (shell-command-to-string "cat /proc/self/cgroup | grep docker | head -n 1 | cut -d '/' -f3"))
+         (container (when (and id
+                               (not (string= "" id)))
+                      (shell-command-to-string (concat "docker inspect -f '{{.Config.Image}}' "
+                                                       id)))))
+    (when container
+      (cpped-eshell-prompt-concat (propertize "\xf395" ; docker
+                                              'face `(:family ,(all-the-icons-faicon-family))
+                                              'display '(raise -0.1))
+                                  container))))
+
+(defun cpped-eshell-prompt-path ()
+  (cpped-eshell-prompt-concat (propertize (all-the-icons-faicon "folder-open")
+                                          'face `(:family ,(all-the-icons-faicon-family))
+                                          'display '(raise -0.1))
+                              (propertize (eshell/pwd)
+                                          'face `(:weight 'ultra-bold))))
+
+(setq eshell-prompt-function (lambda ()
+                               (concat (cpped-eshell-prompt-section 'powerline-active1
+                                                                    'powerline-active2
+                                                                    (cpped-eshell-prompt-result)
+                                                                    (cpped-eshell-prompt-user)
+                                                                    (cpped-eshell-prompt-host)
+                                                                    (cpped-eshell-prompt-docker)
+                                                                    (cpped-powerline-version-control))
+                                       (cpped-eshell-prompt-section 'powerline-active2
+                                                                    'mode-line
+                                                                    (cpped-eshell-prompt-path))
+                                       "\n▶ "))
+      eshell-highlight-prompt nil
+      eshell-prompt-regexp (rx line-start (0+ (not (in "▶"))) line-end "▶ "))
 #+END_SRC
 
 *** Clear buffer
 #+BEGIN_SRC emacs-lisp
 (defun cpped-clear-comint-buffer ()
+  "Remove content of comint buffer."
   (interactive)
   (delete-region (point-min) (point-max))
   (comint-send-input))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun eshell/clear ()
+  "Clear the eshell buffer."
+  (let ((inhibit-read-only t))
+    (erase-buffer)
+    (eshell-send-input)))
 #+END_SRC
 
 *** Close buffer after process exits
@@ -1258,27 +1535,100 @@ Indicate recursive minibuffer
                                       (kill-buffer (process-buffer proc)))))
 #+END_SRC
 
+*** Visual commands
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "em-term"
+  (add-to-list 'eshell-visual-commands "top")
+  (add-to-list 'eshell-visual-commands "glances")
+  (add-to-list 'eshell-visual-commands "lnav")
+  (add-to-list 'eshell-visual-commands "ccmake")
+
+  (add-to-list 'eshell-visual-options '("git" "--help")))
+#+END_SRC
+
 *** Open shell in project directory
 #+BEGIN_SRC emacs-lisp
 (defun cpped-shell-project-dir ()
+  "Open eshell in project directory."
   (interactive)
   (let ((default-directory (cpped-project-dir)))
     (if default-directory
-        (ansi-term))))
+        (cpped-eshell-maybe-new-session))))
 #+END_SRC
 
-*** Popup
+*** [[https://github.com/kyagi/shell-pop-el][Popup]]
 #+BEGIN_SRC emacs-lisp
 (use-package shell-pop
   :after helm-buffers
   :bind ("C-#" . shell-pop)
   :config
-  (setq shell-pop-term-shell "/bin/zsh"
+  (setq shell-pop-shell-type '("eshell" "*eshell*" (lambda nil
+                                                     (cpped-eshell-maybe-new-session)))
         shell-pop-universal-key "C-#"
         shell-pop-window-size 60
         shell-pop-full-span t
-        shell-pop-window-position "bottom")
-  (push "\\*ansi-term-.*\\*" helm-boring-buffer-regexp-list))
+        shell-pop-window-position "bottom"))
+#+END_SRC
+
+*** Navigation
+**** [[https://github.com/Fuco1/eshell-bookmark][Bookmarks]]
+#+BEGIN_SRC emacs-lisp
+(use-package eshell-bookmark
+  :config (add-hook 'eshell-mode-hook 'eshell-bookmark-setup))
+#+END_SRC
+
+**** [[https://github.com/peterwvj/eshell-up][Go to parent directories]]
+#+BEGIN_SRC emacs-lisp
+(use-package eshell-up
+  :config
+  (setq eshell-up-ignore-case nil)
+  (defun eshell/up (directory)
+    "Alias for eshell-up."
+    (eshell-up directory)))
+#+END_SRC
+
+**** [[https://github.com/coldnew/eshell-autojump][Jump to directories]]
+#+BEGIN_SRC emacs-lisp
+(use-package eshell-autojump
+  :config
+  (defun cpped-helm-eshell-autojump (wrapped-function &rest arguments)
+    "Select autojump directory via helm."
+    (let ((j-arguments (list (or arguments
+                           (helm :sources (helm-build-sync-source "Common Directories"
+                                            :candidates (eshell-autojump-candidates))
+                                 :prompt "Directory: "
+                                 :buffer "*helm eshell-autojump*")))))
+      (apply wrapped-function j-arguments)))
+  (advice-add 'eshell/j :around #'cpped-helm-eshell-autojump))
+#+END_SRC
+
+**** Jump over directories without files and one subdirectory
+#+BEGIN_SRC emacs-lisp
+(add-hook 'eshell-directory-change-hook #'(lambda ()
+                                            (let* ((content (directory-files default-directory))
+                                                   (directories (seq-remove '(lambda (directory)
+                                                                               (string-match "\\.\\.?" directory))
+                                                                            (seq-filter 'file-directory-p content)))
+                                                   (files (seq-filter 'file-regular-p content)))
+                                              (when (and (not files)
+                                                         directories
+                                                         (= 1 (length directories))
+                                                         (not (string-match "^cd +[\./]+$" (eshell-get-history 0))))
+                                                (let ((eshell-list-files-after-cd nil))
+                                                  (eshell/cd (car directories)))))))
+#+END_SRC
+
+**** Re-enter directory if necessary
+#+BEGIN_SRC emacs-lisp
+(defun cpped-eshell-reenter ()
+  "Re-enter current directory if necessary."
+  (unless (> (file-nlinks default-directory) 0)
+    (eshell/cd (if (file-directory-p default-directory)
+                   default-directory
+                 (expand-file-name "~")))))
+
+(add-hook 'eshell-mode-hook #'(lambda ()
+                                (add-hook 'eshell-pre-command-hook #'cpped-eshell-reenter nil t)))
 #+END_SRC
 
 *** [[https://github.com/mhayashi1120/Emacs-shelldoc][Show man page for shell commands]]
@@ -1308,22 +1658,30 @@ Indicate recursive minibuffer
                               (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)))
 #+END_SRC
 
-*** [[https://github.com/xuchunyang/eshell-did-you-mean][Suggestions for wrong commmands]]
+**** Autosuggest
 #+BEGIN_SRC emacs-lisp
-(use-package eshell-did-you-mean
-  :config
-  (eshell-did-you-mean-setup))
+(use-package esh-autosuggest
+  :hook (eshell-mode-hook . esh-autosuggest-mode))
 #+END_SRC
 
-*** [[https://github.com/ryuslash/eshell-fringe-status][Show status of last command in fringe]]
+*** Add sudo to command line
 #+BEGIN_SRC emacs-lisp
-(use-package eshell-fringe-status)
-#+END_SRC  (add-hook 'eshell-mode-hook 'eshell-fringe-status-mode))
+(with-eval-after-load "eshell"
+(defun cpped-add-sudo ()
+  "Add sudo to the curent command."
+  (interactive)
+  (save-excursion
+    (eshell-bol)
+    (insert "sudo ")))
+
+(add-hook 'eshell-mode-hook (lambda ()
+                              (define-key eshell-mode-map (kbd "C-M-s") 'cpped-add-sudo))))
+#+END_SRC
 
 *** History
 #+BEGIN_SRC emacs-lisp
 (add-hook 'eshell-mode-hook (lambda ()
-              (define-key eshell-mode-map "M-l" 'helm-eshell-history)))
+                              (define-key eshell-mode-map "M-l" 'helm-eshell-history)))
 #+END_SRC
 
 *** [[https://github.com/magit/with-editor][Use emacs as editor]]
