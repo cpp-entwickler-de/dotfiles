@@ -2085,7 +2085,6 @@ Indicate recursive minibuffer
 
 * Text
 #+BEGIN_SRC emacs-lisp
-(push '("\\.doc\\'" . text-mode) auto-mode-alist)
 (push '("\\.txt\\'" . text-mode) auto-mode-alist)
 #+END_SRC
 
