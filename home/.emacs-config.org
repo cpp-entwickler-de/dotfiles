@@ -4332,8 +4332,9 @@ Translation Files
 
 **** Auto-completion
 #+BEGIN_SRC emacs-lisp
-(add-hook 'qml-mode-hook (lambda()
-                           (set (make-local-variable 'company-backends '((company-yasnippet company-qml company-keywords company-files company-capf company-dabbrev-code cpped-company-line-backend))))))
+(use-package company-qml
+  :hook (qml-mode-hook . (lambda()
+                           (set (make-local-variable 'company-backends '((company-yasnippet company-qml company-keywords company-files company-capf company-dabbrev-code cpped-company-line-backend)))))))
 #+END_SRC
 
 **** Documentation
