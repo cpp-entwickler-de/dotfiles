@@ -1209,7 +1209,7 @@ Indicate recursive minibuffer
       (kill-new filename))))
 #+END_SRC
 
-** Screen 
+** Screen
 *** Lock screen
 #+BEGIN_SRC emacs-lisp
 (require 'dbus)
@@ -1889,6 +1889,7 @@ Indicate recursive minibuffer
 #+BEGIN_SRC emacs-lisp
 (use-package sudo-edit)
 #+END_SRC
+
 ** [[https://github.com/m00natic/vlfi][Allow opening large files]]
 #+BEGIN_SRC emacs-lisp
 (setq large-file-warning-threshold (* 25 1024 1024))
@@ -2260,7 +2261,7 @@ Indicate recursive minibuffer
   (add-hook 'org-mode-hook 'auto-highlight-symbol-mode))
 #+END_SRC
 
-*** Highlight number packs 
+*** Highlight number packs
 Use custom regex to ignore color definitions (numbers starting with a # sign)
 #+BEGIN_SRC emacs-lisp
 (use-package num3-mode
@@ -3222,8 +3223,7 @@ Handler to close buffer after quitting ccmake.
               (push '("INFO" . ?🛈) prettify-symbols-alist)
               (push '("NOTE" . ?🗈) prettify-symbols-alist)
               (push '("TODO" . ?🛠) prettify-symbols-alist)
-              (push '("XXX" . ?☓) prettify-symbols-alist)
-)))
+              (push '("XXX" . ?☓) prettify-symbols-alist))))
 #+END_SRC
 
 ***** Find ToDos in file or project
@@ -3953,6 +3953,7 @@ Custom error highlighting (colored line under location)
                                               ("v" "void")
                                               ))
 #+END_SRC
+
 ***** Automatically change dash to underscore in identifiers
 #+BEGIN_SRC emacs-lisp
 (use-package smart-dash
@@ -6448,7 +6449,7 @@ Identifier    ^^Namespace
   ("1" bool-flip-do-flip)
   ("C" cpped-hydra-color/body :exit t)
   ("L" cpped-org-convert-to-link-dwim :exit t)
-  
+
   (">" indent-tools-hydra/body :exit t)
   ("m" cpped-hydra-edit-move/body :exit t)
   ("j" crux-top-join-line)
