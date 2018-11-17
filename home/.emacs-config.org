@@ -320,6 +320,32 @@ Disable prettification if cursor is at edge of expression
 (load-theme cpped-theme t)
 #+END_SRC
 
+** [[https://github.com/rakanalh/emacs-dashboard][Dashboard]]
+#+BEGIN_SRC emacs-lisp
+(use-package dashboard
+  :after helm-buffers
+  :config
+  (setq dashboard-startup-banner (let ((image-url (with-current-buffer (url-retrieve-synchronously (format-time-string "http://dilbert.com/%Y-%m-%d"))
+                                                    (goto-char (point-min))
+                                                    (when (re-search-forward (rx "src=\"" (group "//assets.amuniversal.com/" (+ hex-digit)) "\"")
+                                                                             nil t)
+                                                      (setq url (concat "http:" (match-string 1))))
+                                                    (kill-buffer)
+                                                    url))
+                                       (image-file (make-temp-file "emacs-dilbert" nil ".png")))
+                                   (when image-file
+                                     (url-copy-file image-url image-file t)
+                                     (add-hook 'kill-emacs-hook `(lambda()
+                                                                   (delete-file ,image-file))))
+                                   image-file)
+        dashboard-banner-logo-title ""
+        dashboard-items '((recents . 20)
+                          (projects . 5)
+                          (agenda . 10)))
+  (push (regexp-quote dashboard-buffer-name) helm-boring-buffer-regexp-list)
+  (dashboard-setup-startup-hook))
+#+END_SRC
+
 ** Mode Line
 *** Base Location
 #+BEGIN_SRC emacs-lisp
@@ -5578,6 +5604,8 @@ Archive when done, remove flag if reset to todo.
 
 ** [[https://github.com/bard/org-dashboard/blob/master/org-dashboard.el][Progress Report]]
 #+BEGIN_SRC emacs-lisp
+(require 'url)
+
 (use-package org-dashboard
   :config
   (setq org-dashboard-omit-completed t))
