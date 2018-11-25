@@ -775,7 +775,9 @@ Find path of current position in XML docuement
    (propertize (all-the-icons-faicon "calendar")
                'face `(:family ,(all-the-icons-faicon-family))
                'display '(raise -0.0))
-   (format-time-string " %e.%-m.%G [%W]")))
+   (propertize (format-time-string " %W")
+               'face '(:weight ultra-light))
+   (format-time-string " %e.%-m.%G")))
 #+END_SRC
 
 *** Time
