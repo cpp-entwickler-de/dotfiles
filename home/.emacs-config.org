@@ -6462,7 +6462,7 @@ Identifier    ^^Namespace
 ☰ Edit
 
                                 ^^Rename           ^^Replace                     ^^Change          ^^^Format                        ^^Text             ^^Transform            ^^Code
-  _d_: Duplicate                    _n_: Local         _r_: Regex                    _c_: Case          _>_: Indentation                _t_: Translate     _6_: Encode Base64     _/_: Comment
+  _d_: Duplicate                    _n_: Local         _r_: String/Regex             _c_: Case          _>_: Indentation                _t_: Translate     _6_: Encode Base64     _/_: Comment
   _D_: Duplicate & Comment          _N_: File-wide     _p_: in Project               _\"_: String       _m_: Move                       _y_: Synonym       _&_: Decode Base64     _f_: Refactor
   _i_: Insert                                        ^^_G_: With previous commit     _+_: Value +       _j_: Join lines                 _l_: Spelling                             _e_: Evaluate
   _'_: Quoted insert                                                             ^^^^_-_: Value -       _:_: Fill paragraph             _s_: Sort          _k_: Encrypt           _E_: Evaluate & Replace
