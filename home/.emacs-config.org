@@ -4375,6 +4375,14 @@ Translation Files
 (push '("\\.lsp\\'" . lisp-mode) auto-mode-alist)
 #+END_SRC
 
+**** Highlight current S-EXP
+#+BEGIN_SRC emacs-lisp
+(use-package hl-sexp
+  :config
+  (add-hook 'lisp-mode-hook 'hl-sexp-mode)
+  (add-hook 'emacs-lisp-mode-hook 'hl-sexp-mode))
+#+END_SRC
+
 **** [[https://github.com/Fanael/highlight-defined][Highlight undefined symbols]]
 #+BEGIN_SRC emacs-lisp
 (defun cpped-highlight-defined--determine-face (symbol)
