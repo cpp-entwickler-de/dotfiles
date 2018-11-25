@@ -5068,8 +5068,8 @@ Hide info buffer in buffer list
   :mode ("\\.org\\'" . org-mode)
   :bind (("C-c l" . org-store-link))
   :config
-  (defvar org-default-bugs-file "~/.bugs.org" "The default file for bug tasks.")
   (defvar org-default-todos-file "~/.todos.org" "The default file for todo tasks.")
+  (defvar org-default-bugs-file "~/.bugs.org" "The default file for bug tasks.")
   (defvar org-default-events-file "~/.events.org" "The default file for events.")
   (require 'helm-org)
   (setq org-blank-before-new-entry '((heading . t))
