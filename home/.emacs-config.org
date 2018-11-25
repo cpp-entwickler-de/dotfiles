@@ -5112,7 +5112,9 @@ Hide info buffer in buffer list
         org-support-shift-select t
         org-time-clocksum-use-effort-durations t
         org-use-speed-commands t
-        org-yank-adjusted-subtrees t)
+        org-yank-adjusted-subtrees t
+        helm-org-headings-fontify nil
+        helm-org-format-outline-path t)
   (push "\\*Org Agenda\\*" helm-boring-buffer-regexp-list)
   (push '("*Agenda Commands*" :dedicated t :position bottom :height 20) popwin:special-display-config)
   (push '("*Org Agenda*" :position bottom :height 30) popwin:special-display-config)
