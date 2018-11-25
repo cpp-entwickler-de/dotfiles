@@ -2799,6 +2799,16 @@ Open binary files in hexl-mode
                               (hexl-mode))))
 #+END_SRC
 
+* Images
+** Disable hex edit mode for images
+#+BEGIN_SRC emacs-lisp
+(push "\\.jpg\\'" cpped-no-hexedit-extensions)
+(push "\\.jpeg\\'" cpped-no-hexedit-extensions)
+(push "\\.png\\'" cpped-no-hexedit-extensions)
+(push "\\.gif\\'" cpped-no-hexedit-extensions)
+(push "\\.svg\\'" cpped-no-hexedit-extensions)
+#+END_SRC
+
 * Programming
 ** Projects
 *** Use docker to run tools for docker-based projects
