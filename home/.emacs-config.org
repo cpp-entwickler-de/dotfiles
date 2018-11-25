@@ -5329,22 +5329,22 @@ Note: For this to work, Org must be version 8.3 or higher. Org is bundled with e
 #+BEGIN_SRC emacs-lisp
 (setq org-structure-template-alist
       '(("a" "#+BEGIN_ASCII\n?\n#+END_ASCII\n" "")
-        ("b" "#+BEGIN_SRC bash\n?\n#+END_SRC\n" "<src lang=\"?\">\n\n</src>")
+        ("b" "#+BEGIN_SRC bash\n?\n#+END_SRC\n" "<src lang=\"bash\">\n?\n</src>")
         ("c" "#+BEGIN_CENTER\n?\n#+END_CENTER\n" "<center>\n?\n</center>")
-        ("d" "#+BEGIN_SRC dot\n?\n#+END_SRC\n" "<src lang=\"dot\">\n\n</src>")
-        ("D" "#+BEGIN_SRC ditaa\n?\n#+END_SRC\n" "<src lang=\"ditaa\">\n\n</src>")
+        ("d" "#+BEGIN_SRC dot\n?\n#+END_SRC\n" "<src lang=\"dot\">\n?\n</src>")
+        ("D" "#+BEGIN_SRC ditaa\n?\n#+END_SRC\n" "<src lang=\"ditaa\">\n?\n</src>")
         ("e" "#+BEGIN_EXAMPLE\n?\n#+END_EXAMPLE\n" "<example>\n?\n</example>")
         ("h" "#+BEGIN_HTML\n?\n#+END_HTML\n" "<literal style=\"html\">\n?\n</literal>")
         ("i" "#+INCLUDE: %file ?\n" "<include file=%file markup=\"?\">")
-        ("l" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC\n" "<src lang=\"emacs-lisp\">\n\n</src>")
+        ("l" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC\n" "<src lang=\"emacs-lisp\">\n?\n</src>")
         ("p" ":PROPERTIES:\n?\n:END:\n")
         ("/" "#+BEGIN_COMMENT\n?\n#+END_COMMENT\n" "<!--\n?\n-->")
         ("q" "#+BEGIN_QUOTE\n?\n#+END_QUOTE\n" "<quote>\n?\n</quote>")
         ("r" "#+BEGIN_SRC ?\n\n#+END_SRC\n" "<src lang=\"?\">\n\n</src>")
-        ("s" "#+BEGIN_SRC shell\n?\n#+END_SRC\n" "<src lang=\"?\">\n\n</src>")
-        ("u" "#+BEGIN_SRC plantuml\n?\n#+END_SRC\n" "<src lang=\"plantuml\">\n\n</src>")
+        ("s" "#+BEGIN_SRC shell\n?\n#+END_SRC\n" "<src lang=\"shell\">\n?\n</src>")
+        ("u" "#+BEGIN_SRC plantuml\n?\n#+END_SRC\n" "<src lang=\"plantuml\">\n?\n</src>")
         ("v" "#+BEGIN_VERBATIM\n?\n#+END_VERBATIM\n" "<verbatim>\n?\n</verbatim>")
-        ("z" "#+BEGIN_SRC zsh\n?\n#+END_SRC\n" "<src lang=\"?\">\n\n</src>")))
+        ("z" "#+BEGIN_SRC zsh\n?\n#+END_SRC\n" "<src lang=\"zsh\">\n?\n</src>")))
 #+END_SRC
 
 ** TODO-States
