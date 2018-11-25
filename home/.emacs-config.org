@@ -6934,6 +6934,10 @@ Settings                       ^^Snippets            ^^Abbreviations            
   _g_: Customize group
 
   _s_: Set variable
+
+  _d_: %s(if debug-on-error
+             \"Disable\"
+           \"Enable\") debug on error
 "
   ("c" (find-file cpped-config-file))
   ("m" (find-file custom-file))
@@ -6945,7 +6949,8 @@ Settings                       ^^Snippets            ^^Abbreviations            
   ("t" (custom-theme-visit-theme cpped-theme))
   ("v" customize-variable)
   ("g" customize-group)
-  ("s" set-variable))
+  ("s" set-variable)
+  ("d" (setq debug-on-error (not debug-on-error))))
 
 (global-set-key (kbd "C-S-s") #'cpped-hydra-settings/body)
 #+END_SRC
