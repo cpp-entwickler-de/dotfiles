@@ -5331,6 +5331,7 @@ Note: For this to work, Org must be version 8.3 or higher. Org is bundled with e
       '(("a" "#+BEGIN_ASCII\n?\n#+END_ASCII\n" "")
         ("b" "#+BEGIN_SRC bash\n?\n#+END_SRC\n" "<src lang=\"bash\">\n?\n</src>")
         ("c" "#+BEGIN_CENTER\n?\n#+END_CENTER\n" "<center>\n?\n</center>")
+        ("+" "#+BEGIN_SRC c++\n?\n#+END_SRC\n" "<src lang=\"c++\">\n?\n</src>")
         ("d" "#+BEGIN_SRC dot\n?\n#+END_SRC\n" "<src lang=\"dot\">\n?\n</src>")
         ("D" "#+BEGIN_SRC ditaa\n?\n#+END_SRC\n" "<src lang=\"ditaa\">\n?\n</src>")
         ("e" "#+BEGIN_EXAMPLE\n?\n#+END_EXAMPLE\n" "<example>\n?\n</example>")
