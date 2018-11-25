@@ -6486,7 +6486,7 @@ Identifier    ^^Namespace
   ("a" aya-create)
 
   ("n" iedit-dwim)
-  ("N" iedit)
+  ("N" iedit-mode)
 
   ("r" vr/query-replace)
   ("p" projectile-replace)
