@@ -2459,6 +2459,25 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
   (setq afp-fill-comments-only-mode-list '(prog-mode)))
 #+END_SRC
 
+*** Join lines
+#+BEGIN_SRC emacs-lisp
+(defun cpped-join-lines ()
+  "Join lines, optionally with a separator and quotes."
+  (interactive)
+  (if (region-active-p)
+      (let ((separator-character (read-string "Separator: "))
+            (quote-character (read-string "Quote: ")))
+        (save-restriction
+          (narrow-to-region (region-beginning) (region-end))
+          (let ((lines (split-string (buffer-string) "\n" t)))
+            (delete-region (point-min) (point-max))
+            (insert (concat quote-character
+                            (s-join (concat quote-character separator-character quote-character)
+                                    lines)
+                            quote-character)))))
+    (crux-top-join-line)))
+#+END_SRC
+
 *** Easier escaping
 #+BEGIN_SRC emacs-lisp
 (use-package string-edit)
@@ -6503,7 +6522,7 @@ Identifier    ^^Namespace
 
   (">" indent-tools-hydra/body :exit t)
   ("m" cpped-hydra-edit-move/body :exit t)
-  ("j" crux-top-join-line)
+  ("j" cpped-join-lines)
   (":" (if (derived-mode-p 'prog-mode)
            (if (nth 4 (syntax-ppss))
                (fill-paragraph)
