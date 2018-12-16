@@ -4166,6 +4166,24 @@ Translation Files
 #+BEGIN_SRC emacs-lisp
 (add-hook 'cmake-mode-hook (lambda()
                              (set (make-local-variable 'company-backends) '((company-yasnippet company-cmake company-files company-capf company-dabbrev-code cpped-company-line-backend)))))
+
+***** Formatting
+#+BEGIN_SRC emacs-lisp
+(cpped-install-system-package "cmake_format" :package-manager 'pip)
+
+(defun cpped-cmake-format-buffer ()
+  "Format the buffer with cmake-format."
+  (interactive)
+  (call-process "cmake-format"
+                nil
+                nil
+                nil
+                "--in-place"
+                (buffer-file-name))
+  (revert-buffer t t t))
+
+(add-hook 'cmake-mode-hook (lambda ()
+                             (setq cpped-format-buffer-function 'cpped-cmake-format-buffer)))
 #+END_SRC
 
 **** Documentation
