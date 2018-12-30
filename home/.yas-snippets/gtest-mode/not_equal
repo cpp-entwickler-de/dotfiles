@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: Test if not equal
+# key: !
+# --
+${1:$$(yas-choose-value '("EXPECT" "ASSERT"))}_${2:$$(yas-choose-value '("NE" "STRNE" "STRCASENE"))}(${3:`yas-selected-text`})${4: << \"$5\"};
+$0

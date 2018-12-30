@@ -1,0 +1,21 @@
+# -*- mode: snippet -*-
+# key: c
+# name: Test Class
+
+# --
+class ${1:`(replace-regexp-in-string "^T[Ee][Ss][Tt]_?" "" (file-name-nondirectory (file-name-sans-extension (buffer-file-name))))`}
+    : public ::testing::Test
+{
+protected:
+${2:    void SetUp() override
+    {
+        $0
+    }
+
+}${3:    void TearDown() override
+{
+
+}
+}};
+
+$0

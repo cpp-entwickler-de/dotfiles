@@ -1,0 +1,12 @@
+# key: f
+# name: Test Fixture
+# --
+TEST_F(${1:`(or (save-excursion
+                  (goto-char (point-min))
+                  (save-match-data
+                    (search-forward-regexp (rx "class" (zero-or-more blank) (group (one-or-more (in alphanumeric "_"))) (one-or-more (not (in "{"))) "testing::Test") nil t 1)
+                    (match-string 1)))
+                (replace-regexp-in-string "^T[Ee][Ss][Tt]_?" "" (file-name-nondirectory (file-name-sans-extension (buffer-file-name)))))`}, ${2:TestName})
+{
+$0
+}

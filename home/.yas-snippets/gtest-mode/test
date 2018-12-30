@@ -1,0 +1,7 @@
+# key: t
+# name: Test Case
+# --
+TEST(${1:`(replace-regexp-in-string "^T[Ee][Ss][Tt]_?" "" (file-name-nondirectory (file-name-sans-extension (buffer-file-name))))`}, ${2:TestName})
+{
+$0
+}

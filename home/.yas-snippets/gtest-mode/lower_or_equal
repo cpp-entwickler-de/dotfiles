@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: Test if lower or equal
+# key: <=
+# --
+${1:$$(yas-choose-value '("EXPECT" "ASSERT"))}_LE(${2:`yas-selected-text`})${3: << \"$4\"};
+$0
