@@ -1215,7 +1215,7 @@ Indicate recursive minibuffer
 
 **** Show line numbers
 #+BEGIN_SRC emacs-lisp
-(setq display-line-numbers t
+(setq display-line-numbers nil
       display-line-numbers-grow-only t
       display-line-numbers-widen nil
       display-line-numbers-width-start t)
