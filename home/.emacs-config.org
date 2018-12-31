@@ -1832,6 +1832,11 @@ Indicate recursive minibuffer
 #+END_SRC
 
 ** Windows
+*** Re-use frames
+#+BEGIN_SRC emacs-lisp
+(setq display-buffer-reuse-frames t)
+#+END_SRC
+
 *** Hide dividers between windows
 #+BEGIN_SRC emacs-lisp
 (setq window-divider-mode nil)
