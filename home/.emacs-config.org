@@ -5409,6 +5409,7 @@ Note: For this to work, Org must be version 8.3 or higher. Org is bundled with e
 (setq org-structure-template-alist
       '(("a" "#+BEGIN_ASCII\n?\n#+END_ASCII\n" "")
         ("b" "#+BEGIN_SRC bash\n?\n#+END_SRC\n" "<src lang=\"bash\">\n?\n</src>")
+        ("*" "#+BEGIN_SRC calc\n?\n#+END_SRC\n" "<src lang=\"calc\">\n?\n</src>")
         ("c" "#+BEGIN_CENTER\n?\n#+END_CENTER\n" "<center>\n?\n</center>")
         ("+" "#+BEGIN_SRC c++\n?\n#+END_SRC\n" "<src lang=\"c++\">\n?\n</src>")
         ("d" "#+BEGIN_SRC dot :file %file :cmdline -Kdot -Tpng\n?\n#+END_SRC\n" "<src lang=\"dot\">\n?\n</src>")
@@ -5416,7 +5417,8 @@ Note: For this to work, Org must be version 8.3 or higher. Org is bundled with e
         ("h" "#+BEGIN_HTML\n?\n#+END_HTML\n" "<literal style=\"html\">\n?\n</literal>")
         ("i" "#+INCLUDE: %file ?\n" "<include file=%file markup=\"?\">")
         ("l" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC\n" "<src lang=\"emacs-lisp\">\n?\n</src>")
-        ("p" ":PROPERTIES:\n?\n:END:\n")
+        ("p" "#+BEGIN_SRC gnuplot :file %file\n?\n#+END_SRC\n" "<src lang=\"plantuml\">\n?\n</src>")
+        ("P" ":PROPERTIES:\n?\n:END:\n")
         ("/" "#+BEGIN_COMMENT\n?\n#+END_COMMENT\n" "<!--\n?\n-->")
         ("q" "#+BEGIN_QUOTE\n?\n#+END_QUOTE\n" "<quote>\n?\n</quote>")
         ("r" "#+BEGIN_SRC ?\n\n#+END_SRC\n" "<src lang=\"?\">\n\n</src>")
@@ -6781,11 +6783,13 @@ Cut                   ^^Delete                               ^^Other
   "
 ☰ Structure templates
 
-Format          ^^Markup       ^^Script            ^^Diagram      ^^Other
-  _c_: Center       _a_: ASCII     _l_: Emacs Lisp     _d_: Dot       _i_: include
-  _q_: Quote                     ^^_b_: Bash           _u_: UML
-  _v_: Verbatim                  ^^_s_: Shell
-                               ^^^^_r_: Source
+Format          ^^Markup         ^^Script            ^^Diagram        ^^Other
+  _c_: Center       _a_: ASCII       _l_: Emacs Lisp     _d_: Dot         _i_: include
+  _e_: Example      _h_: HTML        _z_: Zsh            _u_: UML         _P_: Properties
+  _q_: Quote        _/_: Comment     _+_: C++            _p_: Gnuplot     _*_: Calculator
+  _v_: Verbatim                    ^^_b_: Bash
+                                 ^^^^_s_: Shell
+                                 ^^^^_r_: Source
 "
   ("c" (cpped-org-expand-template "<c"))
   ("e" (cpped-org-expand-template "<e"))
@@ -6793,15 +6797,19 @@ Format          ^^Markup       ^^Script            ^^Diagram      ^^Other
   ("v" (cpped-org-expand-template "<v"))
   ("a" (cpped-org-expand-template "<a"))
   ("h" (cpped-org-expand-template "<h"))
+  ("/" (cpped-org-expand-template "</"))
   ("l" (cpped-org-expand-template "<l"))
   ("z" (cpped-org-expand-template "<z"))
+  ("+" (cpped-org-expand-template "<+"))
   ("b" (cpped-org-expand-template "<b"))
   ("s" (cpped-org-expand-template "<s"))
   ("r" (cpped-org-expand-template "<r"))
   ("d" (cpped-org-expand-template "<d"))
   ("u" (cpped-org-expand-template "<u"))
+  ("p" (cpped-org-expand-template "<p"))
   ("i" (cpped-org-expand-template "<i"))
-  ("p" (cpped-org-expand-template "<p")))
+  ("P" (cpped-org-expand-template "<P"))
+  ("*" (cpped-org-expand-template "<*")))
 
 (define-key org-mode-map "<" (lambda ()
                                (interactive)
