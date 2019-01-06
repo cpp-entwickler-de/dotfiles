@@ -4702,6 +4702,7 @@ Set correct major mode
 (add-hook 'nxml-mode-hook (lambda()
                             (set (make-local-variable 'helm-dash-docsets) '("HTML" "SVG" "XSLT"))))
 #+END_SRC
+
 ** Debugging
 #+BEGIN_SRC emacs-lisp
 (defvar gdb-many-windows t)
