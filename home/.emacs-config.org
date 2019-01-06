@@ -5357,18 +5357,6 @@ Remove check on buffer close
 (setq org-edit-src-auto-save-idle-delay cpped-autosave-delay)
 #+END_SRC
 
-*** Ditaa
-**** Install
-#+BEGIN_SRC emacs-lisp
-(with-eval-after-load "system-packages"
-  (cpped-install-system-package "ditaa"))
-#+END_SRC
-
-**** Set correct jar path
-#+BEGIN_SRC emacs-lisp
-(setq org-ditaa-jar-path "/usr/share/java/ditaa.jar")
-#+END_SRC
-
 *** Allow evaluation
 Disable evaluation confirmation for some languages
 #+BEGIN_SRC emacs-lisp
@@ -5376,7 +5364,6 @@ Disable evaluation confirmation for some languages
   "Do not confirm evaluation for these languages."
   (not (or (string= lang "bash")
            (string= lang "calc")
-           (string= lang "ditaa")
            (string= lang "dot")
            (string= lang "gnuplot")
            (string= lang "latex")
@@ -5393,7 +5380,6 @@ Note: For this to work, Org must be version 8.3 or higher. Org is bundled with e
 #+BEGIN_SRC emacs-lisp
 (org-babel-do-load-languages 'org-babel-load-languages
                              '((calc . t)
-                               (ditaa . t)
                                (dot . t)
                                (gnuplot . t)
                                (latex . t)
@@ -5424,7 +5410,6 @@ Note: For this to work, Org must be version 8.3 or higher. Org is bundled with e
         ("b" "#+BEGIN_SRC bash\n?\n#+END_SRC\n" "<src lang=\"bash\">\n?\n</src>")
         ("c" "#+BEGIN_CENTER\n?\n#+END_CENTER\n" "<center>\n?\n</center>")
         ("+" "#+BEGIN_SRC c++\n?\n#+END_SRC\n" "<src lang=\"c++\">\n?\n</src>")
-        ("D" "#+BEGIN_SRC ditaa\n?\n#+END_SRC\n" "<src lang=\"ditaa\">\n?\n</src>")
         ("d" "#+BEGIN_SRC dot :file %file :cmdline -Kdot -Tpng\n?\n#+END_SRC\n" "<src lang=\"dot\">\n?\n</src>")
         ("e" "#+BEGIN_EXAMPLE\n?\n#+END_EXAMPLE\n" "<example>\n?\n</example>")
         ("h" "#+BEGIN_HTML\n?\n#+END_HTML\n" "<literal style=\"html\">\n?\n</literal>")
@@ -6797,7 +6782,6 @@ Cut                   ^^Delete                               ^^Other
 
 Format          ^^Markup       ^^Script            ^^Diagram      ^^Other
   _c_: Center       _a_: ASCII     _l_: Emacs Lisp     _d_: Dot       _i_: include
-  _e_: Example      _h_: HTML      _z_: Zsh            _D_: Ditaa     _p_: Properties
   _q_: Quote                     ^^_b_: Bash           _u_: UML
   _v_: Verbatim                  ^^_s_: Shell
                                ^^^^_r_: Source
@@ -6814,7 +6798,6 @@ Format          ^^Markup       ^^Script            ^^Diagram      ^^Other
   ("s" (cpped-org-expand-template "<s"))
   ("r" (cpped-org-expand-template "<r"))
   ("d" (cpped-org-expand-template "<d"))
-  ("D" (cpped-org-expand-template "<D"))
   ("u" (cpped-org-expand-template "<u"))
   ("i" (cpped-org-expand-template "<i"))
   ("p" (cpped-org-expand-template "<p")))
