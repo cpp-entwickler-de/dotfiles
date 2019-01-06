@@ -5384,6 +5384,7 @@ Note: For this to work, Org must be version 8.3 or higher. Org is bundled with e
                                (gnuplot . t)
                                (latex . t)
                                (lisp . t)
+                               (plantuml . t)
                                (python . t)
                                (sed . t)
                                (sh . t)
