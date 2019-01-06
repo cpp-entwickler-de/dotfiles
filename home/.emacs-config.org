@@ -4640,6 +4640,22 @@ Set correct major mode
   :config (flycheck-plantuml-setup))
 #+END_SRC
 
+*** [[https://github.com/yoshiki/yaml-mode][YAML]]
+#+BEGIN_SRC emacs-lisp
+(use-package yaml-mode
+  :mode "\.yml\'")
+#+END_SRC
+
+**** [[https://github.com/krzysztof-magosa/flycheck-yamllint][Syntax checker]]
+#+BEGIN_SRC emacs-lisp
+(use-package flycheck-yamllint
+  :after (flycheck system-packages)
+  :config (cpped-install-system-package "yamllint")
+          (flycheck-yamllint-setup)
+          (add-hook 'yaml-mode-hook (lambda ()
+                                      (flycheck-select-checker 'yaml-yamllint))))
+#+END_SRC
+
 *** XML
 #+BEGIN_SRC emacs-lisp
 (push '("<\\?xml" . nxml-mode) magic-mode-alist)
