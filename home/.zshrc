@@ -300,10 +300,10 @@ alias du="du -h"
 alias gti="git"
 alias gitroot='cd $(git root)'
 
-if command -v peco > /dev/null; then
+if command -v fzf > /dev/null; then
     function helm()
     {
-        "$@" | peco --select-1
+        "$@" | fzf --select-1
     }
 
     KILL_COMMAND=$(which kill)
@@ -327,7 +327,7 @@ if command -v peco > /dev/null; then
             fi
         done
         if [[ -n "$PROCESS_NAMES" || -z "$PIDS" ]]; then
-            local PIDS=($PIDS $(ps aux | peco --query "$PROCESS_NAMES" | while IFS= read -r LINE; do 
+            local PIDS=($PIDS $(ps aux | fzf --multi --query="$PROCESS_NAMES" --exit-0 | while IFS= read -r LINE; do
                                     echo $LINE | tr -s " " | cut --delimiter=\  -f 2; 
                                 done))
         fi
@@ -415,12 +415,12 @@ function smart-enter ()
 zle -N smart-enter
 bindkey "^M" smart-enter
 
-if command -v peco > /dev/null; then
+if command -v fzf > /dev/null; then
     function ssh-connect ()
     {
         CONNECTIONS=$(fc -ln -10000 | grep -E "^ssh\s" | sed -e 's/\s*$//' | sort | uniq -c | sort -nr | sed -e "s/^\s*[0-9]*\s//")
         if [ "$CONNECTIONS" ]; then
-            SELECTION=$(echo "$CONNECTIONS" | raw-peco --prompt "Select a connection")
+            SELECTION=$(echo "$CONNECTIONS" | fzf)
         else
             echo "No previous connections found."
         fi
@@ -435,7 +435,7 @@ if command -v peco > /dev/null; then
         OLD_PASSWORD=$(read -e -s)
 
         # determine new password
-        PASSWORD=${1:-$(apg -a 0 -n 20 -M SNCL -m 10 -x 10 -y -t | peco | cut --delimiter=\  -f 1)}
+        PASSWORD=${1:-$(apg -a 0 -n 20 -M SNCL -m 10 -x 10 -y -t | fzf | cut --delimiter=\  -f 1)}
 
         if [ -n "$PASSWORD" -a -n "$OLD_PASSWORD" ]; then
             if [ -n "$DOMAIN" -a -n "$DOMAIN_CONTROLLER" ]; then
