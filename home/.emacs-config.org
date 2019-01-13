@@ -219,11 +219,6 @@ Show below other windows
 (setq x-gtk-use-system-tooltips t)
 #+END_SRC
 
-*** Hide mouse pointer
-#+BEGIN_SRC emacs-lisp
-(setq make-pointer-invisible t)
-#+END_SRC
-
 ** Notifications
 #+BEGIN_SRC emacs-lisp
 (use-package notifications)
@@ -233,6 +228,22 @@ Show below other windows
 #+begin_src emacs-lisp
 (setq ring-bell-function 'ignore)
 #+end_src
+
+** Disable mouse
+#+BEGIN_SRC emacs-lisp
+(use-package disable-mouse
+  :config (global-disable-mouse-mode))
+#+END_SRC
+
+*** Hide mouse pointer
+#+BEGIN_SRC emacs-lisp
+(setq make-pointer-invisible t)
+#+END_SRC
+
+*** Do not copy highlighted text to the kill ring
+#+BEGIN_SRC emacs-lisp
+(setq mouse-drag-copy-region nil)
+#+END_SRC
 
 ** Use y/n instead of yes/no
 #+BEGIN_SRC emacs-lisp
@@ -391,11 +402,7 @@ Disable prettification if cursor is at edge of expression
                              tramp-current-host
                            (when (not (= 0 (length project-name)))
                              (propertize project-name
-                                         'help-echo (cpped-project-dir)
-                                         'local-map (make-mode-line-mouse-map
-                                                     'mouse-1 (lambda ()
-                                                                (interactive)
-                                                                (projectile-switch-project))))))))
+                                         'help-echo (cpped-project-dir))))))
            (unless (= 0 (length location))
                (concat " " location))))))))
 #+END_SRC
@@ -761,11 +768,7 @@ Find path of current position in XML docuement
                      (_ "Disabled"))
                    'face (list ':weight 'bold
                                ':background (face-attribute (cpped-flycheck-status-face) :background))
-                   'help-echo "Show Flycheck Errors"
-                   'local-map (make-mode-line-mouse-map
-                               'mouse-1 (lambda ()
-                                          (interactive)
-                                          (flycheck-list-errors))))))))
+                   'help-echo "Show Flycheck Errors")))))
 #+END_SRC
 
 *** Date
@@ -2507,11 +2510,6 @@ Ignore duplicates
 Use system clipboard
 #+BEGIN_SRC emacs-lisp
 (setq select-enable-clipboard t)
-#+END_SRC
-
-Automatically copy highlighted text to the kill ring
-#+BEGIN_SRC emacs-lisp
-(setq mouse-drag-copy-region t)
 #+END_SRC
 
 Save system clipboard contents to kill ring before killing
