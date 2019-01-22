@@ -915,7 +915,8 @@ Find path of current position in XML docuement
   :config
   (setq projectile-enable-caching nil
         projectile-completion-system 'helm
-        projectile-switch-project-action 'helm-projectile)
+        projectile-switch-project-action 'helm-projectile
+        projectile-git-submodule-command nil)
   (projectile-global-mode))
 #+END_SRC
 
