@@ -22,6 +22,13 @@ Do not load outdated byte code
   (auto-compile-on-save-mode))
 #+END_SRC
 
+** Use Quelpa
+#+BEGIN_EXPORT emacs-lisp
+(use-package quelpa
+  :config (setq quelpa-upgrade-p t
+                quelpa-stable-p t))
+#+END_EXPORT
+
 ** [[https://github.com/rranelli/auto-package-update.el][Automatically update packages]]
 #+BEGIN_SRC emacs-lisp 
 (defvar cpped-auto-update-packages nil "Enable auto-updating of packages.")
