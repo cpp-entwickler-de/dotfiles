@@ -1980,7 +1980,7 @@ Indicate recursive minibuffer
   (with-eval-after-load "recentf"
     (defvar cpped-helm-source-recentf
       (helm-make-source "Recentf" ' helm-recentf-source
-        :candidate-number-limit 10)
+        :candidate-number-limit 15)
       "`helm-source-recentf' with candidate limit.")
 
     (defun cpped-helm-find-files ()
