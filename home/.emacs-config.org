@@ -5332,13 +5332,15 @@ Remove check on buffer close
                                  (setq begin (car bounds)
                                        end (cdr bounds)))
                              (let ((bounds (bounds-of-thing-at-point 'word)))
-                               (setq url (read-string "URL: " "http://www.")
+                               (setq url (read-string "URL: ")
                                      begin (car bounds)
                                      end (cdr bounds))))))
                        (when (and begin
                                   end)
                          (delete-region begin end))
                        url)))
+  (when (not (string-match-p (rx line-start "http" (zero-or-one "s") "://") url))
+      (setq url (concat "https://" url)))
   (org-insert-link nil url (cpped-url-to-title url)))
 
 (defun cpped-org-convert-to-link-dwim (url title)
