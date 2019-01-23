@@ -4630,7 +4630,8 @@ Set correct major mode
   :config
   (cpped-install-system-package "plantuml")
   (cpped-install-system-package "graphviz")
-  (setq plantuml-jar-path "/usr/share/java/plantuml.jar")
+  (setq plantuml-jar-path "/usr/share/java/plantuml.jar"
+        org-plantuml-jar-path plantuml-jar-path)
   (push '("*PLANTUML Preview*" :dedicated t :width 60 :position right :noselect :stick) popwin:special-display-config)
   (add-to-list 'org-src-lang-modes '("plantuml" . plantuml)))
 
