@@ -3682,7 +3682,7 @@ Custom error highlighting (colored line under location)
 (add-hook 'flycheck-status-changed-functions #'cpped-flycheck-clear)
 #+END_SRC
 
-***** Flip booleans
+***** [[https://github.com/michaeljb/bool-flip][Flip booleans]]
 #+BEGIN_SRC emacs-lisp
 (use-package bool-flip
   :config
