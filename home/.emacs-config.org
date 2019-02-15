@@ -939,7 +939,11 @@ Find path of current position in XML docuement
 #+BEGIN_SRC emacs-lisp
 (use-package ag
   :after system-packages
-  :config (cpped-install-system-package "the_silver_searcher" :executable "ag"))
+  :config
+  (cpped-install-system-package "the_silver_searcher" :executable "ag")
+  (setq ag-arguments '("--smart-case")
+        ag-context-lines 3
+        ag-highlight-search t))
 
 (use-package projectile
   :after ag
@@ -1011,7 +1015,9 @@ Find path of current position in XML docuement
 (use-package helm-ag
   :after (helm ag)
   :config
-  (setq helm-ag-use-grep-ignore-list t
+  (setq helm-ag-base-command "ag --smart-case"
+        helm-ag-use-grep-ignore-list t
+        helm-ag-use-agignore t
         helm-ag-insert-at-point 'symbol))
 #+END_SRC
 
