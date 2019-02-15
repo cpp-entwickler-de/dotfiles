@@ -2047,7 +2047,8 @@ Indicate recursive minibuffer
 #+BEGIN_SRC emacs-lisp
 (use-package wdired
   :bind (:map dired-mode-map ("r" . wdired-change-to-wdired-mode))
-  :config (setq wdired-allow-to-change-permissions t))
+  :config (setq wdired-allow-to-change-permissions t
+                wdired-create-parent-directories t))
 #+END_SRC
 
 **** Use standard ls parameters for listing
