@@ -6180,7 +6180,7 @@ Open                             ^^Save                      ^^Close            
                                    ^^_F_: Toggle auto-format
 "
   ("o" cpped-helm-find-files)
-  ("C" docker-find-file)
+  ("C" docker-container-find-file)
   ("j" helm-projectile-find-other-file :exit nil)
   ("t" projectile-toggle-between-implementation-and-test :exit nil)
   ("<RET>" helm-projectile-find-file-dwim)
