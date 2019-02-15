@@ -6066,7 +6066,9 @@ Do not use scientific form so quickly
   "Close the editor (either frame or emacs), depending on the current mode of operation."
   (interactive)
   (if (= (length (frame-list)) 1)
-      (kill-emacs)
+      (progn
+        (cpped-punch-out)
+        (kill-emacs))
     (delete-frame)))
 #+END_SRC
 
@@ -7258,9 +7260,9 @@ Run            ^^Info
 ☰ Planning
 
 Open                ^^Create       ^^Work             ^^Task                      ^^Chart
-  _a_: Agenda           _c_: Entry     _I_: Punch in      _r_: Clock in recent task     _d_: Daily timesheet
-  _u_: Current Task                  ^^_O_: Punch out     _i_: Clock in                 _m_: Monthly timesheet
-                                   ^^^^_l_: Lunch break   _o_: Clock out
+  _a_: Agenda           _c_: Entry     _b_: Break         _r_: Clock in recent task     _d_: Daily timesheet
+  _u_: Current Task                                   ^^^^_i_: Clock in                 _m_: Monthly timesheet
+                                                    ^^^^^^_o_: Clock out
   _t_: ToDos                                          ^^^^_E_: Set estimate
   _b_: Bugs                                           ^^^^_+_: Increase estimate
   _n_: Notes
@@ -7275,9 +7277,8 @@ Open                ^^Create       ^^Work             ^^Task                    
 
   ("c" helm-org-capture-templates)
 
-  ("I" cpped-punch-in)
-  ("O" cpped-punch-out)
-  ("l" (progn
+  ("b" (if (not (org-clocking-p))
+           (org-mru-clock-in)
          (cpped-punch-out)
          (cpped-lock-screen)))
 
