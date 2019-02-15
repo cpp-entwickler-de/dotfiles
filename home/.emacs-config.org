@@ -4865,6 +4865,7 @@ When using Magit >= 2.4.0
   :config
   (setq git-commit-style-convention-checks nil
         git-commit-summary-max-length 80
+        magit-auto-revert-mode t
         magit-completing-read-function 'helm--completing-read-default
         magit-diff-expansion-threshold 3
         magit-diff-highlight-hunk-region-functions '(magit-diff-highlight-hunk-region-dim-outside magit-diff-highlight-hunk-region-using-underline)
