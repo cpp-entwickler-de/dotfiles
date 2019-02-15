@@ -933,7 +933,7 @@ Find path of current position in XML docuement
 (use-package projectile
   :after ag
   :config
-  (setq projectile-enable-caching nil
+  (setq projectile-enable-caching t
         projectile-completion-system 'helm
         projectile-switch-project-action 'helm-projectile
         projectile-git-submodule-command nil)
