@@ -6353,7 +6353,7 @@ _C-<right>_: Next word                 _y_: Down block                 _C-t_: Ne
   ("<C-end>" end-of-buffer)
   ("C-S-l" backward-up-list)
   ("C-l" down-list)
-  ("C-j" ace-jump-char-mode :exit t)
+  ("C-j" avy-goto-char-timer :exit t)
   ("C-l" goto-line :exit t)
 
   ("C-S-s" backward-sexp)
