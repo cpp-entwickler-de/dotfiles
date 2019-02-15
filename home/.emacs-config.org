@@ -4340,6 +4340,15 @@ https://github.com/google/googletest
   (add-to-list 'org-src-lang-modes '("dot" . graphviz-dot)))
 #+END_SRC
 
+*** GLSL
+#+BEGIN_SRC emacs-lisp
+(use-package glsl-mode
+  :mode (("\\.vert\\'" . glsl-mode)
+         ("\\.frag\\'" . glsl-mode)
+         ("\\.geom\\'" . glsl-mode)
+         ("\\.glsl\\'" . glsl-mode)))
+#+END_SRC
+
 *** Groovy
 #+BEGIN_SRC emacs-lisp
 (use-package groovy-mode
