@@ -3513,6 +3513,10 @@ Handler to close buffer after quitting ccmake.
         company-lsp-cache-candidates nil
         company-lsp-enable-snippet t
         company-lsp-enable-recompletion t))
+
+(use-package company-flx
+  :after company
+  :config (company-flx-mode +1))
 #+END_SRC
 
 ****** Line completion backend
