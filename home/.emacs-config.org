@@ -646,6 +646,16 @@ Helper function to figure out version control root directory
                   'display '(raise -0.0))))
 #+END_SRC
 
+*** Show if buffer is filtered
+#+BEGIN_SRC emacs-lisp
+(defun cpped-powerline-filtered (icon-face)
+    (when loccur-mode
+      (propertize (all-the-icons-faicon "filter")
+                  'face (list ':family (all-the-icons-faicon-family)
+                              ':background (face-attribute icon-face :background))
+                  'display '(raise -0.0))))
+#+END_SRC
+
 *** Key Lock
 #+BEGIN_SRC emacs-lisp
 (defvar cpped-caps-lock-active nil "Indicates if caps lock is enabled.")
@@ -892,6 +902,7 @@ Find path of current position in XML docuement
                                 (powerline-raw (cpped-powerline-auto-format (symbol-value 'face2)) face2 'l)
                                 (powerline-raw (cpped-powerline-typo-mode (symbol-value 'face2)) face2 'l)
                                 (powerline-raw (cpped-powerline-narrowed (symbol-value 'face2)) face2 'l)
+                                (powerline-raw (cpped-powerline-filtered (symbol-value 'face2)) face2 'l)
                                 (powerline-raw (cpped-powerline-key-lock (symbol-value 'cpped-caps-lock-active) "sort-alpha-asc" (symbol-value 'face2)) face2 'l)
                                 (powerline-raw (cpped-powerline-key-lock (symbol-value 'cpped-num-lock-active) "sort-numeric-asc" (symbol-value 'face2)) face2 'l)
                                 (powerline-raw (cpped-powerline-term-input-mode (symbol-value 'face2)) face2 'l)
@@ -2786,6 +2797,11 @@ Some useful abbreviations
 #+END_SRC
 
 ** Utilities
+*** [[https://github.com/fourier/loccur][Filter]]
+#+BEGIN_SRC emacs-lisp
+(use-package loccur)
+#+END_SRC
+
 *** [[https://github.com/akicho8/string-inflection][Change lower/upper case]]
 #+BEGIN_SRC emacs-lisp
 (use-package string-inflection)
@@ -6169,12 +6185,12 @@ CMake              ^^Git                         ^^Directories         ^^Shell  
 ☰ File %s(concat (cpped-powerline-mode-icon) \" \" (cpped-powerline-buffer-id) \" \" (cpped-buffersize) \" \"  (cpped-file-encoding))
 
 Open                             ^^Save                      ^^Close                  ^^Switch             ^^Version                    ^^Display                       ^^File                           ^^^^^^Encoding
-      _o_: Open                      _s_: Save                   _x_: File                _l_: Last file       _v_: Show old version        _h_: Hexadecimal mode       _<DEL>_: Delete                      ^^^^_C-d_: DOS
+      _o_: Open                      _s_: Save                   _x_: File                _l_: Last file       _v_: Show old version        _V_: Filter                 _<DEL>_: Delete                      ^^^^_C-d_: DOS
       _C_: From docker container     _S_: Save as                _X_: Other files         _f_: Find            _d_: Diff                    _!_: Toggle read-only mode      _m_: Rename                      ^^^^_C-u_: UNIX
-                                                             ^^^^_w_: File and window                        ^^_g_: Log                                                   ^^_D_: Diff to
-      _j_: Header/Source             _i_: Public gist            _u_: Unused files                           ^^_G_: Autocommit-Log          _6_: Decode Base64              _z_: Clear content
-      _t_: Test                      _I_: Private gist           _a_: Close editor                           ^^_b_: Blame                   _&_: Encode Base64              _r_: Run command
-  _<RET>_: File under cursor                                                                             ^^^^^^_T_: Trace lines                                           ^^_c_: Copy name to clipboard
+                                                             ^^^^_w_: File and window                        ^^_g_: Log                     _h_: Hexadecimal mode           _D_: Diff to
+      _j_: Header/Source             _i_: Public gist            _u_: Unused files                           ^^_G_: Autocommit-Log                                        ^^_z_: Clear content
+      _t_: Test                      _I_: Private gist           _a_: Close editor                           ^^_b_: Blame                   _6_: Decode Base64              _r_: Run command
+  _<RET>_: File under cursor                                                                             ^^^^^^_T_: Trace lines             _&_: Encode Base64              _c_: Copy name to clipboard
       _k_: Gist                      _e_: Encrypt                                                                                                                   ^^^^^^^^_._: Open directory
                                                                                                                                                                 ^^^^^^^^^^^^_+_: Show Directory Tree
                                    ^^_F_: Toggle auto-format
@@ -6228,6 +6244,10 @@ Open                             ^^Save                      ^^Close            
   ("D" ediff-files)
   ("C-d" cpped-unix2dos)
   ("C-u" cpped-dos2unix)
+  ("V" (let ((word (thing-at-point 'word)))
+             (if word
+                 (loccur word)
+               (call-interactively 'loccur))))
   ("!" (progn (read-only-mode)
               (when (and buffer-read-only
                          buffer-file-name)
