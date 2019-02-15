@@ -2009,7 +2009,7 @@ Indicate recursive minibuffer
   (require 'helm-locate)
   (with-eval-after-load "recentf"
     (defvar cpped-helm-source-recentf
-      (helm-make-source "Recentf" ' helm-recentf-source
+      (helm-make-source "Recent files" ' helm-recentf-source
         :candidate-number-limit 15)
       "`helm-source-recentf' with candidate limit.")
 
