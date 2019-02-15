@@ -636,6 +636,16 @@ Helper function to figure out version control root directory
                   'display '(raise -0.0)))))
 #+END_SRC
 
+*** Show if buffer is narrowed
+#+BEGIN_SRC emacs-lisp
+(defun cpped-powerline-narrowed (icon-face)
+    (when (buffer-narrowed-p)
+      (propertize (all-the-icons-octicon "fold")
+                  'face (list ':family (all-the-icons-octicon-family)
+                              ':background (face-attribute icon-face :background))
+                  'display '(raise -0.0))))
+#+END_SRC
+
 *** Key Lock
 #+BEGIN_SRC emacs-lisp
 (defvar cpped-caps-lock-active nil "Indicates if caps lock is enabled.")
@@ -881,6 +891,7 @@ Find path of current position in XML docuement
                                 (powerline-raw (cpped-powerline-overwrite-mode (symbol-value 'face2)) face2 'l)
                                 (powerline-raw (cpped-powerline-auto-format (symbol-value 'face2)) face2 'l)
                                 (powerline-raw (cpped-powerline-typo-mode (symbol-value 'face2)) face2 'l)
+                                (powerline-raw (cpped-powerline-narrowed (symbol-value 'face2)) face2 'l)
                                 (powerline-raw (cpped-powerline-key-lock (symbol-value 'cpped-caps-lock-active) "sort-alpha-asc" (symbol-value 'face2)) face2 'l)
                                 (powerline-raw (cpped-powerline-key-lock (symbol-value 'cpped-num-lock-active) "sort-numeric-asc" (symbol-value 'face2)) face2 'l)
                                 (powerline-raw (cpped-powerline-term-input-mode (symbol-value 'face2)) face2 'l)
