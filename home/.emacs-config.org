@@ -4300,6 +4300,12 @@ https://github.com/google/googletest
   :config (add-hook 'css-mode-hook 'turn-on-css-eldoc))
 #+END_SRC
 
+*** [[http://elpa.gnu.org/packages/csv-mode.html][CSV]]
+#+BEGIN_SRC emacs-lisp
+(use-package csv-mode
+  :mode ("\\.[Cc][Ss][Vv]\\'" . csv-mode))
+#+END_SRC
+
 *** Docker
 #+BEGIN_SRC emacs-lisp
 (use-package dockerfile-mode
