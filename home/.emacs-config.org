@@ -3272,7 +3272,7 @@ Handler to close buffer after quitting ccmake.
   :config (add-hook 'prog-mode-hook #'hl-sexp-mode))
 #+END_SRC
 
-***** [[https://github.com/ikirill/hl-indent][Unique colors for identifiers]]
+***** [[https://github.com/ankurdave/color-identifiers-mode][Unique colors for identifiers]]
 #+BEGIN_SRC emacs-lisp
 (use-package color-identifiers-mode
   :config (add-hook 'prog-mode-hook #'color-identifiers-mode))
