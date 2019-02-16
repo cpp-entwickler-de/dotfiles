@@ -277,12 +277,6 @@ Show below other windows
   (savehist-mode t))
 #+END_SRC
 
-** Colors
-*** [[https://github.com/atomontage/xterm-color][Show ANSI colors]]
-#+BEGIN_SRC emacs-lisp
-(use-package xterm-color)
-#+END_SRC
-
 ** Fonts
 *** Set fallback font for symbols
 #+BEGIN_SRC emacs-lisp
