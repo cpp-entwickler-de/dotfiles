@@ -292,7 +292,7 @@ Show below other windows
 *** Show pretty symbols
 Disable prettification if cursor is at edge of expression
 #+BEGIN_SRC emacs-lisp
-(setq prettify-symbols-unprettify-at-point 'right-edge)
+(setq prettify-symbols-unprettify-at-point nil)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
