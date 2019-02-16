@@ -1241,11 +1241,11 @@ Indicate recursive minibuffer
   (advice-add 'hl-line-highlight :after (lambda ()
                                           (unless (window-minibuffer-p)
 	                                    (when hl-line-overlay
-                                              (overlay-put hl-line-overlay 'priority 100)))))
+                                              (overlay-put hl-line-overlay 'priority 1000)))))
   (advice-add 'global-hl-line-highlight :after (lambda ()
                                                  (unless (window-minibuffer-p)
                                                    (when hl-line-overlay
-                                                     (overlay-put hl-line-overlay 'priority 100)))))
+                                                     (overlay-put hl-line-overlay 'priority 1000)))))
   (global-hl-line-mode))
 #+END_SRC
 
