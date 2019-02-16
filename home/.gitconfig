@@ -159,11 +159,6 @@ driver = true
 cmd = meld --auto-merge "$LOCAL" "$MERGED" "$REMOTE" --output "$MERGED"
 
 
-[commit]
-# Show diff in commit editor
-verbose = true
-
-
 [fetch]
 # Update submodule if reference in parent was updated
 recurseSubmodules = on-demand
