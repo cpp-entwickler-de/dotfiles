@@ -4495,6 +4495,21 @@ https://github.com/google/googletest
                             (setq cpped-format-buffer-function 'json-pretty-print-buffer)))
 #+END_SRC
 
+**** [[https://github.com/zaach/jsonlint][Syntax checker]]
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "system-packages"
+  (cpped-install-system-package "jsonlint" :package-manager 'npm)
+  (with-eval-after-load "flycheck"
+    (flycheck-define-checker cpped-jsonlint
+      "JSON file checker (https://github.com/zaach/jsonlint)"
+      :command ("jsonlint" "--quiet" "--compact" source-original)
+      :error-patterns ((error line-start (file-name) ": line " line ", col " column ", found: " (message) line-end))
+      :modes (json-mode))
+    (add-to-list 'flycheck-checkers 'cpped-jsonlint)
+    (add-hook 'json-mode-hook (lambda ()
+                                (flycheck-select-checker 'cpped-jsonlint)))))
+#+END_SRC
+
 *** Latex
 #+BEGIN_SRC emacs-lisp
 (push '("\\.tex\\'" . latex-mode) auto-mode-alist)
