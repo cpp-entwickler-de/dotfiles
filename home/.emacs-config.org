@@ -2005,7 +2005,9 @@ Indicate recursive minibuffer
   (setq recentf-max-saved-items 200
         recentf-max-menu-items 15
         recentf-auto-save-timer (run-with-idle-timer 300 t
-                                                     'recentf-save-list))
+                                                     '(lambda ()
+                                                        (let ((warning-minimum-level :error))
+                                                          (ignore-errors (recentf-save-list))))))
   (recentf-mode))
 #+END_SRC
 
