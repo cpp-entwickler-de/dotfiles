@@ -3245,16 +3245,14 @@ Handler to close buffer after quitting ccmake.
 #+BEGIN_SRC emacs-lisp
 (use-package lsp-mode
   :after helm-buffers
+  :hook prog-mode
   :config
   (setq lsp-ui-doc-include-signature nil
-        lsp-ui-sideline-show-symbol nil)
-  (require 'lsp-imenu)
-  (add-hook 'lsp-after-open-hook 'lsp-enable-imenu)
+        lsp-ui-sideline-show-symbol nil
+        lsp-auto-configure t)
   (push "^\\*lsp-.+" helm-boring-buffer-regexp-list))
 
-(use-package lsp-ui
-  :config
-  (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+(use-package lsp-ui)
 #+END_SRC
 
 **** Highlighting
@@ -4399,15 +4397,8 @@ https://github.com/google/googletest
 **** Editing
 ***** Language server
 #+BEGIN_SRC emacs-lisp
-(cpped-install-system-package "vscode-html-languageserver-bin" :package-manager 'npm)
-
-(lsp-define-stdio-client lsp-html
-                         "html"
-                         (lambda ()
-                           default-directory)
-                         '("html-languageserver" "--stdio"))
-
-(add-hook 'html-mode-hook #'lsp-html-enable)
+(with-eval-after-load "system-packages"
+  (cpped-install-system-package "vscode-html-languageserver-bin" :package-manager 'npm))
 #+END_SRC
 
 ***** Auto-completion
@@ -4682,19 +4673,6 @@ Set correct major mode
 (push '("#!/bin/bash" . bash-mode) magic-mode-alist)
 (push '("#!/bin/busybox" . bash-mode) magic-mode-alist)
 (push '("\\.bash\\'" . bash-mode) auto-mode-alist)
-#+END_SRC
-
-***** Language server
-#+BEGIN_SRC emacs-lisp
-(cpped-install-system-package "bash-language-server" :package-manager 'npm)
-
-(lsp-define-stdio-client lsp-bash
-                         "sh"
-                         (lambda ()
-                           default-directory)
-                         '("bash-language-server" "start"))
-
-(add-hook 'bash-mode-hook #'lsp-bash-enable)
 #+END_SRC
 
 **** ZSH
