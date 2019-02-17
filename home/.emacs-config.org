@@ -4908,7 +4908,9 @@ When using Magit >= 2.4.0
         magit-log-arguments '("--graph"
                               "--color"
                               "--decorate"
-                              "-n200"))
+                              "-n200")
+        magit-diff-section-arguments '("--function-context" "-M" "-C")
+        magit-diff-arguments '("--function-context" "--stat" "-M" "-C"))
   (push "^\\*?magit.*" helm-boring-buffer-regexp-list))
 #+END_SRC
 
