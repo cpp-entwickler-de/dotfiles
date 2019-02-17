@@ -6634,7 +6634,7 @@ Identifier    ^^Namespace
 "
   ("d" crux-duplicate-current-line-or-region)
   ("D" crux-duplicate-and-comment-current-line-or-region)
-  ("i" cpped-hydra-edit-insert/body :exit t)
+  ("i" cpped-hydra-edit-insert/body)
   ("'" quoted-insert)
   ("<" helm-company)
   ("g" (if (equal major-mode 'org-mode)
@@ -6656,7 +6656,7 @@ Identifier    ^^Namespace
   ("#" cpped-convert-number)
   ("+" shift-number-up)
   ("-" shift-number-down)
-  ("1" bool-flip-do-flip)
+  ("1" bool-flip-do-flip :exit nil)
   ("C" cpped-hydra-color/body :exit t)
   ("L" cpped-org-convert-to-link-dwim :exit t)
 
