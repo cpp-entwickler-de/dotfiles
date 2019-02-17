@@ -2303,17 +2303,10 @@ Indicate recursive minibuffer
 #+END_SRC
 
 ***** Syntax checker
+https://github.com/mivok/markdownlint
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load "system-packages"
-  (cpped-install-system-package "mdl" :package-manager 'gem)
-  (with-eval-after-load "flycheck"
-    (flycheck-define-checker cpped-markdownlint
-      "Markdown checker (https://github.com/mivok/markdownlint)"
-      :command ("mdl" source-original)
-      :error-patterns ((warning line-start (file-name) ":" line ": " (message) line-end))
-      :modes (markdown-mode))
-
-    (add-to-list 'flycheck-checkers 'cpped-markdownlint)))
+  (cpped-install-system-package "mdl" :package-manager 'gem))
 #+END_SRC
 
 ***** [[https://github.com/mola-T/flymd][Preview]]
@@ -4718,12 +4711,14 @@ Set correct major mode
 
 **** [[https://github.com/krzysztof-magosa/flycheck-yamllint][Syntax checker]]
 #+BEGIN_SRC emacs-lisp
+(with-eval-after-load "system-packages"
+  (cpped-install-system-package "js-yaml" :package-manager 'npm))
+
 (use-package flycheck-yamllint
   :after (flycheck system-packages)
   :config (cpped-install-system-package "yamllint")
           (flycheck-yamllint-setup)
-          (add-hook 'yaml-mode-hook (lambda ()
-                                      (flycheck-select-checker 'yaml-yamllint))))
+          (flycheck-add-next-checker 'yaml-jsyaml '(t . yaml-yamllint)))
 #+END_SRC
 
 *** XML
@@ -4761,10 +4756,12 @@ Set correct major mode
 ***** Syntax checkers
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load "system-packages"
+  (cpped-install-system-package "xmllint")
   (cpped-install-system-package "xmlstarlet")
+  (flycheck-add-next-checker 'xml-xmllint '(t . xml-xmlstarlet))
   (add-hook 'nxml-mode-hook (lambda ()
-                              (flycheck-select-checker 'xml-xmllint)))
-  (flycheck-add-next-checker 'xml-xmllint '(t . xml-xmlstarlet)))
+                              (flycheck-select-checker 'xml-xmllint))))
+#+END_SRC
 #+END_SRC
 
 **** Documentation
