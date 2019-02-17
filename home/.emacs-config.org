@@ -7178,7 +7178,8 @@ Settings                       ^^Snippets            ^^Abbreviations            
   ("c" docker-containers)
   ("v" docker-volumes)
   ("n" docker-networks)
-  ("m" docker-machines))
+  ("m" docker-machines)
+  ("l" docker-container-logs-popup))
 
 (defhydra cpped-hydra-tools (:exit t :hint nil)
   "
