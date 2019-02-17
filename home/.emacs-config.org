@@ -2364,11 +2364,12 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 #+BEGIN_SRC emacs-lisp
 (use-package on-screen
   :config
-  (setq on-screen-auto-update nil
-        on-screen-delay 0.8
-        on-screen-drawing-threshold 20
+  (setq on-screen-auto-update t
+        on-screen-delay 1.5
+        on-screen-drawing-threshold 10
         on-screen-highlight-method 'shadow
-        on-screen-remove-when-edit t)
+        on-screen-remove-when-edit t
+        on-screen-highlighting-to-background-delta 0.9)
   (on-screen-global-mode +1))
 #+END_SRC
 
