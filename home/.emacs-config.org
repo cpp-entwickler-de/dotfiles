@@ -4398,6 +4398,21 @@ https://github.com/google/googletest
                                 (set (make-local-variable 'company-backends) '((company-yasnippet company-lsp company-files company-capf company-dabbrev-code cpped-company-line-backend)))))
 #+END_SRC
 
+***** [[https://github.com/thedaviddias/HTMLHint][Syntax checker]]
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "system-packages"
+  (cpped-install-system-package "htmlhint" :package-manager 'npm)
+  (with-eval-after-load "flycheck"
+    (flycheck-define-checker cpped-htmlhint
+      "HTML file checker (https://github.com/thedaviddias/HTMLHint)"
+      :command ("htmlhint" "--nocolor" "--format" "compact" source-original)
+      :error-patterns ((error line-start (file-name) ": line " line ", col " column ", error - " (message) line-end)
+(warning line-start (file-name) ": line " line ", col " column ", warning - " (message) line-end)
+(info line-start (file-name) ": line " line ", col " column ", info - " (message) line-end))
+      :modes (html-mode))
+    (add-to-list 'flycheck-checkers 'cpped-htmlhint)))
+#+END_SRC
+
 *** Ini
 #+BEGIN_SRC emacs-lisp
 (defvar ini-mode-syntax-table
