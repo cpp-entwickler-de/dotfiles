@@ -5041,9 +5041,11 @@ When using Magit >= 2.4.0
         (save-excursion
           (goto-char (point-min))
           (while (search-forward-regexp expression nil t)
-            (compose-region (match-beginning 1) (match-end 1) icon)
-            (when properties
-              (add-face-text-property (match-beginning 1) (match-end 1) properties))))))))
+            (when (and (match-beginning 1)
+                       (match-end 1))
+              (compose-region (match-beginning 1) (match-end 1) icon)
+              (when properties
+                (add-face-text-property (match-beginning 1) (match-end 1) properties)))))))))
 
 (advice-add 'magit-status :after 'cpped-prettify-magit)
 (advice-add 'magit-refresh-buffer :after 'cpped-prettify-magit)
