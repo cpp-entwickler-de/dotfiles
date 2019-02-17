@@ -4902,6 +4902,7 @@ When using Magit >= 2.4.0
         magit-popup-manpage-package 'woman
         magit-popup-show-common-commands nil
         magit-process-popup-time 3
+        magit-set-upstream-on-push t
         magit-save-repository-buffers 'dontask
         magit-status-show-hashes-in-headers nil
         magit-log-arguments '("--graph"
