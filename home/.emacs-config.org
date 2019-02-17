@@ -3838,15 +3838,12 @@ TODO
 
 *** C/C++
 #+BEGIN_SRC emacs-lisp
-(push '("\\.a\\'" . c-mode) auto-mode-alist)
-(push '("\\.c\\'" . c-mode) auto-mode-alist)
-(push '("\\.C\\'". c++-mode) auto-mode-alist)
-(push '("\\.cc\\'". c++-mode) auto-mode-alist)
-(push '("\\.cpp\\'". c++-mode) auto-mode-alist)
-(push '("\\.cxx\\'". c++-mode) auto-mode-alist)
-(push '("\\.h\\'" . c++-mode) auto-mode-alist)
-(push '("\\.hh\\'" . c++-mode) auto-mode-alist)
-(push '("\\.hpp\\'". c++-mode) auto-mode-alist)
+(defconst cpped-c++-source-file-pattern "\\.[Cc]([Cc]|[Pp][Pp]|[Xx][Xx]|++)\\'")
+(defconst cpped-c++-header-file-pattern "\\.[Hh]([Hh]|[Pp][Pp]|[Xx][Xx]|++)\\'")
+
+(add-to-list 'auto-mode-alist '("\\.a\\'" . c-mode))
+(add-to-list 'auto-mode-alist `(,cpped-c++-source-file-pattern . c++-mode))
+(add-to-list 'auto-mode-alist `(,cpped-c++-header-file-pattern . c++-mode))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
