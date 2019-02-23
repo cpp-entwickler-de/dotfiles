@@ -2822,43 +2822,32 @@ Some useful abbreviations
 (use-package define-word)
 #+END_SRC
 
-*** [[https://github.com/cqql/dictcc.el][Translate text]]
+*** [[https://github.com/atykhonov/google-translate][Translate text]]
 #+BEGIN_SRC emacs-lisp
-(use-package dictcc
-  :after popwin
+(use-package google-translate
+  :quelpa (google-translate :fetcher github :repo "atykhonov/google-translate")
   :config
-  (defconst cpped-translation-buffer "*Translations*")
-  (push `(,cpped-translation-buffer :dedicated t :position bottom :height 20) popwin:special-display-config)
-
-  (defun cpped-show-translation ()
-    "Show translations for the current region or word."
-    (interactive)
-    (let* ((bounds (cpped-word-or-region-bounds))
-           (text (buffer-substring-no-properties (car bounds) (cdr bounds))))
-      (url-retrieve (dictcc--request-url text)
-                    (lambda (_log)
-                      (save-excursion
-                        (let ((translations (dictcc--parse-http-response))
-                              (format-string (format "%%-%ds  %%s\n" 50)))
-                          (with-current-buffer (get-buffer-create cpped-translation-buffer)
-                            (local-set-key (kbd "q") 'popwin:close-popup-window)
-                            (delete-region (point-min) (point-max))
-                            (mapcar #'(lambda (pair)
-                                        (insert (format format-string (dictcc--translation-to-string (car pair)) (dictcc--translation-to-string (cdr pair)))))
-                                    translations)))))))
-    (popwin:display-buffer cpped-translation-buffer))
-
-  (defun cpped-translate-word-or-region ()
+  (setq google-translate-show-phonetic t
+        google-translate-output-destination 'popup
+        google-translate-default-source-language "auto")
+  (defun cpped-translate-word-or-region (&optional target-language replace)
     "Replace the current region or word with its translation."
     (interactive)
     (let* ((bounds (cpped-word-or-region-bounds))
            (begin (car bounds))
            (end (cdr bounds))
-           (text (buffer-substring-no-properties begin end)))
-      (delete-region begin end)
-      (if text
-          (dictcc text)
-        (call-interactively #'dictcc)))))
+           (text (buffer-substring-no-properties begin
+                                                 end))
+           (target-language (google-translate-language-abbreviation (or target-language
+                                                                        (google-translate-completing-read "Translate to: "
+                                                                                                          (google-translate-supported-languages)
+                                                                                                          "English"))))
+           (google-translate-output-destination (if replace
+                                                    'current-buffer
+                                                  google-translate-output-destination)))
+      (when replace
+        (delete-region begin end))
+      (google-translate-translate "auto" target-language text))))
 #+END_SRC
 
 * Binaries
@@ -6308,7 +6297,7 @@ Text                    ^^Code                                ^^Version Control 
 "
   ("#" describe-number-at-point)
   ("f" define-word-at-point)
-  ("x" cpped-show-translation)
+  ("x" cpped-translate-word-or-region)
   ("s" synosaurus-lookup)
   ("g" helm-google-suggest)
   ("o" flymd-flyit)
@@ -6692,7 +6681,7 @@ Identifier    ^^Namespace
                  (untabify begin end)
                  (indent-region begin end)))
 
-  ("t" cpped-translate-word-or-region)
+  ("t" (cpped-translate-word-or-region nil t))
   ("y" synosaurus-choose-and-replace)
   ("." howdoi-query-line-at-point-replace-by-code-snippet)
   ("l" flyspell-auto-correct-previous-word)
