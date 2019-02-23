@@ -156,7 +156,7 @@ Do not load outdated byte code
 (defun cpped-word-or-region-bounds()
   "Get the bounds of the current region or word under point."
   (if (use-region-p)
-      (list (region-beginning) (region-end))
+      (cons (region-beginning) (region-end))
     (bounds-of-thing-at-point 'word)))
 #+END_SRC
 
