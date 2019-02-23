@@ -26,7 +26,10 @@ Do not load outdated byte code
 #+BEGIN_EXPORT emacs-lisp
 (use-package quelpa
   :config (setq quelpa-upgrade-p t
-                quelpa-stable-p t))
+                quelpa-stable-p nil)
+                (quelpa '(quelpa-use-package :fetcher git
+                                             :url "https://framagit.org/steckerhalter/quelpa-use-package.git"))
+  (require 'quelpa-use-package))
 #+END_EXPORT
 
 ** [[https://github.com/rranelli/auto-package-update.el][Automatically update packages]]
