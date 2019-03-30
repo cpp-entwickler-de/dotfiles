@@ -183,6 +183,10 @@ followTags = true
 enabled = true
 
 
+[submodule]
+recurse = true
+
+
 [remote]
 # automatically fetch pull requests to refs/pull/origin/<number>
 fetch = +refs/pull/*/head:refs/pull/origin/*
