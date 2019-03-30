@@ -29,6 +29,10 @@ editor = "emacsclient"
 fscache = true
 
 
+[init]
+templateDir  = ~/.git-templates
+
+
 [color]
 # Detect color availability
 ui = auto
