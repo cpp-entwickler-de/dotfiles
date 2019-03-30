@@ -3237,7 +3237,8 @@ Handler to close buffer after quitting ccmake.
   :config
   (setq lsp-ui-doc-include-signature nil
         lsp-ui-sideline-show-symbol nil
-        lsp-auto-configure t)
+        lsp-auto-configure t
+        lsp-prefer-flymake nil)
   (push "^\\*lsp-.+" helm-boring-buffer-regexp-list))
 
 (use-package lsp-ui)
