@@ -3866,6 +3866,8 @@ TODO
 **** Navigation
 ***** Show includes/namespaces in imenu
 #+BEGIN_SRC emacs-lisp
+(require 'cc-menus)
+
 (add-to-list 'cc-imenu-c-generic-expression '("Include" "^[[:space:]]*#include[[:space:]]+[<\"]\\([^>\"]+\\)" 1))
 
 (add-to-list 'cc-imenu-c++-generic-expression '("Include" "^[[:space:]]*#include[[:space:]]+[<\"]\\([^>\"]+\\)" 1))
