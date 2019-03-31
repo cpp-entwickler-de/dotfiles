@@ -5470,7 +5470,6 @@ Disable evaluation confirmation for some languages
            (string= lang "plantuml")
            (string= lang "python")
            (string= lang "sed")
-           (string= lang "sh")
            (string= lang "shell")
            (string= lang "zsh"))))
 #+END_SRC
@@ -5486,11 +5485,9 @@ Note: For this to work, Org must be version 8.3 or higher. Org is bundled with e
                                (plantuml . t)
                                (python . t)
                                (sed . t)
-                               (sh . t)
                                (shell . t)))
 
-(setq org-confirm-babel-evaluate 'cpped-org-confirm-babel-evaluate
-      org-babel-shell-names '("sh" "bash" "zsh"))
+(setq org-confirm-babel-evaluate 'cpped-org-confirm-babel-evaluate)
 (org-babel-shell-initialize)
 (add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
 #+END_SRC
