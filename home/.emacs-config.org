@@ -3260,9 +3260,10 @@ Handler to close buffer after quitting ccmake.
 ***** [[https://github.com/larstvei/Focus][Dim inactive regions]]
 #+BEGIN_SRC emacs-lisp
 (use-package focus
+  :after lsp-mode
+  :hook (prog-mode . focus-mode)
   :config
-  (setq focus-dimness -2)
-  (add-hook 'prog-mode-hook 'focus-mode))
+  (setq focus-dimness -2))
 #+END_SRC
 
 ***** Current S-EXP
