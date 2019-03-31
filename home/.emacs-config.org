@@ -3561,25 +3561,12 @@ Handler to close buffer after quitting ccmake.
 (add-to-list 'company-backends 'cpped-company-line-backend)
 #+END_SRC
 
-***** Automatic spacing
+***** [[https://github.com/davidshepherd7/electric-operator][Automatic spacing]]
 #+BEGIN_SRC emacs-lisp
-(defun cpped-electric-spacing-/ ()
-  "See `electric-spacing-insert'."
-  (if (or (and (eq 1 (line-number-at-pos))
-               (save-excursion
-                 (move-beginning-of-line nil)
-                 (looking-at "#!")))           ; shebang
-          (save-excursion
-            (move-beginning-of-line nil)
-            (looking-at "#include"))           ; inside an include directive
-          (nth 4 (syntax-ppss)))               ; inside a comment
-      (insert "/")
-    (electric-spacing-insert "/")))
-
-(use-package electric-spacing
-  :config
-  (push '(?/ . cpped-electric-spacing-/) electric-spacing-rules)
-  (add-hook 'prog-mode-hook #'electric-spacing-mode))
+(use-package electric-operator
+  :hook ((text-mode . electric-operator-mode)
+         (prog-mode . electric-operator-mode))
+  :config (setq electric-operator-enable-in-docs t))
 #+END_SRC
 
 ***** [[https://github.com/snosov1/dummyparens][Automatic parens]]
