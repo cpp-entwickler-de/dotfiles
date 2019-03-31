@@ -4916,7 +4916,9 @@ When using Magit >= 2.4.0
                               "-n200")
         magit-diff-section-arguments '("--function-context" "-M" "-C")
         magit-diff-arguments '("--function-context" "--stat" "-M" "-C"))
-  (push "^\\*?magit.*" helm-boring-buffer-regexp-list))
+  (push "^\\*?magit.*" helm-boring-buffer-regexp-list)
+  (magit-define-popup-action 'magit-dispatch-popup
+    ?Y "Cherry" 'magit-cherry ?!))
 #+END_SRC
 
 ***** Full screen magit-status
