@@ -2029,6 +2029,11 @@ Indicate recursive minibuffer
         :candidate-number-limit 15)
       "`helm-source-recentf' with candidate limit.")
 
+    (require 'helm-buffers)
+    (unless helm-source-buffers-list
+      (setq helm-source-buffers-list
+            (helm-make-source "Buffers" 'helm-source-buffers)))
+
     (defun cpped-helm-find-files ()
       (interactive)
       (helm :sources `(helm-source-buffers-list
