@@ -3010,6 +3010,9 @@ Handler to close buffer after quitting ccmake.
 
 **** Open Project
 #+BEGIN_SRC emacs-lisp
+(defvar cpped-after-project-load-hook nil "Hook called after a project is loaded. ")
+(defvar cpped-after-project-load-update-project-file-hook nil "Hook called for each project file after a project is loaded. ")
+
 (defun cpped-load-project (build-dir)
   "Load a project."
   (interactive (list (read-directory-name "Build-directory: "
@@ -3021,7 +3024,12 @@ Handler to close buffer after quitting ccmake.
         (projectile-discover-projects-in-directory source-dir)
         (when (not (boundp cpped-cmake-current-target))
                                         (setq cpped-cmake-current-target 'all))
-        (push '(source-dir . build-dir) cpped-current-build-directories))
+        (push '(source-dir . build-dir) cpped-current-build-directories)
+        (run-hooks 'cpped-after-project-load-hook)
+        (mapc (lambda (buffer)
+                (with-current-buffer buffer
+                  (run-hooks 'cpped-after-project-load-update-project-file-hook)))
+              (projectile-project-buffers)))
     (error "`%s' is not a build directory" build-dir)))
 #+END_SRC
 
