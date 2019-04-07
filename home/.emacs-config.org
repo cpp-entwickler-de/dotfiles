@@ -735,64 +735,22 @@ Find path of current position in XML docuement
          current-function)))))
 #+END_SRC
 
-*** Syntax Check
+*** Check Status
 #+BEGIN_SRC emacs-lisp
-(defface flycheck-okay '((t :inherit default))
-  "Flycheck Okay")
+(defvar cpped-powerline-check-status-functions nil "A list of functions that format mode line status data.")
+(defvar cpped-powerline-check-status-face-functions nil "A list of functions that compute the face for mode line status data.")
 
-(defun cpped-flycheck-status-face ()
-  (pcase flycheck-last-status-change
-    (`errored 'flycheck-error)
-    (`finished
-       (if flycheck-current-errors
-                          (let-alist (flycheck-count-errors flycheck-current-errors)
-                            (cond (.error 'flycheck-error)
-                                  (.warning 'flycheck-warning)
-                                  (.info 'flycheck-info)))
-         'flycheck-okay))
-    (_ 'flycheck-warning)))
+(defface cpped-check-status-info `((t :inherit default :background ,(face-attribute 'info :foreground)))
+  "Face used for modeline check info status."
+  :group 'cpped-powerline-check-status)
 
-(defun cpped-powerline-flycheck-status ()
-  (when (and (boundp 'flycheck-last-status-change)
-             (not (equal flycheck-last-status-change 'no-checker)))
-    (let* ((issues (if (and (equal flycheck-last-status-change 'finished)
-                            flycheck-current-errors)
-                       (let-alist (flycheck-count-errors flycheck-current-errors)
-                         (+ (or .warning 0) (or .error 0) (or .info 0)))
-                     0)))
-      (concat
-       (propertize (all-the-icons-faicon (pcase flycheck-last-status-change
-                                           (`finished (if flycheck-current-errors
-                                                          (let-alist (flycheck-count-errors flycheck-current-errors)
-                                                            (cond (.error "times-circle")
-                                                                  (.warning "exclamation-triangle")
-                                                                  (.info "info-circle")))
-                                                        "check"))
-                                           (`running "refresh")
-                                           (`not-checked "power-off")
-                                           (`errored "times-circle")
-                                           (`interrupted "bolt")
-                                           (`suspicious "exclamation-triangle")
-                                           (_ "power-off")))
-                   'face (list ':family (all-the-icons-faicon-family)
-                               ':background (face-attribute (cpped-flycheck-status-face) :background))
-                   'display '(raise -0.0))
-       " "
-       (propertize (pcase flycheck-last-status-change
-                     (`finished (if (> issues 0)
-                                    (format "%s Issue%s" issues (if (= 1 issues)
-                                                                    ""
-                                                                  "s"))
-                                  "No Issues"))
-                     (`running "Running")
-                     (`not-checked "Not checked")
-                     (`errored "Error")
-                     (`interrupted "Interrupted")
-                     (`suspicious "Error")
-                     (_ "Disabled"))
-                   'face (list ':weight 'bold
-                               ':background (face-attribute (cpped-flycheck-status-face) :background))
-                   'help-echo "Show Flycheck Errors")))))
+(defface cpped-check-status-warning `((t :inherit default :background ,(face-attribute 'warning :foreground)))
+  "Face used for modeline check warning status."
+  :group 'cpped-powerline-check-status)
+
+(defface cpped-check-status-error `((t :inherit default :background ,(face-attribute 'error :foreground)))
+  "Face used for modeline check error status."
+  :group 'cpped-powerline-check-status)
 #+END_SRC
 
 *** Date
@@ -877,9 +835,16 @@ Find path of current position in XML docuement
                           (show-project (not (= 0 (length project-id))))
                           (current-function (cpped-powerline-which-function (symbol-value 'mode-line)))
                           (show-function (not (= 0 (length current-function))))
-                          (check-status (cpped-powerline-flycheck-status))
-                          (show-check-status (not (= 0 (length check-status))))
-                          (check-face (cpped-flycheck-status-face))
+                          (check-status (mapconcat 'identity
+                                                   (remove nil (mapcar 'funcall cpped-powerline-check-status-functions))
+                                                   " "))
+                          (show-check-status (and check-status
+                                                  (not (= (length check-status) 0))))
+                          (check-face (when show-check-status
+                                        (let ((faces (mapcar 'funcall cpped-powerline-check-status-face-functions)))
+                                          (cond ((member 'cpped-check-status-error faces) 'cpped-check-status-error)
+                                                ((member 'cpped-check-status-warning faces) 'cpped-check-status-warning)
+                                                (t 'cpped-check-status-info)))))
                           (lhs (list
                                 (when show-project
                                   (powerline-raw project-id face1 'l))
@@ -923,6 +888,7 @@ Find path of current position in XML docuement
                      (concat (powerline-render lhs)
                              (powerline-fill mode-line (powerline-width rhs))
                              (powerline-render rhs)))))))
+
 (cpped-powerline-theme)
 #+END_SRC
 
@@ -3593,7 +3559,31 @@ Handler to close buffer after quitting ccmake.
         flycheck-check-syntax-automatically '(mode-enabled save idle-change))
   (add-hook 'after-init-hook #'global-flycheck-mode)
   (push "^\\*Flycheck.+\\*$" helm-boring-buffer-regexp-list)
-  (push '("^\\*Flycheck.+\\*$" :regexp t :dedicated t :position bottom) popwin:special-display-config))
+  (push '("^\\*Flycheck.+\\*$" :regexp t :dedicated t :position bottom) popwin:special-display-config)
+  (defun cpped-powerline-flycheck-status-face ()
+    (pcase flycheck-last-status-change
+      (`errored 'cpped-check-status-error)
+      (`finished
+       (if flycheck-current-errors
+           (let-alist (flycheck-count-errors flycheck-current-errors)
+             (cond (.error 'cpped-check-status-error)
+                   (.warning 'cpped-check-status-warning)
+                   (.info 'cpped-check-status-info)))
+         'cpped-check-status-info))
+      (_ 'cpped-check-status-warning)))
+  (defun cpped-powerline-flycheck-status ()
+    (when (and (boundp 'flycheck-last-status-change)
+               (equal flycheck-last-status-change 'finished))
+      (let* ((issues (let-alist (flycheck-count-errors flycheck-current-errors)
+                       (+ (or .warning 0) (or .error 0) (or .info 0)))))
+        (concat
+         (propertize (all-the-icons-faicon "bug")
+                     'face (list ':family (all-the-icons-faicon-family))
+                     'display '(raise -0.0))
+         (propertize (format " %d" issues)
+                     'face (list ':weight 'bold))))))
+  (add-to-list 'cpped-powerline-check-status-functions 'cpped-powerline-flycheck-status)
+  (add-to-list 'cpped-powerline-check-status-face-functions 'cpped-powerline-flycheck-status-face))
 #+END_SRC
 
 Custom error highlighting (colored line under location)
