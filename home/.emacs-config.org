@@ -3237,6 +3237,28 @@ Handler to close buffer after quitting ccmake.
   (cpped-build-target "clean"))
 #+END_SRC
 
+*** Run/Debug
+#+BEGIN_SRC emacs-lisp
+(defun cpped-run-target (target)
+  "Build and run the current target in the current build directory. Ask for target if not set."
+  (interactive (list (or (or (cpped-build-target)
+                             (call-interactively 'cpped-select-target)))))
+  (cpped-build-target target)
+  (let ((executable (locate-file target exec-path exec-suffixes 'executable)))
+    (when executable
+      (let ((default-directory(file-name-directory executable)))
+        (call-process (cpped-maybe-run-in-docker executable))))))
+
+(defun cpped-debug-target (target)
+  "Build and run the current target in the current build directory. Ask for target if not set."
+  (interactive (list (or (or (cpped-build-target)
+                             (call-interactively 'cpped-select-target)))))
+  (cpped-build-target target)
+  (let ((executable (locate-file target exec-path exec-suffixes 'executable)))
+    (when executable
+      (realgud:gdb (cpped-maybe-run-in-docker (concat "gdb -cd=" (file-name-directory executable) " " executable))))))
+#+END_SRC
+
 ** Languages
 *** Common
 #+BEGIN_SRC emacs-lisp
