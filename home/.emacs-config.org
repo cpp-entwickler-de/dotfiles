@@ -4070,6 +4070,8 @@ TODO
 #+BEGIN_SRC emacs-lisp
 (use-package flycheck-clang-tidy
   :after flycheck
+  :hook (cpped-after-project-load-update-project-file-hook . (lambda ()
+                                                               (setq-local flycheck-clang-tidy-build-path (cpped-build-dir))))
   :config (flycheck-add-next-checker 'c/c++-cppcheck '(t . c/c++-clang-tidy)))
 #+END_SRC
 
