@@ -5096,7 +5096,7 @@ When using Magit >= 2.4.0
                                          `(:family ,(all-the-icons-octicon-family))))
   "An alist of expressions and icon properties to replace strings with icons in magit logs.")
 
-(defun cpped-prettify-magit ()
+(defun cpped-prettify-magit (&rest arguments)
   "Add face properties and compose symbols for buffer from pretty-magit."
   (interactive)
   (with-silent-modifications
