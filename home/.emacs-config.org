@@ -2883,39 +2883,53 @@ Open binary files in hexl-mode
 
 * Programming
 ** Projects
+*** Find file in project
+#+BEGIN_SRC emacs-lisp
+(defun cpped-find-project-file (file)
+  "Find a file in source or build directory."
+  (or
+   (let* ((source-dir (cpped-project-dir))
+          (source-file (when source-dir
+                         (expand-file-name file source-dir))))
+    (when (file-exists-p source-file)
+        source-file))
+   (let* ((build-dir (cpped-build-dir))
+          (build-file (when build-dir
+                        (expand-file-name file build-dir))))
+     (when (file-exists-p build-file)
+       source-file))))
+#+END_SRC
+
 *** Use docker to run tools for docker-based projects
 #+BEGIN_SRC emacs-lisp
 (defvar default-docker-compose-file "docker-compose.yml" "The default name for the docker-compose file.")
+(defvar default-docker-start-script "docker-run.sh" "The default path to a script to start applications in a docker container.")
 
-(defun cpped-docker-compose-file (project-root)
+(defun cpped-docker-compose-file ()
   "Find the compose file in the project root."
-  (let ((compose-file (when default-docker-compose-file
-                        (concat (file-name-as-directory project-root) default-docker-compose-file))))
+  (let ((compose-file (cpped-find-project-file default-docker-compose-file)))
     (when (and compose-file
              (file-exists-p compose-file))
         compose-file)))
 
 (defun cpped-is-docker-project-p ()
-  "Check if the current project is supports docker."
-  (if (cpped-docker-compose-file (if (ignore-errors (projectile-project-p))
-                                     (projectile-project-root)
-                                   default-directory))
-      t
-    nil))
+  "Check if the current project supports docker."
+  (or (cpped-docker-compose-file)
+      (cpped-find-project-file ".docker-project")))
 
-(defun cpped-maybe-run-in-docker (project-root command)
+(defun cpped-maybe-run-in-docker (command)
   "Run a command in docker if supported by the project."
-  (let* ((compose-file (cpped-docker-compose-file project-root)))
+  (let* ((compose-file (cpped-docker-compose-file)))
     (if compose-file
         (append `(docker-compose --file ,compose-file --exec) command)
-      command)))
+      (if (and (cpped-is-docker-project-p)
+               default-docker-start-script)
+          (append default-docker-start-script command)
+        command))))
 
 (with-eval-after-load "flycheck"
   (setq flycheck-command-wrapper-function #'(lambda (command)
-                                              (cpped-maybe-run-in-docker (if (ignore-errors (projectile-project-p))
-                                                                             (projectile-project-root)
-                                                                           default-directory)
-                                                                         command))))
+                                              (cpped-maybe-run-in-docker command))))
 #+END_SRC
 
 *** CMake
