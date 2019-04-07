@@ -2754,7 +2754,25 @@ Some useful abbreviations
         ispell-dictionary "en_US"
         ispell-local-dictionary "en_US"
         ispell-program-name "/usr/bin/aspell")
-  (push "\\*flypell.*\\*" helm-boring-buffer-regexp-list))
+  (push "\\*flypell.*\\*" helm-boring-buffer-regexp-list)
+  (defvar-local cpped-flyspell-errors 0 "The number of spelling errors in the document.")
+  (advice-add 'flyspell-after-change-function :after (lambda (&rest arguments)
+                                                       (setq cpped-flyspell-errors 0)
+                                                       (dolist (buffer-overlay (overlays-in (point-min) (point-max)))
+                                                         (when (flyspell-overlay-p buffer-overlay)
+                                                             (setq cpped-flyspell-errors (1+ cpped-flyspell-errors))))
+                                                       (force-mode-line-update)))
+  (defun cpped-powerline-flyspell-status()
+    "Format the modeline flyspell information."
+    (when (and flyspell-mode
+               (> cpped-flyspell-errors 0))
+      (concat (propertize (all-the-icons-faicon "comment")
+                          'face (list ':family (all-the-icons-faicon-family))
+                          'display '(raise -0.0))
+              (propertize (format " %d" cpped-flyspell-errors)
+                          'face (list ':weight 'bold)))))
+  (add-to-list 'cpped-powerline-check-status-functions 'cpped-powerline-flyspell-status)
+  (add-to-list 'cpped-powerline-check-status-face-functions 'cpped-powerline-flyspell-status-face))
 
 (use-package helm-flyspell
   :after (helm flyspell)
