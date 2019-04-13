@@ -2891,12 +2891,14 @@ Open binary files in hexl-mode
    (let* ((source-dir (cpped-project-dir))
           (source-file (when source-dir
                          (expand-file-name file source-dir))))
-    (when (file-exists-p source-file)
-        source-file))
+     (when (and source-file
+                (file-exists-p source-file))
+       source-file))
    (let* ((build-dir (cpped-build-dir))
           (build-file (when build-dir
                         (expand-file-name file build-dir))))
-     (when (file-exists-p build-file)
+     (when (and build-file
+                (file-exists-p build-file))
        source-file))))
 #+END_SRC
 
