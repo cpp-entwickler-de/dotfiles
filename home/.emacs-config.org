@@ -2827,7 +2827,6 @@ Some useful abbreviations
 *** [[https://github.com/atykhonov/google-translate][Translate text]]
 #+BEGIN_SRC emacs-lisp
 (use-package google-translate
-  :quelpa (google-translate :fetcher github :repo "atykhonov/google-translate")
   :config
   (setq google-translate-show-phonetic t
         google-translate-output-destination 'popup
