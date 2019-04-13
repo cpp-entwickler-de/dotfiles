@@ -1,6 +1,7 @@
 #+TITLE: Emacs config
 #+OPTIONS: toc:4
 #+PROPERTY: header-args :results silent
+#+STARTUP: showeverything
 
 * Custom configuration
 #+BEGIN_SRC emacs-lisp
