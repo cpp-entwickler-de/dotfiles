@@ -860,7 +860,8 @@ Find path of current position in XML docuement
                                 (powerline-raw (cpped-powerline-buffer-id) mode-line 'l)
                                 (when show-project
                                   (powerline-raw (cpped-powerline-docker-project (symbol-value 'face2)) face2 'l))
-                                (powerline-raw (cpped-powerline-version-control) mode-line 'l)
+                                (when (fboundp 'cpped-powerline-version-control)
+                                  (powerline-raw (cpped-powerline-version-control) mode-line 'l))
                                 (powerline-raw (cpped-powerline-eshell-process-running) mode-line 'l)
                                 (funcall separator-left mode-line face2)
                                 (powerline-raw (cpped-powerline-remote (symbol-value 'face2)) face2)
