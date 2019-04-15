@@ -1894,7 +1894,7 @@ Indicate recursive minibuffer
 
 ** Save backup files to /tmp
 #+BEGIN_SRC emacs-lisp
-(setq backup-directory-alist `(("." . ,(concat (file-name-as-directory user-emacs-directory) "backups")))
+(setq backup-directory-alist `((".*" . ,(expand-file-name "backups" user-emacs-directory)))
       backup-by-copying t
       version-control t
       delete-old-versions t
@@ -2969,7 +2969,7 @@ Handler to close buffer after quitting ccmake.
                                 build-dir)
                            build-dir
                            (read-directory-name "Build-directory: "
-                                                (concat (file-name-as-directory cpped-build-base-directory) (file-name-nondirectory (directory-file-name (file-name-directory source-directory)))))))))
+                                                (expand-file-name (file-name-nondirectory (directory-file-name (file-name-directory source-directory))) cpped-build-base-directory))))))
     (when (and build-dir
                source-dir)
       (if (file-directory-p source-dir)
@@ -3017,7 +3017,7 @@ Handler to close buffer after quitting ccmake.
                                               (file-name-as-directory cpped-build-base-directory)))))
   (if (and build-dir
            (file-directory-p build-dir))
-      (let ((cache-file (concat (file-name-as-directory build-dir) "CMakeCache.txt")))
+      (let ((cache-file (expand-file-name "CMakeCache.txt" build-dir)))
         (if (file-exists-p cache-file)
             (progn (delete-file cache-file)
                    (cpped-cmake-configure (cpped-cmake-source-dir build-dir) build-dir))
@@ -3157,7 +3157,7 @@ Handler to close buffer after quitting ccmake.
   "Find the corresponding source directory for build-dir."
   (interactive (list (read-directory-name "Build-directory: "
                                           (file-name-as-directory cpped-build-base-directory))))
-  (let ((cache-file (concat (file-name-as-directory build-dir) "CMakeCache.txt")))
+  (let ((cache-file (expand-file-name "CMakeCache.txt" build-dir)))
     (if (file-exists-p cache-file)
         (let ((source-dir (with-temp-buffer
                             (insert-file-contents cache-file)
@@ -3188,22 +3188,22 @@ Handler to close buffer after quitting ccmake.
 #+BEGIN_SRC emacs-lisp
 (defun cpped-cmake-source-directory-p (source-dir)
   "Check if source-dir is a CMake source directory."
-  (file-exists-p (concat (file-name-as-directory source-dir) "CMakeLists.txt")))
+  (file-exists-p (expand-file-name "CMakeLists.txt" source-dir)))
 #+END_SRC
 
 ***** Check if directory is build directory
 #+BEGIN_SRC emacs-lisp
 (defun cpped-cmake-build-directory-p (build-dir)
   "Check if build-dir is a CMake build directory."
-  (or (file-exists-p (concat (file-name-as-directory build-dir) "CMakeCache.txt"))))
+  (or (file-exists-p (expand-file-name "CMakeCache.txt" build-dir))))
 
 (defun cpped-ninja-build-directory-p (build-dir)
   "Check if build-dir is a ninja build directory."
-  (or (file-exists-p (concat (file-name-as-directory build-dir) "build.ninja"))))
+  (or (file-exists-p (expand-file-name "build.ninja" build-dir))))
 
 (defun cpped-make-build-directory-p (build-dir)
   "Check if build-dir is a make build directory."
-  (or (file-exists-p (concat (file-name-as-directory build-dir) "Makefile"))))
+  (or (file-exists-p (expand-file-name "Makefile" build-dir))))
 
 (defun cpped-build-directory-p (build-dir)
   "Check if build-dir is a build directory."
@@ -6131,7 +6131,7 @@ Do not use scientific form so quickly
                                       :buffer "*helm serial port*"))))))
   (if port
       (progn
-        (serial-term (concat "/dev/" port) 115200)
+        (serial-term (expand-file-name port "/dev") 115200)
         (rename-buffer (format "*Serial Terminal %s*" port))
         (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))
     (message "No serial port found.")))
