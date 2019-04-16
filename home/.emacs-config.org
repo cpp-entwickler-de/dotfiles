@@ -17,8 +17,8 @@ Do not load outdated byte code
 
 #+BEGIN_SRC emacs-lisp
 (use-package auto-compile
+  :custom (auto-compile-display-buffer nil)
   :config
-  (setq auto-compile-display-buffer nil)
   (auto-compile-on-load-mode)
   (auto-compile-on-save-mode))
 #+END_SRC
@@ -39,11 +39,11 @@ Do not load outdated byte code
 
 (if cpped-auto-update-packages
     (use-package auto-package-update
-      :config
-      (setq auto-package-update-interval 14
-            auto-package-update-delete-old-versions t)
-      (add-hook 'after-make-frame-functions (lambda (_)
-                                              (auto-package-update-maybe)))))
+      :hook (after-make-frame-functions . (lambda (_)
+                                            (auto-package-update-maybe)))
+      :custom
+      (auto-package-update-interval 14)
+      (auto-package-update-delete-old-versions t)))
 #+END_SRC
 
 ** [[https://github.com/jabranham/system-packages][System packages]]
@@ -274,15 +274,16 @@ Show below other windows
 ** History
 #+BEGIN_SRC emacs-lisp
 (use-package savehist
+  :custom
+  (history-length 10000)
+  (history-delete-duplicates t)
+  (savehist-save-minibuffer-history t)
+  (savehist-additional-variables '(kill-ring
+                                   search-ring
+                                   regexp-search-ring
+                                   extended-command-history))
+  (savehist-autosave-interval 180)
   :config
-  (setq history-length 10000
-        history-delete-duplicates t
-        savehist-save-minibuffer-history t
-        savehist-additional-variables '(kill-ring
-                                        search-ring
-                                        regexp-search-ring
-                                        extended-command-history)
-        savehist-autosave-interval 180)
   (savehist-mode t))
 #+END_SRC
 
@@ -345,24 +346,25 @@ Disable prettification if cursor is at edge of expression
 #+BEGIN_SRC emacs-lisp
 (use-package dashboard
   :after helm-buffers
+  :custom
+  (dashboard-startup-banner (let ((image-url (with-current-buffer (url-retrieve-synchronously (format-time-string "http://dilbert.com/%Y-%m-%d"))
+                                               (goto-char (point-min))
+                                               (when (re-search-forward (rx "src=\"" (group "//assets.amuniversal.com/" (+ hex-digit)) "\"")
+                                                                        nil t)
+                                                 (setq url (concat "http:" (match-string 1))))
+                                               (kill-buffer)
+                                               url))
+                                  (image-file (make-temp-file "emacs-dilbert" nil ".png")))
+                              (when image-file
+                                (url-copy-file image-url image-file t)
+                                (add-hook 'kill-emacs-hook `(lambda()
+                                                              (delete-file ,image-file))))
+                              image-file))
+  (dashboard-banner-logo-title "")
+  (dashboard-items '((recents . 20)
+                     (projects . 5)
+                     (agenda . 10)))
   :config
-  (setq dashboard-startup-banner (let ((image-url (with-current-buffer (url-retrieve-synchronously (format-time-string "http://dilbert.com/%Y-%m-%d"))
-                                                    (goto-char (point-min))
-                                                    (when (re-search-forward (rx "src=\"" (group "//assets.amuniversal.com/" (+ hex-digit)) "\"")
-                                                                             nil t)
-                                                      (setq url (concat "http:" (match-string 1))))
-                                                    (kill-buffer)
-                                                    url))
-                                       (image-file (make-temp-file "emacs-dilbert" nil ".png")))
-                                   (when image-file
-                                     (url-copy-file image-url image-file t)
-                                     (add-hook 'kill-emacs-hook `(lambda()
-                                                                   (delete-file ,image-file))))
-                                   image-file)
-        dashboard-banner-logo-title ""
-        dashboard-items '((recents . 20)
-                          (projects . 5)
-                          (agenda . 10)))
   (push (regexp-quote dashboard-buffer-name) helm-boring-buffer-regexp-list)
   (dashboard-setup-startup-hook))
 #+END_SRC
@@ -810,10 +812,10 @@ Find path of current position in XML docuement
 *** Powerline
 #+BEGIN_SRC emacs-lisp
 (use-package powerline
-  :config
-  (setq powerline-default-separator 'slant
-        powerline-display-hud nil
-        powerline-height 20))
+  :custom
+  (powerline-default-separator 'slant)
+  (powerline-display-hud nil)
+  (powerline-height 20))
 
 (defun cpped-powerline-theme ()
   "Setup the default mode-line."
@@ -909,19 +911,21 @@ Find path of current position in XML docuement
 #+BEGIN_SRC emacs-lisp
 (use-package ag
   :after system-packages
+  :custom
+  (ag-arguments '("--smart-case"))
+  (ag-context-lines 3)
+  (ag-highlight-search t))
   :config
   (cpped-install-system-package "the_silver_searcher" :executable "ag")
-  (setq ag-arguments '("--smart-case")
-        ag-context-lines 3
-        ag-highlight-search t))
 
 (use-package projectile
   :after ag
+  :custom
+  (projectile-enable-caching t)
+  (projectile-completion-system 'helm)
+  (projectile-switch-project-action 'helm-projectile)
+  (projectile-git-submodule-command nil)
   :config
-  (setq projectile-enable-caching t
-        projectile-completion-system 'helm
-        projectile-switch-project-action 'helm-projectile
-        projectile-git-submodule-command nil)
   (projectile-global-mode))
 #+END_SRC
 
@@ -931,24 +935,25 @@ Find path of current position in XML docuement
   :after popwin
   :bind (:map helm-map (("M-SPC" . helm-toggle-all-marks)
                         ("C-M-y" . helm-copy-to-buffer)))
+  :custom
+  (helm-buffer-max-length nil)
+  (helm-buffers-fuzzy-matching t)
+  (helm-candidate-number-limit 5000)
+  (helm-case-fold-search t)
+  (helm-comp-read-case-fold-search 'Ignore\ case)
+  (helm-follow-mode-persistent nil)
+  (helm-grep-ignored-directories '("SCCS" "RCS" "CVS" "MCVS" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" ".gvfs" "branches" "tags"))
+  (helm-input-idle-delay 0.01)
+  (helm-recentf-fuzzy-match t)
+  (helm-split-window-in-side-p t)
+  (helm-move-to-line-cycle-in-source t)
+  (helm-scroll-amount 8)
+  (helm-ff-search-library-in-sexp t)
+  (helm-ff-file-name-history-use-recentf t)
+  (helm-ff-transformer-show-only-basename nil)
+  (helm-google-suggest-use-curl-p t)
   :config
-  (setq helm-buffer-max-length nil
-        helm-buffers-fuzzy-matching t
-        helm-candidate-number-limit 5000
-        helm-case-fold-search t
-        helm-comp-read-case-fold-search 'Ignore\ case
-        helm-follow-mode-persistent nil
-        helm-grep-ignored-directories '("SCCS" "RCS" "CVS" "MCVS" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" ".gvfs" "branches" "tags")
-        helm-input-idle-delay 0.01
-        helm-recentf-fuzzy-match t
-        helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
-        helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
-        helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
-        helm-ff-search-library-in-sexp t        ; search for library in `require' and `declare-function' sexp.
-        helm-ff-file-name-history-use-recentf t
-        helm-ff-transformer-show-only-basename nil)
   (cpped-install-system-package "curl")
-  (setq helm-google-suggest-use-curl-p t)
   (add-hook 'helm-before-initialize-hook '(lambda () (linum-mode 0)))
   (advice-add 'helm-ff-filter-candidate-one-by-one
               :around (lambda (fcn file)
@@ -984,11 +989,11 @@ Find path of current position in XML docuement
 #+BEGIN_SRC emacs-lisp
 (use-package helm-ag
   :after (helm ag)
-  :config
-  (setq helm-ag-base-command "ag --smart-case"
-        helm-ag-use-grep-ignore-list t
-        helm-ag-use-agignore t
-        helm-ag-insert-at-point 'symbol))
+  :custom
+  (helm-ag-base-command "ag --smart-case")
+  (helm-ag-use-grep-ignore-list t)
+  (helm-ag-use-agignore t)
+  (helm-ag-insert-at-point 'symbol))
 #+END_SRC
 
 *** Popwin Fix
@@ -1042,15 +1047,14 @@ Find path of current position in XML docuement
     result))
 
 (use-package desktop
+  :custom
+  (desktop-path (list user-emacs-directory))
+  (desktop-dirname user-emacs-directory)
+  (desktop-restore-eager 5)
+  (desktop-load-locked-desktop t)
   :config
-  (setq desktop-path (list user-emacs-directory)
-        desktop-dirname user-emacs-directory
-        desktop-restore-eager 5
-        desktop-load-locked-desktop t)
   (desktop-save-mode 1)
-
   (run-with-idle-timer 300 t 'desktop-save)
-
   (advice-add 'desktop-save :around #'cpped-always-yes)
   (advice-add 'desktop-read :around #'cpped-always-yes))
 #+END_SRC
@@ -1099,8 +1103,7 @@ Switch to previous buffer
 **** [[https://github.com/Fanael/persistent-scratch][Save scratch buffers between sessions]]
 #+BEGIN_SRC emacs-lisp
 (use-package persistent-scratch
-        :config
-        (persistent-scratch-setup-default))
+  :config (persistent-scratch-setup-default))
 #+END_SRC
 
 *** Popup Windows
@@ -1289,12 +1292,13 @@ Indicate recursive minibuffer
 #+BEGIN_SRC emacs-lisp
   (use-package undo-tree
     :after popwin
+    :custom
+    (undo-tree-visualizer-timestamps t)
+    (undo-tree-visualizer-diff t)
+    (undo-tree-auto-save-history t)
+    (undo-tree-history-directory-alist `(("." . ,(expand-file-name "~/.cache/emacs-undo"))))
     :config
     (global-undo-tree-mode)
-    (setq undo-tree-visualizer-timestamps t
-          undo-tree-visualizer-diff t
-          undo-tree-auto-save-history t
-          undo-tree-history-directory-alist `(("." . ,(expand-file-name "~/.cache/emacs-undo"))))
     (push '(" *undo-tree*" :dedicated t :width 60 :position right) popwin:special-display-config))
 #+END_SRC
 
@@ -1331,89 +1335,89 @@ Indicate recursive minibuffer
 (add-hook 'term-exec-hook #'term-char-mode)
 
 (use-package eshell
-  :config
-  (setq eshell-banner-message ""
-        eshell-scroll-to-bottom-on-input 'this
-        eshell-scroll-to-bottom-on-output 'this
-        eshell-kill-processes-on-exit t
-        eshell-error-if-no-glob t
-        eshell-hist-ignoredups t
-        eshell-history-size 20000
-        eshell-save-history-o7n-exit t
-        eshell-input-filter 'eshell-input-filter-initial-space
-        eshell-prefer-lisp-functions nil
-        eshell-list-files-after-cd t
-        eshell-destroy-buffer-when-process-dies t
-        eshell-cmpl-cycle-completions t
-        eshell-buffer-maximum-lines 2000
-        eshell-cd-shows-directory t
-        eshell-cmpl-autolist t
-        eshell-cmpl-dir-ignore "\\`\\(\\.\\.?\\|CVS\\|.git\\|.svn\\|.bzr\\)/\\'"
-        eshell-cmpl-expand-before-complete t
-        eshell-cmpl-ignore-case t
-        eshell-command-completions-alist '(("e" . "\\.pdf\\'")
-                                           ("ar" . "\\.[ao]\\'")
-                                           ("e" . "\\.[Cc]\\([Cc]\\|[PpXx][PpXx]\\)?\\'")
-                                           ("e" . "\\.[Hh]\\([Hh]\\|[PpXx][PpXx]\\)?\\'")
-                                           ("readelf" . "\\(\\`[^.]*\\|\\.\\([ao]\\|so\\)\\)\\'")
-                                           ("objdump" . "\\(\\`[^.]*\\|\\.\\([ao]\\|so\\)\\)\\'")
-                                           ("nm" . "\\(\\`[^.]*\\|\\.\\([ao]\\|so\\)\\)\\'")
-                                           ("gdb" . "\\`\\([^.]*\\|a\\.out\\)\\'")
-                                           ("e" . "\.txt\'")
-                                           ("e" . "\.md\'")
-                                           ("e" . "\.bat\'")
-                                           ("e" . "\.bin\'")
-                                           ("e" . "\.cfg\'")
-                                           ("e" . "\.config\'")
-                                           ("e" . "\.ini\'")
-                                           ("e" . "\.el\'")
-                                           ("e" . "\.org\'")
-                                           ("e" . "\.log\'")
-                                           ("gv" . "\.ps\'")
-                                           ("xdvi" . "\.dvi\'")
-                                           ("e" . "\.png\'")
-                                           ("e" . "\.jpe?g\'")
-                                           ("e" . "\.svg\'")
-                                           ("e" . "\.xml\'")
-                                           ("e" . "\.xslt?\'")
-                                           ("unzip -l" . "\.zip\'")
-                                           ("unrar l" . "\.rar\'")
-                                           ("tar tf" . "\.tar\'")
-                                           ("tar ztf" . "\.tar.gz\'")
-                                           ("tar jtf" . "\.tar.bz2\'")
-                                           ("unace l" . "\.ace\'"))
-        eshell-glob-include-dot-files t
-        eshell-ls-initial-args '("-A"
-                                 "-F"
-                                 "-h"
-                                 "-l"
-                                 "-1"
-                                 "-v"
-                                 "--color"
-                                 "--group-directories-first")
-        eshell-modules-list '(eshell-alias
-                              eshell-banner
-                              eshell-basic
-                              eshell-cmpl
-                              eshell-dirs
-                              eshell-glob
-                              eshell-hist
-                              eshell-ls
-                              eshell-pred
-                              eshell-prompt
-                              eshell-script
-                              eshell-smart
-                              eshell-term
-                              eshell-tramp
-                              eshell-unix)
-        eshell-output-filter-functions '(eshell-truncate-buffer
-                                         eshell-postoutput-scroll-to-bottom
-                                         eshell-handle-control-codes
-                                         eshell-handle-ansi-color
-                                         eshell-watch-for-password-prompt)
-        eshell-review-quick-commands t
-        eshell-scroll-to-bottom-on-output 'all
-        eshell-show-lisp-completions t))
+  :custom
+  (eshell-banner-message "")
+  (eshell-scroll-to-bottom-on-input 'this)
+  (eshell-scroll-to-bottom-on-output 'this)
+  (eshell-kill-processes-on-exit t)
+  (eshell-error-if-no-glob t)
+  (eshell-hist-ignoredups t)
+  (eshell-history-size 20000)
+  (eshell-save-history-o7n-exit t)
+  (eshell-input-filter 'eshell-input-filter-initial-space)
+  (eshell-prefer-lisp-functions nil)
+  (eshell-list-files-after-cd t)
+  (eshell-destroy-buffer-when-process-dies t)
+  (eshell-cmpl-cycle-completions t)
+  (eshell-buffer-maximum-lines 2000)
+  (eshell-cd-shows-directory t)
+  (eshell-cmpl-autolist t)
+  (eshell-cmpl-dir-ignore "\\`\\(\\.\\.?\\|CVS\\|.git\\|.svn\\|.bzr\\)/\\'")
+  (eshell-cmpl-expand-before-complete t)
+  (eshell-cmpl-ignore-case t)
+  (eshell-command-completions-alist '(("e" . "\\.pdf\\'")
+                                      ("ar" . "\\.[ao]\\'")
+                                      ("e" . "\\.[Cc]\\([Cc]\\|[PpXx][PpXx]\\)?\\'")
+                                      ("e" . "\\.[Hh]\\([Hh]\\|[PpXx][PpXx]\\)?\\'")
+                                      ("readelf" . "\\(\\`[^.]*\\|\\.\\([ao]\\|so\\)\\)\\'")
+                                      ("objdump" . "\\(\\`[^.]*\\|\\.\\([ao]\\|so\\)\\)\\'")
+                                      ("nm" . "\\(\\`[^.]*\\|\\.\\([ao]\\|so\\)\\)\\'")
+                                      ("gdb" . "\\`\\([^.]*\\|a\\.out\\)\\'")
+                                      ("e" . "\.txt\'")
+                                      ("e" . "\.md\'")
+                                      ("e" . "\.bat\'")
+                                      ("e" . "\.bin\'")
+                                      ("e" . "\.cfg\'")
+                                      ("e" . "\.config\'")
+                                      ("e" . "\.ini\'")
+                                      ("e" . "\.el\'")
+                                      ("e" . "\.org\'")
+                                      ("e" . "\.log\'")
+                                      ("gv" . "\.ps\'")
+                                      ("xdvi" . "\.dvi\'")
+                                      ("e" . "\.png\'")
+                                      ("e" . "\.jpe?g\'")
+                                      ("e" . "\.svg\'")
+                                      ("e" . "\.xml\'")
+                                      ("e" . "\.xslt?\'")
+                                      ("unzip -l" . "\.zip\'")
+                                      ("unrar l" . "\.rar\'")
+                                      ("tar tf" . "\.tar\'")
+                                      ("tar ztf" . "\.tar.gz\'")
+                                      ("tar jtf" . "\.tar.bz2\'")
+                                      ("unace l" . "\.ace\'")))
+  (eshell-glob-include-dot-files t)
+  (eshell-ls-initial-args '("-A"
+                            "-F"
+                            "-h"
+                            "-l"
+                            "-1"
+                            "-v"
+                            "--color"
+                            "--group-directories-first"))
+  (eshell-modules-list '(eshell-alias
+                         eshell-banner
+                         eshell-basic
+                         eshell-cmpl
+                         eshell-dirs
+                         eshell-glob
+                         eshell-hist
+                         eshell-ls
+                         eshell-pred
+                         eshell-prompt
+                         eshell-script
+                         eshell-smart
+                         eshell-term
+                         eshell-tramp
+                         eshell-unix))
+  (eshell-output-filter-functions '(eshell-truncate-buffer
+                                    eshell-postoutput-scroll-to-bottom
+                                    eshell-handle-control-codes
+                                    eshell-handle-ansi-color
+                                    eshell-watch-for-password-prompt))
+  (eshell-review-quick-commands t)
+  (eshell-scroll-to-bottom-on-output 'all)
+  (eshell-show-lisp-completions t))
 #+END_SRC
 
 *** Environment
@@ -1653,13 +1657,13 @@ Indicate recursive minibuffer
 (use-package shell-pop
   :after helm-buffers
   :bind ("C-#" . shell-pop)
-  :config
-  (setq shell-pop-shell-type '("eshell" "*eshell*" (lambda nil
-                                                     (cpped-eshell-maybe-new-session)))
-        shell-pop-universal-key "C-#"
-        shell-pop-window-size 60
-        shell-pop-full-span t
-        shell-pop-window-position "bottom"))
+  :custom
+  (shell-pop-shell-type '("eshell" "*eshell*" (lambda nil
+                                                (cpped-eshell-maybe-new-session))))
+  (shell-pop-universal-key "C-#")
+  (shell-pop-window-size 60)
+  (shell-pop-full-span t)
+  (shell-pop-window-position "bottom"))
 #+END_SRC
 
 *** Navigation
@@ -1672,8 +1676,8 @@ Indicate recursive minibuffer
 **** [[https://github.com/peterwvj/eshell-up][Go to parent directories]]
 #+BEGIN_SRC emacs-lisp
 (use-package eshell-up
+  :custom (eshell-up-ignore-case nil)
   :config
-  (setq eshell-up-ignore-case nil)
   (defun eshell/up (directory)
     "Alias for eshell-up."
     (eshell-up directory)))
@@ -1727,8 +1731,8 @@ Indicate recursive minibuffer
 #+BEGIN_SRC emacs-lisp
 (use-package shelldoc
   :after (helm-buffers popwin)
+  :custom (shelldoc-keep-man-locale nil)
   :config
-  (setq shelldoc-keep-man-locale nil)
   (add-hook 'eshell-mode-hook 'shelldoc-minor-mode-on)
   (add-hook 'sh-mode-hook 'shelldoc-minor-mode-on)
   (add-hook 'shell-mode-hook 'shelldoc-minor-mode-on)
@@ -1873,11 +1877,12 @@ Indicate recursive minibuffer
 *** [[https://github.com/cyrus-and/zoom][Automatically zoom current window]]
 #+BEGIN_SRC emacs-lisp
 (use-package zoom
+  :custom
+  (zoom-size '(0.618 . 0.618))
+  (zoom-ignored-major-modes '(dired-mode markdown-mode))
+  (zoom-ignored-buffer-name-regexps '("^*calc"))
   :config
-  (zoom-mode t)
-  (setq zoom-size '(0.618 . 0.618)
-        zoom-ignored-major-modes '(dired-mode markdown-mode)
-        zoom-ignored-buffer-name-regexps '("^*calc")))
+  (zoom-mode t))
 #+END_SRC
 
 * File Handling
@@ -1955,9 +1960,8 @@ Indicate recursive minibuffer
 (setq large-file-warning-threshold (* 25 1024 1024))
 
 (use-package vlf
-  :config
-  (require 'vlf-setup)
-  (setq vlf-application 'dont-ask))
+  :custom (vlf-application 'dont-ask)
+  :config (require 'vlf-setup))
 #+END_SRC
 
 ** Execute command on file
@@ -1977,14 +1981,14 @@ Indicate recursive minibuffer
 *** [[https://www.emacswiki.org/emacs/RecentFiles][Recent files]]
 #+BEGIN_SRC emacs-lisp
 (use-package recentf
-  :config
-  (setq recentf-max-saved-items 200
-        recentf-max-menu-items 15
-        recentf-auto-save-timer (run-with-idle-timer 300 t
-                                                     '(lambda ()
-                                                        (let ((warning-minimum-level :error))
-                                                          (ignore-errors (recentf-save-list))))))
-  (recentf-mode))
+  :custom
+  (recentf-max-saved-items 200)
+  (recentf-max-menu-items 15)
+  (recentf-auto-save-timer (run-with-idle-timer 300 t
+                                                '(lambda ()
+                                                   (let ((warning-minimum-level :error))
+                                                     (ignore-errors (recentf-save-list))))))
+  :config (recentf-mode))
 #+END_SRC
 
 *** Helm integration
@@ -2041,8 +2045,9 @@ Indicate recursive minibuffer
 #+BEGIN_SRC emacs-lisp
 (use-package wdired
   :bind (:map dired-mode-map ("r" . wdired-change-to-wdired-mode))
-  :config (setq wdired-allow-to-change-permissions t
-                wdired-create-parent-directories t))
+  :custom
+  (wdired-allow-to-change-permissions t)
+  (wdired-create-parent-directories t))
 #+END_SRC
 
 **** Use standard ls parameters for listing
@@ -2131,17 +2136,18 @@ Indicate recursive minibuffer
 (use-package treemacs
   :after helm-buffers
   :bind ("<f1>" . treemacs-toggle)
+  :custom
+  (treemacs-change-root-without-asking t)
+  (treemacs-collapse-dirs 3)
+  (treemacs-file-event-delay 2000)
+  (treemacs-filewatch-mode t)
+  (treemacs-follow-after-init t)
+  (treemacs-follow-mode t)
+  (treemacs-git-integration t)
+  (treemacs-is-never-other-window t)
+  (treemacs-silent-refresh t)
+  (treemacs-header-function 'treemacs-projectile-create-header)
   :config
-  (setq treemacs-change-root-without-asking t
-        treemacs-collapse-dirs 3
-        treemacs-file-event-delay 2000
-        treemacs-filewatch-mode t
-        treemacs-follow-after-init t
-        treemacs-follow-mode t
-        treemacs-git-integration t
-        treemacs-is-never-other-window t
-        treemacs-silent-refresh t
-        treemacs-header-function 'treemacs-projectile-create-header)
   (treemacs-follow-mode t)
   (treemacs-filewatch-mode t)
   (push "\\*Treemacs\\*" helm-boring-buffer-regexp-list)
@@ -2260,8 +2266,8 @@ Indicate recursive minibuffer
   (("README\\.md\\'" . gfm-mode)
    ("\\.md\\'" . markdown-mode)
    ("\\.markdown\\'" . markdown-mode))
-  :config (setq markdown-command "multimarkdown")
-          (add-hook 'markdown-mode-hook '(lambda ()
+  :custom (markdown-command "multimarkdown")
+  :config (add-hook 'markdown-mode-hook '(lambda ()
                                            (typo-mode -1))))
 #+END_SRC
 
@@ -2280,9 +2286,9 @@ Indicate recursive minibuffer
 ****** [[https://github.com/ardumont/markdown-toc][Table of contents]]
 #+BEGIN_SRC emacs-lisp
 (use-package markdown-toc
-  :config
-  (setq markdown-toc-header-toc-start nil
-        markdown-toc-header-toc-end nil))
+  :custom
+  (markdown-toc-header-toc-start nil)
+  (markdown-toc-header-toc-end nil))
 #+END_SRC
 
 ***** Syntax checker
@@ -2300,23 +2306,24 @@ https://github.com/mivok/markdownlint
 *** Highlight edited areas shortly
 #+BEGIN_SRC emacs-lisp
 (use-package volatile-highlights
-  :config
-  (setq Vhl/highlight-zero-width-ranges t
-        vhl/use-etags-extension-p nil
-        vhl/use-hideshow-extension-p t
-        vhl/use-nonincremental-search-extension-p nil
-        vhl/use-occur-extension-p nil)
-  (volatile-highlights-mode t))
+  :custom
+  (Vhl/highlight-zero-width-ranges t)
+  (vhl/use-etags-extension-p nil)
+  (vhl/use-hideshow-extension-p t)
+  (vhl/use-nonincremental-search-extension-p nil)
+  (vhl/use-occur-extension-p nil)
+  :config (volatile-highlights-mode t))
 #+END_SRC
 
 *** Highlight current symbol
 #+BEGIN_SRC emacs-lisp
 (use-package auto-highlight-symbol
+  :custom
+  (ahs-case-fold-search nil)
+  (ahs-default-range 'ahs-range-whole-buffer)
+  (ahs-idle-interval 0.25)
+  (ahs-inhibit-face-list nil)
   :config
-  (setq ahs-case-fold-search nil
-        ahs-default-range 'ahs-range-whole-buffer
-        ahs-idle-interval 0.25
-        ahs-inhibit-face-list nil)
   (global-auto-highlight-symbol-mode t)
   (add-hook 'org-mode-hook 'auto-highlight-symbol-mode))
 #+END_SRC
@@ -2325,28 +2332,27 @@ https://github.com/mivok/markdownlint
 Use custom regex to ignore color definitions (numbers starting with a # sign)
 #+BEGIN_SRC emacs-lisp
 (use-package num3-mode
-  :config
-  (setq num3--number-re (concat "[^#]0[xX]\\([[:xdigit:]]+\\)"
-        "\\|"
-        "[^#]\\(?1:\\b\\(?:[0-9]+[a-fA-F]\\|[a-fA-F]+[0-9]\\)[[:xdigit:]]*\\b\\)"
-        "\\|"
-        "[^#]\\([0-9]+\\)"
-        "\\|"
-        "\\.\\([0-9]+\\)"))
-(add-hook 'prog-mode-hook 'num3-mode))
+  :custom (num3--number-re (concat "[^#]0[xX]\\([[:xdigit:]]+\\)"
+                                   "\\|"
+                                   "[^#]\\(?1:\\b\\(?:[0-9]+[a-fA-F]\\|[a-fA-F]+[0-9]\\)[[:xdigit:]]*\\b\\)"
+                                   "\\|"
+                                   "[^#]\\([0-9]+\\)"
+                                   "\\|"
+                                   "\\.\\([0-9]+\\)"))
+  :config (add-hook 'prog-mode-hook 'num3-mode))
 #+END_SRC
 
 *** Highlight last screen content when navigating
 #+BEGIN_SRC emacs-lisp
 (use-package on-screen
-  :config
-  (setq on-screen-auto-update t
-        on-screen-delay 1.5
-        on-screen-drawing-threshold 10
-        on-screen-highlight-method 'shadow
-        on-screen-remove-when-edit t
-        on-screen-highlighting-to-background-delta 0.9)
-  (on-screen-global-mode +1))
+  :custom
+  (on-screen-auto-update t)
+  (on-screen-delay 1.5)
+  (on-screen-drawing-threshold 10)
+  (on-screen-highlight-method 'shadow)
+  (on-screen-remove-when-edit t)
+  (on-screen-highlighting-to-background-delta 0.9)
+  :config (on-screen-global-mode +1))
 #+END_SRC
 
 *** Smart narrowing/widening
@@ -2422,10 +2428,10 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 #+BEGIN_SRC emacs-lisp
 (use-package avy)
 (use-package ace-isearch
-  :config
-  (setq ace-isearch-function 'avy-goto-subword-1
-        ace-isearch-input-length 2)
-  (global-ace-isearch-mode +1))
+  :custom
+  (ace-isearch-function 'avy-goto-subword-1)
+  (ace-isearch-input-length 2)
+  :config (global-ace-isearch-mode +1))
 #+END_SRC
 
 *** [[https://github.com/camdez/goto-last-change.el][Jump to last change]]
@@ -2490,8 +2496,7 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 *** [[https://github.com/davidshepherd7/aggressive-fill-paragraph-mode][Auto-fill paragraphs]]
 #+BEGIN_SRC emacs-lisp
 (use-package aggressive-fill-paragraph
-  :config
-  (setq afp-fill-comments-only-mode-list '(prog-mode)))
+  :custom (afp-fill-comments-only-mode-list '(prog-mode)))
 #+END_SRC
 
 *** Join lines
@@ -2578,10 +2583,10 @@ Save system clipboard contents to kill ring before killing
 *** [[https://github.com/lewang/ws-butler][Remove trailing whitespace in changed lines]]
 #+BEGIN_SRC emacs-lisp
 (use-package ws-butler
-  :config
-  (setq ws-butler-global-mode t
-        ws-butler-keep-whitespace-before-point nil)
-  (ws-butler-global-mode))
+  :custom
+  (ws-butler-global-mode t)
+  (ws-butler-keep-whitespace-before-point nil)
+  :config (ws-butler-global-mode))
 #+END_SRC
 
 *** Allow adding a newline to the end of the current line, regardless of point position
@@ -2657,12 +2662,12 @@ Some useful abbreviations
 (use-package yasnippet
   :bind (:map yas-keymap (("ESC" . yas-abort-snippet)
                           ("DEL" . yas-skip-and-clear-or-delete-char)))
-  :config
-  (setq yas-snippet-dirs '("~/.yas-snippets")
-        yas-wrap-around-region t
-        yas-use-menu nil
-        yas-triggers-in-field t)
-  (yas-global-mode 1))
+  :custom
+  (yas-snippet-dirs '("~/.yas-snippets"))
+  (yas-wrap-around-region t)
+  (yas-use-menu nil)
+  (yas-triggers-in-field t)
+  :config (yas-global-mode 1))
 #+END_SRC
 
 ***** [[https://github.com/abo-abo/auto-yasnippet][Automatic snippets]]
@@ -2729,7 +2734,7 @@ Some useful abbreviations
 **** [[https://github.com/mhayashi1120/Emacs-wgrep][Edit grep buffers]]
 #+BEGIN_SRC emacs-lisp
 (use-package wgrep
-  :config (setq wgrep-enable-key "e"))
+  :custom (wgrep-enable-key "e"))
 
 (use-package wgrep-ag
   :after (wgrep ag)
@@ -2748,19 +2753,20 @@ Some useful abbreviations
 #+BEGIN_SRC emacs-lisp
 (use-package flyspell
   :after (helm-buffers system-packages)
+  :custom
+  (flyspell-issue-welcome-flag nil)
+  (flyspell-issue-message-flag nil)
+  (flyspell-sort-corrections t)
+  (flyspell-default-dictionary nil)
+  (flyspell-abbrev-p t)
+  (flyspell-use-global-abbrev-table-p t)
+  (ispell-dictionary "en_US")
+  (ispell-local-dictionary "en_US")
+  (ispell-program-name "/usr/bin/aspell")
   :config
   (cpped-install-system-package "aspell")
   (cpped-install-system-package "aspell-en")
   (cpped-install-system-package "aspell-de")
-  (setq flyspell-issue-welcome-flag nil
-        flyspell-issue-message-flag nil
-        flyspell-sort-corrections t
-        flyspell-default-dictionary nil
-        flyspell-abbrev-p t
-        flyspell-use-global-abbrev-table-p t
-        ispell-dictionary "en_US"
-        ispell-local-dictionary "en_US"
-        ispell-program-name "/usr/bin/aspell")
   (push "\\*flypell.*\\*" helm-boring-buffer-regexp-list)
   (defvar-local cpped-flyspell-errors 0 "The number of spelling errors in the document.")
   (advice-add 'flyspell-after-change-function :after (lambda (&rest arguments)
@@ -2797,9 +2803,10 @@ Some useful abbreviations
 #+BEGIN_SRC emacs-lisp
 (use-package guess-language
   :after flyspell
+  :custom
+  (guess-language-languages '(en de))
+  (guess-language-min-paragraph-length 35)
   :config
-  (setq guess-language-languages '(en de)
-        guess-language-min-paragraph-length 35)
   (add-hook 'flyspell-mode-hook (lambda ()
                                   (guess-language-mode 1))))
 #+END_SRC
@@ -2828,10 +2835,11 @@ Some useful abbreviations
 *** [[https://github.com/atykhonov/google-translate][Translate text]]
 #+BEGIN_SRC emacs-lisp
 (use-package google-translate
+  :custom
+  (google-translate-show-phonetic t)
+  (google-translate-output-destination 'popup)
+  (google-translate-default-source-language "auto")
   :config
-  (setq google-translate-show-phonetic t
-        google-translate-output-destination 'popup
-        google-translate-default-source-language "auto")
   (defun cpped-translate-word-or-region (&optional target-language replace)
     "Replace the current region or word with its translation."
     (interactive)
@@ -3282,12 +3290,12 @@ Handler to close buffer after quitting ccmake.
 (use-package lsp-mode
   :after helm-buffers
   :hook prog-mode
-  :config
-  (setq lsp-ui-doc-include-signature nil
-        lsp-ui-sideline-show-symbol nil
-        lsp-auto-configure t
-        lsp-prefer-flymake nil)
-  (push "^\\*lsp-.+" helm-boring-buffer-regexp-list))
+  :custom
+  (lsp-ui-doc-include-signature nil)
+  (lsp-ui-sideline-show-symbol nil)
+  (lsp-auto-configure t)
+  (lsp-prefer-flymake nil)
+  :config (push "^\\*lsp-.+" helm-boring-buffer-regexp-list))
 
 (use-package lsp-ui)
 #+END_SRC
@@ -3298,8 +3306,7 @@ Handler to close buffer after quitting ccmake.
 (use-package focus
   :after lsp-mode
   :hook (prog-mode . focus-mode)
-  :config
-  (setq focus-dimness -2))
+  :custom (focus-dimness -2))
 #+END_SRC
 
 ***** Current S-EXP
@@ -3357,16 +3364,17 @@ Handler to close buffer after quitting ccmake.
   :group 'hl-todo)
 
 (use-package hl-todo
+  :custom
+  (global-hl-todo-mode t)
+  (hl-todo-keyword-faces '(("???" . hl-todo-info)
+                           ("FAIL" . hl-todo-error)
+                           ("FIXME" . hl-todo-error)
+                           ("HACK" . hl-todo-error)
+                           ("INFO" . hl-todo-info)
+                           ("NOTE" . hl-todo-info)
+                           ("TODO" . hl-todo-warning)
+                           ("XXX" . hl-todo-warning)))
   :config
-  (setq global-hl-todo-mode t
-        hl-todo-keyword-faces '(("???" . hl-todo-info)
-                                ("FAIL" . hl-todo-error)
-                                ("FIXME" . hl-todo-error)
-                                ("HACK" . hl-todo-error)
-                                ("INFO" . hl-todo-info)
-                                ("NOTE" . hl-todo-info)
-                                ("TODO" . hl-todo-warning)
-                                ("XXX" . hl-todo-warning)))
   (add-hook 'prog-mode-hook (lambda ()
                               (hl-todo-mode 1)))
   (add-hook 'prog-mode-hook
@@ -3418,16 +3426,15 @@ Handler to close buffer after quitting ccmake.
 ***** Show current function in mode-line
 #+BEGIN_SRC emacs-lisp
 (use-package which-func
-  :config
-  (setq which-func-unknown "n/a")
-  (which-function-mode 1))
+  :custom (which-func-unknown "n/a")
+  :config (which-function-mode 1))
 #+END_SRC
 
 **** Navigation
 ***** [[https://github.com/brotzeit/helm-xref][Helm interface for xref]]
 #+BEGIN_SRC emacs-lisp
 (use-package helm-xref
-  :config (setq xref-show-xrefs-function 'helm-xref-show-xrefs))
+  :custom (xref-show-xrefs-function 'helm-xref-show-xrefs))
 #+END_SRC
 
 ***** [[https://github.com/gregsexton/origami.el][Folding]]
@@ -3466,11 +3473,11 @@ Handler to close buffer after quitting ccmake.
 ****** Fill function calls
 #+BEGIN_SRC emacs-lisp
 (use-package prog-fill
-  :config
-  (setq prog-fill-break-method-immediate-p t
-        prog-fill-floating-open-paren-p nil
-        prog-fill-floating-close-paren-p nil
-        prog-fill-auto-indent-p t))
+  :custom
+  (prog-fill-break-method-immediate-p t)
+  (prog-fill-floating-open-paren-p nil)
+  (prog-fill-floating-close-paren-p nil)
+  (prog-fill-auto-indent-p t))
 #+END_SRC
 
 ***** [[https://github.com/Malabarba/aggressive-indent-mode][Auto-indent]]
@@ -3540,20 +3547,21 @@ Handler to close buffer after quitting ccmake.
 ***** Auto-completion
 #+BEGIN_SRC emacs-lisp
 (use-package company
+  :custom
+  (company-auto-complete nil)
+  (company-auto-complete-chars '(32 95 41 119 46))
+  (company-frontends '(company-preview-if-just-one-frontend company-pseudo-tooltip-unless-just-one-frontend))
+  (company-backends '((company-keywords company-yasnippet company-files company-capf company-dabbrev)))
+  (company-idle-delay 0)
+  (company-selection-wrap-around t)
+  (company-show-numbers)
+  (company-tooltip-align-annotations)
+  (company-tooltip-flip-when-above nil)
+  (company-transformers '(company-sort-by-backend-importance))
+  (company-tooltip-limit 30)
+  (company-tooltip-minimum-width 50)
+  (company-tooltip-offset-display 'scrollbar)
   :config
-  (setq company-auto-complete nil
-        company-auto-complete-chars '(32 95 41 119 46)
-        company-frontends '(company-preview-if-just-one-frontend company-pseudo-tooltip-unless-just-one-frontend)
-        company-backends '((company-keywords company-yasnippet company-files company-capf company-dabbrev))
-        company-idle-delay 0
-        company-selection-wrap-around t
-        company-show-numbers
-        company-tooltip-align-annotations
-        company-tooltip-flip-when-above nil
-        company-transformers '(company-sort-by-backend-importance)
-        company-tooltip-limit 30
-        company-tooltip-minimum-width 50
-        company-tooltip-offset-display 'scrollbar)
   (add-hook 'after-init-hook 'global-company-mode))
 
 (use-package company-statistics
@@ -3565,12 +3573,12 @@ Handler to close buffer after quitting ccmake.
 
 (use-package company-lsp
   :after company
-  :config
-  (setq company-transformers nil
-        company-lsp-async t
-        company-lsp-cache-candidates nil
-        company-lsp-enable-snippet t
-        company-lsp-enable-recompletion t))
+  :custom
+  (company-transformers nil)
+  (company-lsp-async t)
+  (company-lsp-cache-candidates nil)
+  (company-lsp-enable-snippet t)
+  (company-lsp-enable-recompletion t))
 
 (use-package company-flx
   :after company
@@ -3603,7 +3611,7 @@ Handler to close buffer after quitting ccmake.
 (use-package electric-operator
   :hook ((text-mode . electric-operator-mode)
          (prog-mode . electric-operator-mode))
-  :config (setq electric-operator-enable-in-docs t))
+  :custom (electric-operator-enable-in-docs t))
 #+END_SRC
 
 ***** [[https://github.com/snosov1/dummyparens][Automatic parens]]
@@ -3617,16 +3625,17 @@ Handler to close buffer after quitting ccmake.
 #+BEGIN_SRC emacs-lisp
 (use-package flycheck
   :after (helm-buffers popwin)
+  :custom
+  (flycheck-idle-change-delay 0.3)
+  (flycheck-display-errors-delay 0.2)
+  (flycheck-checker-error-threshold nil)
+  (flycheck-indication-mode nil)
+  (flycheck-highlighting-mode nil)
+  (flycheck-display-errors-function nil)
+  (flycheck-help-echo-function nil)
+  (flycheck-process-error-functions nil)
+  (flycheck-check-syntax-automatically '(mode-enabled save idle-change))
   :config
-  (setq flycheck-idle-change-delay 0.3
-        flycheck-display-errors-delay 0.2
-        flycheck-checker-error-threshold nil
-        flycheck-indication-mode nil
-        flycheck-highlighting-mode nil
-        flycheck-display-errors-function nil
-        flycheck-help-echo-function nil
-        flycheck-process-error-functions nil
-        flycheck-check-syntax-automatically '(mode-enabled save idle-change))
   (add-hook 'after-init-hook #'global-flycheck-mode)
   (push "^\\*Flycheck.+\\*$" helm-boring-buffer-regexp-list)
   (push '("^\\*Flycheck.+\\*$" :regexp t :dedicated t :position bottom) popwin:special-display-config)
@@ -3704,31 +3713,31 @@ Custom error highlighting (colored line under location)
 ***** [[https://github.com/michaeljb/bool-flip][Flip booleans]]
 #+BEGIN_SRC emacs-lisp
 (use-package bool-flip
-  :config
-  (setq bool-flip-alist '(("T" . "F")
-                          ("t" . "f")
-                          ("TRUE" . "FALSE")
-                          ("True" . "False")
-                          ("true" . "false")
-                          ("Y" . "N")
-                          ("y" . "n")
-                          ("YES" . "NO")
-                          ("Yes" . "No")
-                          ("yes" . "no")
-                          ("1" . "0")
-                          ("ON" . "OFF")
-                          ("On" . "Off")
-                          ("ENABLED" . "DISABLED")
-                          ("Enabled" . "Disabled")
-                          ("NOT" . "")
-                          ("not" . "")
-                          ("!" . "")
-                          ("!=" . "==")
-                          ("==" . "!=")
-                          ("<" . "<=")
-                          ("<=" . ">=")
-                          (">=" . ">")
-                          (">" . "<"))))
+  :custom
+  (bool-flip-alist '(("T" . "F")
+                     ("t" . "f")
+                     ("TRUE" . "FALSE")
+                     ("True" . "False")
+                     ("true" . "false")
+                     ("Y" . "N")
+                     ("y" . "n")
+                     ("YES" . "NO")
+                     ("Yes" . "No")
+                     ("yes" . "no")
+                     ("1" . "0")
+                     ("ON" . "OFF")
+                     ("On" . "Off")
+                     ("ENABLED" . "DISABLED")
+                     ("Enabled" . "Disabled")
+                     ("NOT" . "")
+                     ("not" . "")
+                     ("!" . "")
+                     ("!=" . "==")
+                     ("==" . "!=")
+                     ("<" . "<=")
+                     ("<=" . ">=")
+                     (">=" . ">")
+                     (">" . "<"))))
 #+END_SRC
 
 ***** [[https://github.com/atykhonov/emacs-howdoi][Code suggestions]]
@@ -3773,9 +3782,9 @@ TODO
 ***** API
 #+BEGIN_SRC emacs-lisp
 (use-package helm-dash
-  :config
-  (setq helm-dash-browser-func 'eww
-        helm-dash-docsets-url "https://api.github.com/repos/Kapeli/feeds/contents/"))
+  :custom
+  (helm-dash-browser-func 'eww)
+  (helm-dash-docsets-url "https://api.github.com/repos/Kapeli/feeds/contents/"))
 #+END_SRC
 
 ***** Change Log
@@ -3799,21 +3808,22 @@ TODO
 ***** Insert license comment
 #+BEGIN_SRC emacs-lisp
 (use-package legalese
+  :custom
+  (legalese-date-format "%Y-%m-%d")
+  (legalese-default-license 'gpl)
+  (legalese-templates '((emacs-lisp-mode (nil ";;; " legalese-file-name " --- " _ "\n;;\n"
+                                              ";; Copyright © " legalese-year "  " legalese-copyright "\n;;\n"
+                                              ";; Author: " legalese-author "\n;;\n"
+                                              & -2 "\n"
+                                              ";; Created: " legalese-date "\n"
+                                              @
+                                              '(legalese-license)
+                                              @ ";;\n;;\n"
+                                                ";;; Commentary: \n;;\n"
+                                                ";;; Code: \n\n"
+                                                "(provide '" legalese-file ")\n\n"
+                                                ";;; " legalese-file-name " ends here\n"))))
   :config
-  (setq legalese-date-format "%Y-%m-%d"
-        legalese-default-license 'gpl
-        legalese-templates '((emacs-lisp-mode (nil ";;; " legalese-file-name " --- " _ "\n;;\n"
-                                                   ";; Copyright © " legalese-year "  " legalese-copyright "\n;;\n"
-                                                   ";; Author: " legalese-author "\n;;\n"
-                                                   & -2 "\n"
-                                                   ";; Created: " legalese-date "\n"
-                                                   @
-                                                   '(legalese-license)
-                                                   @ ";;\n;;\n"
-                                                     ";;; Commentary: \n;;\n"
-                                                     ";;; Code: \n\n"
-                                                     "(provide '" legalese-file ")\n\n"
-                                                     ";;; " legalese-file-name " ends here\n"))))
   (if (and (boundp 'company-full-name)
            (not (= 0 (length company-full-name))))
       (progn
@@ -4059,8 +4069,8 @@ TODO
 ***** Formatting
 #+BEGIN_SRC emacs-lisp
 (use-package clang-format
+  :custom (clang-format-executable "clang-format")
   :config
-  (setq clang-format-executable "clang-format")
   (add-hook 'c-mode-common-hook (lambda ()
                                   (setq cpped-format-region-function 'clang-format)
                                   (setq cpped-format-buffer-function 'clang-format-buffer))))
@@ -4157,8 +4167,8 @@ https://github.com/google/googletest
 *** CMake
 #+BEGIN_SRC emacs-lisp
 (use-package cmake-mode
+  :custom (cmake-tab-width 4)
   :config
-  (setq cmake-tab-width 4)
   (push '("CMakeLists\\.txt\\'" . cmake-mode) auto-mode-alist)
   (push '(".\\cmake\\'" . cmake-mode) auto-mode-alist)
   (with-eval-after-load "aggressive-fill-paragraph"
@@ -4386,10 +4396,11 @@ https://github.com/google/googletest
 #+BEGIN_SRC emacs-lisp
 (use-package graphviz-dot-mode
   :after (org system-packages)
+  :custom
+  (graphviz-dot-auto-indent-on-braces t)
+  (graphviz-dot-indent-width cpped-default-indentation)
   :config
   (cpped-install-system-package "graphviz")
-  (setq graphviz-dot-auto-indent-on-braces t
-        graphviz-dot-indent-width cpped-default-indentation)
   (add-to-list 'org-src-lang-modes '("dot" . graphviz-dot)))
 #+END_SRC
 
@@ -4585,9 +4596,8 @@ https://github.com/google/googletest
 **** [[https://github.com/alphapapa/highlight-function-calls][Highlight function calls]]
 #+BEGIN_SRC emacs-lisp
 (use-package highlight-function-calls
-  :config
-  (setq highlight-function-calls-not t)
-  (add-hook 'emacs-lisp-mode-hook 'highlight-function-calls-mode))
+  :custom (highlight-function-calls-not t)
+  :config (add-hook 'emacs-lisp-mode-hook 'highlight-function-calls-mode))
 #+END_SRC
 
 **** [[https://github.com/Fanael/highlight-defined][Highlight undefined symbols]]
@@ -4765,11 +4775,12 @@ Set correct major mode
 (use-package plantuml-mode
   :after (org popwin system-packages)
   :mode "\\.p\\(lant\\)?uml\\'"
+  :custom
+  (plantuml-jar-path "/usr/share/java/plantuml.jar")
+  (org-plantuml-jar-path plantuml-jar-path)
   :config
   (cpped-install-system-package "plantuml")
   (cpped-install-system-package "graphviz")
-  (setq plantuml-jar-path "/usr/share/java/plantuml.jar"
-        org-plantuml-jar-path plantuml-jar-path)
   (push '("*PLANTUML Preview*" :dedicated t :width 60 :position right :noselect :stick) popwin:special-display-config)
   (add-to-list 'org-src-lang-modes '("plantuml" . plantuml)))
 
@@ -4834,9 +4845,8 @@ Set correct major mode
 #+BEGIN_SRC emacs-lisp
 (use-package xquery-tool
   :after system-packages
-  :config
-  (cpped-install-system-package "saxon")
-  (setq xquery-tool-saxonb-jar "/usr/share/java/saxon/saxon.jar"))
+  :custom (xquery-tool-saxonb-jar "/usr/share/java/saxon/saxon.jar")
+  :config (cpped-install-system-package "saxon"))
 #+END_SRC
 
 ***** Syntax checkers
@@ -4955,29 +4965,30 @@ When using Magit >= 2.4.0
 (use-package magit
   :after (helm helm-buffers)
   :bind (:map magit-status-mode-map ("q" . magit-quit-session))
+  :custom
+  (git-commit-style-convention-checks nil)
+  (git-commit-summary-max-length 80)
+  (magit-auto-revert-mode t)
+  (magit-completing-read-function 'helm--completing-read-default)
+  (magit-diff-expansion-threshold 3)
+  (magit-diff-highlight-hunk-region-functions '(magit-diff-highlight-hunk-region-dim-outside magit-diff-highlight-hunk-region-using-underline))
+  (magit-diff-highlight-indentation '((".*" . tabs)))
+  (magit-diff-refine-hunk 'all)
+  (magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1)
+  (magit-log-auto-more t)
+  (magit-popup-manpage-package 'woman)
+  (magit-popup-show-common-commands nil)
+  (magit-process-popup-time 3)
+  (magit-set-upstream-on-push t)
+  (magit-save-repository-buffers 'dontask)
+  (magit-status-show-hashes-in-headers nil)
+  (magit-log-arguments '("--graph"
+                         "--color"
+                         "--decorate"
+                         "-n200"))
+  (magit-diff-section-arguments '("--function-context" "-M" "-C"))
+  (magit-diff-arguments '("--function-context" "--stat" "-M" "-C"))
   :config
-  (setq git-commit-style-convention-checks nil
-        git-commit-summary-max-length 80
-        magit-auto-revert-mode t
-        magit-completing-read-function 'helm--completing-read-default
-        magit-diff-expansion-threshold 3
-        magit-diff-highlight-hunk-region-functions '(magit-diff-highlight-hunk-region-dim-outside magit-diff-highlight-hunk-region-using-underline)
-        magit-diff-highlight-indentation '((".*" . tabs))
-        magit-diff-refine-hunk 'all
-        magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1
-        magit-log-auto-more t
-        magit-popup-manpage-package 'woman
-        magit-popup-show-common-commands nil
-        magit-process-popup-time 3
-        magit-set-upstream-on-push t
-        magit-save-repository-buffers 'dontask
-        magit-status-show-hashes-in-headers nil
-        magit-log-arguments '("--graph"
-                              "--color"
-                              "--decorate"
-                              "-n200")
-        magit-diff-section-arguments '("--function-context" "-M" "-C")
-        magit-diff-arguments '("--function-context" "--stat" "-M" "-C"))
   (push "^\\*?magit.*" helm-boring-buffer-regexp-list)
   (magit-define-popup-action 'magit-dispatch-popup
     ?Y "Cherry" 'magit-cherry ?!))
@@ -5232,15 +5243,16 @@ Hide info buffer in buffer list
   :after (popwin system-packages)
   :bind (:map pdf-view-mode-map ("q" . kill-this-buffer))
   :mode ("\\.pdf\\'" . pdf-view-mode)
+  :custom
+  (pdf-info-epdfinfo-program "/usr/local/bin/epdfinfo")
+  (pdf-view-display-size 'fit-page)
+  (pdf-annot-activate-created-annotations t)
+  (pdf-view-resize-factor 1.1)
+  (pdf-view-midnight-colors `(,(face-attribute 'default :foreground) . ,(face-attribute 'default :background)))
   :config
   (cpped-install-system-package "poppler-devel")
   (cpped-install-system-package "poppler-glib-devel")
   (push '("%PDF" . pdf-view-mode) magic-mode-alist)
-  (setq pdf-info-epdfinfo-program "/usr/local/bin/epdfinfo"
-        pdf-view-display-size 'fit-page
-        pdf-annot-activate-created-annotations t
-        pdf-view-resize-factor 1.1
-        pdf-view-midnight-colors `(,(face-attribute 'default :foreground) . ,(face-attribute 'default :background)))
   (pdf-tools-install t t t)
   (push "\\.pdf\\'" cpped-no-hexedit-extensions)
   (add-hook 'pdf-view-mode-hook 'pdf-view-midnight-minor-mode)
@@ -5283,8 +5295,8 @@ Hide info buffer in buffer list
 #+BEGIN_SRC emacs-lisp
 (use-package logview
   :mode "\\.log\\'"
+  :custom (logview-auto-revert-mode 'auto-revert-tail-mode)
   :config
-  (setq logview-auto-revert-mode 'auto-revert-tail-mode)
   (add-hook 'logview-mode-hook '(lambda()
                                   (auto-revert-tail-mode)
                                   (read-only-mode))))
@@ -5301,54 +5313,56 @@ Hide info buffer in buffer list
   :after (helm helm-buffers popwin)
   :mode ("\\.org\\'" . org-mode)
   :bind (("C-c l" . org-store-link))
+  :custom
+  (org-blank-before-new-entry '((heading . t)))
+  (org-catch-invisible-edits 'error)
+  (org-columns-default-format "%50ITEM(Task) %2PRIORITY %10Effort(Effort){:} %10CLOCKSUM")
+  (org-default-notes-file "~/.notes.org")
+  (org-duration-format 'h:mm)
+  (org-ellipsis " ▼")
+  (org-enforce-todo-checkbox-dependencies t)
+  (org-enforce-todo-dependencies t)
+  (org-fast-tag-selection-single-key t)
+  (org-global-properties '((Effort_ALL . "0:00 0:10 0:30 1:00 2:00 4:00 8:00 16:00 24:00 40:00 80:00")))
+  (org-hide-emphasis-markers t)
+  (org-highlight-latex-and-related '(latex script entities))
+  (org-image-actual-width t)
+  (org-indent-indentation-per-level cpped-default-indentation)
+  (org-log-redeadline 'time)
+  (org-log-reschedule 'time)
+  (org-outline-path-complete-in-steps nil)
+  (org-pretty-entities t)
+  (org-refile-targets '((nil . (:maxlevel . 6))
+                        (org-agenda-files . (:maxlevel . 5))))
+  (org-refile-use-outline-path 'file)
+  (org-refile-allow-creating-parent-nodes 'confirm)
+  (org-completion-use-ido nil)
+  (org-src-fontify-natively t)
+  (org-hidden-keywords '(title author date email))
+  (org-fontify-done-headline t)
+  (org-fontify-quote-and-verse-blocks t)
+  (org-fontify-whole-heading-line t)
+  (org-remove-highlights-with-change t)
+  (org-special-ctrl-a/e nil)
+  (org-special-ctrl-k nil)
+  (org-src-preserve-indentation t)
+  (org-src-strip-leading-and-trailing-blank-lines t)
+  (org-src-tab-acts-natively t)
+  (org-src-window-setup 'current-window)
+  (org-startup-with-inline-images t)
+  (org-startup-folded nil)
+  (org-startup-indented t)
+  (org-support-shift-select t)
+  (org-time-clocksum-use-effort-durations t)
+  (org-use-speed-commands t)
+  (org-yank-adjusted-subtrees t)
+  (helm-org-headings-fontify nil)
+  (helm-org-format-outline-path t)
   :config
   (defvar org-default-todos-file "~/.todos.org" "The default file for todo tasks.")
   (defvar org-default-bugs-file "~/.bugs.org" "The default file for bug tasks.")
   (defvar org-default-events-file "~/.events.org" "The default file for events.")
   (require 'helm-org)
-  (setq org-blank-before-new-entry '((heading . t))
-        org-catch-invisible-edits 'error
-        org-columns-default-format "%50ITEM(Task) %2PRIORITY %10Effort(Effort){:} %10CLOCKSUM"
-        org-default-notes-file "~/.notes.org"
-        org-duration-format 'h:mm
-        org-ellipsis " ▼"
-        org-enforce-todo-checkbox-dependencies t
-        org-enforce-todo-dependencies t
-        org-fast-tag-selection-single-key t
-        org-global-properties '((Effort_ALL . "0:00 0:10 0:30 1:00 2:00 4:00 8:00 16:00 24:00 40:00 80:00"))
-        org-hide-emphasis-markers t
-        org-highlight-latex-and-related '(latex script entities)
-        org-image-actual-width t
-        org-indent-indentation-per-level cpped-default-indentation
-        org-log-redeadline 'time
-        org-log-reschedule 'time
-        org-outline-path-complete-in-steps nil
-        org-pretty-entities t
-        org-refile-targets '((nil . (:maxlevel . 6))
-                             (org-agenda-files . (:maxlevel . 5)))
-        org-refile-use-outline-path 'file
-        org-refile-allow-creating-parent-nodes 'confirm
-        org-src-fontify-natively t
-        org-hidden-keywords '(title author date email)
-        org-fontify-done-headline t
-        org-fontify-quote-and-verse-blocks t
-        org-fontify-whole-heading-line t
-        org-remove-highlights-with-change t
-        org-special-ctrl-a/e nil
-        org-special-ctrl-k nil
-        org-src-preserve-indentation t
-        org-src-strip-leading-and-trailing-blank-lines t
-        org-src-tab-acts-natively t
-        org-src-window-setup 'current-window
-        org-startup-with-inline-images t
-        org-startup-folded t
-        org-startup-indented t
-        org-support-shift-select t
-        org-time-clocksum-use-effort-durations t
-        org-use-speed-commands t
-        org-yank-adjusted-subtrees t
-        helm-org-headings-fontify nil
-        helm-org-format-outline-path t)
   (push "\\*Org Agenda\\*" helm-boring-buffer-regexp-list)
   (push '("*Agenda Commands*" :dedicated t :position bottom :height 20) popwin:special-display-config)
   (push '("*Org Agenda*" :position bottom :height 30) popwin:special-display-config)
@@ -5426,8 +5440,8 @@ Remove check on buffer close
 #+BEGIN_SRC emacs-lisp
 (use-package org-bullets
   :after org
+  :custom (org-bullets-bullet-list '("○"))
   :config
-  (setq org-bullets-bullet-list '("○"))
   (add-hook 'org-mode-hook (lambda ()
                              (org-bullets-mode 1))))
 #+END_SRC
@@ -5661,9 +5675,9 @@ Archive when done, remove flag if reset to todo.
 
 (use-package org-fancy-priorities
   :hook (org-mode . org-fancy-priorities-mode)
-  :config (setq org-fancy-priorities-list '((?A . "⚠")
-                                            (?B . "⏲")
-                                            (?C . "☕"))))
+  :custom (org-fancy-priorities-list '((?A . "⚠")
+                                       (?B . "⏲")
+                                       (?C . "☕"))))
 #+END_SRC
 
 ** Capture Templates
@@ -5848,18 +5862,18 @@ Archive when done, remove flag if reset to todo.
 (require 'url)
 
 (use-package org-dashboard
-  :config
-  (setq org-dashboard-omit-completed t))
+  :custom (org-dashboard-omit-completed t))
 #+END_SRC
 
 ** Alert messages
 #+BEGIN_SRC emacs-lisp
 (use-package org-alert
   :after org
+  :custom
+  (alert-default-style 'libnotify)
+  (org-alert-interval 86400)
+  (org-alert-notification-title "TODO")
   :config
-  (setq alert-default-style 'libnotify
-        org-alert-interval 86400
-        org-alert-notification-title "TODO")
   (add-hook 'after-make-frame-functions (lambda (_)
                                           (org-alert-enable))))
 #+END_SRC
@@ -6066,7 +6080,7 @@ Archive when done, remove flag if reset to todo.
 *** [[https://github.com/unhammer/org-mru-clock][Switch to last used clock]]
 #+BEGIN_SRC emacs-lisp
 (use-package org-mru-clock
-  :config (setq org-mru-clock-how-many 100))
+  :custom (org-mru-clock-how-many 100))
 #+END_SRC
 
 * Utilities
@@ -6084,8 +6098,7 @@ Do not use scientific form so quickly
 ** Calendar
 #+BEGIN_SRC emacs-lisp
 (use-package german-holidays
-  :config
-  (setq calendar-holidays holiday-german-HH-holidays))
+  :config (setq calendar-holidays holiday-german-HH-holidays))
 
 (setq calendar-date-style 'european
       calendar-week-start-day 1
@@ -6102,12 +6115,13 @@ Do not use scientific form so quickly
 (use-package gnuplot
   :after system-packages
   :mode ("\\.gnuplot\\'" . gnuplot-mode)
+  :custom
+  (gnuplot-eldoc-mode t)
+  (gnuplot-image-format "svg")
+  (gnuplot-inline-image-mode 'dedicated)
+  (gnuplot-tab-completion t)
   :config
   (cpped-install-system-package "gnuplot")
-  (setq gnuplot-eldoc-mode t
-        gnuplot-image-format "svg"
-        gnuplot-inline-image-mode 'dedicated
-        gnuplot-tab-completion t)
   (add-hook 'gnuplot-mode-hook (lambda ()
                                  (flyspell-prog-mode))))
 #+END_SRC
@@ -6115,7 +6129,7 @@ Do not use scientific form so quickly
 ** Weather
 #+BEGIN_SRC emacs-lisp
 (use-package wttrin
-  :config (setq wttrin-default-cities `(,calendar-location-name)))
+  :custom (wttrin-default-cities `(,calendar-location-name)))
 #+END_SRC
 
 * Remote
@@ -6140,12 +6154,12 @@ Do not use scientific form so quickly
 ** [[https://www.emacswiki.org/emacs/TrampMode][Network Devices]]
 #+BEGIN_SRC emacs-lisp
 (use-package tramp
-  :config
-  (setq tramp-connection-properties nil
-        tramp-connection-timeout 10
-        tramp-default-method "ssh"
-        tramp-default-host nil
-        tramp-default-user "root"))
+  :custom
+  (tramp-connection-properties nil)
+  (tramp-connection-timeout 10)
+  (tramp-default-method "ssh")
+  (tramp-default-host nil)
+  (tramp-default-user "root"))
 
 (use-package helm-tramp
   :after (helm tramp))
