@@ -954,7 +954,6 @@ Find path of current position in XML docuement
   (helm-google-suggest-use-curl-p t)
   :config
   (cpped-install-system-package "curl")
-  (add-hook 'helm-before-initialize-hook '(lambda () (linum-mode 0)))
   (advice-add 'helm-ff-filter-candidate-one-by-one
               :around (lambda (fcn file)
                         (unless (string-match "\\(?:/\\|\\`\\)\\.\\{1,2\\}\\'" file)
@@ -1137,9 +1136,7 @@ Switch to previous buffer
 *** [[https://github.com/mina86/auto-dim-other-buffers.el][Dim inactive buffers]]
 #+BEGIN_SRC emacs-lisp
 (use-package auto-dim-other-buffers
-  :config
-  (add-hook 'after-init-hook (lambda ()
-                               (auto-dim-other-buffers-mode t))))
+  :hook (after-init . auto-dim-other-buffers-mode))
 #+END_SRC
 
 *** Use recursive minibuffer
@@ -1670,7 +1667,7 @@ Indicate recursive minibuffer
 **** [[https://github.com/Fuco1/eshell-bookmark][Bookmarks]]
 #+BEGIN_SRC emacs-lisp
 (use-package eshell-bookmark
-  :config (add-hook 'eshell-mode-hook 'eshell-bookmark-setup))
+  :hook (eshell-mode . eshell-bookmark-setup))
 #+END_SRC
 
 **** [[https://github.com/peterwvj/eshell-up][Go to parent directories]]
@@ -1731,11 +1728,9 @@ Indicate recursive minibuffer
 #+BEGIN_SRC emacs-lisp
 (use-package shelldoc
   :after (helm-buffers popwin)
+  :hook ((eshell-mode sh-mode shell-mode) . shelldoc-minor-mode-on)
   :custom (shelldoc-keep-man-locale nil)
   :config
-  (add-hook 'eshell-mode-hook 'shelldoc-minor-mode-on)
-  (add-hook 'sh-mode-hook 'shelldoc-minor-mode-on)
-  (add-hook 'shell-mode-hook 'shelldoc-minor-mode-on)
   (push "\\*Shelldoc\\*" helm-boring-buffer-regexp-list)
   (push '("*Shelldoc*" :position bottom :height 30) popwin:special-display-config))
 #+END_SRC
@@ -1757,7 +1752,7 @@ Indicate recursive minibuffer
 **** Autosuggest
 #+BEGIN_SRC emacs-lisp
 (use-package esh-autosuggest
-  :hook (eshell-mode-hook . esh-autosuggest-mode))
+  :hook eshell-mode)
 #+END_SRC
 
 *** Add sudo to command line
@@ -1783,12 +1778,10 @@ Indicate recursive minibuffer
 *** [[https://github.com/magit/with-editor][Use emacs as editor]]
 #+BEGIN_SRC emacs-lisp
 (use-package with-editor
+  :hook ((shell-mode term-exec eshell-mode) . with-editor-export-editor)
   :config
   (define-key (current-global-map) [remap async-shell-command] 'with-editor-async-shell-command)
-  (define-key (current-global-map) [remap shell-command] 'with-editor-shell-command)
-  (add-hook 'shell-mode-hook  'with-editor-export-editor)
-  (add-hook 'term-exec-hook   'with-editor-export-editor)
-  (add-hook 'eshell-mode-hook 'with-editor-export-editor))
+  (define-key (current-global-map) [remap shell-command] 'with-editor-shell-command))
 #+END_SRC
 
 *** [[https://github.com/riscy/bifocal-mode][Split buffer on scroll to show both scrolled position and tail]]
@@ -2065,22 +2058,19 @@ Indicate recursive minibuffer
 **** Show lines in alternating colors
 #+BEGIN_SRC emacs-lisp
 (use-package stripe-buffer
-  :config
-  (add-hook 'dired-mode-hook 'turn-on-stripe-buffer-mode))
+  :hook (dired-mode . turn-on-stripe-buffer-mode))
 #+END_SRC
 
 **** Show Icons
 #+BEGIN_SRC emacs-lisp
 (use-package all-the-icons-dired
-  :config
-  (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+  :hook dired-mode)
 #+END_SRC
 
 **** Collapse empty directories
 #+BEGIN_SRC emacs-lisp
 (use-package dired-collapse
-  :config
-  (add-hook 'dired-mode-hook 'dired-collapse-mode))
+  :hook dired-mode)
 #+END_SRC
 
 **** [[https://github.com/Fuco1/dired-hacks#dired-subtree][Show subtrees inline]]
@@ -2266,9 +2256,9 @@ Indicate recursive minibuffer
   (("README\\.md\\'" . gfm-mode)
    ("\\.md\\'" . markdown-mode)
    ("\\.markdown\\'" . markdown-mode))
-  :custom (markdown-command "multimarkdown")
-  :config (add-hook 'markdown-mode-hook '(lambda ()
-                                           (typo-mode -1))))
+  :hook (markdown-mode . (lambda ()
+                           (typo-mode -1)))
+  :custom (markdown-command "multimarkdown"))
 #+END_SRC
 
 ***** Editing
@@ -2324,22 +2314,22 @@ https://github.com/mivok/markdownlint
   (ahs-idle-interval 0.25)
   (ahs-inhibit-face-list nil)
   :config
-  (global-auto-highlight-symbol-mode t)
-  (add-hook 'org-mode-hook 'auto-highlight-symbol-mode))
+  (push 'org-mode ahs-modes)
+  (global-auto-highlight-symbol-mode t))
 #+END_SRC
 
 *** Highlight number packs
 Use custom regex to ignore color definitions (numbers starting with a # sign)
 #+BEGIN_SRC emacs-lisp
 (use-package num3-mode
+  :hook prog-mode
   :custom (num3--number-re (concat "[^#]0[xX]\\([[:xdigit:]]+\\)"
                                    "\\|"
                                    "[^#]\\(?1:\\b\\(?:[0-9]+[a-fA-F]\\|[a-fA-F]+[0-9]\\)[[:xdigit:]]*\\b\\)"
                                    "\\|"
                                    "[^#]\\([0-9]+\\)"
                                    "\\|"
-                                   "\\.\\([0-9]+\\)"))
-  :config (add-hook 'prog-mode-hook 'num3-mode))
+                                   "\\.\\([0-9]+\\)")))
 #+END_SRC
 
 *** Highlight last screen content when navigating
@@ -2380,7 +2370,7 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 *** [[https://github.com/bnbeckwith/writegood-mode][Mark common language issues]]
 #+BEGIN_SRC emacs-lisp
 (use-package writegood-mode
-  :config (add-hook 'fundamental-mode-hook 'writegood-mode))
+  :hook fundamental-mode)
 #+END_SRC
 
 *** [[https://github.com/amperser/proselint][Prose Linter]]
@@ -2634,9 +2624,9 @@ Save system clipboard contents to kill ring before killing
 **** Typographic characters
 #+BEGIN_SRC emacs-lisp
 (use-package typo
-  :config (add-hook 'text-mode-hook '(lambda ()
-                                       (when (not (string-equal (buffer-name) (file-name-nondirectory cpped-config-file)))
-                                         (typo-mode)))))
+  :hook (text-mode . (lambda ()
+                       (when (not (string-equal (buffer-name) (file-name-nondirectory cpped-config-file)))
+                         (typo-mode)))))
 #+END_SRC
 
 **** Abbreviations
@@ -2712,10 +2702,11 @@ Some useful abbreviations
 #+BEGIN_SRC emacs-lisp
 (use-package synosaurus
   :after system-packages
+  :hook (after-init . synosaurus-mode)
+  :custom (synosaurus-choose-method 'default)
   :config
   (cpped-install-system-package "wordnet")
-  (setq-default synosaurus-backend 'synosaurus-backend-wordnet)
-  (add-hook 'after-init-hook #'synosaurus-mode))
+  (setq-default synosaurus-backend 'synosaurus-backend-wordnet))
 #+END_SRC
 
 *** [[https://github.com/magnars/change-inner.el][Change inner]]
@@ -2738,7 +2729,7 @@ Some useful abbreviations
 
 (use-package wgrep-ag
   :after (wgrep ag)
-  :config (add-hook 'ag-mode-hook 'wgrep-ag-setup))
+  :hook (ag-mode . wgrep-ag-setup))
 
 (use-package wgrep-helm
   :after (wgrep helm))
@@ -2803,12 +2794,10 @@ Some useful abbreviations
 #+BEGIN_SRC emacs-lisp
 (use-package guess-language
   :after flyspell
+  :hook flyspell-mode
   :custom
   (guess-language-languages '(en de))
-  (guess-language-min-paragraph-length 35)
-  :config
-  (add-hook 'flyspell-mode-hook (lambda ()
-                                  (guess-language-mode 1))))
+  (guess-language-min-paragraph-length 35))
 #+END_SRC
 
 ** Utilities
@@ -3318,19 +3307,19 @@ Handler to close buffer after quitting ccmake.
 ***** [[https://github.com/ankurdave/color-identifiers-mode][Unique colors for identifiers]]
 #+BEGIN_SRC emacs-lisp
 (use-package color-identifiers-mode
-  :config (add-hook 'prog-mode-hook #'color-identifiers-mode))
+  :hook prog-mode)
 #+END_SRC
 
 ***** [[https://github.com/Fanael/rainbow-delimiters][Unique colors for parentheses]]
 #+BEGIN_SRC emacs-lisp
 (use-package rainbow-delimiters
-  :config (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+  :hook (prog-mode . rainbow-delimiters-mode))
 #+END_SRC
 
 ***** [[https://github.com/dgutov/highlight-escape-sequences][Escape sequences]]
 #+BEGIN_SRC emacs-lisp
 (use-package highlight-escape-sequences
-  :config (add-hook 'prog-mode-hook 'hes-mode))
+  :hook (prog-mode . hes-mode))
 #+END_SRC
 
 ***** Pretty symbols
@@ -3364,6 +3353,7 @@ Handler to close buffer after quitting ccmake.
   :group 'hl-todo)
 
 (use-package hl-todo
+  :hook (prog-mode . hl-todo-mode)
   :custom
   (global-hl-todo-mode t)
   (hl-todo-keyword-faces '(("???" . hl-todo-info)
@@ -3375,18 +3365,14 @@ Handler to close buffer after quitting ccmake.
                            ("TODO" . hl-todo-warning)
                            ("XXX" . hl-todo-warning)))
   :config
-  (add-hook 'prog-mode-hook (lambda ()
-                              (hl-todo-mode 1)))
-  (add-hook 'prog-mode-hook
-            (lambda ()
-              (push '("???" . ?🛈) prettify-symbols-alist)
-              (push '("FAIL" . ?⛐) prettify-symbols-alist)
-              (push '("FIXME" . ?🛠) prettify-symbols-alist)
-              (push '("HACK" . ?☢) prettify-symbols-alist)
-              (push '("INFO" . ?🛈) prettify-symbols-alist)
-              (push '("NOTE" . ?🗈) prettify-symbols-alist)
-              (push '("TODO" . ?🛠) prettify-symbols-alist)
-              (push '("XXX" . ?☓) prettify-symbols-alist))))
+  (push '("???" . ?🛈) prettify-symbols-alist)
+  (push '("FAIL" . ?⛐) prettify-symbols-alist)
+  (push '("FIXME" . ?🛠) prettify-symbols-alist)
+  (push '("HACK" . ?☢) prettify-symbols-alist)
+  (push '("INFO" . ?🛈) prettify-symbols-alist)
+  (push '("NOTE" . ?🗈) prettify-symbols-alist)
+  (push '("TODO" . ?🛠) prettify-symbols-alist)
+  (push '("XXX" . ?☓) prettify-symbols-alist))
 #+END_SRC
 
 ***** Find ToDos in file or project
@@ -3440,8 +3426,7 @@ Handler to close buffer after quitting ccmake.
 ***** [[https://github.com/gregsexton/origami.el][Folding]]
 #+BEGIN_SRC emacs-lisp
 (use-package origami
-  :config
-  (add-hook 'prog-mode-hook 'origami-mode))
+  :hook prog-mode)
 #+END_SRC
 
 ***** Subword-navigation in camelCase words
@@ -3483,12 +3468,12 @@ Handler to close buffer after quitting ccmake.
 ***** [[https://github.com/Malabarba/aggressive-indent-mode][Auto-indent]]
 #+BEGIN_SRC emacs-lisp
 (use-package aggressive-indent
+  :hook (prog-mode . aggressive-indent-mode)
   :config
   (add-to-list 'aggressive-indent-dont-indent-if
                '(and (derived-mode-p 'c++-mode)
                      (null (string-match "\\([;{}]\\|\\b\\(if\\|for\\|while\\)\\b\\)"
-                                         (thing-at-point 'line)))))
-  (add-hook 'prog-mode-hook #'aggressive-indent-mode))
+                                         (thing-at-point 'line))))))
 #+END_SRC
 
 ***** [[https://github.com/remyferre/comment-dwim-2][Smarter commenting]]
@@ -3547,6 +3532,7 @@ Handler to close buffer after quitting ccmake.
 ***** Auto-completion
 #+BEGIN_SRC emacs-lisp
 (use-package company
+  :hook (after-init . global-company-mode)
   :custom
   (company-auto-complete nil)
   (company-auto-complete-chars '(32 95 41 119 46))
@@ -3560,9 +3546,7 @@ Handler to close buffer after quitting ccmake.
   (company-transformers '(company-sort-by-backend-importance))
   (company-tooltip-limit 30)
   (company-tooltip-minimum-width 50)
-  (company-tooltip-offset-display 'scrollbar)
-  :config
-  (add-hook 'after-init-hook 'global-company-mode))
+  (company-tooltip-offset-display 'scrollbar))
 
 (use-package company-statistics
   :after company
@@ -3625,6 +3609,7 @@ Handler to close buffer after quitting ccmake.
 #+BEGIN_SRC emacs-lisp
 (use-package flycheck
   :after (helm-buffers popwin)
+  :hook (after-init . global-flycheck-mode)
   :custom
   (flycheck-idle-change-delay 0.3)
   (flycheck-display-errors-delay 0.2)
@@ -3636,7 +3621,6 @@ Handler to close buffer after quitting ccmake.
   (flycheck-process-error-functions nil)
   (flycheck-check-syntax-automatically '(mode-enabled save idle-change))
   :config
-  (add-hook 'after-init-hook #'global-flycheck-mode)
   (push "^\\*Flycheck.+\\*$" helm-boring-buffer-regexp-list)
   (push '("^\\*Flycheck.+\\*$" :regexp t :dedicated t :position bottom) popwin:special-display-config)
   (defun cpped-powerline-flycheck-status-face ()
@@ -3808,6 +3792,9 @@ TODO
 ***** Insert license comment
 #+BEGIN_SRC emacs-lisp
 (use-package legalese
+  :hook (prog-mode . (lambda ()
+                       (when (= (buffer-size (current-buffer)) 0)
+                         (legalese nil))))
   :custom
   (legalese-date-format "%Y-%m-%d")
   (legalese-default-license 'gpl)
@@ -3844,10 +3831,7 @@ TODO
                                                       "Author: "
                                                       legalese-author "\n\n"
                                                       '(legalese-license)
-                                                      @ "\n"))))
-  (add-hook 'prog-mode-hook  (lambda ()
-                               (when (= (buffer-size (current-buffer)) 0)
-                                 (legalese nil)))))
+                                                      @ "\n")))))
 #+END_SRC
 
 **** Braces
@@ -4063,17 +4047,16 @@ TODO
 ***** Automatically change dash to underscore in identifiers
 #+BEGIN_SRC emacs-lisp
 (use-package smart-dash
-  :config (add-hook 'c-mode-common-hook 'smart-dash-mode))
+  :hook (c-mode-common . smart-dash-mode))
 #+END_SRC
 
 ***** Formatting
 #+BEGIN_SRC emacs-lisp
 (use-package clang-format
   :custom (clang-format-executable "clang-format")
-  :config
-  (add-hook 'c-mode-common-hook (lambda ()
-                                  (setq cpped-format-region-function 'clang-format)
-                                  (setq cpped-format-buffer-function 'clang-format-buffer))))
+  :hook (c-mode-common . (lambda ()
+                           (setq cpped-format-region-function 'clang-format)
+                           (setq cpped-format-buffer-function 'clang-format-buffer))))
 #+END_SRC
 
 ***** Syntax checkers
@@ -4189,7 +4172,7 @@ https://github.com/google/googletest
 **** [[https://github.com/Lindydancer/cmake-font-lock][Highlighting]]
 #+BEGIN_SRC emacs-lisp
 (use-package cmake-font-lock
-  :config (add-hook 'cmake-mode-hook 'cmake-font-lock-activate))
+  :hook (cmake-mode . cmake-font-lock-activate))
 #+END_SRC
 
 **** Editing
@@ -4354,7 +4337,7 @@ https://github.com/google/googletest
 **** Documentation
 #+BEGIN_SRC emacs-lisp
 (use-package css-eldoc
-  :config (add-hook 'css-mode-hook 'turn-on-css-eldoc))
+  :hook (css-mode . turn-on-css-eldoc))
 #+END_SRC
 
 *** [[http://elpa.gnu.org/packages/csv-mode.html][CSV]]
@@ -4588,16 +4571,14 @@ https://github.com/google/googletest
 **** Highlight current S-EXP
 #+BEGIN_SRC emacs-lisp
 (use-package hl-sexp
-  :config
-  (add-hook 'lisp-mode-hook 'hl-sexp-mode)
-  (add-hook 'emacs-lisp-mode-hook 'hl-sexp-mode))
+  :hook ((lisp-mode emacs-lisp-mode) . hl-sexp-mode))
 #+END_SRC
 
 **** [[https://github.com/alphapapa/highlight-function-calls][Highlight function calls]]
 #+BEGIN_SRC emacs-lisp
 (use-package highlight-function-calls
-  :custom (highlight-function-calls-not t)
-  :config (add-hook 'emacs-lisp-mode-hook 'highlight-function-calls-mode))
+  :hook (emacs-lisp-mode . highlight-function-calls-mode)
+  :custom (highlight-function-calls-not t))
 #+END_SRC
 
 **** [[https://github.com/Fanael/highlight-defined][Highlight undefined symbols]]
@@ -4609,17 +4590,16 @@ https://github.com/google/googletest
     nil))
 
 (use-package highlight-defined
+  :hook (emacs-lisp-mode . highlight-defined-mode)
   :config
-  (add-hook 'emacs-lisp-mode-hook 'highlight-defined-mode)
   (advice-add 'highlight-defined--determine-face :override #'cpped-highlight-defined--determine-face))
 #+END_SRC
 
 **** [[https://github.com/cpitclaudel/easy-escape][Simplify Regular Expressions]]
 #+BEGIN_SRC emacs-lisp
 (use-package easy-escape
-  :config
-  (add-hook 'lisp-mode-hook 'easy-escape-minor-mode)
-  (add-hook 'emacs-lisp-mode-hook 'easy-escape-minor-mode))
+  :hook ((lisp-mode . easy-escape-minor-mode)
+         (emacs-lisp-mode . easy-escape-minor-mode)))
 #+END_SRC
 
 **** Auto-completion
@@ -4715,24 +4695,23 @@ https://github.com/google/googletest
 ***** Autocompletion
 #+BEGIN_SRC emacs-lisp
 (use-package company-shell
-  :config
-  (add-hook 'sh-mode-hook (lambda()
-                            (set (make-local-variable 'company-backends) '((company-yasnippet company-lsp company-shell company-keywords company-files company-capf company-dabbrev-code company-ispell cpped-company-line-backend))))))
+  :hook (sh-mode . (lambda()
+                     (set (make-local-variable 'company-backends) '((company-yasnippet company-lsp company-shell company-keywords company-files company-capf company-dabbrev-code company-ispell cpped-company-line-backend))))))
 #+END_SRC
 
 ***** Syntax checkers
 #+BEGIN_SRC emacs-lisp
 (use-package flycheck-checkbashisms
   :after (flycheck system-packages)
+  :hook (sh-mode . (lambda ()
+                     (flycheck-select-checker 'sh-bash)
+                     (flycheck-add-next-checker 'sh-bash '(t . sh-zsh))
+                     (flycheck-add-next-checker 'sh-zsh '(t . sh-checkbashisms))
+                     (flycheck-add-next-checker 'sh-checkbashisms '(t . sh-shellcheck))))
   :config
   (cpped-install-system-package "devscripts-checkbashisms" :executable "checkbashisms")
   (cpped-install-system-package "ShellCheck" :executable "shellcheck")
-  (add-to-list 'flycheck-checkers 'sh-checkbashisms t)
-  (add-hook 'sh-mode-hook (lambda ()
-                            (flycheck-select-checker 'sh-bash)
-                            (flycheck-add-next-checker 'sh-bash '(t . sh-zsh))
-                            (flycheck-add-next-checker 'sh-zsh '(t . sh-checkbashisms))
-                            (flycheck-add-next-checker 'sh-checkbashisms '(t . sh-shellcheck)))))
+  (add-to-list 'flycheck-checkers 'sh-checkbashisms t))
 #+END_SRC
 
 **** BASH
@@ -5234,7 +5213,7 @@ Hide info buffer in buffer list
 *** [[https://github.com/ubolonton/info-colors][Add extra coloring]]
 #+BEGIN_SRC emacs-lisp
 (use-package info-colors
-  :config (add-hook 'Info-selection-hook 'info-colors-fontify-node))
+  :hook (Info-selection . info-colors-fontify-node))
 #+END_SRC
 
 ** [[https://github.com/politza/pdf-tools][PDF]]
@@ -5243,6 +5222,7 @@ Hide info buffer in buffer list
   :after (popwin system-packages)
   :bind (:map pdf-view-mode-map ("q" . kill-this-buffer))
   :mode ("\\.pdf\\'" . pdf-view-mode)
+  :hook (pdf-view-mode . pdf-view-midnight-minor-mode)
   :custom
   (pdf-info-epdfinfo-program "/usr/local/bin/epdfinfo")
   (pdf-view-display-size 'fit-page)
@@ -5255,7 +5235,6 @@ Hide info buffer in buffer list
   (push '("%PDF" . pdf-view-mode) magic-mode-alist)
   (pdf-tools-install t t t)
   (push "\\.pdf\\'" cpped-no-hexedit-extensions)
-  (add-hook 'pdf-view-mode-hook 'pdf-view-midnight-minor-mode)
   (push '("*PDF-Metadata*" :width 60 :position right :noselect t :stick t) popwin:special-display-config)
   (advice-add 'pdf-view-mode :before (lambda (&rest arguments)
                                        (nlinum-mode -1))))
@@ -5295,11 +5274,10 @@ Hide info buffer in buffer list
 #+BEGIN_SRC emacs-lisp
 (use-package logview
   :mode "\\.log\\'"
-  :custom (logview-auto-revert-mode 'auto-revert-tail-mode)
-  :config
-  (add-hook 'logview-mode-hook '(lambda()
-                                  (auto-revert-tail-mode)
-                                  (read-only-mode))))
+  :hook (logview-mode . (lambda()
+                          (auto-revert-tail-mode)
+                          (read-only-mode)))
+  :custom (logview-auto-revert-mode 'auto-revert-tail-mode))
 #+END_SRC
 
 ** STrace Logs
@@ -5431,19 +5409,15 @@ Remove check on buffer close
 #+BEGIN_SRC emacs-lisp
 (use-package org-autolist
   :after org
-  :config
-  (add-hook 'org-mode-hook (lambda ()
-                             (org-autolist-mode t))))
+  :hook (org-mode . org-autolist-mode))
 #+END_SRC
 
 *** Show actual bullets for header items
 #+BEGIN_SRC emacs-lisp
 (use-package org-bullets
   :after org
-  :custom (org-bullets-bullet-list '("○"))
-  :config
-  (add-hook 'org-mode-hook (lambda ()
-                             (org-bullets-mode 1))))
+  :hook (org-mode . org-bullets-mode)
+  :custom (org-bullets-bullet-list '("○")))
 #+END_SRC
 
 *** Show actual bullets for list items
@@ -5869,13 +5843,12 @@ Archive when done, remove flag if reset to todo.
 #+BEGIN_SRC emacs-lisp
 (use-package org-alert
   :after org
+  :hook (after-make-frame-functions . (lambda (_)
+                                        (org-alert-enable)))
   :custom
   (alert-default-style 'libnotify)
   (org-alert-interval 86400)
-  (org-alert-notification-title "TODO")
-  :config
-  (add-hook 'after-make-frame-functions (lambda (_)
-                                          (org-alert-enable))))
+  (org-alert-notification-title "TODO"))
 #+END_SRC
 
 ** EDiff Compatibility
@@ -6115,15 +6088,14 @@ Do not use scientific form so quickly
 (use-package gnuplot
   :after system-packages
   :mode ("\\.gnuplot\\'" . gnuplot-mode)
+  :hook (gnuplot-mode . flyspell-prog-mode)
   :custom
   (gnuplot-eldoc-mode t)
   (gnuplot-image-format "svg")
   (gnuplot-inline-image-mode 'dedicated)
   (gnuplot-tab-completion t)
   :config
-  (cpped-install-system-package "gnuplot")
-  (add-hook 'gnuplot-mode-hook (lambda ()
-                                 (flyspell-prog-mode))))
+  (cpped-install-system-package "gnuplot"))
 #+END_SRC
 
 ** Weather
