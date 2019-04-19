@@ -761,54 +761,6 @@ Find path of current position in XML docuement
   :group 'cpped-powerline-check-status)
 #+END_SRC
 
-*** Date
-#+BEGIN_SRC emacs-lisp
-(defun cpped-powerline-date ()
-  (concat
-   (propertize (all-the-icons-faicon "calendar")
-               'face `(:family ,(all-the-icons-faicon-family))
-               'display '(raise -0.0))
-   (propertize (format-time-string " %W")
-               'face '(:weight ultra-light))
-   (format-time-string " %e.%-m.%G")))
-#+END_SRC
-
-*** Time
-#+BEGIN_SRC emacs-lisp
-(defun cpped-powerline-time (icon-face)
-  (let* ((hour (string-to-number (format-time-string "%I")))
-         (icon (all-the-icons-wicon (format "time-%s" hour))))
-    (concat
-     (propertize icon 'face (list ':family (all-the-icons-wicon-family)
-                                  ':background (face-attribute icon-face :background))
-                      'display '(raise -0.0))
-     (format-time-string " %H:%M "))))
-#+END_SRC
-
-*** Remaining work time
-#+BEGIN_SRC emacs-lisp
-(defvar cpped-show-work-time nil "Whether to show work time in the mode line.")
-(defvar cpped-clocked-time-today 0 "The work time clocked today.")
-(defconst cpped-daily-work-minutes (* 8 60) "The number of hours of work per day.")
-
-(defun cpped-remaining-work-time (font-face)
-  (when (and cpped-show-work-time
-             (org-clock-is-active))
-      (let* ((clocked-time (+ cpped-clocked-time-today (floor (- (float-time)
-                                                                 (float-time org-clock-start-time)) 60)))
-             (difference (- clocked-time cpped-daily-work-minutes))
-             (display-text (format "%d:%02d"
-                                   (abs (/ difference 60))
-                                   (abs (% difference 60)))))
-        (if (< difference 0)
-            (propertize (concat "-" display-text)
-                        'face (list ':foreground (face-attribute 'error :foreground)
-                                    ':background (face-attribute font-face :background)))
-          (propertize (concat "+" display-text)
-                      'face (list ':foreground (face-attribute 'info :foreground)
-                                  ':background (face-attribute font-face :background)))))))
-#+END_SRC
-
 *** Powerline
 #+BEGIN_SRC emacs-lisp
 (use-package powerline
@@ -889,11 +841,7 @@ Find path of current position in XML docuement
                                 (when show-check-status
                                   (powerline-raw check-status check-face))
                                 (when show-check-status
-                                  (funcall separator-right check-face mode-line))
-                                (powerline-raw (cpped-powerline-date) mode-line 'l)
-                                (funcall separator-right mode-line face1)
-                                (powerline-raw (cpped-powerline-time face1) face1 'r)
-                                (powerline-raw (cpped-remaining-work-time (symbol-value 'face1)) face1 'r))))
+                                  (funcall separator-right check-face mode-line)))))
                      (concat (powerline-render lhs)
                              (powerline-fill mode-line (powerline-width rhs))
                              (powerline-render rhs)))))))
@@ -1852,9 +1800,30 @@ Indicate recursive minibuffer
 #+END_SRC
 
 ** Utilites
-[[https://github.com/bbatsov/crux][A Collection of Ridiculously Useful eXtensions]]
+*** [[https://github.com/bbatsov/crux][A Collection of Ridiculously Useful eXtensions]]
 #+BEGIN_SRC emacs-lisp
 (use-package crux)
+#+END_SRC
+
+*** Date/time formatting
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "all-the-icons"
+  (defun cpped-print-date ()
+    (concat
+     (propertize (all-the-icons-faicon "calendar")
+                 'face `(:family ,(all-the-icons-faicon-family))
+                 'display '(raise -0.0))
+     (propertize (format-time-string " %W")
+                 'face '(:weight ultra-light))
+     (format-time-string " %e.%-m.%G")))
+
+  (defun cpped-print-time ()
+    (let* ((hour (string-to-number (format-time-string "%I")))
+           (icon (all-the-icons-wicon (format "time-%s" hour))))
+      (concat
+       (propertize icon 'face (list ':family (all-the-icons-wicon-family))
+                   'display '(raise -0.0))
+       (format-time-string " %H:%M ")))))
 #+END_SRC
 
 ** Windows
@@ -5955,6 +5924,46 @@ Archive when done, remove flag if reset to todo.
 (org-clock-persistence-insinuate)
 #+END_SRC
 
+*** Remaining work time
+#+BEGIN_SRC emacs-lisp
+(defvar cpped-show-work-time nil "Whether to show work time in the mode line.")
+(defvar cpped-clocked-time-today 0 "The work time clocked today.")
+(defconst cpped-daily-work-minutes (* 8 60) "The number of hours of work per day.")
+
+(defun cpped-init-clocked-time-today ()
+  "(Re-)Initialize the value of 'cpped-clocked-time-today'."
+  (interactive)
+  (let ((files (org-agenda-files)))
+    (org-agenda-prepare-buffers files)
+    (dolist (file files)
+      (with-current-buffer (find-buffer-visiting file)
+        (setq cpped-clocked-time-today (+ cpped-clocked-time-today (org-clock-sum-today)))))))
+
+(cpped-init-clocked-time-today)
+
+(defun cpped-remaining-work-minutes ()
+  "Return the remaining minutes between clocked time today and `cpped-daily-work-minutes`. "
+  (interactive)
+  (- (+ cpped-clocked-time-today (if (org-clock-is-active)
+                                     (floor (- (float-time)
+                                               (float-time org-clock-start-time)) 60)
+                                   0))
+     cpped-daily-work-minutes))
+
+(defun cpped-print-remaining-work-time ()
+  (when (and cpped-show-work-time
+             (org-clock-is-active))
+      (let* ((difference (cpped-remaining-work-minutes))
+             (display-text (format "%d:%02d"
+                                   (abs (/ difference 60))
+                                   (abs (% difference 60)))))
+        (if (< difference 0)
+            (propertize (concat "-" display-text)
+                        'face (list ':foreground (face-attribute 'error :foreground)))
+          (propertize (concat "+" display-text)
+                      'face (list ':foreground (face-attribute 'info :foreground)))))))
+#+END_SRC
+
 *** Do not show default clocking information in mode line
 #+BEGIN_SRC emacs-lisp
 (advice-add 'org-clock-update-mode-line :override #'force-mode-line-update)
@@ -6037,11 +6046,6 @@ Archive when done, remove flag if reset to todo.
 
 *** Discover total time clocked today
 #+BEGIN_SRC emacs-lisp
-(let ((files (org-agenda-files)))
-  (org-agenda-prepare-buffers files)
-  (dolist (file files)
-    (with-current-buffer (find-buffer-visiting file)
-      (setq cpped-clocked-time-today (+ cpped-clocked-time-today (org-clock-sum-today))))))
 #+END_SRC
 
 *** Update cached clock time when clocking out
@@ -6339,7 +6343,7 @@ Open                             ^^Save                      ^^Close            
 #+BEGIN_SRC emacs-lisp
 (defhydra cpped-hydra-info (:exit t :hint nil)
   "
-☰ Information
+☰ Information %s(concat (cpped-print-date) \" \" (cpped-print-time))
 
 Text                    ^^Code                                ^^Version Control         ^^System             ^^Other
   _._: Character            _d_: Documentation                    _c_: Commit Message       _p_: Processes       _t_: ToDos
@@ -7347,7 +7351,7 @@ Run            ^^Info
 #+BEGIN_SRC emacs-lisp
 (defhydra cpped-hydra-planning (:exit t :hint nil)
   "
-☰ Planning
+☰ Planning %s(concat (cpped-print-time) \" \" (cpped-print-remaining-work-time))
 
 Open                ^^Create       ^^Work             ^^Task                      ^^Chart
   _a_: Agenda           _c_: Entry     _b_: Break         _r_: Clock in recent task     _d_: Daily timesheet
