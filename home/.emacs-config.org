@@ -1053,7 +1053,8 @@ Find path of current position in XML docuement
   (desktop-load-locked-desktop t)
   :config
   (desktop-save-mode 1)
-  (run-with-idle-timer 300 t 'desktop-save)
+  (run-with-idle-timer 300 t '(lambda ()
+                                (desktop-save user-emacs-directory)))
   (advice-add 'desktop-save :around #'cpped-always-yes)
   (advice-add 'desktop-read :around #'cpped-always-yes))
 #+END_SRC
