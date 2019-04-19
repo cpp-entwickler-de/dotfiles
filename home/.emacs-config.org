@@ -1034,12 +1034,12 @@ Find path of current position in XML docuement
 
 *** Remember open buffers
 #+BEGIN_SRC emacs-lisp
-(defun cpped-yes (wrapped-function &rest arguments)
+(defun cpped-yes (_)
   t)
 
 (defun cpped-always-yes (wrapped-function &rest arguments)
-  (advice-add 'yes-or-no-p :around #'cpped-yes)
-  (advice-add 'y-or-n-p :around #'cpped-yes)
+  (advice-add 'yes-or-no-p :override #'cpped-yes)
+  (advice-add 'y-or-n-p :override #'cpped-yes)
   (let ((result (apply wrapped-function arguments)))
     (advice-remove 'yes-or-no-p #'cpped-yes)
     (advice-remove 'y-or-n-p #'cpped-yes)
