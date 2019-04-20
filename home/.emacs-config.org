@@ -3820,6 +3820,41 @@ TODO
   :config (bury-successful-compilation 1))
 #+END_SRC
 
+***** Show status in mode line
+#+BEGIN_SRC emacs-lisp
+(defvar-local compilation-run-p nil "Flag to indicate if a comilation was run for the current buffer.")
+
+(add-to-list 'compilation-finish-functions '(lambda ()
+                                              (setq compilation-run-p t)
+                                              (force-mode-line-update)))
+
+(defun cpped-powerline-compilation-status ()
+  "Fomrat the mode line compilation information."
+  (when compilation-run-p
+    (mapconcat 'identity
+               (remove nil (list (propertize (all-the-icons-faicon5 "hammer")
+                                             'face (list ':inherit (cond ((> compilation-num-errors-found 0) 'cpped-check-status-error)
+                                                                         ((> compilation-num-warnings-found 0) 'cpped-check-status-warning)
+                                                                         ((> compilation-num-infos-found 0) 'cpped-check-status-info)
+                                                                         (t 'cpped-check-status-info))
+                                                         ':family (all-the-icons-faicon5-family))
+                                             'display '(raise -0.0))
+                                 (mapconcat 'identity
+                                            (remove nil (list (when (> compilation-num-errors-found 0)
+                                                                (propertize compilation-num-errors-found
+                                                                            'face 'cpped-check-status-error))
+                                                              (when (> compilation-num-warnings-found 0)
+                                                                (propertize compilation-num-warnings-found
+                                                                            'face 'cpped-check-status-warning))
+                                                              (when (> compilation-num-infos-found 0)
+                                                                (propertize compilation-num-infos-found
+                                                                            'face 'cpped-check-status-info))))
+                                            " / ")))
+               " ")))
+
+  (add-to-list 'cpped-powerline-check-status-functions 'cpped-powerline-compilation-status)
+#+END_SRC
+
 **** Documentation
 ***** API
 #+BEGIN_SRC emacs-lisp
