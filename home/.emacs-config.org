@@ -421,11 +421,13 @@ Disable prettification if cursor is at edge of expression
 
 *** Major mode icon
 #+BEGIN_SRC emacs-lisp
-(defun cpped-powerline-mode-icon ()
+(defun cpped-powerline-mode-icon (icon-face)
   (let ((icon (all-the-icons-icon-for-buffer)))
     (unless (symbolp icon)
       (propertize icon
-                  'face `(:family ,(all-the-icons-icon-family-for-buffer) :height 1.2)
+                  'face `(:family ,(all-the-icons-icon-family-for-buffer)
+                          :background ,(face-attribute icon-face :background)
+                          :height 1.2)
                   'display '(raise -0.1)
                   'help-echo (format "%s" major-mode)))))
 #+END_SRC
@@ -436,7 +438,7 @@ Helper function to figure out version control root directory
 (defvar cpped-special-buffer-names-alist nil "A list of buffer name transformations.")
 
 (with-eval-after-load "projectile"
-  (defun cpped-powerline-buffer-id ()
+  (defun cpped-powerline-buffer-id (icon-face)
     (let* ((home-dir (getenv "HOME"))
            (buffer-name (let ((name (if (and buffer-file-name
                                              (tramp-tramp-file-p buffer-file-name))
@@ -459,13 +461,17 @@ Helper function to figure out version control root directory
            (special-buffer (string-match "^\\*.*\\*?$" buffer-name)))
       (if special-buffer
           (propertize (replace-regexp-in-string "^\\*\\([^\*]*\\)\\*?$" "\\1" buffer-name)
-                      'face (list ':weight 'normal ':slant 'italic))
+                      'face `(:background ,(face-attribute icon-face :background)
+                              :weight normal
+                              :slant italic))
         (concat
          (when relative-path
            (propertize relative-path
-                       'face (list ':weight 'light)))
+                       'face `(:background ,(face-attribute icon-face :background)
+                               :weight light)))
          (propertize (file-name-nondirectory buffer-name)
-                     'face (list ':weight 'black)))))))
+                     'face `(:background ,(face-attribute icon-face :background)
+                             :weight black)))))))
 #+END_SRC
 
 *** Docker project
@@ -801,7 +807,7 @@ Find path of current position in XML docuement
                           (separator-right (intern (format "powerline-%s-%s"
                                                            (powerline-current-separator)
                                                            (car powerline-default-separator-dir))))
-                          (project-id (cpped-powerline-project-id (symbol-value 'face1)))
+                          (project-id (cpped-powerline-project-id (symbol-value 'mode-line)))
                           (show-project (not (= 0 (length project-id))))
                           (current-function (cpped-powerline-which-function (symbol-value 'mode-line)))
                           (show-function (not (= 0 (length current-function))))
@@ -810,17 +816,21 @@ Find path of current position in XML docuement
                                                   (not (= (length check-status) 0))))
                           (lhs (list
                                 (when show-project
-                                  (powerline-raw project-id face1 'l))
+                                  (powerline-raw project-id mode-line 'l))
                                 (when show-project
-                                  (funcall separator-left face1 mode-line))
-                                (powerline-raw (cpped-powerline-mode-icon) mode-line 'l)
-                                (powerline-raw (cpped-powerline-buffer-id) mode-line 'l)
+                                  (powerline-raw (cpped-powerline-docker-project (symbol-value 'mode-line)) mode-line 'l))
                                 (when show-project
-                                  (powerline-raw (cpped-powerline-docker-project (symbol-value 'face2)) face2 'l))
+                                  (funcall separator-left mode-line face1))
+                                (powerline-raw (cpped-powerline-mode-icon face1) face1)
+                                (powerline-raw (cpped-powerline-buffer-id face1) face1 'l)
+                                (powerline-raw (cpped-powerline-eshell-process-running) face1 'l)
+                                (if (fboundp 'cpped-powerline-version-control)
+                                    (funcall separator-left face1 mode-line)
+                                  (funcall separator-left face1 face2))
                                 (when (fboundp 'cpped-powerline-version-control)
-                                  (powerline-raw (cpped-powerline-version-control) mode-line 'l))
-                                (powerline-raw (cpped-powerline-eshell-process-running) mode-line 'l)
-                                (funcall separator-left mode-line face2)
+                                  (powerline-raw (cpped-powerline-version-control) mode-line))
+                                (when (fboundp 'cpped-powerline-version-control)
+                                  (funcall separator-left mode-line face2))
                                 (powerline-raw (cpped-powerline-remote (symbol-value 'face2)) face2)
                                 (powerline-raw (cpped-powerline-su (symbol-value 'face2)) face2 'r)
                                 (powerline-raw (cpped-powerline-modified (symbol-value 'face2)) face2)
@@ -6251,7 +6261,7 @@ CMake              ^^Git                         ^^Directories         ^^Shell  
 #+BEGIN_SRC emacs-lisp
 (defhydra cpped-hydra-files (:exit t :hint nil)
   "
-☰ File %s(concat (cpped-powerline-mode-icon) \" \" (cpped-powerline-buffer-id) \" \" (cpped-buffersize) \" \"  (cpped-file-encoding))
+☰ File %s(concat (cpped-powerline-mode-icon 'default) \" \" (cpped-powerline-buffer-id 'default) \" \" (cpped-buffersize) \" \"  (cpped-file-encoding))
 
 Open                             ^^Save                      ^^Close                  ^^Switch             ^^Version                    ^^Display                       ^^File                           ^^^^^^Encoding
       _o_: Open                      _s_: Save                   _x_: File                _l_: Last file       _v_: Show old version        _V_: Filter                 _<DEL>_: Delete                      ^^^^_C-d_: DOS
