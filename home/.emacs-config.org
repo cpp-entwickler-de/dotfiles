@@ -1983,13 +1983,17 @@ Indicate recursive minibuffer
 
     (defun cpped-helm-find-files ()
       (interactive)
-      (helm :sources `(helm-source-buffers-list
-                       cpped-helm-source-recentf
-                       ,(if (ignore-errors (projectile-project-p))
-                            helm-source-projectile-files-list
-                          helm-source-files-in-current-dir)
-                       helm-source-locate
-                       helm-source-buffer-not-found)))))
+      (let ((helm-ag--default-directory (or (when (ignore-errors (projectile-project-p))
+                                              projectile-project-root)
+                                            default-directory)))
+        (helm :sources `(helm-source-buffers-list
+                         cpped-helm-source-recentf
+                         ,(if (ignore-errors (projectile-project-p))
+                              helm-source-projectile-files-list
+                            helm-source-files-in-current-dir)
+                         helm-source-locate
+                         helm-source-do-ag
+                         helm-source-buffer-not-found))))))
 #+END_SRC
 
 *** Dired
