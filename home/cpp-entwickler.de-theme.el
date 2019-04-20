@@ -158,6 +158,8 @@
  '(org-agenda-clocking ((t (:weight ultra-bold :background "gray20" :inherit default))))
  '(line-number ((t (:inherit default :foreground "gray30"))))
  '(line-number-current-line ((t (:inherit line-number :foreground "grey70"))))
+ '(cov-coverage-run-face ((t (:inherit info))))
+ '(cov-coverage-not-run-face ((t (:inherit error))))
  '(default ((t (:inherit nil :stipple nil :background "gray5" :foreground "white smoke" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight semi-bold :height 100 :width normal :foundry "ADBO" :family "Source Code Pro"))))
  '(org-ellipsis ((t nil))))
 

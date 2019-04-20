@@ -3397,6 +3397,44 @@ Handler to close buffer after quitting ccmake.
   :config (which-function-mode 1))
 #+END_SRC
 
+***** [[https://github.com/AdamNiederer/cov][Code coverage]]
+#+BEGIN_SRC emacs-lisp
+(use-package cov
+  :after all-the-icons
+  :hook ((prog-mode . cov-mode)
+         (cpped-after-project-load . (lambda ()
+                                       (add-to-list 'cov-coverage-file-paths (cpped-build-dir)))))
+  :custom (cov-coverage-mode t)
+  :config
+  (make-variable-buffer-local 'cov-coverage-file-paths)
+  (defvar-local cpped-cov-lines-covered 0 "The number of lines covered in tests and/or application runs.")
+  (defvar-local cpped-cov-percentage-covered 0 "The percentage of lines covered in tests and/or application runs.")
+  (advice-add 'cov--get-face :after (lambda (percentage)
+                                      (when (> percentage 0)
+                                        (setq cpped-cov-lines-covered (1+ cpped-cov-lines-covered)))))
+  (advice-add 'cov-update :around (lambda (wrapped-function &rest arguments)
+                                    (setq lines-covered 0)
+                                    (apply wrapped-function arguments)
+                                    (setq cpped-cov-percentage-covered (* (/ cpped-cov-lines-covered (string-to-number (format-mode-line "%l"))) 100)
+                                      (force-mode-line-update))))
+  (defun cpped-coverage-status-face ()
+    "Calculate the face for the coverage status."
+    (cond ((> cpped-cov-percentage-covered 90) 'cpped-check-status-info)
+          ((> cpped-cov-percentage-covered 30) 'cpped-check-status-warning)
+          (t 'cpped-check-status-error)))
+  (defun cpped-powerline-coverage()
+    "Format the modeline coverage information."
+    (when cov-coverage-file
+      (let ((face (cpped-coverage-status-face)))
+        (concat (propertize (all-the-icons-faicon "tasks")
+                            'face (list ':inherit face
+                                        ':family (all-the-icons-faicon-family))
+                            'display '(raise -0.0))
+                (propertize (format " %d%%" cpped-cov-percentage-covered)
+                            'face face)))))
+  (add-to-list 'cpped-powerline-check-status-functions 'cpped-powerline-coverage))
+#+END_SRC
+
 **** Navigation
 ***** [[https://github.com/brotzeit/helm-xref][Helm interface for xref]]
 #+BEGIN_SRC emacs-lisp
