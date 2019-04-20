@@ -943,9 +943,10 @@ Find path of current position in XML docuement
 (use-package helm-ag
   :after (helm ag)
   :custom
-  (helm-ag-base-command "ag --smart-case")
+  (helm-ag-base-command "ag --smart-case --nocolor --nogroup")
   (helm-ag-use-grep-ignore-list t)
   (helm-ag-use-agignore t)
+  (helm-ag-fuzzy-match t)
   (helm-ag-insert-at-point 'symbol))
 #+END_SRC
 
