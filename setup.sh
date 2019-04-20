@@ -189,11 +189,17 @@ if [ "$FONTS" = TRUE ]; then
     # install all-the-icons fonts
     echo "Downloading fonts."
     FONT_DIR=~/.fonts/
-    ALL_THE_ICONS_FONTS="all-the-icons file-icons fontawesome octicons weathericons"
+    ALL_THE_ICONS_FONTS="all-the-icons file-icons octicons weathericons"
     for FONT in $ALL_THE_ICONS_FONTS; do
         wget --quiet --timestamping --no-directories --directory-prefix="$FONT_DIR" "https://github.com/domtronn/all-the-icons.el/raw/master/fonts/$FONT.ttf"
     done
+    FONTAWESOME_FONTS="fa-brands-400 fa-regular-400 fa-solid-900"
+    for FONT in $FONTAWESOME_FONTS; do
+        wget --quiet --timestamping --no-directories --directory-prefix="$FONT_DIR" "https://github.com/FortAwesome/Font-Awesome/raw/master/webfonts/$FONT.ttf"
+    done
+    wget --quiet --timestamping --no-directories --directory-prefix="$FONT_DIR" "https://github.com/google/material-design-icons/raw/master/iconfont/MaterialIcons-Regular.ttf"
     make_link "$DOTFILES_DIRECTORY/home/10-symbols.conf" "$(realpath ~)/.config/fontconfig/conf.d/10-symbols.conf"
+    fc-cache --force
 fi
 
 if [ "$DOCUMENTATION" = TRUE ]; then
