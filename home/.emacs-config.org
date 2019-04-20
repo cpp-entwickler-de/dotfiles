@@ -746,19 +746,29 @@ Find path of current position in XML docuement
 *** Check Status
 #+BEGIN_SRC emacs-lisp
 (defvar cpped-powerline-check-status-functions nil "A list of functions that format mode line status data.")
-(defvar cpped-powerline-check-status-face-functions nil "A list of functions that compute the face for mode line status data.")
 
-(defface cpped-check-status-info `((t :inherit default :background ,(face-attribute 'info :foreground)))
+(defface cpped-check-status-info `((t :inherit info
+                                      :weight ultra-bold))
   "Face used for modeline check info status."
   :group 'cpped-powerline-check-status)
 
-(defface cpped-check-status-warning `((t :inherit default :background ,(face-attribute 'warning :foreground)))
+(defface cpped-check-status-warning `((t :inherit warning
+                                         :weight ultra-bold))
   "Face used for modeline check warning status."
   :group 'cpped-powerline-check-status)
 
-(defface cpped-check-status-error `((t :inherit default :background ,(face-attribute 'error :foreground)))
+(defface cpped-check-status-error `((t :inherit error
+                                       :weight ultra-bold))
   "Face used for modeline check error status."
   :group 'cpped-powerline-check-status)
+
+(defun cpped-powerline-check-status (face)
+  "Collect check status information."
+  (let ((status (mapconcat 'identity
+                           (remove nil (mapcar 'funcall cpped-powerline-check-status-functions))
+                           " ")))
+    (add-face-text-property 0 (length status) (list ':background (face-attribute face :background)) nil status)
+    status))
 #+END_SRC
 
 *** Powerline
@@ -795,16 +805,9 @@ Find path of current position in XML docuement
                           (show-project (not (= 0 (length project-id))))
                           (current-function (cpped-powerline-which-function (symbol-value 'mode-line)))
                           (show-function (not (= 0 (length current-function))))
-                          (check-status (mapconcat 'identity
-                                                   (remove nil (mapcar 'funcall cpped-powerline-check-status-functions))
-                                                   " "))
+                          (check-status (cpped-powerline-check-status (symbol-value 'face2)))
                           (show-check-status (and check-status
                                                   (not (= (length check-status) 0))))
-                          (check-face (when show-check-status
-                                        (let ((faces (mapcar 'funcall cpped-powerline-check-status-face-functions)))
-                                          (cond ((member 'cpped-check-status-error faces) 'cpped-check-status-error)
-                                                ((member 'cpped-check-status-warning faces) 'cpped-check-status-warning)
-                                                (t 'cpped-check-status-info)))))
                           (lhs (list
                                 (when show-project
                                   (powerline-raw project-id face1 'l))
@@ -831,20 +834,13 @@ Find path of current position in XML docuement
                                 (powerline-raw (cpped-powerline-term-input-mode (symbol-value 'face2)) face2 'l)
                                 (powerline-raw (cpped-powerline-position-info (symbol-value 'face2)) face2 'l)
                                 (powerline-raw (cpped-powerline-region-info (symbol-value 'face2)) face2 'l)
+                                (when show-check-status
+                                  (powerline-raw check-status face2 'l))
                                 (funcall separator-left face2 mode-line)
                                 (when show-function
                                   (powerline-raw current-function mode-line))
-                                (powerline-raw (format-mode-line 'global-mode-string) mode-line)))
-                          (rhs (list
-                                (when show-check-status
-                                  (funcall separator-right mode-line check-face))
-                                (when show-check-status
-                                  (powerline-raw check-status check-face))
-                                (when show-check-status
-                                  (funcall separator-right check-face mode-line)))))
-                     (concat (powerline-render lhs)
-                             (powerline-fill mode-line (powerline-width rhs))
-                             (powerline-render rhs)))))))
+                                (powerline-raw (format-mode-line 'global-mode-string) mode-line))))
+                     (concat (powerline-render lhs)))))))
 
 (cpped-powerline-theme)
 #+END_SRC
@@ -2741,12 +2737,12 @@ Some useful abbreviations
     (when (and flyspell-mode
                (> cpped-flyspell-errors 0))
       (concat (propertize (all-the-icons-faicon "comment")
-                          'face (list ':family (all-the-icons-faicon-family))
+                          'face (list ':inherit 'cpped-check-status-error
+                                      ':family (all-the-icons-faicon-family))
                           'display '(raise -0.0))
               (propertize (format " %d" cpped-flyspell-errors)
-                          'face (list ':weight 'bold)))))
-  (add-to-list 'cpped-powerline-check-status-functions 'cpped-powerline-flyspell-status)
-  (add-to-list 'cpped-powerline-check-status-face-functions 'cpped-powerline-flyspell-status-face))
+                          'face 'cpped-check-status-error))))
+  (add-to-list 'cpped-powerline-check-status-functions 'cpped-powerline-flyspell-status))
 
 (use-package helm-flyspell
   :after (helm flyspell)
@@ -3607,16 +3603,17 @@ Handler to close buffer after quitting ccmake.
   (defun cpped-powerline-flycheck-status ()
     (when (and (boundp 'flycheck-last-status-change)
                (equal flycheck-last-status-change 'finished))
-      (let* ((issues (let-alist (flycheck-count-errors flycheck-current-errors)
-                       (+ (or .warning 0) (or .error 0) (or .info 0)))))
+      (let ((issues (let-alist (flycheck-count-errors flycheck-current-errors)
+                      (+ (or .warning 0) (or .error 0) (or .info 0))))
+            (face (cpped-powerline-flycheck-status-face)))
         (concat
          (propertize (all-the-icons-faicon "bug")
-                     'face (list ':family (all-the-icons-faicon-family))
+                     'face (list ':inherit face
+                                 ':family (all-the-icons-faicon-family))
                      'display '(raise -0.0))
          (propertize (format " %d" issues)
-                     'face (list ':weight 'bold))))))
-  (add-to-list 'cpped-powerline-check-status-functions 'cpped-powerline-flycheck-status)
-  (add-to-list 'cpped-powerline-check-status-face-functions 'cpped-powerline-flycheck-status-face))
+                     'face face)))))
+  (add-to-list 'cpped-powerline-check-status-functions 'cpped-powerline-flycheck-status))
 #+END_SRC
 
 Custom error highlighting (colored line under location)
