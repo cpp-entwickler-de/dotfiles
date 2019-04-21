@@ -3318,10 +3318,11 @@ Handler to close buffer after quitting ccmake.
   :custom (focus-dimness -2))
 #+END_SRC
 
-***** Current S-EXP
+***** [[https://github.com/ikirill/hl-indent][Scope background]]
 #+BEGIN_SRC emacs-lisp
-(use-package hl-sexp
-  :config (add-hook 'prog-mode-hook #'hl-sexp-mode))
+(use-package hl-indent
+  :hook (prog-mode . hl-indent-mode)
+  :custom (hl-indent-color-indents t))
 #+END_SRC
 
 ***** [[https://github.com/ankurdave/color-identifiers-mode][Unique colors for identifiers]]
