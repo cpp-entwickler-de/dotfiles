@@ -3486,6 +3486,9 @@ Handler to close buffer after quitting ccmake.
 (use-package origami
   :hook (prog-mode . origami-mode)
   :custom (origami-fold-replacement "…"))
+
+(use-package lsp-origami
+  :hook (lsp-mode . lsp-origami-mode))
 #+END_SRC
 
 ***** Subword-navigation in camelCase words
