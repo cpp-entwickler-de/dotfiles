@@ -3484,7 +3484,8 @@ Handler to close buffer after quitting ccmake.
 ***** [[https://github.com/gregsexton/origami.el][Folding]]
 #+BEGIN_SRC emacs-lisp
 (use-package origami
-  :hook prog-mode)
+  :hook (prog-mode . origami-mode)
+  :custom (origami-fold-replacement "…"))
 #+END_SRC
 
 ***** Subword-navigation in camelCase words
