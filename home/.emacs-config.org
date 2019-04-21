@@ -1949,7 +1949,7 @@ Indicate recursive minibuffer
 
 ** Auto-save buffers
 #+BEGIN_SRC emacs-lisp
-(defconst cpped-autosave-delay 5 "The number of seconds to wait before saving automatically.")
+(defconst cpped-autosave-delay 1 "The number of seconds to wait before saving automatically.")
 
 (setq auto-save-timeout cpped-autosave-delay
       auto-save-interval 100
