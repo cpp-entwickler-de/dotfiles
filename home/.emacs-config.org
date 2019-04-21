@@ -5805,11 +5805,19 @@ Archive when done, remove flag if reset to todo.
   "Select a event topic."
   (cpped-select-topic "" org-default-events-file))
 
+(defun org-src-language-from-major-mode (local-major-mode)
+  "Infer an 'org-mode' source block type from the major mode LOCAL-MAJOR-MODE."
+  (car (rassq (intern (replace-regexp-in-string "-mode"
+                                                ""
+                                                (format "%s"
+                                                        local-major-mode)))
+              org-src-lang-modes)))
+
 (setq org-capture-templates
       `(("t" "To Do" entry (function cpped-select-todo-topic) ,(concat "* " cpped-org-todo-keyword-todo " [#B] %?\n%U\n%i\n") :empty-lines 1 :kill-buffer t)
         ("p" "Priority To Do" entry (function cpped-select-todo-topic) ,(concat "* " cpped-org-todo-keyword-todo " [#A] %?\n%T\nDEADLINE: %t\n%i\n") :empty-lines 1 :kill-buffer t)
         ("b" "Bug" entry (function cpped-select-bug-topic) ,(concat "* " cpped-org-todo-keyword-bug " [#B] %?\n%U\n%i\n") :empty-lines 1 :kill-buffer t)
-        ("f" "Fixme" entry (function cpped-select-bug-topic) ,(concat "* " cpped-org-todo-keyword-fixme " [#A] %?\n%U\nSCHEDULED: %t\n[[file:%F::%(with-current-buffer (org-capture-get :original-buffer) (number-to-string (line-number-at-pos)))]]\n%i\n") :empty-lines 1 :kill-buffer t)
+        ("f" "Fixme" entry (function cpped-select-bug-topic) ,(concat "* " cpped-org-todo-keyword-fixme " [#A] %?\n%U\nSCHEDULED: %t\nIn function *[[file:%F::%(with-current-buffer (org-capture-get :original-buffer) (number-to-string (line-number-at-pos)))][%(with-current-buffer (org-capture-get :original-buffer) (which-function))()]]*\n#+BEGIN_SRC %(with-current-buffer (org-capture-get :original-buffer) (org-src-language-from-major-mode major-mode))\n%i\n#+END_SRC\n") :empty-lines 1 :kill-buffer t)
         ("s" "Support" entry (function cpped-select-support-topic) ,(concat "* " cpped-org-todo-keyword-in-progress " [#B] %?\n%U\n%i\n") :empty-lines 1 :kill-buffer t :clock-in t :clock-keep t)
         ("n" "Note" entry (function cpped-select-note-topic) "* %?\n%U\n%i\n" :empty-lines 1 :kill-buffer t)
         ("m" "Meeting" entry (function cpped-select-event-topic) ,(concat "* " cpped-org-todo-keyword-todo " [#A] %?\n%T\n%i\n") :empty-lines 1 :kill-buffer t)
