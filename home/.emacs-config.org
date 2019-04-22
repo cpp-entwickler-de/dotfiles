@@ -17,7 +17,10 @@ Do not load outdated byte code
 
 #+BEGIN_SRC emacs-lisp
 (use-package auto-compile
-  :custom (auto-compile-display-buffer nil)
+  :custom
+  (auto-compile-ding nil)
+  (auto-compile-display-buffer nil)
+  (auto-compile-use-mode-line nil)
   :config
   (auto-compile-on-load-mode)
   (auto-compile-on-save-mode))
@@ -26,10 +29,13 @@ Do not load outdated byte code
 ** Use Quelpa
 #+BEGIN_EXPORT emacs-lisp
 (use-package quelpa
-  :config (setq quelpa-upgrade-p t
-                quelpa-stable-p nil)
-                (quelpa '(quelpa-use-package :fetcher git
-                                             :url "https://framagit.org/steckerhalter/quelpa-use-package.git"))
+  :custom
+  (quelpa-build-verbose nil)
+  (quelpa-stable-p nil)
+  (quelpa-upgrade-p t)
+  (quelpa-verbose nil)
+  :config
+  (quelpa '(quelpa-use-package :fetcher git :url "https://framagit.org/steckerhalter/quelpa-use-package.git"))
   (require 'quelpa-use-package))
 #+END_EXPORT
 
@@ -49,6 +55,7 @@ Do not load outdated byte code
 ** [[https://github.com/jabranham/system-packages][System packages]]
 #+BEGIN_SRC emacs-lisp
 (use-package system-packages
+  :custom (system-packages-noconfirm t)
   :config
   (defun cpped-run-command-sync-logged (wrapped-function &rest arguments)
     "Run a command synchronously and return the output."
@@ -906,17 +913,24 @@ Find path of current position in XML docuement
   :custom
   (ag-arguments '("--smart-case"))
   (ag-context-lines 3)
-  (ag-highlight-search t))
+  (ag-highlight-search t)
+  (ag-project-root-function nil)
+  (ag-reuse-window t)
   :config
-  (cpped-install-system-package "the_silver_searcher" :executable "ag")
+  (cpped-install-system-package "the_silver_searcher" :executable "ag"))
 
 (use-package projectile
   :after ag
   :custom
-  (projectile-enable-caching t)
   (projectile-completion-system 'helm)
-  (projectile-switch-project-action 'helm-projectile)
+  (projectile-dynamic-mode-line nil)
+  (projectile-enable-caching t)
+  (projectile-find-dir-includes-top-level t)
   (projectile-git-submodule-command nil)
+  (projectile-idle-timer-hook nil)
+  (projectile-sort-order 'recently-active)
+  (projectile-switch-project-action 'helm-projectile)
+  (projectile-verbose nil)
   :config
   (projectile-global-mode))
 #+END_SRC
@@ -928,22 +942,39 @@ Find path of current position in XML docuement
   :bind (:map helm-map (("M-SPC" . helm-toggle-all-marks)
                         ("C-M-y" . helm-copy-to-buffer)))
   :custom
+  (helm-adaptive-mode t)
+  (helm-apropos-fuzzy-match t)
   (helm-buffer-max-length nil)
   (helm-buffers-fuzzy-matching t)
-  (helm-candidate-number-limit 5000)
+  (helm-candidate-number-limit 1000)
+  (helm-candidate-separator "────────────────────────────────────────────────────────────────────────────────────────────────────────────────")
   (helm-case-fold-search t)
   (helm-comp-read-case-fold-search 'Ignore\ case)
-  (helm-follow-mode-persistent nil)
-  (helm-grep-ignored-directories '("SCCS" "RCS" "CVS" "MCVS" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" ".gvfs" "branches" "tags"))
-  (helm-input-idle-delay 0.01)
-  (helm-recentf-fuzzy-match t)
-  (helm-split-window-in-side-p t)
-  (helm-move-to-line-cycle-in-source t)
-  (helm-scroll-amount 8)
-  (helm-ff-search-library-in-sexp t)
+  (helm-completion-in-region-fuzzy-match t)
+  (helm-default-external-file-browser "dolphin")
+  (helm-ff-delete-files-function 'helm-delete-marked-files-async)
   (helm-ff-file-name-history-use-recentf t)
+  (helm-ff-history-max-length 1000)
+  (helm-ff-initial-sort-method 'newest)
+  (helm-ff-search-library-in-sexp t)
   (helm-ff-transformer-show-only-basename nil)
+  (helm-file-cache-fuzzy-match t)
+  (helm-find-files-ignore-thing-at-point t)
+  (helm-follow-mode-persistent nil)
   (helm-google-suggest-use-curl-p t)
+  (helm-grep-ignored-directories '("SCCS" "RCS" "CVS" "MCVS" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" ".gvfs" "branches" "tags"))
+  (helm-imenu-fuzzy-match t)
+  (helm-input-idle-delay 0.01)
+  (helm-lisp-fuzzy-completion t)
+  (helm-M-x-always-save-history t)
+  (helm-M-x-fuzzy-match t)
+  (helm-mode-fuzzy-match t)
+  (helm-move-to-line-cycle-in-source t)
+  (helm-occur-auto-update-on-resume 'noask)
+  (helm-recentf-fuzzy-match t)
+  (helm-scroll-amount 8)
+  (helm-session-fuzzy-match t)
+  (helm-split-window-in-side-p t)
   :config
   (cpped-install-system-package "curl")
   (advice-add 'helm-ff-filter-candidate-one-by-one
@@ -969,6 +1000,7 @@ Find path of current position in XML docuement
 #+BEGIN_SRC emacs-lisp
 (use-package helm-flx
   :after helm
+  :custom (helm-flx-for-helm-locate t)
   :config (helm-flx-mode +1))
 
 (use-package helm-fuzzier
@@ -1016,7 +1048,12 @@ Find path of current position in XML docuement
 
 *** Show results from all buffers
 #+BEGIN_SRC emacs-lisp
-(use-package imenu-anywhere)
+(use-package imenu-anywhere
+  :custom (imenu-anywhere-friendly-modes '((c-mode c++-mode cmake-mode qml-mode gtest-mode)
+                                           (clojure-mode clojurex-mode clojurec-mode clojurescript-mode cider-repl-mode cider-clojure-interaction-mode)
+                                           (emacs-lisp-mode inferior-emacs-lisp-mode lisp-interaction-mode)
+                                           (ess-mode inferior-ess-mode)
+                                           (python-mode inferior-python-mode))))
 #+END_SRC
 
 ** Buffers
@@ -1040,10 +1077,15 @@ Find path of current position in XML docuement
 
 (use-package desktop
   :custom
-  (desktop-path (list user-emacs-directory))
   (desktop-dirname user-emacs-directory)
-  (desktop-restore-eager 5)
+  (desktop-lazy-idle-delay 10)
+  (desktop-lazy-verbose nil)
   (desktop-load-locked-desktop t)
+  (desktop-path (list user-emacs-directory))
+  (desktop-restore-eager 5)
+  (desktop-restore-eager 5)
+  (desktop-restore-forces-onscreen nil)
+  (desktop-restore-frames t)
   :config
   (desktop-save-mode 1)
   (run-with-idle-timer 300 t '(lambda ()
@@ -1079,7 +1121,8 @@ Switch to previous buffer
 
 *** [[https://github.com/ShingoFukuyama/helm-swoo][In-buffer search]]
 #+BEGIN_SRC emacs-lisp
-(use-package helm-swoop)
+(use-package helm-swoop
+  :custom (helm-swoop-use-fuzzy-match t))
 #+END_SRC
 
 *** Scratch Buffer
@@ -1119,7 +1162,8 @@ Switch to previous buffer
 
 *** [[https://github.com/dimitri/switch-window][Use smarter window switching (numbered windows)]]
 #+BEGIN_SRC emacs-lisp
-(use-package switch-window)
+(use-package switch-window
+  :custom (switch-window-background t))
 #+END_SRC
 
 *** Do not show buffer boundaries in fringe
@@ -1841,6 +1885,7 @@ Indicate recursive minibuffer
 #+BEGIN_SRC emacs-lisp
 (use-package helpful
   :after helm-buffers
+  :custom (helpful-max-buffers 3)
   :config (push "\\*helpful.*\\*" helm-boring-buffer-regexp-list))
 #+END_SRC
 
@@ -2015,6 +2060,7 @@ Indicate recursive minibuffer
       "`helm-source-recentf' with candidate limit.")
 
     (require 'helm-buffers)
+    (setq helm-buffers-end-truncated-string "…")
     (unless helm-source-buffers-list
       (setq helm-source-buffers-list
             (helm-make-source "Buffers" 'helm-source-buffers)))
@@ -2309,7 +2355,10 @@ https://github.com/mivok/markdownlint
 
 ***** [[https://github.com/mola-T/flymd][Preview]]
 #+BEGIN_SRC emacs-lisp
-(use-package flymd)
+(use-package flymd
+  :custom
+  (flymd-close-buffer-delete-temp-files t)
+  (flymd-output-directory temporary-file-directory))
 #+END_SRC
 
 *** Highlight edited areas shortly
@@ -2332,6 +2381,7 @@ https://github.com/mivok/markdownlint
   (ahs-default-range 'ahs-range-whole-buffer)
   (ahs-idle-interval 0.25)
   (ahs-inhibit-face-list nil)
+  (ahs-suppress-log t)
   :config
   (push 'org-mode ahs-modes)
   (global-auto-highlight-symbol-mode t))
@@ -2634,7 +2684,8 @@ Save system clipboard contents to kill ring before killing
 
 *** [[https://github.com/benma/visual-regexp.el][Visual regular expressions]]
 #+BEGIN_SRC emacs-lisp
-(use-package visual-regexp)
+(use-package visual-regexp
+  :custom (vr/engine 'emacs))
 
 (use-package visual-regexp-steroids
   :after visual-regexp)
@@ -2677,6 +2728,7 @@ Some useful abbreviations
   (yas-wrap-around-region t)
   (yas-use-menu nil)
   (yas-triggers-in-field t)
+  (yas-also-indent-empty-lines t)
   :config (yas-global-mode 1))
 #+END_SRC
 
@@ -3300,10 +3352,13 @@ Handler to close buffer after quitting ccmake.
   :after helm-buffers
   :hook prog-mode
   :custom
+  (lsp-auto-configure t)
+  (lsp-log-max 100)
+  (lsp-prefer-flymake nil)
+  (lsp-report-if-no-buffer nil)
+  (lsp-restart 'auto-restart)
   (lsp-ui-doc-include-signature nil)
   (lsp-ui-sideline-show-symbol nil)
-  (lsp-auto-configure t)
-  (lsp-prefer-flymake nil)
   :config (push "^\\*lsp-.+" helm-boring-buffer-regexp-list))
 
 (use-package lsp-ui)
@@ -3532,6 +3587,7 @@ Handler to close buffer after quitting ccmake.
 #+BEGIN_SRC emacs-lisp
 (use-package aggressive-indent
   :hook (prog-mode . aggressive-indent-mode)
+  :custom (aggressive-indent-sit-for-time 0.1)
   :config
   (add-to-list 'aggressive-indent-dont-indent-if
                '(and (derived-mode-p 'c++-mode)
@@ -3603,8 +3659,8 @@ Handler to close buffer after quitting ccmake.
   (company-backends '((company-keywords company-yasnippet company-files company-capf company-dabbrev)))
   (company-idle-delay 0)
   (company-selection-wrap-around t)
-  (company-show-numbers)
-  (company-tooltip-align-annotations)
+  (company-show-numbers nil)
+  (company-tooltip-align-annotations nil)
   (company-tooltip-flip-when-above nil)
   (company-transformers '(company-sort-by-backend-importance))
   (company-tooltip-limit 30)
@@ -3800,7 +3856,10 @@ TODO
 
 #+BEGIN_SRC emacs-lisp
 (use-package helm-make
-  :after helm)
+  :after helm
+  :custom
+  (helm-make-fuzzy-matching t)
+  (helm-make-list-target-method 'default))
 #+END_SRC
 
 ***** Always kill running compilation when starting another
@@ -3867,7 +3926,8 @@ TODO
 (use-package helm-dash
   :custom
   (helm-dash-browser-func 'eww)
-  (helm-dash-docsets-url "https://api.github.com/repos/Kapeli/feeds/contents/"))
+  (helm-dash-docsets-url "https://api.github.com/repos/Kapeli/feeds/contents/")
+  (helm-dash-enable-debugging nil))
 #+END_SRC
 
 ***** Change Log
@@ -4104,7 +4164,8 @@ TODO
 ***** Auto-completion
 #+BEGIN_SRC emacs-lisp
 (use-package company-c-headers
-  :after company)
+  :after company
+  :custom (company-c-headers-path-user '("." "../Includes/")))
 
 (add-hook 'c-mode-common-hook (lambda()
                                 (set (make-local-variable 'company-backends) '((company-yasnippet company-lsp company-files company-capf company-dabbrev-code company-ispell cpped-company-line-backend)))))
@@ -4481,6 +4542,7 @@ https://github.com/google/googletest
   :custom
   (graphviz-dot-auto-indent-on-braces t)
   (graphviz-dot-indent-width cpped-default-indentation)
+  (graphviz-dot-auto-preview-on-save t)
   :config
   (cpped-install-system-package "graphviz")
   (add-to-list 'org-src-lang-modes '("dot" . graphviz-dot)))
@@ -4923,7 +4985,10 @@ Set correct major mode
 #+BEGIN_SRC emacs-lisp
 (use-package xquery-tool
   :after system-packages
-  :custom (xquery-tool-saxonb-jar "/usr/share/java/saxon/saxon.jar")
+  :custom
+  (xquery-tool-saxonb-jar "/usr/share/java/saxon/saxon.jar")
+  (xquery-tool-resolve-xincludes t)
+  (xquery-tool-result-buffer-name "*XQuery Results*")
   :config (cpped-install-system-package "saxon"))
 #+END_SRC
 
@@ -4950,7 +5015,8 @@ Set correct major mode
 (defvar gdb-show-main nil)
 (setq gud-tooltip-mode t)
 
-(use-package realgud)
+(use-package realgud
+  :custom (realgud-bp-fringe-indicator-style '(realgud-bp-filled . realgud-bp-hollow)))
 #+END_SRC
 
 *** Show symbols of ELF files
@@ -5093,6 +5159,7 @@ When using Magit >= 2.4.0
 #+BEGIN_SRC emacs-lisp
 (use-package magithub
   :after magit
+  :custom (magithub-preferred-remote-method 'ssh_url)
   :config (magithub-feature-autoinject t))
 #+END_SRC
 
@@ -5263,12 +5330,16 @@ When using Magit >= 2.4.0
 
 **** [[https://github.com/syohex/emacs-git-messenger][Show commit message of line on request]]
 #+BEGIN_SRC emacs-lisp
-(use-package git-messenger)
+(use-package git-messenger
+  :custom
+  (git-messenger:handled-backends 'git)
+  (git-messenger:use-magit-popup t))
 #+END_SRC
 
 **** [[https://github.com/pidu/git-timemachine][Switch to previous version]]
 #+BEGIN_SRC emacs-lisp
-(use-package git-timemachine)
+(use-package git-timemachine
+  :custom (git-timemachine-abbreviation-length 8))
 #+END_SRC
 
 **** [[https://github.com/jwiegley/git-undo-el][Git undo]]
@@ -5279,12 +5350,14 @@ When using Magit >= 2.4.0
 **** [[https://github.com/emacs-helm/helm-ls-git][Browse other git projects with helm]]
 #+BEGIN_SRC emacs-lisp
 (use-package helm-ls-git
-  :after helm)
+  :after helm
+  :custom (helm-ls-git-fuzzy-match t))
 #+END_SRC
 
 **** [[https://github.com/defunkt/gist.el][Gist support]]
 #+BEGIN_SRC emacs-lisp
-(use-package gist)
+(use-package gist
+  :custom (gist-ask-for-description t))
 #+END_SRC
 
 **** Config file support
@@ -5342,6 +5415,10 @@ Hide info buffer in buffer list
 ** Doc-View
 #+BEGIN_SRC emacs-lisp
 (require 'doc-view)
+
+(setq doc-view-continuous t
+      doc-view-scale-internally nil)
+
 (define-key doc-view-mode-map (kbd "q") 'doc-view-kill-proc-and-buffer)
 #+END_SRC
 
@@ -5943,6 +6020,7 @@ Archive when done, remove flag if reset to todo.
 ** [[https://github.com/bard/org-dashboard/blob/master/org-dashboard.el][Progress Report]]
 #+BEGIN_SRC emacs-lisp
 (require 'url)
+(setq url-privacy-level 'high)
 
 (use-package org-dashboard
   :custom (org-dashboard-omit-completed t))
@@ -6272,11 +6350,13 @@ Do not use scientific form so quickly
 #+BEGIN_SRC emacs-lisp
 (use-package tramp
   :custom
+  (tramp-adb-connect-if-not-connected t)
   (tramp-connection-properties nil)
   (tramp-connection-timeout 10)
   (tramp-default-method "ssh")
   (tramp-default-host nil)
-  (tramp-default-user "root"))
+  (tramp-default-user "root")
+  (tramp-histfile-override nil))
 
 (use-package helm-tramp
   :after (helm tramp))
