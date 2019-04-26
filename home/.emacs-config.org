@@ -1,6 +1,6 @@
 #+TITLE: Emacs config
 #+OPTIONS: toc:4
-#+PROPERTY: header-args :results silent
+#+PROPERTY: header-args :results silent :tangle yes :comments yes
 #+STARTUP: showeverything
 
 * Custom configuration
