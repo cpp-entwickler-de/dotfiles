@@ -6127,7 +6127,8 @@ Archive when done, remove flag if reset to todo.
   (interactive)
   (let ((cpped-keep-clock-running nil))
     (when (org-clock-is-active)
-      (org-clock-out))))
+      (org-clock-out)
+      (save-some-buffers t nil))))
 #+END_SRC
 
 *** Maybe switch to default task when clocking out.
