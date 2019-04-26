@@ -2484,6 +2484,11 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
   :config (global-smartscan-mode 1))
 #+END_SRC
 
+*** [[https://github.com/jcs090218/goto-line-preview][Go to line with preview]]
+#+BEGIN_SRC emacs-lisp
+(use-package goto-line-preview)
+#+END_SRC
+
 *** [[https://github.com/tam17aki/ace-isearch][Jump to any symbol]]
 #+BEGIN_SRC emacs-lisp
 (use-package avy)
@@ -6667,7 +6672,7 @@ _C-<right>_: Next word                 _y_: Down block                 _C-t_: Ne
   ("C-S-l" backward-up-list)
   ("C-l" down-list)
   ("C-j" avy-goto-char-timer :exit t)
-  ("C-l" goto-line :exit t)
+  ("C-l" goto-line-preview :exit t)
 
   ("C-S-s" backward-sexp)
   ("C-s" forward-sexp)
