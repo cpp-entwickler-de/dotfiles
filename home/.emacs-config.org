@@ -3109,7 +3109,7 @@ Handler to close buffer after quitting ccmake.
   (interactive (list (read-directory-name "Build-directory: "
                                           (file-name-as-directory cpped-build-base-directory))))
   (if (cpped-build-directory-p build-dir)
-      (let ((source-dir (if (cpped-cmake-build-directory-p (build-dir))
+      (let ((source-dir (if (cpped-cmake-build-directory-p build-dir)
                             (cpped-cmake-source-dir build-dir)
                           build-dir)))
         (projectile-discover-projects-in-directory source-dir)
@@ -3281,9 +3281,9 @@ Handler to close buffer after quitting ccmake.
 
 (defun cpped-build-directory-p (build-dir)
   "Check if build-dir is a build directory."
-  (or (cpped-cmake-build-directory-p)
-      (cpped-ninja-build-directory-p)
-      (cpped-make-build-directory-p)))
+  (or (cpped-cmake-build-directory-p build-dir)
+      (cpped-ninja-build-directory-p build-dir)
+      (cpped-make-build-directory-p build-dir)))
 #+END_SRC
 
 ***** Check if directory is build directory for the current project
