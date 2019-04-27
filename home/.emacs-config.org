@@ -3419,7 +3419,7 @@ Handler to close buffer after quitting ccmake.
             (push '("FALSE" . ?🚫) prettify-symbols-alist)))
 #+END_SRC
 
-***** [[https://github.com/tarsius/hl-todo][Highlight TODO/FIXME/...]]
+***** [[https://github.com/tarsius/hl-todo][Highlight TODO/FIXME/…
 #+BEGIN_SRC emacs-lisp
 (defface hl-todo-info '((t :inherit info))
   "Face used for info text."
