@@ -854,6 +854,8 @@ Find path of current position in XML docuement
                                                            (car powerline-default-separator-dir))))
                           (project-id (cpped-powerline-project-id (symbol-value 'mode-line)))
                           (show-project (not (= 0 (length project-id))))
+                          (version (when (fboundp 'cpped-powerline-version-control)
+                                     (cpped-powerline-version-control)))
                           (current-function (cpped-powerline-which-function (symbol-value 'mode-line)))
                           (show-function (not (= 0 (length current-function))))
                           (check-status (cpped-powerline-check-status (symbol-value 'face2)))
@@ -869,12 +871,12 @@ Find path of current position in XML docuement
                                 (powerline-raw (cpped-powerline-mode-icon face1) face1)
                                 (powerline-raw (cpped-powerline-buffer-id face1) face1 'l)
                                 (powerline-raw (cpped-powerline-eshell-process-running) face1 'l)
-                                (if (fboundp 'cpped-powerline-version-control)
+                                (if version
                                     (funcall separator-left face1 mode-line)
                                   (funcall separator-left face1 face2))
-                                (when (fboundp 'cpped-powerline-version-control)
-                                  (powerline-raw (cpped-powerline-version-control) mode-line))
-                                (when (fboundp 'cpped-powerline-version-control)
+                                (when version
+                                  (powerline-raw version mode-line))
+                                (when version
                                   (funcall separator-left mode-line face2))
                                 (powerline-raw (cpped-powerline-remote (symbol-value 'face2)) face2)
                                 (powerline-raw (cpped-powerline-su (symbol-value 'face2)) face2 'r)
