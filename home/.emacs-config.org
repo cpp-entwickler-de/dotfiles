@@ -5162,12 +5162,10 @@ When using Magit >= 2.4.0
   (jump-to-register :magit-fullscreen))
 #+END_SRC
 
-***** [[https://github.com/vermiculus/magithub][Github integration]]
+***** [[https://github.com/magit/forge][Git forge integration]]
 #+BEGIN_SRC emacs-lisp
-(use-package magithub
-  :after magit
-  :custom (magithub-preferred-remote-method 'ssh_url)
-  :config (magithub-feature-autoinject t))
+(use-package forge
+  :after magit)
 #+END_SRC
 
 ***** [[https://github.com/terranpro/magit-gerrit][Gerrit integration]]
