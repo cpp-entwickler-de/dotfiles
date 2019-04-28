@@ -6500,8 +6500,10 @@ Open                             ^^Save                      ^^Close            
 
   ("s" save-buffer)
   ("S" cpped-save-copy)
-  ("i" gist-region-or-buffer)
-  ("I" gist-region-or-buffer-private)
+  ("i" (when (yes-or-no-p "Upload as gist?")
+         (gist-region-or-buffer)))
+  ("I" (when (yes-or-no-p "Upload as private gist?")
+         (gist-region-or-buffer-private)))
   ("F" (if cpped-auto-format-enabled-p
            (setq-local cpped-auto-format-enabled-p nil)
          (setq-local cpped-auto-format-enabled-p t)))
