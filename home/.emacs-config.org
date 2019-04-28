@@ -1192,9 +1192,13 @@ Indicate recursive minibuffer
 
 *** Highlight minibuffer when in use
 #+BEGIN_SRC emacs-lisp
+(defface cpped-minibuffer-active '((t :inherit default))
+  "Face used for active minibuffer."
+  :group 'basic-faces)
+
 (add-hook 'minibuffer-setup-hook (lambda ()
                                    (make-local-variable 'face-remapping-alist)
-                                   (add-to-list 'face-remapping-alist '(default (:background "tomato")))))
+                                   (add-to-list 'face-remapping-alist '(default cpped-minibuffer-active))))
 #+END_SRC
 
 *** Kill current buffer by default

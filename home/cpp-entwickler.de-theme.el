@@ -162,6 +162,7 @@
  '(rainbow-delimiters-depth-7-face ((t (:inherit rainbow-delimiters-base-face :foreground "#66BB6A"))))
  '(rainbow-delimiters-depth-8-face ((t (:inherit rainbow-delimiters-base-face :foreground "#FFEE58"))))
  '(rainbow-delimiters-depth-9-face ((t (:foreground "#FFA726" :inherit rainbow-delimiters-base-face))))
+ '(cpped-minibuffer-active ((t (:inherit default :background "#3F51B5"))))
  '(magit-branch-local ((t (:foreground "#4FC3F7"))))
  '(magit-branch-remote ((t (:foreground "#9CCC65"))))
  '(magit-branch-remote-head ((t (:inherit magit-branch-remote :foreground "#26A69A"))))
