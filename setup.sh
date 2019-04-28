@@ -97,6 +97,15 @@ if [ "$PACKAGES" = TRUE ]; then
 
     # git-undo
     git_install https://github.com/jwiegley/git-undo-el.git ~/.emacs.d/elpa/git-undo
+
+    # ccls
+    git_install https://github.com/MaskRay/ccls.git /tmp/ccls
+    (
+        cd /tmp/ccls || exit
+        cmake -S . -B Release -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX:PATH=~/.local/
+        cmake --build Release --target install
+    )
+    rm -Rf /tmp/ccls
 fi
 
 if [ "$LINKS" = TRUE ]; then

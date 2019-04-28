@@ -3023,8 +3023,7 @@ Handler to close buffer after quitting ccmake.
 #+BEGIN_SRC emacs-lisp
 (advice-add 'term-sentinel :after (lambda (proc msg)
                                     (when (and (equal (buffer-name (process-buffer proc)) "*CMake Cache*")
-                                               (memq (process-status proc) '(signal exit)))
-                                      (cquery-freshen-index))))
+                                               (memq (process-status proc) '(signal exit))))))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -4056,18 +4055,13 @@ TODO
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(use-package cquery
-  :after helm-buffers
+(use-package ccls
+  :after (helm-buffers lsp)
+  :custom
+  (ccls-executable (expand-file-name "~/.local/bin/ccls"))
+  (ccls-sem-highlight-method 'font-lock)
   :config
-  (setq cquery-executable (let ((cquery "/usr/bin/cquery"))
-                            (if (file-exists-p cquery)
-                                cquery
-                              (expand-file-name "~/.local/bin/cquery")))
-        cquery-extra-init-params '(:completion (:detailedLabel t))
-        cquery-sem-highlight-method 'font-lock)
-  (cquery-use-default-rainbow-sem-highlight)
-  (add-hook 'c-mode-common-hook 'lsp-cquery-enable)
-  (push "^\\*cquery-.+" helm-boring-buffer-regexp-list))
+  (ccls-use-default-rainbow-sem-highlight))
 #+END_SRC
 
 **** Highlighting
