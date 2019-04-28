@@ -4064,19 +4064,6 @@ TODO
   (ccls-use-default-rainbow-sem-highlight))
 #+END_SRC
 
-**** Highlighting
-***** [[https://github.com/Lindydancer/preproc-font-lock][Highlight macros]]
-#+BEGIN_SRC emacs-lisp
-(use-package preproc-font-lock
-  :config (preproc-font-lock-global-mode 1))
-#+END_SRC
-
-***** [[https://github.com/To1ne/never-comment][Dim '#if 0' blocks]]
-#+BEGIN_SRC emacs-lisp
-(use-package never-comment
-  :config (never-comment-init))
-#+END_SRC
-
 **** Navigation
 ***** Show includes/namespaces in imenu
 #+BEGIN_SRC emacs-lisp
