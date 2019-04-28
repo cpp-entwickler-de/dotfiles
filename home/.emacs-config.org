@@ -406,6 +406,7 @@ Disable prettification if cursor is at edge of expression
                                                               (delete-file ,image-file))))
                               image-file))
   (dashboard-banner-logo-title "")
+  (dashboard-page-separator "\n\n")
   (dashboard-items '((recents . 20)
                      (projects . 5)
                      (agenda . 10)))
