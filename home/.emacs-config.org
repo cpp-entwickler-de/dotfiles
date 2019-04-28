@@ -5125,6 +5125,8 @@ When using Magit >= 2.4.0
   (push "^\\*?magit.*" helm-boring-buffer-regexp-list)
   (magit-define-popup-action 'magit-dispatch-popup
     ?Y "Cherry" 'magit-cherry ?!))
+
+(use-package magit-popup)
 #+END_SRC
 
 ***** Full screen magit-status
@@ -5153,6 +5155,7 @@ When using Magit >= 2.4.0
 ***** [[https://github.com/terranpro/magit-gerrit][Gerrit integration]]
 #+BEGIN_SRC emacs-lisp
 (use-package magit-gerrit
+  :after (magit magit-popup)
   :config (setq magit-gerrit-popup-prefix "G"))
 #+END_SRC
 
