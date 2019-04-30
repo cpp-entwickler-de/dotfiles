@@ -37,5 +37,5 @@
   ;; Load actual configuration.
   (org-babel-load-file "~/.emacs-config.org"))
 
-(setq gc-cons-threshold (* 50 1024)
+(setq gc-cons-threshold (* 800 1024)
       gc-cons-percentage 0.2)
