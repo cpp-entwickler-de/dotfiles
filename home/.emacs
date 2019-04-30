@@ -31,6 +31,10 @@
 
 (setq vc-follow-symlinks t)
 
+;; temporarily disable the file name handler.
+(defvar default-file-name-handler-alist file-name-handler-alist)
+(setq file-name-handler-alist nil)
+
 ;; increase garbage collection threshold for initialization
 (let ((gc-cons-threshold (* 100 1024 1024))
       (gc-cons-percentage 0.6))
@@ -39,3 +43,8 @@
 
 (setq gc-cons-threshold (* 800 1024)
       gc-cons-percentage 0.2)
+
+(setq file-name-handler-alist (append default-file-name-handler-alist file-name-handler-alist))
+(require 'cl-seq)
+(cl-delete-duplicates file-name-handler-alist :test 'equal)
+(put 'narrow-to-region 'disabled nil)
