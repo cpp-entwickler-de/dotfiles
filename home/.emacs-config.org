@@ -6379,19 +6379,31 @@ Do not use scientific form so quickly
 * Remote
 ** Serial Devices
 #+BEGIN_SRC emacs-lisp
-(defun cpped-serial-terminal (port)
-  (interactive (list (let ((ports (directory-files "/dev/" nil "ttyUSB[0-9]+" t)))
-                       (cond ((= (length ports) 0) nil)
+(defcustom cpped-serial-port nil "The last used serial port.")
+(defcustom cpped-serial-port-baudrate 155200 "The last used serial port baud rate.")
+
+(defun cpped-serial-terminal (port baudrate)
+  (interactive (let ((ports (directory-files "/dev/" nil "ttyUSB[0-9]+" t)))
+                 (list (cond ((= (length ports) 0) nil)
                              ((= (length ports) 1) (car ports))
                              (t (helm :sources (helm-build-sync-source "Serial Port"
                                                  :candidates (directory-files "/dev/" nil "ttyUSB[0-9]+" t))
                                       :prompt "Serial Port: "
-                                      :buffer "*helm serial port*"))))))
+                                      :preselect cpped-serial-port
+                                      :buffer "*helm serial port*")))
+                       (when (> (length ports) 0)
+                         (string-to-number (helm :sources (helm-build-sync-source "Baudrate"
+                                                            :candidates '("300" "600" "1200" "2400" "4800" "9600" "19200" "38400" "57600" "115200" "230400" "460800" "576000" "921600"))
+                                                 :prompt "Baudrate: "
+                                                 :preselect (number-to-string cpped-serial-port-baudrate)
+                                                 :buffer "*helm serial port*"))))))
   (if port
       (progn
-        (serial-term (expand-file-name port "/dev") 115200)
+        (serial-term (expand-file-name port "/dev") baudrate)
         (rename-buffer (format "*Serial Terminal %s*" port))
-        (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))
+        (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix)
+        (customize-save-variable 'cpped-serial-port port)
+        (customize-save-variable 'cpped-serial-port-baudrate baudrate))
     (message "No serial port found.")))
 #+END_SRC
 
