@@ -9,6 +9,9 @@
 
 ;; (setq debug-on-error t)
 
+;; Break when showing message
+;; (setq debug-on-message "")
+
 ;; Bootstrap use-package
 ;; Install use-package if it's not already installed.
 ;; use-package configures the rest of the packages.
