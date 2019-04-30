@@ -1069,6 +1069,12 @@ Find path of current position in XML docuement
 #+END_SRC
 
 ** Buffers
+*** Do not adjust auto-window-vscroll
+This optimizes line-scrolling.
+#+BEGIN_SRC emacs-lisp
+(setq auto-window-vscroll nil)
+#+END_SRC
+
 *** Disable bidirectional support
 #+BEGIN_SRC emacs-lisp
 (setq-default bidi-display-reordering nil)
