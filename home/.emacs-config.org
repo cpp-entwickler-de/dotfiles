@@ -52,6 +52,15 @@ Do not load outdated byte code
       (auto-package-update-delete-old-versions t)))
 #+END_SRC
 
+** [[https://github.com/Malabarba/paradox/][Paradox]]
+#+BEGIN_SRC emacs-lisp
+(use-package paradox
+  :config
+  (setq paradox-execute-asynchronously t
+        paradox-display-star-count nil)
+  (paradox-enable))
+#+END_SRC
+
 ** [[https://github.com/jabranham/system-packages][System packages]]
 #+BEGIN_SRC emacs-lisp
 (use-package system-packages
