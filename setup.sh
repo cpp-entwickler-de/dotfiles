@@ -221,6 +221,7 @@ if [ "$DOCUMENTATION" = TRUE ]; then
         tar xfz "$DOCSET_DIR/$DOCSET.tgz" --overwrite -C "$DOCSET_DIR"
         rm "$DOCSET_DIR/$DOCSET.tgz"
     done
+    wget --quiet --show-progress --timestamping --no-directories https://software.intel.com/sites/default/files/managed/a4/60/325383-sdm-vol-2abcd.pdf --output-document="$DOCSET_DIR/IntelASM.pdf"
 fi
 
 # install zsh plugins

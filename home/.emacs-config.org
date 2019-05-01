@@ -4045,6 +4045,24 @@ TODO
   (push "\\*SLOCCount\\*" helm-boring-buffer-regexp-list))
 #+END_SRC
 
+*** Assembler
+#+BEGIN_SRC emacs-lisp
+(use-package asm-mode)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package nasm-mode
+  :mode "\\.[n]*\\(asm\\|s\\)\\'")
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package x86-lookup
+  :after pdf-tools
+  :custom
+  (x86-lookup-pdf (expand-file-name "~/.docsets/IntelASM.pdf"))
+  (x86-lookup-browse-pdf-function 'x86-lookup-browse-pdf-pdf-tools))
+#+END_SRC
+
 *** C/C++
 #+BEGIN_SRC emacs-lisp
 (defconst cpped-c++-source-file-pattern "\\.[Cc]([Cc]|[Pp][Pp]|[Xx][Xx]|++)\\'")
@@ -6620,7 +6638,10 @@ Text                    ^^Code                                ^^Version Control 
   ("o" flymd-flyit)
   ("." what-cursor-position)
 
-  ("d" helm-dash-at-point)
+  ("d" (if (or (derived-mode-p 'asm-mode)
+               (derived-mode-p 'nasm-mode))
+           (call-interactively 'x86-lookup)
+         (call-interactively 'helm-dash-at-point)))
   ("r" lsp-ui-peek-find-references)
   ("h" (cquery-call-hierarchy nil))
   ("m" cquery-member-hierarchy)
