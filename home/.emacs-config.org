@@ -1465,18 +1465,14 @@ Indicate recursive minibuffer
 *** Environment
 #+BEGIN_SRC emacs-lisp
 (setenv "PAGER" "cat")
-(setenv "LANG" "en_US.UTF-8")
-(setenv "LC_CTYPE" "de_DE.UTF-8")
-(setenv "LC_NUMERIC" "de_DE.UTF-8")
-(setenv "LC_TIME" "de_DE.UTF-8")
-(setenv "LC_MONETARY" "de_DE.UTF-8")
-(setenv "LC_PAPER" "de_DE.UTF-8")
-(setenv "LC_NAME" "de_DE.UTF-8")
-(setenv "LC_ADDRESS" "de_DE.UTF-8")
-(setenv "LC_TELEPHONE" "de_DE.UTF-8")
-(setenv "LC_MEASUREMENT" "de_DE.UTF-8")
 (setenv "BROWSER" "eww")
-(setenv "NINJA_STATUS" "[%p] ")
+#+END_SRC
+
+https://github.com/purcell/exec-path-from-shell
+#+BEGIN_SRC emacs-lisp
+(use-package exec-path-from-shell
+  :custom (exec-path-from-shell-variables '("PATH" "MANPATH" "LANG" "LC_CTYPE" "LC_NUMERIC" "LC_TIME" "LC_MONETARY" "LC_PAPER" "LC_NAME" "LC_ADDRESS" "LC_TELEPHONE" "LC_MEASUREMENT" "NINJA_STATUS"))
+  :config (exec-path-from-shell-initialize))
 #+END_SRC
 
 *** Aliases
