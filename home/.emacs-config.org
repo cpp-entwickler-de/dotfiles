@@ -4552,26 +4552,6 @@ https://github.com/google/googletest
   :mode "Jenkinsfile")
 #+END_SRC
 
-**** Editing
-***** Syntax checkers
-#+BEGIN_SRC emacs-lisp
-(defvar cpped-jenkins-url "" "The URL of the Jenkins server.")
-
-(when cpped-jenkins-url
-    (flycheck-define-checker jenkinscheck
-      "A Jenkins pipeline syntax checker."
-      :command ("/usr/bin/curl"
-                "-s" "-X" "POST" "-H" (eval (shell-command-to-string (concat "/usr/bin/curl '-s' '" cpped-jenkins-url "/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,\":\",//crumb)'")))
-                "-F" (eval (concat "jenkinsfile=<" (car (flycheck-substitute-argument 'source 'jenkinscheck))))
-                (eval (concat cpped-jenkins-url "/pipeline-model-converter/validate")))
-      :error-patterns ((warning line-start (file-name) ":" (message) "@ line " line ", column " column))
-      :modes (groovy-mode)
-      :predicate (lambda()
-                   (string= (file-name-nondirectory buffer-file-name) "Jenkinsfile")))
-
-  (add-to-list 'flycheck-checkers 'jenkinscheck))
-#+END_SRC
-
 **** Jenkinsfile
 ***** Imenu support
 #+BEGIN_SRC emacs-lisp
@@ -4589,6 +4569,22 @@ https://github.com/google/googletest
                                                                               (? "{")
                                                                               (0+ space))
                                                                 1)))))
+#+END_SRC
+
+***** Syntax check
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "flycheck"
+  (defvar cpped-jenkins-url nil "The URL of the Jenkins installation.")
+  (cpped-install-system-package "curl")
+  (flycheck-define-checker jenkins
+    "A Jenkins pipeline syntax checker."
+    :command ("/usr/bin/curl"
+              "-s" "-X" "POST" "-H" (eval (shell-command-to-string "/usr/bin/curl '-s' 'localhost:8080/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,\":\",//crumb)'"))
+              "-F" (eval (concat "jenkinsfile=<" (car (flycheck-substitute-argument 'source 'jenkins))))
+              (eval (concat cpped-jenkins-url "/pipeline-model-converter/validate")))
+    :error-patterns ((warning line-start (file-name) ":" (message) "@ line " line ", column " column))
+    :modes (groovy-mode))
+  (add-to-list 'flycheck-checkers 'jenkins))
 #+END_SRC
 
 *** HTML
