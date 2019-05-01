@@ -6055,6 +6055,17 @@ Archive when done, remove flag if reset to todo.
 (add-hook 'ediff-unselect-hook 'cpped-ediff-org-fold)
 #+END_SRC
 
+** Magit compatibility
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "magit"
+  (defun cpped-expand-org-entry ()
+  "Expand all entries leading to the selected entry."
+  (when (derived-mode-p 'org-mode)
+    (org-reveal '(4)))))
+
+(add-hook 'magit-diff-visit-file-hook 'cpped-expand-org-entry)
+#+END_SRC
+
 ** Change todo state of subtree
 #+BEGIN_SRC emacs-lisp
 (defun cpped-todo-subtree ()
