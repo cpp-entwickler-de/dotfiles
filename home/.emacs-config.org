@@ -6561,6 +6561,15 @@ Open                             ^^Save                      ^^Close            
 
 ** Info
 #+BEGIN_SRC emacs-lisp
+(defun cpped-search-github-code ()
+  "Search for code on GitHub."
+  (interactive)
+  (eww (format "https://github.com/search?q=%s&type=Code" (or (when (region-active-p)
+                                                                (buffer-substring-no-properties (region-beginning) (region-end)))
+                                                              (read-string "Code: ")))))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
 (defhydra cpped-hydra-info (:exit t :hint nil)
   "
 ☰ Information %s(concat (cpped-print-date) \" \" (cpped-print-time))
@@ -6572,8 +6581,8 @@ Text                    ^^Code                                ^^Version Control 
   _x_: Translate            _m_: Member hierarchy
   _s_: Synonym              _i_: Inheritance hierarchy
   _g_: Google
-  _o_: Preview markdown     _+_: Preprocess
-                          ^^_l_: Count lines of code
+  _G_: Find on GitHub       _+_: Preprocess
+  _o_: Preview markdown     _l_: Count lines of code
                           ^^_j_: Copy JSON path
 
                           ^^_D_: Toggle shell documentation
@@ -6583,6 +6592,7 @@ Text                    ^^Code                                ^^Version Control 
   ("x" cpped-translate-word-or-region)
   ("s" synosaurus-lookup)
   ("g" helm-google-suggest)
+  ("G" cpped-search-github-code)
   ("o" flymd-flyit)
   ("." what-cursor-position)
 
