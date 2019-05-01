@@ -6471,8 +6471,8 @@ CMake              ^^Git                         ^^Directories         ^^Shell  
 
 Open                             ^^Save                      ^^Close                  ^^Switch             ^^Version                    ^^Display                       ^^File                           ^^^^^^Encoding
       _o_: Open                      _s_: Save                   _x_: File                _l_: Last file       _v_: Show old version        _V_: Filter                 _<DEL>_: Delete                      ^^^^_C-d_: DOS
-      _n_: New                       _S_: Save as                _X_: Other files         _f_: Find            _d_: Diff                    _!_: Toggle read-only mode      _m_: Rename                      ^^^^_C-u_: UNIX
-      _C_: From docker container                               ^^_w_: File and window                        ^^_g_: Log                     _h_: Hexadecimal mode           _D_: Diff to
+      _C_: From docker container     _S_: Save as                _X_: Other files         _f_: Find            _d_: Diff                    _!_: Toggle read-only mode      _m_: Rename                      ^^^^_C-u_: UNIX
+      _n_: New                                                 ^^_w_: File and window                        ^^_g_: Log                     _h_: Hexadecimal mode           _D_: Diff to
                                    ^^_i_: Public gist            _u_: Unused files                           ^^_G_: Autocommit-Log                                        ^^_z_: Clear content
       _j_: Header/Source             _I_: Private gist           _a_: Close editor                           ^^_b_: Blame                   _6_: Decode Base64              _r_: Run command
       _t_: Test                                                                                          ^^^^^^_T_: Trace lines             _&_: Encode Base64              _c_: Copy name to clipboard
@@ -6481,8 +6481,8 @@ Open                             ^^Save                      ^^Close            
                                    ^^_F_: Toggle auto-format
 "
   ("o" cpped-helm-find-files)
-  ("n" helm-find-files)
   ("C" docker-container-find-file)
+  ("n" helm-find-files)
   ("j" helm-projectile-find-other-file :exit nil)
   ("t" projectile-toggle-between-implementation-and-test :exit nil)
   ("<RET>" helm-projectile-find-file-dwim)
