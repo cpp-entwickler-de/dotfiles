@@ -5020,6 +5020,24 @@ Set correct major mode
 #+END_SRC
 
 ** Diff/Merge
+*** Diff support
+#+BEGIN_SRC emacs-lisp
+(push '("\\.diff\\'" . diff-mode) auto-mode-alist)
+(push '("\\.patch\\'" . diff-mode) auto-mode-alist)
+
+(setq diff-default-read-only t)
+#+END_SRC
+
+Auto-highlight details
+#+BEGIN_SRC emacs-lisp
+(add-hook 'diff-mode-hook 'diff-auto-refine-mode)
+#+END_SRC
+
+*** Quit smerge-mode after last resolved conflict
+#+BEGIN_SRC emacs-lisp
+(setq smerge-auto-leave t)
+#+END_SRC
+
 *** Re-use current frame for all diff contents (including command frame)
 #+BEGIN_SRC emacs-lisp
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
