@@ -283,6 +283,7 @@ CTestTestfile.cmake
 auto-save-list
 tramp
 .\#*
+.dir-locals.el
 
 # Org-mode
 .org-id-locations
