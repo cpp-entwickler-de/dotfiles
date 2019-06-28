@@ -1931,7 +1931,7 @@ https://github.com/purcell/exec-path-from-shell
       (concat
        (propertize icon 'face (list ':family (all-the-icons-wicon-family))
                    'display '(raise -0.0))
-       (format-time-string " %H:%M ")))))
+       (format-time-string " %H:%M")))))
 #+END_SRC
 
 ** Windows
@@ -6652,7 +6652,7 @@ Open                             ^^Save                      ^^Close            
 #+BEGIN_SRC emacs-lisp
 (defhydra cpped-hydra-info (:exit t :hint nil)
   "
-☰ Information %s(concat (cpped-print-date) \" \" (cpped-print-time))
+☰ Information %s(format \"%s %s\" (cpped-print-date) (cpped-print-time))
 
 Text                    ^^Code                                ^^Version Control         ^^System             ^^Other
   _._: Character            _d_: Documentation                    _c_: Commit Message       _p_: Processes       _t_: ToDos
@@ -7664,7 +7664,7 @@ Run            ^^Info
 #+BEGIN_SRC emacs-lisp
 (defhydra cpped-hydra-planning (:exit t :hint nil)
   "
-☰ Planning %s(concat (cpped-print-time) \" \" (cpped-print-remaining-work-time))
+☰ Planning %s(format \"%s %s\" (cpped-print-time) (cpped-print-remaining-work-time))
 
 Open                ^^Create       ^^Work             ^^Task                      ^^Chart
   _a_: Agenda           _c_: Entry     _b_: Break         _r_: Clock in recent task     _d_: Daily timesheet
