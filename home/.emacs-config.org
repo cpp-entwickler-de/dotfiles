@@ -4409,13 +4409,14 @@ https://github.com/google/googletest
 (defun cpped-cmake-format-buffer ()
   "Format the buffer with cmake-format."
   (interactive)
-  (call-process "cmake-format"
-                nil
-                nil
-                nil
-                "--in-place"
-                (buffer-file-name))
-  (revert-buffer t t t))
+  (when (executable-find "cmake-format")
+    (call-process "cmake-format"
+                  nil
+                  nil
+                  nil
+                  "--in-place"
+                  (buffer-file-name))
+  (revert-buffer t t t)))
 
 (add-hook 'cmake-mode-hook (lambda ()
                              (setq cpped-format-buffer-function 'cpped-cmake-format-buffer)))
@@ -4865,7 +4866,8 @@ https://github.com/google/googletest
    (if (use-region-p)
        (list (region-beginning) (region-end))
      (list (beginning-of-buffer) (point))))
-  (call-process-region start end "beautysh" t t t "-" (buffer-file-name)))
+  (when (executable-find "beautysh")
+    (call-process-region start end "beautysh" t t t "-" (buffer-file-name))))
 
 (add-hook 'sh-mode-hook (lambda ()
                           (setq cpped-format-region-function 'cpped-beautysh-format-region)
