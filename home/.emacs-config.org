@@ -6202,6 +6202,7 @@ Archive when done, remove flag if reset to todo.
 (defun cpped-init-clocked-time-today ()
   "(Re-)Initialize the value of 'cpped-clocked-time-today'."
   (interactive)
+  (setq cpped-clocked-time-today 0)
   (let ((files (org-agenda-files)))
     (org-agenda-prepare-buffers files)
     (dolist (file files)
