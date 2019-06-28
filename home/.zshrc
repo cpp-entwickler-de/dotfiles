@@ -439,9 +439,16 @@ if command -v fzf > /dev/null; then
 
         if [ -n "$PASSWORD" -a -n "$OLD_PASSWORD" ]; then
             if [ -n "$DOMAIN" -a -n "$DOMAIN_CONTROLLER" ]; then
+                which cntlm
+                if [ $? -eq 0 ]; then
+                    sudo systemctl stop cntlm
+                fi
+
+                echo "Change your password in Windows and press Enter to continue..."
+                read -p "Change your password in Windows and press Enter to continue..."
+
                 # change domain password
                 echo -e -n "\nSetting domain password..."
-                echo -e "$OLD_PASSWORD\n$PASSWORD" | smbpasswd -s -r $DOMAIN_CONTROLLER -U $USER
                 if [ $? -eq 0 ]; then
                     echo "ok"
 
@@ -458,13 +465,12 @@ if command -v fzf > /dev/null; then
                     which cntlm
                     if [ $? -eq 0 ]; then
                         echo -n "Setting proxy password...."
-                        sudo systemctl stop cntlm
                         PASSWORD_NTLM=$(echo "$PASSWORD" | cntlm -a NTLM -u $USER -d $(domainname) -H)
                         PASSWORD_NT=$(echo $PASSWORD_NTLM | grep "PassNT ")
                         PASSWORD_LM=$(echo $PASSWORD_NTLM | grep "PassLM ")
                         sudo sed -i -e "s/PassNT.*/$PASSWORD_NT/g" -e "s/PassLM.*/$PASSWORD_LM/g" /etc/cntlm.conf
                         echo "ok"
-                        echo -n "Restarting Proxy.........."
+                        echo -n "Restarting Proxy..."
                         sudo systemctl start cntlm
                         echo "ok"
                     fi
