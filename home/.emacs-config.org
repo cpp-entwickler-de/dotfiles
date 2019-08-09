@@ -2497,6 +2497,14 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 (use-package goto-line-preview)
 #+END_SRC
 
+*** [[https://github.com/elpa-host/goto-char-preview][Go to character with preview]]
+#+BEGIN_SRC emacs-lisp
+(use-package goto-char-preview
+  :quelpa (goto-char-preview
+           :fetcher github
+           :repo "https://github.com/elpa-host/goto-char-preview"))
+#+END_SRC
+
 *** [[https://github.com/tam17aki/ace-isearch][Jump to any symbol]]
 #+BEGIN_SRC emacs-lisp
 (use-package avy
@@ -6732,6 +6740,7 @@ _C-<right>_: Next word                 _y_: Down block                 _C-t_: Ne
       _C-l_: Next list
       _C-j_: jump to character
       _C-l_: Line
+   _C-S-c_ : Character
 "
   ("<left>" left-char)
   ("<right>" right-char)
@@ -6749,6 +6758,7 @@ _C-<right>_: Next word                 _y_: Down block                 _C-t_: Ne
   ("C-l" down-list)
   ("C-j" avy-goto-char-timer :exit t)
   ("C-l" goto-line-preview :exit t)
+  ("C-S-c" goto-char-preview :exit t)
 
   ("C-S-s" backward-sexp)
   ("C-s" forward-sexp)
