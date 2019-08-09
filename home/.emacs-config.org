@@ -5933,6 +5933,7 @@ Archive when done, remove flag if reset to todo.
 ** Agenda
 #+BEGIN_SRC emacs-lisp
 (setq org-agenda-compact-blocks t
+      org-agenda-current-time-string "now ────────────────────────────────────────"
       org-agenda-deadline-faces '((0.7 . error)
                                   (0.5 . warning)
                                   (0.0 . default))
@@ -5958,6 +5959,9 @@ Archive when done, remove flag if reset to todo.
       org-agenda-skip-scheduled-delay-if-deadline t
       org-agenda-skip-scheduled-if-deadline-is-shown t
       org-agenda-start-on-weekday nil
+      org-agenda-time-grid '((daily today require-timed)
+                             (800 930 1000 1230 1300 1600 1800)
+                             "──────────" "──────────")
       org-agenda-todo-keyword-format "%-14s")
 #+END_SRC
 
