@@ -4912,6 +4912,11 @@ Set correct major mode
 (use-package ssh-config-mode)
 #+END_SRC
 
+*** Systemd
+#+BEGIN_SRC emacs-lisp
+(use-package systemd)
+#+END_SRC
+
 *** [[https://github.com/skuro/plantuml-mode][UML]]
 #+BEGIN_SRC emacs-lisp
 (use-package plantuml-mode
