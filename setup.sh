@@ -190,7 +190,7 @@ if [ "$PRINTERS" = TRUE ]; then
     mkdir -p $PRETTY_PRINTER_DIR/qt
     QT_PRINTER_FILES="helper.py kde.py qt.py"
     for FILE in $QT_PRINTER_FILES; do
-        curl --show-error --create-dirs --output "$PRETTY_PRINTER_DIR/qt/$FILE" "https://cgit.kde.org/kdevelop.git/plain/debuggers/gdb/printers/$FILE"
+        curl --show-error --create-dirs --output "$PRETTY_PRINTER_DIR/qt/$FILE" "https://cgit.kde.org/kdevelop.git/plain/plugins/gdb/printers/$FILE"
     done
 fi
 
