@@ -5,6 +5,7 @@
                 ("melpa" . "http://melpa.org/packages/")
                 ("org"   . "https://orgmode.org/elpa/")))
 (setq load-prefer-newer t)
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 (package-initialize)
 
 ;; (setq debug-on-error t)
