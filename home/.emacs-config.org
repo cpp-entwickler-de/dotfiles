@@ -63,7 +63,9 @@ Do not load outdated byte code
 
 ** [[https://github.com/jabranham/system-packages][System packages]]
 #+BEGIN_SRC emacs-lisp
+(require 'tramp)
 (use-package system-packages
+  :after tramp
   :custom (system-packages-noconfirm t)
   :config
   (defun cpped-run-command-sync-logged (wrapped-function &rest arguments)
