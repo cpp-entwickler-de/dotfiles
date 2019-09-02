@@ -88,7 +88,7 @@ function git_install
 
 if [ "$PACKAGES" = TRUE ]; then
     # install packages
-    sudo dnf install PackageKit-command-not-found adobe-source-code-pro-fonts adobe-source-sans-pro-fonts adobe-source-serif-pro-fonts autojump-zsh clang clang-analyzer clang-devel clang-tools-extra cmake-gui colorgcc emacs-lucid fzf gcc gdb gdouros-symbola-fonts git git-lfs htop ImageMagick iotop kcachegrind links llvm llvm-devel lnav progress pv python-devel recode rubygems sushi the_silver_searcher util-linux-user valgrind wget wireless-tools yank zsh
+    sudo curl dnf install PackageKit-command-not-found adobe-source-code-pro-fonts adobe-source-sans-pro-fonts adobe-source-serif-pro-fonts autojump-zsh clang clang-analyzer clang-devel clang-tools-extra cmake-gui colorgcc emacs-lucid fzf gcc gdb gdouros-symbola-fonts git git-lfs htop ImageMagick iotop kcachegrind links llvm llvm-devel lnav progress pv python-devel recode rubygems sushi the_silver_searcher util-linux-user valgrind wireless-tools yank zsh
 
     # glances and modules
     sudo pip install glances psutil
@@ -154,7 +154,7 @@ if [ "$LINKS" = TRUE ]; then
                 *)
                 ;;
             esac
-        done <<< "$(wget -qO- freegeoip.net/xml)"
+        done <<< "$(curl --silent freegeoip.net/xml)"
         
         read -r -e -p "Please enter your location name: " -i "$CITY" CITY
         read -r -e -p "Please enter your latitude:      " -i "$LATITUDE" LATITUDE
@@ -185,12 +185,12 @@ if [ "$PRINTERS" = TRUE ]; then
     mkdir -p $PRETTY_PRINTER_DIR/stl
     CPP_PRINTER_FILES="__init__.py printers.py xmethods.py"
     for FILE in $CPP_PRINTER_FILES; do
-        wget --quiet --no-directories --output-document="$PRETTY_PRINTER_DIR/stl/$FILE" "https://gcc.gnu.org/git/?p=gcc.git;a=blob_plain;f=libstdc%2B%2B-v3/python/libstdcxx/v6/$FILE"
+        curl --show-error --create-dirs --output "$PRETTY_PRINTER_DIR/stl/$FILE" "https://gcc.gnu.org/git/?p=gcc.git;a=blob_plain;f=libstdc%2B%2B-v3/python/libstdcxx/v6/$FILE"
     done
     mkdir -p $PRETTY_PRINTER_DIR/qt
     QT_PRINTER_FILES="helper.py kde.py qt.py"
     for FILE in $QT_PRINTER_FILES; do
-        wget --quiet --no-directories --output-document="$PRETTY_PRINTER_DIR/qt/$FILE" "https://cgit.kde.org/kdevelop.git/plain/debuggers/gdb/printers/$FILE"
+        curl --show-error --create-dirs --output "$PRETTY_PRINTER_DIR/qt/$FILE" "https://cgit.kde.org/kdevelop.git/plain/debuggers/gdb/printers/$FILE"
     done
 fi
 
@@ -200,13 +200,13 @@ if [ "$FONTS" = TRUE ]; then
     FONT_DIR=~/.fonts/
     ALL_THE_ICONS_FONTS="all-the-icons file-icons octicons weathericons"
     for FONT in $ALL_THE_ICONS_FONTS; do
-        wget --quiet --timestamping --no-directories --directory-prefix="$FONT_DIR" "https://github.com/domtronn/all-the-icons.el/raw/master/fonts/$FONT.ttf"
+        curl --show-error --output "$FONT_DIR/$FONT.ttf" "https://github.com/domtronn/all-the-icons.el/raw/master/fonts/$FONT.ttf"
     done
     FONTAWESOME_FONTS="fa-brands-400 fa-regular-400 fa-solid-900"
     for FONT in $FONTAWESOME_FONTS; do
-        wget --quiet --timestamping --no-directories --directory-prefix="$FONT_DIR" "https://github.com/FortAwesome/Font-Awesome/raw/master/webfonts/$FONT.ttf"
+        curl --show-error --create-dirs --output "$FONT_DIR/$FONT.ttf" "https://github.com/FortAwesome/Font-Awesome/raw/master/webfonts/$FONT.ttf"
     done
-    wget --quiet --timestamping --no-directories --directory-prefix="$FONT_DIR" "https://github.com/google/material-design-icons/raw/master/iconfont/MaterialIcons-Regular.ttf"
+    curl --show-error --create-dirs --output "$FONT_DIR/MaterialIcons-Regular.ttf" "https://github.com/google/material-design-icons/raw/master/iconfont/MaterialIcons-Regular.ttf"
     make_link "$DOTFILES_DIRECTORY/home/10-symbols.conf" "$(realpath ~)/.config/fontconfig/conf.d/10-symbols.conf"
     fc-cache --force
 fi
@@ -217,11 +217,11 @@ if [ "$DOCUMENTATION" = TRUE ]; then
     DOCSET_DIR=~/.docsets
     DOCSETS="Bash Boost C C++ CMake Docker Emacs_Lisp GLib HTML Man_Pages OpenGL_4 Qt_5 SVG XSLT"
     for DOCSET in $DOCSETS; do
-        wget --quiet --show-progress --timestamping --no-directories --directory-prefix="$DOCSET_DIR" "http://sanfrancisco.kapeli.com/feeds/$DOCSET.tgz"
+        curl --create-dirs --output "$DOCSET_DIR/$DOCSET.tgz" "http://sanfrancisco.kapeli.com/feeds/$DOCSET.tgz"
         tar xfz "$DOCSET_DIR/$DOCSET.tgz" --overwrite -C "$DOCSET_DIR"
         rm "$DOCSET_DIR/$DOCSET.tgz"
     done
-    wget --quiet --show-progress --timestamping --no-directories https://software.intel.com/sites/default/files/managed/a4/60/325383-sdm-vol-2abcd.pdf --output-document="$DOCSET_DIR/IntelASM.pdf"
+    curl --show-error --create-dirs --output "$DOCSET_DIR/IntelASM.pdf" https://software.intel.com/sites/default/files/managed/a4/60/325383-sdm-vol-2abcd.pdf
 fi
 
 # install zsh plugins
