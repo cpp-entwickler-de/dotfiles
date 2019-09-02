@@ -892,3 +892,6 @@ build/
 # cquery
 .cquery_cached_index/
 compile_commands.json
+
+# ag ignore
+.ignore
