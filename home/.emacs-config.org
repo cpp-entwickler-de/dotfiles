@@ -5172,7 +5172,6 @@ When using Magit >= 2.4.0
                          "--color"
                          "--decorate"
                          "-n200"))
-  (magit-diff-section-arguments '("--function-context" "-M" "-C"))
   (magit-diff-arguments '("--function-context" "--stat" "-M" "-C"))
   :config
   (push "^\\*?magit.*" helm-boring-buffer-regexp-list)
