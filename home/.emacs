@@ -1,9 +1,9 @@
 ;; Set up package
 (require 'package)
-(add-to-list 'package-archives
-             '("melpa" . "http://melpa.org/packages/") t)
-(add-to-list 'package-archives
-             '("org"   . "https://orgmode.org/elpa/") t)
+(setq-default package-archives
+              '(("elpa" . "http://elpa.gnu.org/packages/")
+                ("melpa" . "http://melpa.org/packages/")
+                ("org"   . "https://orgmode.org/elpa/")))
 (setq load-prefer-newer t)
 (package-initialize)
 
