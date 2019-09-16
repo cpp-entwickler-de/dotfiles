@@ -938,7 +938,7 @@ Find path of current position in XML docuement
   :custom
   (projectile-completion-system 'helm)
   (projectile-dynamic-mode-line nil)
-  (projectile-enable-caching t)
+  (projectile-enable-caching nil)
   (projectile-find-dir-includes-top-level t)
   (projectile-git-submodule-command nil)
   (projectile-idle-timer-hook nil)
