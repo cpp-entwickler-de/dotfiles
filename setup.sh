@@ -200,13 +200,13 @@ if [ "$FONTS" = TRUE ]; then
     FONT_DIR=~/.fonts/
     ALL_THE_ICONS_FONTS="all-the-icons file-icons octicons weathericons"
     for FONT in $ALL_THE_ICONS_FONTS; do
-        curl --show-error --output "$FONT_DIR/$FONT.ttf" "https://github.com/domtronn/all-the-icons.el/raw/master/fonts/$FONT.ttf"
+        curl --show-error --output "$FONT_DIR/$FONT.ttf" "https://raw.githubusercontent.com/domtronn/all-the-icons.el/master/fonts/$FONT.ttf"
     done
     FONTAWESOME_FONTS="fa-brands-400 fa-regular-400 fa-solid-900"
     for FONT in $FONTAWESOME_FONTS; do
-        curl --show-error --create-dirs --output "$FONT_DIR/$FONT.ttf" "https://github.com/FortAwesome/Font-Awesome/raw/master/webfonts/$FONT.ttf"
+        curl --show-error --create-dirs --output "$FONT_DIR/$FONT.ttf" "https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/webfonts/$FONT.ttf"
     done
-    curl --show-error --create-dirs --output "$FONT_DIR/MaterialIcons-Regular.ttf" "https://github.com/google/material-design-icons/raw/master/iconfont/MaterialIcons-Regular.ttf"
+    curl --show-error --create-dirs --output "$FONT_DIR/MaterialIcons-Regular.ttf" "https://raw.githubusercontent.com/google/material-design-icons/master/iconfont/MaterialIcons-Regular.ttf"
     make_link "$DOTFILES_DIRECTORY/home/10-symbols.conf" "$(realpath ~)/.config/fontconfig/conf.d/10-symbols.conf"
     fc-cache --force
 fi
