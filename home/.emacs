@@ -1,8 +1,8 @@
 ;; Set up package
 (require 'package)
 (setq-default package-archives
-              '(("elpa" . "http://elpa.gnu.org/packages/")
-                ("melpa" . "http://melpa.org/packages/")
+              '(("elpa" . "https://elpa.gnu.org/packages/")
+                ("melpa" . "https://melpa.org/packages/")
                 ("org"   . "https://orgmode.org/elpa/")))
 (setq load-prefer-newer t)
 (package-initialize)
