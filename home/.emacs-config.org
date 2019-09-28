@@ -2845,6 +2845,9 @@ Some useful abbreviations
   (cpped-install-system-package "aspell")
   (cpped-install-system-package "aspell-en")
   (cpped-install-system-package "aspell-de")
+  (when (string-match-p "--camel-case"
+                        (shell-command-to-string (concat ispell-program-name " --help")))
+    (push "--camel-case" ispell-extra-args))
   (push "\\*flypell.*\\*" helm-boring-buffer-regexp-list)
   (defvar-local cpped-flyspell-errors 0 "The number of spelling errors in the document.")
   (advice-add 'flyspell-after-change-function :after (lambda (&rest arguments)
