@@ -4738,12 +4738,6 @@ https://github.com/google/googletest
 (push '("\\.lsp\\'" . lisp-mode) auto-mode-alist)
 #+END_SRC
 
-**** Highlight current S-EXP
-#+BEGIN_SRC emacs-lisp
-(use-package hl-sexp
-  :hook ((lisp-mode emacs-lisp-mode) . hl-sexp-mode))
-#+END_SRC
-
 **** [[https://github.com/alphapapa/highlight-function-calls][Highlight function calls]]
 #+BEGIN_SRC emacs-lisp
 (use-package highlight-function-calls
