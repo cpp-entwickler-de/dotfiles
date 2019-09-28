@@ -35,8 +35,11 @@ Do not load outdated byte code
   (quelpa-upgrade-p t)
   (quelpa-verbose nil)
   :config
-  (quelpa '(quelpa-use-package :fetcher git :url "https://framagit.org/steckerhalter/quelpa-use-package.git"))
-  (require 'quelpa-use-package))
+  (quelpa '(quelpa-use-package
+            :fetcher git
+            :url "https://framagit.org/steckerhalter/quelpa-use-package.git"))
+  (require 'quelpa-use-package)
+  (quelpa-use-package-activate-advice))
 #+END_EXPORT
 
 ** [[https://github.com/rranelli/auto-package-update.el][Automatically update packages]]
