@@ -3692,6 +3692,9 @@ Handler to close buffer after quitting ccmake.
 (use-package company-flx
   :after company
   :config (company-flx-mode +1))
+
+(use-package company-box
+  :hook (company-mode . company-box-mode))
 #+END_SRC
 
 ****** Line completion backend
