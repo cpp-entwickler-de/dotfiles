@@ -5977,16 +5977,16 @@ Archive when done, remove flag if reset to todo.
                                                  (org-agenda-span (if (= 5 (nth 6 (decode-time)))
                                                                       4
                                                                     2))))
+                                     (todo (concat cpped-org-todo-keyword-bug "|" cpped-org-todo-keyword-fixme "|" cpped-org-todo-keyword-analysis "|" cpped-org-todo-keyword-correction "|" cpped-org-todo-keyword-review)
+                                           ((org-agenda-skip-function '(org-agenda-skip-entry-if 'done 'scheduled))
+                                            (org-agenda-overriding-header cpped-org-todo-keyword-bug)
+                                            (org-agenda-prefix-format '((todo  . "  %(org-format-outline-path (org-get-outline-path))%?-12t")))
+                                            (org-agenda-todo-keyword-format "")))
                                      (todo cpped-org-todo-keyword-waiting
                                            ((org-agenda-overriding-header cpped-org-todo-keyword-waiting)
                                             (org-agenda-todo-keyword-format "")))
                                      (todo cpped-org-todo-keyword-suspended
                                            ((org-agenda-overriding-header cpped-org-todo-keyword-suspended)
-                                            (org-agenda-todo-keyword-format "")))
-                                     (todo (concat cpped-org-todo-keyword-bug "|" cpped-org-todo-keyword-fixme "|" cpped-org-todo-keyword-analysis "|" cpped-org-todo-keyword-correction "|" cpped-org-todo-keyword-review)
-                                           ((org-agenda-skip-function '(org-agenda-skip-entry-if 'done 'scheduled))
-                                            (org-agenda-overriding-header cpped-org-todo-keyword-bug)
-                                            (org-agenda-prefix-format '((todo  . "  %(org-format-outline-path (org-get-outline-path))%?-12t")))
                                             (org-agenda-todo-keyword-format "")))
                                      (todo (concat cpped-org-todo-keyword-todo "|" cpped-org-todo-keyword-in-progress)
                                            ((org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline 'done))
