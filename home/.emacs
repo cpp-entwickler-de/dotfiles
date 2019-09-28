@@ -7,7 +7,7 @@
 (setq load-prefer-newer t)
 (package-initialize)
 
-;; (setq debug-on-error t)
+(setq debug-on-error t)
 
 ;; Break when showing message
 ;; (setq debug-on-message "")
