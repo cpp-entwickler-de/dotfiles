@@ -1010,18 +1010,6 @@ Find path of current position in XML docuement
   :config (helm-projectile-on))
 #+END_SRC
 
-*** Fuzzy Matching
-#+BEGIN_SRC emacs-lisp
-(use-package helm-flx
-  :after helm
-  :custom (helm-flx-for-helm-locate t)
-  :config (helm-flx-mode +1))
-
-(use-package helm-fuzzier
-  :after helm
-  :config (helm-fuzzier-mode 1))
-#+END_SRC
-
 *** Grep
 #+BEGIN_SRC emacs-lisp
 (use-package helm-ag
