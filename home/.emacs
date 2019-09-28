@@ -8,7 +8,7 @@
 (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 (package-initialize)
 
-;; (setq debug-on-error t)
+(setq debug-on-error t)
 
 ;; Break when showing message
 ;; (setq debug-on-message "")
