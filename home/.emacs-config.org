@@ -5487,8 +5487,11 @@ Hide info buffer in buffer list
 
 * Org-Mode
 #+BEGIN_SRC emacs-lisp
+(use-package helm-org
+:after helm)
+
 (use-package org
-  :after (helm helm-buffers popwin)
+  :after (helm helm-org helm-buffers popwin)
   :mode ("\\.org\\'" . org-mode)
   :bind (("C-c l" . org-store-link))
   :custom
@@ -5540,7 +5543,6 @@ Hide info buffer in buffer list
   (defvar org-default-todos-file "~/.todos.org" "The default file for todo tasks.")
   (defvar org-default-bugs-file "~/.bugs.org" "The default file for bug tasks.")
   (defvar org-default-events-file "~/.events.org" "The default file for events.")
-  (require 'helm-org)
   (push "\\*Org Agenda\\*" helm-boring-buffer-regexp-list)
   (push '("*Agenda Commands*" :dedicated t :position bottom :height 20) popwin:special-display-config)
   (push '("*Org Agenda*" :position bottom :height 30) popwin:special-display-config)
