@@ -2014,6 +2014,14 @@ https://github.com/purcell/exec-path-from-shell
 (auto-save-visited-mode)
 #+END_SRC
 
+*** [[https://github.com/bbatsov/super-save][Save when losing focus]]
+#+BEGIN_SRC emacs-lisp
+(use-package super-save
+  :commands super-save-mode
+  :custom (super-save-auto-save-when-idle nil)
+  :config (super-save-mode +1))
+#+END_SRC
+
 ** [[https://github.com/nflath/sudo-edit][Allow editing via sudo]]
 #+BEGIN_SRC emacs-lisp
 (use-package sudo-edit)
