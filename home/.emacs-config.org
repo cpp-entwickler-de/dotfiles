@@ -5246,7 +5246,9 @@ When using Magit >= 2.4.0
 #+BEGIN_SRC emacs-lisp
 (use-package magit-gerrit
   :after (magit magit-popup)
-  :config (setq magit-gerrit-popup-prefix "G"))
+  :quelpa (magit-gerrit
+           :fetcher github
+           :repo "ispras/magit-gerrit"))
 #+END_SRC
 
 ***** Find other projects
