@@ -4615,6 +4615,26 @@ https://github.com/google/googletest
 (add-hook 'dockerfile-mode-hook (lambda()
                                   (set (make-local-variable 'company-backends) '((company-yasnippet company-lsp company-files company-capf company-dabbrev-code company-ispell cpped-company-line-backend)))))
 #+END_SRC
+
+***** [[https://github.com/redcoolbeans/dockerlint][Syntax checker]]
+
+TODO use [[https://github.com/hadolint/hadolint/][hadolint]
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "system-packages"
+  (cpped-install-system-package "dockerlint" :package-manager 'npm)
+  (with-eval-after-load "flycheck"
+    (flycheck-define-checker cpped-dockerlint
+      "Dockerfile checker (https://github.com/redcoolbeans/dockerlint)"
+      :command ("dockerlint" source-original)
+      :error-patterns ((error line-start "ERROR: " (message) " on line " line line-end)
+                       (warning line-start "WARN: " (message) " on line " line line-end)
+                       (info line-start "INFO: " (message) " on line " line line-end))
+      :modes (dockerfile-mode))
+    (add-to-list 'flycheck-checkers 'cpped-dockerlint)
+    (add-hook 'dockerfile-mode-hook (lambda ()
+                                      (flycheck-select-checker 'cpped-dockerlint)))))
+#+END_SRC
+
 *** Dot
 #+BEGIN_SRC emacs-lisp
 (use-package graphviz-dot-mode
