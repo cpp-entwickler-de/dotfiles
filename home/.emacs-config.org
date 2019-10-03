@@ -7615,25 +7615,21 @@ Settings                       ^^Snippets            ^^Abbreviations            
   "
 ☰ Tools
 
-  _a_: Run application
-  _p_: Show processes
-  _p_: Show system services
-  _c_: Calculator
-  _d_: Docker
-  _x_: Regex Builder
-  _e_: Evaluate expression
-  _r_: Repeat last command
-  _f_: Resume last command
+Tools                      ^^Last Command    ^^System
+  _c_: Calculator              _r_: Repeat       _a_: Run application
+  _x_: Regex Builder           _f_: Resume       _p_: Show processes
+  _e_: Evaluate expression                     ^^_s_: Show system services
+                                             ^^^^_d_: Docker
 "
-  ("a" cpped-run-application)
-  ("p" helm-top)
-  ("s" helm-systemd)
   ("c" helm-calcul-expression)
-  ("d" cpped-hydra-tools-docker/body)
   ("x" re-builder)
   ("e" eval-expression)
   ("r" repeat)
-  ("f" helm-resume))
+  ("f" helm-resume)
+  ("a" cpped-run-application)
+  ("p" helm-top)
+  ("s" helm-systemd)
+  ("d" cpped-hydra-tools-docker/body))
 
 (global-set-key (kbd "C-t") #'cpped-hydra-tools/body)
 #+END_SRC
