@@ -6384,6 +6384,13 @@ Archive when done, remove flag if reset to todo.
 #+END_SRC
 
 * Utilities
+** System
+*** Processes
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "helm"
+  (require 'helm-sys))
+#+END_SRC
+
 ** Use rx syntax for regular expression builder
 #+BEGIN_SRC emacs-lisp
 (setq reb-re-syntax 'rx)
@@ -7604,6 +7611,7 @@ Settings                       ^^Snippets            ^^Abbreviations            
 ☰ Tools
 
   _a_: Run application
+  _p_: Show processes
   _c_: Calculator
   _d_: Docker
   _x_: Regex Builder
@@ -7612,6 +7620,7 @@ Settings                       ^^Snippets            ^^Abbreviations            
   _f_: Resume last command
 "
   ("a" cpped-run-application)
+  ("p" helm-top)
   ("c" helm-calcul-expression)
   ("d" cpped-hydra-tools-docker/body)
   ("x" re-builder)
