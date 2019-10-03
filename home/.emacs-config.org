@@ -1927,6 +1927,51 @@ https://github.com/purcell/exec-path-from-shell
        (format-time-string " %H:%M")))))
 #+END_SRC
 
+***
+#+BEGIN_SRC emacs-lisp
+(defun cpped-run-application ()
+  "Run a freedesktop application."
+  (interactive)
+  (helm :sources (helm-build-sync-source "Applications"
+                   :candidates (let ((candidates))
+                                 (mapcar (lambda (directory)
+                                           (let ((desktop-directory (expand-file-name "applications" directory)))
+                                             (when (file-exists-p desktop-directory)
+                                               (mapcar (lambda (desktop-file)
+                                                         (with-temp-buffer
+                                                           (insert-file-contents desktop-file)
+                                                           (let ((content (buffer-string)))
+                                                             (when (and (not (string-match (rx bol (or "Hidden" "NoDisplay") (0+ (in space)) "=" (0+ (in space)) "true") content))
+                                                                        (string-match (rx bol "Type" (0+ (in space)) "=" (0+ (in space)) "Application") content)
+                                                                        (or (not (string-match (rx bol "TryExec" (0+ (in space)) "=" (0+ (in space)) (group (+ any))) content))
+                                                                            (executable-find (match-string-no-properties 1 content))))
+                                                               (let ((simple-name)
+                                                                     (name)
+                                                                     (exec))
+                                                                 (when (string-match (rx bol "Name" (0+ (in space)) "=" (0+ (in space)) (group (+ any)) eol) content)
+                                                                   (setq simple-name (match-string-no-properties 1 content))
+                                                                   (setq name simple-name)
+                                                                   (when (and (string-match (rx bol "GenericName" (0+ (in space)) "=" (0+ (in space)) (group (+ any)) eol) content)
+                                                                              (not (equal name (match-string-no-properties 1 content))))
+                                                                     (setq name (format "%s %s" simple-name (propertize (match-string-no-properties 1 content) 'face '(:weight extra-light :slant italic)))))
+                                                                   (when (string-match (rx bol "Keywords" (0+ (in space)) "=" (0+ (in space)) (group (+ any)) eol) content)
+                                                                     (setq name (format "%s %s" name (propertize (match-string-no-properties 1 content) 'invisible t))))
+                                                                   (when (string-match (rx bol "Comment" (0+ (in space)) "=" (0+ (in space)) (group (+ any)) eol) content)
+                                                                     (setq name (propertize name 'help-echo (match-string-no-properties 1 content))))
+                                                                   (when (string-match (rx bol "Exec" (0+ (in space)) "=" (0+ (in space)) (group (+ any)) eol) content)
+                                                                     (setq exec (split-string (replace-regexp-in-string "%k" desktop-file (replace-regexp-in-string "%c" simple-name (replace-regexp-in-string "%[FfUuDdNnivm]" "" (match-string-no-properties 1 content))))))
+                                                                     (push (cons name exec) candidates))))))))
+                                                       (directory-files-recursively desktop-directory ".*\.desktop")))))
+                                         (split-string (getenv "XDG_DATA_DIRS") ":"))
+                                 candidates)
+                   :action (helm-make-actions "Run" (lambda (selection)
+                                                      (make-process :name (car selection)
+                                                                    :buffer (format "*%s*" (car selection))
+                                                                    :command selection))))
+        :prompt "Run: "
+        :buffer "*helm applications*"))
+#+END_SRC
+
 ** Windows
 *** Re-use frames
 #+BEGIN_SRC emacs-lisp
@@ -7557,6 +7602,7 @@ Settings                       ^^Snippets            ^^Abbreviations            
   "
 ☰ Tools
 
+  _a_: Run application
   _c_: Calculator
   _d_: Docker
   _x_: Regex Builder
@@ -7564,6 +7610,7 @@ Settings                       ^^Snippets            ^^Abbreviations            
   _r_: Repeat last command
   _f_: Resume last command
 "
+  ("a" cpped-run-application)
   ("c" helm-calcul-expression)
   ("d" cpped-hydra-tools-docker/body)
   ("x" re-builder)
