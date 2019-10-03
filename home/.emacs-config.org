@@ -4599,6 +4599,16 @@ https://github.com/google/googletest
 #+END_SRC
 
 **** Editing
+***** Language server
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "lsp-mode"
+  (cpped-install-system-package "dockerfile-language-server-nodejs" :package-manager 'npm)
+  (lsp-register-client (make-lsp-client :new-connection (lsp-stdio-connection '("docker-langserver" "--stdio"))
+                                        :major-modes '(dockerfile-mode)
+                                        :priority -1
+                                        :server-id 'docker-languageserver)))
+#+END_SRC
+
 ***** Autocompletion
 #+BEGIN_SRC emacs-lisp
 (add-hook 'dockerfile-mode-hook (lambda()
