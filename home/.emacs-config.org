@@ -5101,6 +5101,29 @@ Set correct major mode
   (add-hook 'nxml-mode-hook (lambda ()
                               (flycheck-select-checker 'xml-xmllint))))
 #+END_SRC
+
+***** Formatting
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "system-packages"
+  (cpped-install-system-package "xmllint")
+  (defun cpped-xml-format-buffer ()
+    "Format the buffer with xmllint."
+    (interactive)
+    (let ((position (point)))
+      (call-process-region (point-min)
+                           (point-max)
+                           "xmllint"
+                           t
+                           (current-buffer)
+                           t
+                           "--format"
+                           "--nowarning"
+                           "-")
+      (goto-char position)))
+
+  (add-hook 'nxml-mode-hook (lambda ()
+                              (setq cpped-format-region-function nil)
+                              (setq cpped-format-buffer-function 'cpped-xml-format-buffer))))
 #+END_SRC
 
 **** Documentation
