@@ -2561,10 +2561,7 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 
 *** [[https://github.com/elpa-host/goto-char-preview][Go to character with preview]]
 #+BEGIN_SRC emacs-lisp
-(use-package goto-char-preview
-  :quelpa (goto-char-preview
-           :fetcher github
-           :repo "elpa-host/goto-char-preview"))
+(use-package goto-char-preview)
 #+END_SRC
 
 *** [[https://github.com/tam17aki/ace-isearch][Jump to any symbol]]
