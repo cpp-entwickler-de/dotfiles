@@ -5931,26 +5931,23 @@ Note: For this to work, Org must be version 8.3 or higher. Org is bundled with e
 
 ** Structure Templates
 #+BEGIN_SRC emacs-lisp
-(setq org-structure-template-alist
-      '(("a" "#+BEGIN_ASCII\n?\n#+END_ASCII\n" "")
-        ("b" "#+BEGIN_SRC bash\n?\n#+END_SRC\n" "<src lang=\"bash\">\n?\n</src>")
-        ("*" "#+BEGIN_SRC calc\n?\n#+END_SRC\n" "<src lang=\"calc\">\n?\n</src>")
-        ("c" "#+BEGIN_CENTER\n?\n#+END_CENTER\n" "<center>\n?\n</center>")
-        ("+" "#+BEGIN_SRC c++\n?\n#+END_SRC\n" "<src lang=\"c++\">\n?\n</src>")
-        ("d" "#+BEGIN_SRC dot :file %file :cmdline -Kdot -Tpng\n?\n#+END_SRC\n" "<src lang=\"dot\">\n?\n</src>")
-        ("e" "#+BEGIN_EXAMPLE\n?\n#+END_EXAMPLE\n" "<example>\n?\n</example>")
-        ("h" "#+BEGIN_HTML\n?\n#+END_HTML\n" "<literal style=\"html\">\n?\n</literal>")
-        ("i" "#+INCLUDE: %file ?\n" "<include file=%file markup=\"?\">")
-        ("l" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC\n" "<src lang=\"emacs-lisp\">\n?\n</src>")
-        ("p" "#+BEGIN_SRC gnuplot :file %file\n?\n#+END_SRC\n" "<src lang=\"plantuml\">\n?\n</src>")
-        ("P" ":PROPERTIES:\n?\n:END:\n")
-        ("/" "#+BEGIN_COMMENT\n?\n#+END_COMMENT\n" "<!--\n?\n-->")
-        ("q" "#+BEGIN_QUOTE\n?\n#+END_QUOTE\n" "<quote>\n?\n</quote>")
-        ("r" "#+BEGIN_SRC ?\n\n#+END_SRC\n" "<src lang=\"?\">\n\n</src>")
-        ("s" "#+BEGIN_SRC shell\n?\n#+END_SRC\n" "<src lang=\"shell\">\n?\n</src>")
-        ("u" "#+BEGIN_SRC plantuml :file %file\n?\n#+END_SRC\n" "<src lang=\"plantuml\">\n?\n</src>")
-        ("v" "#+BEGIN_VERBATIM\n?\n#+END_VERBATIM\n" "<verbatim>\n?\n</verbatim>")
-        ("z" "#+BEGIN_SRC zsh\n?\n#+END_SRC\n" "<src lang=\"zsh\">\n?\n</src>")))
+(setq org-structure-template-alist '(("a" . "ASCII")
+                                     ("b" . "SRC bash")
+                                     ("*" . "SRC calc")
+                                     ("c" . "CENTER")
+                                     ("+" . "SRC c++")
+                                     ("d" . "SRC dot :file  :cmdline -Kdot -Tpng")
+                                     ("e" . "EXAMPLE")
+                                     ("h" . "HTML")
+                                     ("l" . "SRC emacs-lisp")
+                                     ("p" . "SRC gnuplot :file")
+                                     ("/" . "COMMENT")
+                                     ("q" . "QUOTE")
+                                     ("r" . "SRC")
+                                     ("s" . "SRC shell")
+                                     ("u" . "SRC plantuml :file ")
+                                     ("v" . "VERBATIM")
+                                     ("z" . "SRC zsh")))
 #+END_SRC
 
 ** TODO-States
@@ -7428,42 +7425,39 @@ Cut                   ^^Delete                               ^^Other
 #+BEGIN_SRC emacs-lisp
 (defun cpped-org-expand-template (shortcut)
   "Expand org structure templates."
-  (insert shortcut)
-  (org-try-structure-completion))
+  (org-insert-structure-template (cdr (assoc shortcut org-structure-template-alist))))
 
 (defhydra cpped-hydra-org-structure-template (:exit t :hint nil)
   "
 ☰ Structure templates
 
 Format          ^^Markup         ^^Script            ^^Diagram        ^^Other
-  _c_: Center       _a_: ASCII       _l_: Emacs Lisp     _d_: Dot         _i_: include
-  _e_: Example      _h_: HTML        _z_: Zsh            _u_: UML         _P_: Properties
-  _q_: Quote        _/_: Comment     _+_: C++            _p_: Gnuplot     _*_: Calculator
+  _c_: Center       _a_: ASCII       _l_: Emacs Lisp     _d_: Dot         _*_: Calculator
+  _e_: Example      _h_: HTML        _z_: Zsh            _u_: UML
+  _q_: Quote        _/_: Comment     _+_: C++            _p_: Gnuplot
   _v_: Verbatim                    ^^_b_: Bash
                                  ^^^^_s_: Shell
                                  ^^^^_r_: Source
 "
-  ("c" (cpped-org-expand-template "<c"))
-  ("e" (cpped-org-expand-template "<e"))
-  ("q" (cpped-org-expand-template "<q"))
-  ("v" (cpped-org-expand-template "<v"))
-  ("a" (cpped-org-expand-template "<a"))
-  ("h" (cpped-org-expand-template "<h"))
-  ("/" (cpped-org-expand-template "</"))
-  ("l" (cpped-org-expand-template "<l"))
-  ("z" (cpped-org-expand-template "<z"))
-  ("+" (cpped-org-expand-template "<+"))
-  ("b" (cpped-org-expand-template "<b"))
-  ("s" (cpped-org-expand-template "<s"))
-  ("r" (cpped-org-expand-template "<r"))
-  ("d" (cpped-org-expand-template "<d"))
-  ("u" (cpped-org-expand-template "<u"))
-  ("p" (cpped-org-expand-template "<p"))
-  ("i" (cpped-org-expand-template "<i"))
-  ("P" (cpped-org-expand-template "<P"))
-  ("*" (cpped-org-expand-template "<*")))
+  ("c" (cpped-org-expand-template "c"))
+  ("e" (cpped-org-expand-template "e"))
+  ("q" (cpped-org-expand-template "q"))
+  ("v" (cpped-org-expand-template "v"))
+  ("a" (cpped-org-expand-template "a"))
+  ("h" (cpped-org-expand-template "h"))
+  ("/" (cpped-org-expand-template "/"))
+  ("l" (cpped-org-expand-template "l"))
+  ("z" (cpped-org-expand-template "z"))
+  ("+" (cpped-org-expand-template "+"))
+  ("b" (cpped-org-expand-template "b"))
+  ("s" (cpped-org-expand-template "s"))
+  ("r" (cpped-org-expand-template "r"))
+  ("d" (cpped-org-expand-template "d"))
+  ("u" (cpped-org-expand-template "u"))
+  ("p" (cpped-org-expand-template "p"))
+  ("*" (cpped-org-expand-template "*")))
 
-(define-key org-mode-map "<" (lambda ()
+(define-key org-mode-map "#" (lambda ()
                                (interactive)
                                (if (looking-back "^")
                                    (cpped-hydra-org-structure-template/body)
