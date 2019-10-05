@@ -2209,6 +2209,15 @@ https://github.com/purcell/exec-path-from-shell
   :hook dired-mode)
 #+END_SRC
 
+**** [[https://github.com/calancha/dired-du][Show directory sizes]]
+#+BEGIN_SRC emacs-lisp
+(use-package dired-du
+  :quelpa (dired-du
+           :fetcher github
+           :repo "calancha/dired-du")
+  :custom (dired-du-size-format t))
+#+END_SRC
+
 **** [[https://github.com/Fuco1/dired-hacks#dired-subtree][Show subtrees inline]]
 #+BEGIN_SRC emacs-lisp
 (use-package dired-subtree
