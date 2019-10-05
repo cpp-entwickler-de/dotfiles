@@ -7790,12 +7790,12 @@ Run            ^^Info
   "
 ☰ Planning %s(format \"%s %s\" (cpped-print-time) (cpped-print-remaining-work-time))
 
-Open                ^^Create       ^^Work             ^^Task                      ^^Chart
-  _a_: Agenda           _c_: Entry     _b_: Break         _r_: Clock in recent task     _d_: Daily timesheet
-  _u_: Current Task                                   ^^^^_i_: Clock in                 _m_: Monthly timesheet
-                                                    ^^^^^^_o_: Clock out
-  _t_: ToDos                                          ^^^^_E_: Set estimate
-  _b_: Bugs                                           ^^^^_+_: Increase estimate
+Open                ^^Create       ^^Work         ^^Task                        ^^Chart
+  _a_: Agenda           _c_: Entry     _b_: Break     _r_: Clock in recent task     _d_: Daily timesheet
+  _u_: Current Task                               ^^^^_i_: Clock in                 _m_: Monthly timesheet
+                                                ^^^^^^_o_: Clock out
+  _t_: ToDos                                      ^^^^_E_: Set estimate
+  _b_: Bugs                                       ^^^^_+_: Increase estimate
   _n_: Notes
   _e_: Events
 "
