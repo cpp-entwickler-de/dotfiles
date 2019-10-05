@@ -4232,8 +4232,9 @@ TODO
                                (when (or (equal major-mode 'c-mode)
                                          (equal major-mode 'c++-mode))
                                  (let ((directory (cpped-build-dir)))
-                                   (call-process "find-all-symbols" nil nil nil (concat "-merge-dir=" directory) (concat "-output-dir=" directory) (concat "-p" directory) (file-truename buffer-file-name)))
-                                 (clang-include-fixer))))
+                                   (when directory
+                                     (call-process "find-all-symbols" nil nil nil (concat "-merge-dir=" directory) (concat "-output-dir=" directory) (concat "-p" directory) (file-truename buffer-file-name))
+                                   (clang-include-fixer))))))
 #+END_SRC
 
 ***** Auto-newline
