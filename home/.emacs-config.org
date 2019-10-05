@@ -2527,6 +2527,13 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 #+END_SRC
 
 ** Syntax checker
+*** [[https://github.com/tmalsburg/guess-language.el][Guess language]]
+#+BEGIN_SRC emacs-lisp
+(use-package guess-language
+  :hook text-mode-hook
+  :custom (guess-language-languages '(en de)))
+#+END_SRC
+
 *** [[https://github.com/bnbeckwith/writegood-mode][Mark common language issues]]
 #+BEGIN_SRC emacs-lisp
 (use-package writegood-mode
