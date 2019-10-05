@@ -6325,7 +6325,9 @@ Archive when done, remove flag if reset to todo.
      cpped-daily-work-minutes))
 
 (defun cpped-print-remaining-work-time ()
-  (when (and cpped-show-work-time
+  "Return the remaining time between clocked time today and `cpped-daily-work-minutes`. "
+  (interactive)
+  (if (and cpped-show-work-time
              (org-clock-is-active))
       (let* ((difference (cpped-remaining-work-minutes))
              (display-text (format "%s %s%d:%02d"
@@ -6340,7 +6342,8 @@ Archive when done, remove flag if reset to todo.
         (add-face-text-property 0 (length display-text) (list ':foreground (if (< difference 0)
                                                                                (face-attribute 'error :foreground)
                                                                              (face-attribute 'info :foreground))) nil display-text)
-        display-text)))
+        display-text)
+    ""))
 #+END_SRC
 
 *** Do not show default clocking information in mode line
