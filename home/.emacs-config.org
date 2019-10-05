@@ -27,20 +27,21 @@ Do not load outdated byte code
 #+END_SRC
 
 ** Use Quelpa
-#+BEGIN_EXPORT emacs-lisp
+#+BEGIN_SRC emacs-lisp
 (use-package quelpa
+  :after use-package
+  :demand t
   :custom
   (quelpa-build-verbose nil)
   (quelpa-stable-p nil)
   (quelpa-upgrade-p t)
-  (quelpa-verbose nil)
-  :config
-  (quelpa '(quelpa-use-package
-            :fetcher git
-            :url "https://framagit.org/steckerhalter/quelpa-use-package.git"))
-  (require 'quelpa-use-package)
-  (quelpa-use-package-activate-advice))
-#+END_EXPORT
+  (quelpa-verbose nil))
+
+(use-package quelpa-use-package
+  :after quelpa
+  :demand t
+  :config (quelpa-use-package-activate-advice))
+#+END_SRC
 
 ** [[https://github.com/rranelli/auto-package-update.el][Automatically update packages]]
 #+BEGIN_SRC emacs-lisp 
