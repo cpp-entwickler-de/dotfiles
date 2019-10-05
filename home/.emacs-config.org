@@ -925,6 +925,8 @@ Find path of current position in XML docuement
 
 ** [[https://github.com/bbatsov/projectile][Projectile]]
 #+BEGIN_SRC emacs-lisp
+(defvar cpped-project-directories (list "~/Projects" "~/projects") "A list of directories to check for projects.")
+
 (use-package ag
   :after system-packages
   :custom
@@ -945,6 +947,9 @@ Find path of current position in XML docuement
   (projectile-find-dir-includes-top-level t)
   (projectile-git-submodule-command nil)
   (projectile-idle-timer-hook nil)
+  (projectile-project-search-path (remove-if (lambda (directory)
+                                               (not (file-directory-p directory)))
+                                             (mapcar #'expand-file-name cpped-project-directories)))
   (projectile-sort-order 'recently-active)
   (projectile-switch-project-action 'helm-projectile)
   (projectile-verbose nil)
