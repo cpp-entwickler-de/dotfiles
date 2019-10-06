@@ -6838,7 +6838,7 @@ Text                    ^^Code                                ^^Version Control 
   _g_: Google
   _G_: Find on GitHub       _+_: Preprocess
   _o_: Preview markdown     _l_: Count lines of code
-                          ^^_j_: Copy JSON path
+  _R_: Compare Regions      _j_: Copy JSON path
 
                           ^^_D_: Toggle shell documentation
 "
@@ -6850,6 +6850,7 @@ Text                    ^^Code                                ^^Version Control 
   ("G" cpped-search-github-code)
   ("o" flymd-flyit)
   ("." what-cursor-position)
+  ("R" (ediff-regions-linewise (current-buffer) (current-buffer)))
 
   ("d" (if (or (derived-mode-p 'asm-mode)
                (derived-mode-p 'nasm-mode))
