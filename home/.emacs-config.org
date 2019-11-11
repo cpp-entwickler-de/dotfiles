@@ -5793,7 +5793,7 @@ Remove check on buffer close
 (use-package org-bullets
   :after org
   :hook (org-mode . org-bullets-mode)
-  :custom (org-bullets-bullet-list '("○")))
+  :custom (org-bullets-bullet-list '("❶" "❷" "❸" "❹" "❺" "❻" "❼" "❽" "❾" "❿")))
 #+END_SRC
 
 *** Show actual bullets for list items
