@@ -25,6 +25,9 @@ set print object on
 # show status of asynchronous processes
 set exec-done-display on
 
+# do not break on SIG32
+handle SIG32 pass nostop
+
 # set default number format
 set output-radix 0x10
 set input-radix 0x10
