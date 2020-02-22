@@ -403,6 +403,11 @@ Disable prettification if cursor is at edge of expression
 (load-theme cpped-theme t)
 #+END_SRC
 
+*** Always load themes without confirmation
+#+BEGIN_SRC emacs-lisp
+(setq custom-safe-themes t)
+#+END_SRC
+
 ** [[https://github.com/rakanalh/emacs-dashboard][Dashboard]]
 #+BEGIN_SRC emacs-lisp
 (use-package dashboard
@@ -1480,7 +1485,18 @@ Indicate recursive minibuffer
 *** Environment
 #+BEGIN_SRC emacs-lisp
 (setenv "PAGER" "cat")
+(setenv "LANG" "en_US.UTF-8")
+(setenv "LC_CTYPE" "de_DE.UTF-8")
+(setenv "LC_NUMERIC" "de_DE.UTF-8")
+(setenv "LC_TIME" "de_DE.UTF-8")
+(setenv "LC_MONETARY" "de_DE.UTF-8")
+(setenv "LC_PAPER" "de_DE.UTF-8")
+(setenv "LC_NAME" "de_DE.UTF-8")
+(setenv "LC_ADDRESS" "de_DE.UTF-8")
+(setenv "LC_TELEPHONE" "de_DE.UTF-8")
+(setenv "LC_MEASUREMENT" "de_DE.UTF-8")
 (setenv "BROWSER" "eww")
+(setenv "NINJA_STATUS" "[%p] ")
 #+END_SRC
 
 https://github.com/purcell/exec-path-from-shell
@@ -2996,7 +3012,8 @@ Some useful abbreviations
 #+BEGIN_SRC emacs-lisp
 (use-package wucuo
   :after flyspell
-  :hook (find-file . wucuo-start))
+;  :hook (find-file . wucuo-start)
+)
 #+END_SRC
 
 *** [[https://github.com/nschum/auto-dictionary-mode][Automatic dictionary selection]]
@@ -3256,6 +3273,11 @@ Handler to close buffer after quitting ccmake.
     (error "`%s' is not a build directory" build-dir)))
 #+END_SRC
 
+
+TODO
+flycheck-clang-tidy-build-path
+
+
 **** Select configuration
 #+BEGIN_SRC emacs-lisp
 (setq cpped-build-directories '(("/home/player/.dotfiles/" . "/home/player/test") ("/home/player" . "/home/player/bla")))
@@ -3286,6 +3308,78 @@ Handler to close buffer after quitting ccmake.
     (delete-directory build-dir t t)
     (projectile-remove-known-project (cpped-cmake-source-dir build-dir))))
 #+END_SRC
+
+projectile-known-projects
+
+on load
+ - set cmake-ide-build-dir if possible (locally)
+(make-local-variable 'cmake-ide-build-dir)
+(make-local-variable 'cpped-cmake-current-target)
+
+
+
+
+
+
+(re-)config project: dir as config name
+
+map (project dir -> (config, build dir)) saved to disk, unless dir removed
+map (project dir -> current build dir) saved to disk
+map (project dir -> target) saved to disk
+
+
+(setq '((project-dir1 build1-dir1 build-dir2) (project-dir2 . build2-dir1)))
+
+(push '() projects-alist)
+
+current build-dir: (car (assoc (project-dir)))
+
+(mapc (lambda (buffer)
+        (with-current-buffer
+(setq-local )))
+(projectile-project-buffers))
+
+
+
+
+
+(defun cpped-set-for-project-buffers (variable value)
+(mapc (lambda (buffer)
+        (with-current-buffer
+(set variable value)))
+(projectile-project-buffers))
+
+
+(cpped-set-for-project-buffers 'cmake-ide-build-dir target)
+(cpped-set-for-project-buffers 'cpped-cmake-current-target target)
+
+
+target: (assoc )
+
+
+
+(defun cpped-select-project-config
+(interactive)
+select form helm list + all
+(cpped-switch-project-config config))
+
+
+
+
+select config
+set cmake-ide-build-dir for all buffers in project
+
+
+(defun cpped-switch-project-config (config)
+(interactive (list (if (cpped-project-build-directory-p config)
+config
+(read-directory-name "Build-directory: "
+                                          (file-name-as-directory cmake-ide-build-pool-dir)))))
+(if (cpped-project-build-directory-p config)
+(cpped-set-for-project-buffers 'cmake-ide-build-dir config)
+(error "`%s' is not a CMake build directory for this project" config)))
+
+
 
 **** Open shell in build directory
 #+BEGIN_SRC emacs-lisp
@@ -3428,6 +3522,14 @@ Handler to close buffer after quitting ccmake.
                          (cpped-project-dir))
          (string-equal build-dir
                        (cpped-project-dir)))))
+#+END_SRC
+
+***** Check if directory is build directory for the current project
+#+BEGIN_SRC emacs-lisp
+(defun cpped-project-build-directory-p (build-dir)
+  (and (cpped-cmake-build-directory-p build-dir)
+       (string=equal (cpped-cmake-source-dir build-dir)
+                     (cpped-project-dir))))
 #+END_SRC
 
 *** Build
@@ -3667,6 +3769,14 @@ Handler to close buffer after quitting ccmake.
   (add-to-list 'cpped-powerline-check-status-functions 'cpped-powerline-coverage))
 #+END_SRC
 
+TODO
+cov-coverage-run-face
+cov-coverage-not-run-face
+cov-coverage-file-paths function to find in build directory
+add status to mode line (coverage <30%, >50% , >90%)
+
+
+
 **** Navigation
 ***** [[https://github.com/brotzeit/helm-xref][Helm interface for xref]]
 #+BEGIN_SRC emacs-lisp
@@ -3773,6 +3883,64 @@ Handler to close buffer after quitting ccmake.
 (use-package kurecolor)
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+(defun cpped-hex-to-rgba (string)
+  "Convert a hexadecimal color definition to the rgba() notation."
+  (interactive)
+  (when (string-match (rx (or "#" "0x") (group (repeat 2 hex)) (group (repeat 2 hex)) (group (repeat 2 hex)) (optional (group (repeat 2 hex)))) string)
+    (let ((alpha (match-string 4 string)))
+      (concat "rgb"
+              (when alpha
+                "a")
+              "("
+              (format "%d" (string-to-number (or (match-string 1 string)
+                                                 "0") 16))
+              ", "
+              (format "%d" (string-to-number (or (match-string 2 string)
+                                                 "0") 16))
+              ", "
+              (format "%d" (string-to-number (or (match-string 3 string)
+                                                 "0") 16))
+              (when alpha
+                (concat ", "
+                        (format "%d" (string-to-number alpha 16))))
+              ")"))))
+
+(defun cpped-convert-color-component (component)
+  "Map an integer or floating point color component to the 0-255 range."
+  (min (max (if (floatp component)
+                (truncate (* component 255.0))
+              component) 0) 255))
+
+(defun cpped-rgba-to-hex (string)
+  "Convert a rgba() color definition to the hexadecimal notation."
+  (interactive)
+  (let ((alpha (match-string 4 string)))
+    (when (string-match (rx "rgb" (optional "a") "(" (* " ")
+                            (group (1+ (in numeric ".")))
+                            (1+ (in " ,"))
+                            (group (1+ (in numeric ".")))
+                            (1+ (in " ,"))
+                            (group (1+ (in numeric ".")))
+                            (optional (1+ (in " ,")) (group (1+ (in numeric ".")))) ")")
+                        string)
+      (concat "#"
+              (format "%02x" (cpped-convert-color-component (string-to-number (or (match-string 1 string)
+                                                                                  "0"))))
+              (format "%02x" (cpped-convert-color-component (string-to-number (or (match-string 2 string)
+                                                                                  "0"))))
+              (format "%02x" (cpped-convert-color-component (string-to-number (or (match-string 3 string)
+                                                                                  "0"))))
+              (when alpha
+                (format "%02x" (cpped-convert-color-component (string-to-number (or (match-string 4 string)
+                                                                                    "0")))))))))
+
+
+;(let ((bounds (bounds-of-thing-at-point 'word))
+;        (number (word-at-point)))
+;    (replace-regexp number (0xc-number-to-string (0xc-string-to-number number) (or base 0xc-default-base)) nil (car bounds) (cdr bounds))))
+#+END_SRC
+
 ***** Auto-completion
 #+BEGIN_SRC emacs-lisp
 (use-package company
@@ -3846,6 +4014,95 @@ Handler to close buffer after quitting ccmake.
 (use-package dummyparens
   :config
   (global-dummyparens-mode))
+#+END_SRC
+
+***** [[https://github.com/redguardtoo/wucuo][Spell checking]]
+#+BEGIN_SRC emacs-lisp
+(use-package wucuo
+  :config
+  (setq wucuo-font-faces-to-check '(font-lock-string-face
+                                    font-lock-doc-face
+                                    font-lock-comment-face
+                                    font-lock-builtin-face
+                                    font-lock-function-name-face
+                                    font-lock-variable-name-face
+                                    font-lock-type-face
+                                    js2-function-call
+                                    js2-function-param
+                                    js2-object-property
+                                    js2-object-property-access
+                                    rjsx-text
+                                    rjsx-tag
+                                    rjsx-attr
+                                    cquery-sem-local-face
+                                    cquery-sem-member-face
+                                    cquery-sem-static-face
+                                    cquery-sem-type-face-0
+                                    cquery-sem-type-face-1
+                                    cquery-sem-type-face-2
+                                    cquery-sem-type-face-3
+                                    cquery-sem-type-face-4
+                                    cquery-sem-type-face-5
+                                    cquery-sem-type-face-6
+                                    cquery-sem-type-face-7
+                                    cquery-sem-type-face-8
+                                    cquery-sem-type-face-9
+                                    cquery-sem-macro-face-0
+                                    cquery-sem-macro-face-1
+                                    cquery-sem-macro-face-2
+                                    cquery-sem-macro-face-3
+                                    cquery-sem-macro-face-4
+                                    cquery-sem-macro-face-5
+                                    cquery-sem-macro-face-6
+                                    cquery-sem-macro-face-7
+                                    cquery-sem-macro-face-8
+                                    cquery-sem-macro-face-9
+                                    cquery-sem-variable-face-0
+                                    cquery-sem-variable-face-1
+                                    cquery-sem-variable-face-2
+                                    cquery-sem-variable-face-3
+                                    cquery-sem-variable-face-4
+                                    cquery-sem-variable-face-5
+                                    cquery-sem-variable-face-6
+                                    cquery-sem-variable-face-7
+                                    cquery-sem-variable-face-8
+                                    cquery-sem-variable-face-9
+                                    cquery-sem-function-face-0
+                                    cquery-sem-function-face-1
+                                    cquery-sem-function-face-2
+                                    cquery-sem-function-face-3
+                                    cquery-sem-function-face-4
+                                    cquery-sem-function-face-5
+                                    cquery-sem-function-face-6
+                                    cquery-sem-function-face-7
+                                    cquery-sem-function-face-8
+                                    cquery-sem-function-face-9
+                                    cquery-sem-namespace-face-0
+                                    cquery-sem-namespace-face-1
+                                    cquery-sem-namespace-face-2
+                                    cquery-sem-namespace-face-3
+                                    cquery-sem-namespace-face-4
+                                    cquery-sem-namespace-face-5
+                                    cquery-sem-namespace-face-6
+                                    cquery-sem-namespace-face-7
+                                    cquery-sem-namespace-face-8
+                                    cquery-sem-namespace-face-9
+                                    cquery-sem-parameter-face-0
+                                    cquery-sem-parameter-face-1
+                                    cquery-sem-parameter-face-2
+                                    cquery-sem-parameter-face-3
+                                    cquery-sem-parameter-face-4
+                                    cquery-sem-parameter-face-5
+                                    cquery-sem-parameter-face-6
+                                    cquery-sem-parameter-face-7
+                                    cquery-sem-parameter-face-8
+                                    cquery-sem-parameter-face-9
+                                    cquery-inactive-region-face
+                                    cquery-sem-static-field-face
+                                    cquery-sem-static-method-face
+                                    cquery-sem-local-function-face
+                                    cquery-sem-global-variable-face))
+  (wucuo-start))
 #+END_SRC
 
 ***** [[http://www.flycheck.org/en/latest/][Syntax checking]]
@@ -4279,6 +4536,25 @@ TODO
                                  (c-toggle-electric-state 1)))
 #+END_SRC
 
+***** Auto-insert last variable
+#+BEGIN_SRC emacs-lisp
+;(defun c++-smart-dot ()
+;  "Inserty a dot or an object name plus dot when appropriate."
+; (interactive))
+; (let (var-name)
+  ;;   (if (and (looking-back "^[ \t]*")
+  ;;            (setq var-name (c++-get-recent-var)))
+  ;;       (insert var-name ".")
+  ;;     (insert "."))))
+#+END_SRC
+
+
+(lsp--send-request
+   (lsp--make-request "textDocument/documentSymbol"
+                      `(:textDocument (:uri ,(concat lsp--uri-file-prefix buffer-file-name)))))
+
+
+
 ***** Wrap Region
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load "wrap-region"
@@ -4421,7 +4697,6 @@ Translation Files
 **** Google Test support
 https://github.com/google/googletest
 
-#+BEGIN_SRC emacs-lisp
 (define-derived-mode gtest-mode
   c++-mode
   "Google Test file"
@@ -4429,7 +4704,181 @@ https://github.com/google/googletest
 
 (provide 'gtest-mode)
 
-(push '("T[Ee][Ss][Tt]_?.*\\.c(c\\|pp\\|xx)\\'" . gtest-mode) auto-mode-alist)
+(push '("T[Ee][Ss][Tt]_?.*\\.[Cc]([Cc]\\|[Pp]\\|[Xx]|++)\\'" . gtest-mode) auto-mode-alist)
+
+Add test pattern to imenu
+(add-to-list 'cc-imenu-c-generic-expression '("Test" "^[[:space:]]*TEST\\(_F\\)?(\\([^)]+\\))" 2))
+(add-to-list 'cc-imenu-c++-generic-expression '("Test" "^[[:space:]]*TEST\\(_F\\)?(\\([^)]+\\))" 2))
+
+
+(add-to-list 'cc-imenu-c++-generic-expression '("Test Class" "^[[:space:]]*#include[[:space:]]+[<\"]\\([^>\"]+\\)" 1))
+class \\(\\):space:*: (public|protected) ::testing::Test
+
+
+(add-to-list 'cc-imenu-c++-generic-expression '("SetUp" "SetUp:space:*(" 0))
+(add-to-list 'cc-imenu-c++-generic-expression '("TearDown" "TearDown:space:*(" 0))
+
+
+
+
+ASSERT_THROW(statement, exception_type); 	EXPECT_THROW(statement, exception_type); 	statement throws an exception of the given type
+ASSERT_ANY_THROW(statement); 	EXPECT_ANY_THROW(statement); 	statement throws an exception of any type
+ASSERT_NO_THROW(statement); 	EXPECT_NO_THROW(statement);
+ASSERT_PRED1(pred1, val1); 	EXPECT_PRED1(pred1, val1); 	pred1(val1) is true
+ASSERT_PRED2(pred2, val1, val2); 	EXPECT_PRED2(pred2, val1, val2); 	pred2(val1, val2) is true
+ASSERT_FLOAT_EQ(val1, val2); 	EXPECT_FLOAT_EQ(val1,val2); 	the two float values are almost equal
+ASSERT_DOUBLE_EQ(val1, val2); 	EXPECT_DOUBLE_EQ(val1, val2);
+ASSERT_NEAR(val1, val2, abs_error); 	EXPECT_NEAR(val1, val2, abs_error);
+::testing::StaticAssertTypeEq<T1, T2>();
+
+// If you can't declare the function in the class it's important that the
+// << operator is defined in the SAME namespace that defines Bar.  C++'s look-up
+// rules rely on that.
+std::ostream& operator<<(std::ostream& os, const Bar& bar) {
+  return os << bar.DebugString();  // whatever needed to print bar to os
+}
+// If you can't declare the function in the class it's important that PrintTo()
+// is defined in the SAME namespace that defines Bar.  C++'s look-up rules rely
+// on that.
+void PrintTo(const Bar& bar, std::ostream* os) {
+  *os << bar.DebugString();  // whatever needed to print bar to os
+}
+
+ASSERT_DEATH(statement, regex); 	EXPECT_DEATH(statement, regex); 	statement crashes with the given error
+ASSERT_DEATH_IF_SUPPORTED(statement, regex); 	EXPECT_DEATH_IF_SUPPORTED(statement, regex); 	if death tests are supported, verifies that statement crashes with the given error; otherwise verifies nothing
+ASSERT_EXIT(statement, predicate, regex); 	EXPECT_EXIT(statement, predicate, regex);
+
+::testing::Test::RecordProperty("MaximumWidgets", ComputeMaxUsage());
+First, you subclass the ::testing::Environment class to define a test environment, which knows how to set-up and tear-down:
+
+class Environment {
+ public:
+  virtual ~Environment() {}
+
+  // Override this to define how to set up the environment.
+  virtual void SetUp() {}
+
+  // Override this to define how to tear down the environment.
+  virtual void TearDown() {}
+};
+
+Then, you register an instance of your environment class with googletest by calling the ::testing::AddGlobalTestEnvironment() function:
+
+Environment* AddGlobalTestEnvironment(Environment* env);
+
+
+--gtest_break_on_failure
+
+
+https://github.com/google/googletest/blob/master/googlemock/docs/ForDummies.md
+https://github.com/google/googletest/blob/master/googlemock/docs/CheatSheet.md
+https://github.com/google/googletest/blob/master/googlemock/docs/CookBook.md
+
+Tip: If even this is too much work for you, you'll find the gmock_gen.py tool in Google Mock's scripts/generator/ directory (courtesy of the cppclean project)
+useful. This command-line tool requires that you have Python 2.4 installed. You give it a C++ file and the name of an abstract class defined in it, and it will
+print the definition of the mock class for you. Due to the complexity of the C++ language, this script may not always work, but it can be quite handy when it
+does. For more details, read the user documentation.
+
+EXPECT_CALL(mock_object, method(matchers))
+    .Times(cardinality)
+    .WillOnce(action)
+    .WillRepeatedly(action);
+Sometimes you may not want to be too specific (Remember that talk about tests being too rigid? Over specification leads to brittle tests and obscures the intent of tests. Therefore we encourage you to specify only what's necessary - no more, no less.). If you care to check that Forward() will be called but aren't interested in its actual argument, write _ as the argument, which means "anything goes":
+
+using ::testing::_;
+...
+// Expects the turtle to move forward.
+EXPECT_CALL(turtle, Forward(_));
+
+
+**** Cog support
+#+BEGIN_SRC emacs-lisp
+(use-package polymode)
+
+(cpped-install-system-package "cog" :package-manager 'pip)
+
+(defcustom cpped-cog-start-marker "[[[cog" "The marker string for the start of a cog block.")
+(defcustom cpped-cog-end-marker "]]]" "The marker string for the end of a cog block.")
+(defcustom cpped-cog-output-end-marker "[[[end]]]" "The marker string for the startend of a cog output block.")
+
+(defcustom pm-inner/cog
+  (pm-inner-chunkmode :name "cog-code"
+                      :mode 'python-mode
+                      :head-matcher (concat "^/[/\\*] *" (regexp-quote cpped-cog-start-marker))
+                      :tail-matcher (concat "^/[/\\*] *" (regexp-quote cpped-cog-end-marker))
+                      :head-mode 'host
+                      :tail-mode 'host)
+  "Inner mode for cog (python)."
+  :group 'poly-innermodes
+  :type 'object)
+
+(define-polymode poly-c++-cog-mode
+  :hostmode 'pm-host/C++
+  :innermodes '(pm-inner/cog))
+
+(defcustom pm-poly/c++-cog
+  (pm-polymode-one "C++/cog"
+                   :hostmode 'pm-host/C++
+                   :innermodes '(pm-inner/cog))
+   "C++/Cog polymode configuration."
+   :group 'polymodes
+   :type 'object)
+
+(define-polymode poly-c++-cog-mode pm-poly/c++-cog)
+(add-to-list 'auto-mode-alist '("\\.[Cc](C|c|PP|pp|XX|xx|++)\\'" . poly-c++-cog-mode))
+(add-to-list 'auto-mode-alist '("\\.[Hh](H|h|PP|pp|XX|xx|++)\\'" . poly-c++-cog-mode))
+
+(defvar cpped-cog-overlay-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "C-c C-c") 'cpped-cog-update-overlays)
+    (define-key map (kbd "<f5>") 'cpped-cog-update-overlays)
+    map)
+  "Keymap for Cog overlays")
+
+(defun cpped-cog-update-overlays()
+  "Update all Cog overlays in the buffer."
+  (interactive)
+  (remove-overlays nil nil 'cpped-cog-result t)
+  (when (not (save-restriction
+               (save-excursion
+                 (search-forward cpped-cog-start-marker nil t))))
+    (let* ((original-buffer (current-buffer))
+           (original-file (buffer-file-name original-buffer)))
+      (with-temp-buffer
+        (let ((cog-output (make-temp-file (file-name-nondirectory original-file) nil ".cog_processed")))
+          (call-process "cog.py"
+                        nil nil nil
+                        (concat "--markers=" (s-join " "
+                                                     `(,cpped-cog-start-marker
+                                                       ,cpped-cog-end-marker
+                                                       ,cpped-cog-output-end-marker)))
+                        "-o" cog-output
+                        original-file)
+          (call-process diff-command
+                        nil (current-buffer) nil
+                        "--unified=0"
+                        original-file
+                        cog-output)
+          (delete-file cog-output))
+        (text-mode)
+        (let ((pos (goto-char (point-min))))
+          (diff-hunk-next)
+          (while (not (eq (point) (point-max)))
+            (pcase-let ((`(,buf ,line-offset ,pos ,old ,new ,switched)
+                         (diff-find-source-location nil nil t)))
+              (let* ((overlay-begin (with-current-buffer buf
+                                        (save-restriction
+                                          (save-excursion
+                                            (goto-char (car pos))
+                                            (search-backward cpped-cog-start-marker nil t)))))
+                     (overlay (make-overlay overlay-begin (car pos) buf)))
+                (overlay-put overlay 'after-string (car new))
+                (overlay-put overlay 'keymap cpped-cog-overlay-map)
+                (overlay-put overlay 'cpped-cog-result t))
+              (diff-hunk-next))))))))
+
+(add-hook 'poly-c++-cog-mode-hook 'cpped-cog-update-overlays)
+(add-hook 'after-save-hook 'cpped-cog-update-overlays)
 #+END_SRC
 
 *** CMake
@@ -4493,15 +4942,23 @@ https://github.com/google/googletest
   (wrap-region-add-wrappers
    '(("{" "}" nil cmake-mode)
      ("${" "}" "$" (cmake-mode c-mode c++-mode))
-     ("\"${" "}\"" "\'" (cmake-mode))
+     ("\"${" "}\"" "\"" (cmake-mode))
      ("@" "@" nil (cmake-mode c-mode c++-mode))))
   (add-hook 'cmake-mode-hook 'wrap-region-mode))
+#+END_SRC
+
+***** Language Server
+#+BEGIN_SRC emacs-lisp
+(lsp-register-client (make-lsp-client :new-connection (lsp-stdio-connection '("cmake" "-E" "server" "--experimental"))
+                                      :major-modes '(cmake-mode)
+                                      :priority -1
+                                      :server-id 'cmake-languageserver))
 #+END_SRC
 
 ***** Autocompletion
 #+BEGIN_SRC emacs-lisp
 (add-hook 'cmake-mode-hook (lambda()
-                             (set (make-local-variable 'company-backends) '((company-yasnippet company-cmake company-files company-capf company-dabbrev-code company-ispell cpped-company-line-backend)))))
+                             (set (make-local-variable 'company-backends) '((company-yasnippet company-lsp company-files company-capf company-dabbrev-code cpped-company-line-backend)))))
 #+END_SRC
 
 ***** Formatting
@@ -4675,6 +5132,7 @@ https://github.com/google/googletest
 ***** [[https://github.com/redcoolbeans/dockerlint][Syntax checker]]
 
 TODO use [[https://github.com/hadolint/hadolint/][hadolint]
+
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load "system-packages"
   (cpped-install-system-package "dockerlint" :package-manager 'npm)
@@ -4682,9 +5140,9 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
     (flycheck-define-checker cpped-dockerlint
       "Dockerfile checker (https://github.com/redcoolbeans/dockerlint)"
       :command ("dockerlint" source-original)
-      :error-patterns ((error line-start "ERROR: " (message) " on line " line line-end)
-                       (warning line-start "WARN: " (message) " on line " line line-end)
-                       (info line-start "INFO: " (message) " on line " line line-end))
+      :error-patterns ((error line-start "ERROR: " (message) (zero-or-one "on line " line) line-end)
+                       (warning line-start "WARN: " (message) (zero-or-one "on line " line) line-end)
+                       (info line-start "INFO: " (message) (zero-or-one "on line " line) line-end))
       :modes (dockerfile-mode))
     (add-to-list 'flycheck-checkers 'cpped-dockerlint)
     (add-hook 'dockerfile-mode-hook (lambda ()
@@ -4866,6 +5324,23 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
                             (setq cpped-format-buffer-function 'json-pretty-print-buffer)))
 #+END_SRC
 
+**** [[https://github.com/zaach/jsonlint][Syntax checker]]
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "system-packages"
+  (cpped-install-system-package "jsonlint" :package-manager 'npm)
+  (with-eval-after-load "flycheck"
+    (flycheck-define-checker cpped-jsonlint
+      "JSON file checker (https://github.com/zaach/jsonlint)"
+      :command ("jsonlint" "--quiet" source-original)
+      :error-patterns ((error line-start "ERROR: " (message) (zero-or-one "on line " line) line-end)
+                       (warning line-start "WARN: " (message) (zero-or-one "on line " line) line-end)
+                       (info line-start "INFO: " (message) (zero-or-one "on line " line) line-end))
+      :modes (json-mode))
+    (add-to-list 'flycheck-checkers 'cpped-jsonlint)
+    (add-hook 'json-mode-hook (lambda ()
+                                (flycheck-select-checker 'cpped-jsonlint)))))
+#+END_SRC
+
 *** Latex
 #+BEGIN_SRC emacs-lisp
 (push '("\\.tex\\'" . latex-mode) auto-mode-alist)
@@ -4879,6 +5354,12 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 (push '("\\.el\\'" . emacs-lisp-mode) auto-mode-alist)
 (push '("\\.lisp\\'" . lisp-mode) auto-mode-alist)
 (push '("\\.lsp\\'" . lisp-mode) auto-mode-alist)
+#+END_SRC
+
+**** Highlight current S-EXP
+#+BEGIN_SRC emacs-lisp
+;(use-package hl-sexp
+;  :hook ((lisp-mode emacs-lisp-mode) . hl-sexp-mode))
 #+END_SRC
 
 **** [[https://github.com/alphapapa/highlight-function-calls][Highlight function calls]]
@@ -5054,7 +5535,7 @@ Set correct major mode
 
 *** SSH Config
 #+BEGIN_SRC emacs-lisp
-(use-package ssh-config-mode)
+;(use-package ssh-config-mode)
 #+END_SRC
 
 *** Systemd
@@ -5129,6 +5610,46 @@ Set correct major mode
 
 ***** Autocompletion
 #+BEGIN_SRC emacs-lisp
+(defun cpped-company-xml-existing-tags-backend (command &optional arg &rest ignored)
+  "Completes existing XML tags."
+  (interactive (list 'interactive))
+  (cl-case command
+    (interactive (company-begin-backend 'cpped-company-xml-existing-tags-backend))
+    ;(prefix (company-grab-symbol))
+(prefix "<ca")
+    (candidates
+     (let ((matches))
+       (save-excursion
+         (save-restriction
+           (widen)
+           (goto-char 1)
+(message "be start")
+           (while (search-forward arg nil t)
+             (backward-word)
+(message (concat arg " -> " (word-at-point t)))
+             (push (word-at-point t) matches))))
+       matches))))
+
+(add-to-list 'company-backends 'cpped-company-xml-existing-tags-backend)
+
+#+END_SRC
+
+
+
+
+#+BEGIN_SRC emacs-lisp
+(cpped-install-system-package "trang")
+;(add-to-list rng-schema-locating-files (expand-file-name "schema.xml" user-emacs-directory))
+
+
+
+
+
+
+
+
+
+
 (add-hook 'nxml-mode-hook (lambda()
                             (set (make-local-variable 'company-backends) '((company-yasnippet company-nxml company-files company-capf company-dabbrev-code company-ispell cpped-company-line-backend)))))
 #+END_SRC
@@ -5278,6 +5799,42 @@ Auto-highlight details
   :custom
   (ztree-draw-unicode-lines t)
   (ztree-show-number-of-children t))
+
+(defhydra cpped-hydra-ztree (:exit nil :hint nil :foreign-keys run)
+  "
+☰ Directory diff
+
+Diff                    ^^Move                            ^^Edit              ^^View
+  _d_: Change directory         _C-<tab>_: Switch side            _c_: Copy       _<tab>_: Toggle subtree
+  _n_: Narrow               _<backspace>_: Move to parent     _<DEL>_: Delete
+  _w_: Widen to parent                                                            ^^^^_f_: %s(if ztree-dir-show-filtered-files \"Hide\" \"Show\") filtered files
+                                                                                ^^^^^^_=_: %s(if ztree-diff-show-equal-files \"Hide\" \"Show\") equal files
+  _g_: Refresh
+  _G_: Full Refresh
+
+  _q_: Quit
+"
+  ("d" ztree-dir-change-directory)
+  ("n" ztree-dir-narrow-to-dir)
+  ("w" ztree-dir-widen-to-parent)
+
+  ("g" ztree-diff-partial-rescan)
+  ("G" (ztree-diff (car ztree-diff-dirs-pair)
+                   (cdr ztree-diff-dirs-pair)))
+
+  ("q" cpped-kill-default-buffer :exit t)
+
+  ("C-<tab>" ztree-jump-side)
+  ("<backspace>" ztree-move-up-in-tree)
+
+  ("c" ztree-diff-copy)
+  ("<DEL>" ztree-diff-delete-file)
+  ("v" ztree-diff-view-file)
+  ("e" ztree-diff-simple-diff-files)
+
+  ("<tab>" ztree-toggle-expand-subtree)
+  ("f" ztree-dir-toggle-show-filtered-files)
+  ("=" ztree-diff-toggle-show-equal-files))
 #+END_SRC
 
 ** Version Control
@@ -5527,6 +6084,36 @@ When using Magit >= 2.4.0
   (magit-wip-after-save-mode))
 #+END_SRC
 
+***** Show commits not merged to master
+#+BEGIN_SRC emacs-lisp
+;; (with-eval-after-load "magit"
+;;   (progn
+;;     (defun cpped-magit-insert-unmerged-commits()
+;;       (magit-insert-section (unmerged-to-master)
+;;         (magit-insert-heading "Unmerged to master:")
+;;         (magit-log-wash-log "log" "--format=format:%h %s" "master..HEAD")))
+;;     (magit-define-section-jumper cpped-magit-jump-to-unmerged-to-master "Unmerged to master" unmerged-to-master)
+;;     (add-hook 'magit-status-sections-hook 'cpped-magit-insert-unmerged-commits t)
+;;     (define-key magit-status-mode-map "jm" #'cpped-magit-jump-to-unmerged-to-master)))
+#+END_SRC
+
+***** Fix magit-diff-trace-definition
+#+BEGIN_SRC emacs-lisp
+(defun cpped-diff-trace-definition ()
+  "Show git trace for current definition."
+  (interactive)
+  (let (buf pos)
+    (save-window-excursion
+      (magit-diff-visit-file (buffer-file-name (current-buffer)))
+      (setq buf (current-buffer))
+      (setq pos (point)))
+    (save-excursion
+      (with-current-buffer buf
+        (goto-char pos)
+        (call-interactively #'magit-log-trace-definition)))))
+#+END_SRC
+
+
 **** [[https://github.com/syohex/emacs-git-messenger][Show commit message of line on request]]
 #+BEGIN_SRC emacs-lisp
 (use-package git-messenger
@@ -5543,7 +6130,9 @@ When using Magit >= 2.4.0
 
 **** [[https://github.com/jwiegley/git-undo-el][Git undo]]
 #+BEGIN_SRC emacs-lisp
-(load (concat (file-name-as-directory user-emacs-directory) "elpa/git-undo/git-undo.el"))
+;(quelpa '(git-undo :fetcher git :url "https://github.com/jwiegley/git-undo-el" :stable nil))
+
+;(use-package git-undo)
 #+END_SRC
 
 **** [[https://github.com/emacs-helm/helm-ls-git][Browse other git projects with helm]]
@@ -6486,6 +7075,11 @@ Archive when done, remove flag if reset to todo.
 
 *** Discover total time clocked today
 #+BEGIN_SRC emacs-lisp
+(let ((files (org-agenda-files)))
+  (org-agenda-prepare-buffers files)
+  (dolist (file files)
+    (with-current-buffer (find-buffer-visiting file)
+      (setq cpped-clocked-time-today (+ cpped-clocked-time-today (org-clock-sum-today))))))
 #+END_SRC
 
 *** Update cached clock time when clocking out
@@ -6637,6 +7231,21 @@ Do not use scientific form so quickly
 
 ** Projects
 #+BEGIN_SRC emacs-lisp
+(defun cpped-closest-project-file (file)
+  "Open the project's file closest to the current file."
+  (interactive)
+  (let ((directory default-directory))
+    (when (ignore-errors (projectile-project-p))
+      (while (not (string= directory (projectile-project-root)))
+        (let ((filepath (concat (file-name-as-directory directory) file)))
+          (when (file-exists-p filepath)
+            filepath))))
+    (concat (file-name-as-directory default-directory) file)))
+#+END_SRC
+
+
+
+#+BEGIN_SRC emacs-lisp
 (defhydra cpped-hydra-projects (:exit t :hint nil)
   "
 ☰ Project 🗁 %s(or (ignore-errors (projectile-project-root))
@@ -6645,12 +7254,18 @@ Do not use scientific form so quickly
                                               (concat \" 🛠 \" build-dir)
                                             \"\"))
 
-CMake              ^^Git                         ^^Directories         ^^Shell                    ^^Other
-  _o_: Load            _g_: Status                   _/_: Project          _#_: Project directory     _f_: Find
-  _c_: Configure       _G_: Other Project Status     _._: Current          _:_: Current directory     _L_: Add change log entry
-  _r_: Reconfigure     _l_: Log                      _d_: Subdirectory                              ^^_t_: Show ToDos
-  _-_: Reset                                       ^^_b_: Build            _B_: Build directory
-  _x_: Close           _v_: Clone
+CMake              ^^Git                           ^^Directories         ^^Shell                    ^^Other
+  _o_: Load            _g_: Status                     _/_: Project          _#_: Project directory     _f_: Find
+  _c_: Configure       _G_: Other Project Status       _._: Current          _:_: Current directory     _L_: Add change log entry
+  _r_: Reconfigure     _l_: Log                        _d_: Subdirectory                              ^^_t_: Show ToDos
+  _-_: Reset                                         ^^_b_: Build            _B_: Build directory
+  _x_: Close           _i_: Toggle ignore for file
+                     ^^_I_: Open ignore file           _D_: Diff to ...
+
+                     ^^_a_: Set file attributes
+                     ^^_A_: Open attribute file
+
+                     ^^_v_: Clone
                      ^^_V_: Clone from GitHub
 "
   ("o" cpped-load-project)
@@ -6662,6 +7277,12 @@ CMake              ^^Git                         ^^Directories         ^^Shell  
   ("G" (let ((current-prefix-arg 4))
          (call-interactively #'magit-status)))
   ("l" magit-log-popup)
+  ("i" (magit-gitignore (helm-projectile-find-file-dwim)))
+  ("I" (find-file (cpped-closest-project-file ".gitignore")))
+  ("a" (progn
+         (find-file (cpped-closest-project-file ".gitattributes"))
+         (ag-files "" "" )))
+  ("A" (find-file (cpped-closest-project-file ".gitattributes")))
   ("v" magit-clone)
   ("V" magithub-clone)
   ("/" projectile-dired)
@@ -6669,6 +7290,7 @@ CMake              ^^Git                         ^^Directories         ^^Shell  
   ("d" projectile-find-dir)
   ("b" (if cmake-ide-build-dir
            (dired cmake-ide-build-dir)))
+  ("D" (ztree-diff (cpped-project-dir)))
   ("#" cpped-shell-project-dir)
   (":" ansi-term)
   ("B" cpped-shell-build-dir)
@@ -6833,8 +7455,8 @@ Open                             ^^Save                      ^^Close            
 Text                    ^^Code                                ^^Version Control         ^^System             ^^Other
   _._: Character            _d_: Documentation                    _c_: Commit Message       _p_: Processes       _t_: ToDos
   _#_: Number               _r_: References                       _b_: Blame                _M_: Man page        _w_: Weather
-  _f_: Define               _h_: Caller hierarchy                                         ^^_I_: Info page
-  _x_: Translate            _m_: Member hierarchy
+  _f_: Define               _h_: Caller hierarchy                 _R_: Compare Regions      _I_: Info page
+  _x_: Translate            _m_: Member hierarchy                 _T_: Trace definition
   _s_: Synonym              _i_: Inheritance hierarchy
   _g_: Google
   _G_: Find on GitHub       _+_: Preprocess
@@ -6868,6 +7490,8 @@ Text                    ^^Code                                ^^Version Control 
 
   ("c" git-messenger:popup-message)
   ("b" magit-blame-popup)
+  ("R" (ediff-regions-linewise (current-buffer) (current-buffer)))
+  ("T" cpped-diff-trace-definition)
 
   ("p" helm-top)
   ("M" helm-man-woman)
@@ -6884,6 +7508,8 @@ Text                    ^^Code                                ^^Version Control 
 #+END_SRC
 
 ** Navigation
+TODO
+
 #+BEGIN_SRC emacs-lisp
 (defhydra cpped-hydra-flyspell (:exit nil :columns 1)
   "
@@ -7000,7 +7626,16 @@ _C-<right>_: Next word                 _y_: Down block                 _C-t_: Ne
   ("f" origami-forward-toggle-node "(un)fold")
   ("r" origami-recursive-toggle-node "(un)fold recursive")
   ("a" origami-toggle-all-nodes "(un)fold all nodes")
-  ("n" cpped-narrow-or-widen-dwim "narrow/widen"))
+  ("n" cpped-narrow-or-widen-dwim "narrow/widen")
+  ("c" (save-excursion
+         (beginning-of-buffer)
+         (let ((position (point-min)))
+           (while (< position (point-max))
+               (when (nth 4 (syntax-ppss))
+                 (origami-close-node))
+             (origami-forward-fold)
+             (when (= position (point))
+               (end-of-buffer)))))"comments"))
 
 (global-set-key (kbd "C-+") 'cpped-hydra-fold/body)
 #+END_SRC
@@ -7014,6 +7649,8 @@ _C-<right>_: Next word                 _y_: Down block                 _C-t_: Ne
 
 ** Mark
 #+BEGIN_SRC emacs-lisp
+(require 'rect)
+
 (defhydra cpped-hydra-mark (:exit nil :hint nil :foreign-keys run :pre (set-mark (point)))
   "
 ☰ Mark
@@ -7024,6 +7661,7 @@ Mark                            ^^Modify                        ^^Act
   _s_: S-EXPR                       _j_: Jump to character          _k_: Kill
   _f_: Function
   _n_: Namespace
+  _r_: Rectangle
   _l_: Rest of line
   _L_: Line up to here
   _b_: Everything before cursor
@@ -7039,16 +7677,28 @@ Mark                            ^^Modify                        ^^Act
   ("n" outre-highlight-ns-by-name)
   ("r" rectangle-mark-mode)
   ("+" er/expand-region)
-  ("x" exchange-point-and-mark)
+  ("x" (if rectangle-mark-mode
+           (call-interactively 'rectangle-exchange-point-and-mark)
+         (exchange-point-and-mark)))
   ("j" avy-goto-char-timer)
   ("l" end-of-line)
   ("L" beginning-of-line)
   ("b" mark-buffer-before-point)
   ("a" mark-buffer-after-point)
   ("e" mark-whole-buffer)
-  ("c" (kill-ring-save nil nil t) :exit t)
-  ("d" (call-interactively #'delete-region) :exit t)
-  ("k" (kill-region nil nil t) :exit t))
+  ("c" (if rectangle-mark-mode
+          ; (let ((kill-read-only-ok t)
+          ;       (buffer-read-only t))
+             (kill-rectangle (region-beginning) (region-end));)
+         (call-interactively #'whole-line-or-region-kill-ring-save)) :exit t)
+  ("d" (if rectangle-mark-mode
+(progn
+(message rectangle-mark-mode)
+           (delete-rectangle (region-beginning) (region-end)))
+         (call-interactively #'delete-region)) :exit t)
+  ("k" (if rectangle-mark-mode
+           (kill-rectangle (region-beginning) (region-end))
+         (call-interactively #'whole-line-or-region-kill-region)) :exit t))
 
 (global-set-key (kbd "C-SPC") #'cpped-hydra-mark/body)
 #+END_SRC
@@ -7162,7 +7812,9 @@ Identifier    ^^Namespace
   ("n" outrespace-change-enclosing-ns-name)
   ("N" outrespace-change-ns-name)
   ("d" outrespace-delete-enclosing-ns)
-  ("D" outrespace-delete-ns-by-name))
+  ("D" outrespace-delete-ns-by-name)
+
+  ("r" lsp-rename))
 
 (defhydra cpped-hydra-edit (:exit t :hint nil)
   "
@@ -7182,7 +7834,7 @@ Identifier    ^^Namespace
 "
   ("d" crux-duplicate-current-line-or-region)
   ("D" crux-duplicate-and-comment-current-line-or-region)
-  ("i" cpped-hydra-edit-insert/body)
+  ("i" cpped-hydra-edit-insert/body :exit t)
   ("'" quoted-insert)
   ("<" helm-company)
   ("g" (if (equal major-mode 'org-mode)
@@ -7414,10 +8066,80 @@ Cut                   ^^Delete                               ^^Other
 (global-set-key (kbd "C-y") #'cpped-hydra-yank/whole-line-or-region-yank)
 (global-set-key (kbd "M-y") #'helm-show-kill-ring)
 
-(define-key term-raw-map (kbd "C-c C-y") 'term-paste)
-(define-key term-raw-map (kbd "C-c C-s") (lambda ()
-                                           (interactive)
-                                           (term-send-raw-string (substring-no-properties (helm-show-kill-ring)))))
+** Diffing
+#+BEGIN_SRC emacs-lisp
+(defhydra cpped-hydra-diff (:hint nil :exit nil :foreign-keys run)
+  "
+☰ Diff
+
+Movement               ^^Edit                       ^^Apply
+  _C-p_: Previous hunk     _C-x_: Split hunk            _C-a_: Apply hunk
+  _C-n_: Next hunk         _C-r_: Reverse direction     _C-A_: Revert hunk
+                         ^^_C-k_: Kill hunk
+  _C-P_: Previous file     _C-K_: Kill file
+  _C-N_: Next file
+
+  _C-s_: Go to source
+"
+  ("C-p" diff-hunk-prev)
+  ("C-n" diff-hunk-next)
+  ("C-P" diff-file-prev)
+  ("C-N" diff-file-next)
+  ("C-s" diff-goto-source)
+
+  ("C-x" diff-split-hunk)
+  ("C-r" diff-reverse-direction)
+  ("C-k" diff-hunk-kill)
+  ("C-K" diff-file-kill)
+
+  ("C-a" diff-apply-hunk)
+  ("C-A" (diff-apply-hunk t))
+
+  ("q" cpped-kill-default-buffer :exit t))
+
+(add-hook 'diff-mode-hook 'cpped-hydra-diff/body)
+#+END_SRC
+
+** Merging
+#+BEGIN_SRC emacs-lisp
+(defhydra cpped-hydra-smerge (:hint nil :exit nil :foreign-keys run :pre (smerge-mode 1))
+  "
+☰ Merge
+
+Movement           ^^Keep           ^^Resolve        ^^Diff
+_<home>_: First        _b_: Base        _C_: Combine      _<_: Upper/Base
+ _<end>_: Last         _u_: Upper       _r_: Resolve      _=_: Upper/Lower
+     _k_: Previous     _l_: Lower       _k_: Remove       _>_: Base/Lower
+     _j_: Next         _a_: All         _s_: Swap
+                   ^^_RET_: Current
+"
+      ("<home>" (progn
+                  (goto-char (point-min))
+                  (smerge-next)))
+      ("<end>" (progn
+                 (goto-char (point-max))
+                 (smerge-prev)))
+      ("j" smerge-next)
+      ("k" smerge-prev)
+
+      ("b" smerge-keep-base)
+      ("u" smerge-keep-upper)
+      ("l" smerge-keep-lower)
+      ("a" smerge-keep-all)
+      ("RET" smerge-keep-current)
+      ("\C-m" smerge-keep-current)
+
+      ("C" smerge-combine-with-next)
+      ("r" smerge-resolve)
+      ("k" smerge-kill-current)
+      ("s" smerge-swap)
+
+      ("<" smerge-diff-base-upper)
+      ("=" smerge-diff-upper-lower)
+      (">" smerge-diff-base-lower)
+      ("q" nil :exit t))
+
+(add-hook 'smerge-mode-hook 'cpped-hydra-smerge/body)
 #+END_SRC
 
 ** Org-Mode
@@ -7897,3 +8619,411 @@ Open                ^^Create       ^^Work         ^^Task                        
 #+BEGIN_SRC emacs-lisp
 (notifications-notify :title "IDE ready")
 #+END_SRC
+
+* NEW
+
+cd: create dir hierarchy; complete up/downward dirs, locate, files (goto containing dir)
+
+
+(when (featurep 'flycheck)
+        (let* ((std-regex "^-std=")
+               (include-path (append sys-includes (cmake-ide--flags-to-include-paths flags)))
+               (definitions (append (cmake-ide--get-existing-definitions) (cmake-ide--flags-to-defines flags)))
+               (args (cmake-ide--filter (lambda (x) (not (string-match std-regex x))) (cmake-ide--flags-filtered flags))))
+          (make-local-variable 'flycheck-clang-include-path)
+          (make-local-variable 'flycheck-gcc-include-path)
+          (setq flycheck-clang-include-path include-path)
+          (setq flycheck-gcc-include-path include-path)
+
+          (make-local-variable 'flycheck-clang-definitions)
+          (make-local-variable 'flycheck-gcc-definitions)
+          (setq flycheck-clang-definitions definitions)
+          (setq flycheck-gcc-definitions definitions)
+
+          (make-local-variable 'flycheck-clang-args)
+          (make-local-variable 'flycheck-gcc-args)
+          (setq flycheck-clang-args args)
+          (setq flycheck-gcc-args args)
+
+          (make-local-variable 'flycheck-clang-language-standard)
+          (make-local-variable 'flycheck-gcc-language-standard)
+          (let* ((stds (cmake-ide--filter (lambda (x) (string-match std-regex x)) flags))
+                 (repls (mapcar (lambda (x) (replace-regexp-in-string std-regex "" x)) stds)))
+            (when repls
+              (setq flycheck-clang-language-standard (car repls))
+              (setq flycheck-gcc-language-standard (car repls))
+              (unless cmake-ide-flycheck-cppcheck-strict-standards
+                (setq repls (mapcar 'cmake-ide--cmake-standard-to-cppcheck-standard repls)))
+              (setq repls (cmake-ide--filter 'cmake-ide--valid-cppcheck-standard-p repls))
+              (when repls
+                (make-local-variable 'flycheck-cppcheck-standards)
+                (setq flycheck-cppcheck-standards repls))))
+
+          (make-local-variable 'flycheck-cppcheck-include-path)
+          (setq flycheck-cppcheck-include-path (append sys-includes (cmake-ide--flags-to-include-paths flags))))
+
+        (setq flycheck-clang-includes includes)
+        (setq flycheck-gcc-includes includes)
+        (flycheck-clear)
+(run-at-time "0.5 sec" nil 'flycheck-buffer)))))
+
+
+
+(defun cmake-ide--valid-cppcheck-standard-p (standard)
+  "If STANDARD is supported by cppcheck."
+  (member standard '("posix" "c89" "c99" "c11" "c++03" "c++11")))
+
+(defun cmake-ide--cmake-standard-to-cppcheck-standard (standard)
+  "Convert a CMake language STANDARD to the closest supported by cppcheck.
+If there is no clear and sensible conversion, the input is
+returned unchanged."
+  (let ((gnu-replaced (replace-regexp-in-string "gnu" "c" standard)))
+    (cond
+     ;; Convert "close-enough" matches.
+     ((equal gnu-replaced "c90") "c89")
+     ((equal gnu-replaced "c++98") "c++03")
+     ((equal gnu-replaced "c++0x") "c++03")
+     ((equal gnu-replaced "c++14") "c++11")
+     ((equal gnu-replaced "c++1y") "c++11")
+     ((equal gnu-replaced "c++17") "c++11")
+     ((equal gnu-replaced "c++1z") "c++11")
+     ;; See if what we have matches cppcheck's capabilities exactly.
+     ((cmake-ide--valid-cppcheck-standard-p gnu-replaced) gnu-replaced)
+     ;; Otherwise, just hand back the original input.
+(t standard))))
+
+
+#+BEGIN_SRC emacs-lisp
+(setq goto-address-url-regexp (replace-regexp-in-string "https://\\\\|" "https://\\|polarion: *\\|" goto-address-url-regexp nil 'literal))
+
+(defun cpped-support-polarion-url (wrapped-function &rest arguments)
+    "Detect Polarion URLs."
+    (let ((start (line-beginning-position))
+          (end nil))
+      (save-excursion
+        (backward-word 2)
+        (setq start (max (point)
+                         start)))
+      (save-excursion
+        (forward-word 2)
+        (setq end (point)))
+      (let ((words-at-point (buffer-substring-no-properties start end)))
+        (message words-at-point)
+        (if (string-match ".*[Pp]olarion: *\\([0-9]+\\)[^0-9]*" words-at-point)
+            (concat "http://www.google.de/search?oq=" (match-string 1 words-at-point))
+          (apply wrapped-function arguments)))))
+
+(advice-add #'browse-url-url-at-point :around #'cpped-support-polarion-url)
+#+END_SRC
+
+
+C-x C-j will activate term-line-mode, which treats the terminal buffer more like a normal text-buffer in which you can move the cursor and yank text. You can switch back to character mode with C-c C-k.
+
+** Linters
+[[http://oclint.org/][OCLint]]
+[[https://github.com/L2Program/FlintPlusPlus][Flint++]]
+[[https://github.com/Ericsson/codechecker][CodeChecker]]
+[[http://lcamtuf.coredump.cx/afl/][american fuzzy lop]]
+[[https://llvm.org/docs/LibFuzzer.html][libFuzzer – a library for coverage-guided fuzz testing]]
+
+** Tools
+[[https://github.com/markchalloner/git-semver][Git plugin for Semantic Versioning]]
+[[http://semver.org/spec/v2.0.0.html][Semantic Versioning 2.0.0]]
+
+** Info
+[[https://github.com/jameslk/awesome-falsehoods][A curated list of awesome falsehoods programmers believe]]
+[[https://github.com/kdeldycke/awesome-falsehood][Curated list of falsehoods programmers believe in.]]
+[[https://github.com/onqtam/awesome-cmake][A curated list of awesome CMake resources, scripts, modules, examples and others.]]
+[[https://github.com/unicodeveloper/awesome-tdd][Curated list of awesome resources: books, videos, articles about using TDD(Test Driven Development)]]
+[[https://www.learnenough.com/git-tutorial][Learn Enough Git to Be Dangerous]]
+[[https://planet.qt.io/][Planet Qt]]
+[[https://github.com/matteofigus/awesome-speaking][Resources about public speaking]]
+[[https://github.com/monostable/awesome-electronics][A curated list of awesome resources for electronic engineers and hobbyists]]
+[[https://github.com/fffaraz/awesome-cpp][A curated list of awesome C++ (or C) frameworks, libraries, resources, and shiny things. Inspired by awesome-... stuff.]]
+[[http://blog.llvm.org/2011/05/what-every-c-programmer-should-know.html][What Every C Programmer Should Know About Undefined Behavior]]
+
+** UI
+[[https://www.materialui.co/colors][Material Design Colors]]
+[[https://fluentcolors.com/][Fluent Colors, Microsoft's Fluent Colors, Color Palette | FluentColors.com]]
+
+** CMake
+[[https://github.com/go2sh/cmake-integration-vscode][CMake Server Interface for VSCode]]
+cmake target dependency view
+
+** C++
+auto-newline mode -> c-hanging-semi&comma-criteria
+unfold include directive to includes used in unfolded header file
+toggle {[(
+toggle <" for headers
+condition, namespace, function: jump to begin
+automatic dot to pointer (->) if required
+auto camelcase for known identifiers
+show current symbol type and scope in mode line
+show info above  method: references, tests passed (link to/run test), last change author, complexity
+implement interface
+macro (-> c-macro-expand)/template/constexpr/auto expansion
+(project-wise) Find unused headers/sources
+call graph
+sequence diagram
+show included header as inline text, allow edit
+jump to base class/overridden method
+paste to c++ string literal
+include dependency visualizer
+show deduced type for auto variable
+mark const/non-const parameters/members
+convert from explicit type to auto
+delete matching bracket if bracket is deleted
+Colorize Call Stacks
+mark/dim logging lines
+open non-project headers/sources as read-only
+support compiler parseable fixits
+embrace
+
+[[https://sourceware.org/gdb/current/onlinedocs/gdb/Skipping-Over-Functions-and-Files.html][CC Mode: Custom auto newlines]]
+[[http://accessmodifier.sourceforge.net/][AccessModifier Eclipse Plug-in]]
+[[http://xray.inf.usi.ch/][XRay]]
+[[https://www.codetrails.com/developer-assistance-tools/][Developer Assistance Tools | Codetrails]]
+[[https://www.codetrails.com/error-analytics/][Error Analytics | Codetrails]]
+[[http://marketplace.eclipse.org/content/data-hierarchy][Data Hierarchy]]
+[[https://www.eclipse.org/tracecompass/][Trace Compass]]
+[[https://www.wholetomato.com/features/default.asp][Features in Visual Assist]]
+[[http://o.oz-code.com/features][OzCode: Features]]
+[[https://www.cppdepend.com/][CppDepend :: C/C++ Static Analysis and Code Quality tool]]
+[[https://www.sourcetrail.com/][Sourcetrail - A cross-platform source explorer for C/C++ and Java]]
+** Refactoring
+        surround with
+        reduce scope of variable
+        A superclass and subclass are not very different. Merge them together.
+        The same fragment of code is in all branches of a conditional expression. Move it outside of the expression.
+        The name of a method does not reveal its purpose. Change the name of the method.
+        Toggle Function Definition moves a function definition inside an C/C++ source editor from one position to another and preserves correctness. (inline/header/source)
+        In connect calls, content assist is provided to show valid slot and signal functions for the objects you are connecting. Content assist templates are also provided for QObject class declarations and Q_PROPERTY declarations.
+        create class from use
+        add header for use
+        create getters and setters
+        override/implement function
+        Extract (Function, Typedef, Variable, Parameters, Define, etc.) — here, CLion analyzes the block of code where you invoke the refactoring, detects the input and output variables and the usages of the selected expression, to replace them with a newly created entity of your choice.
+        Replace includes with forward declaration(s)
+        Organize includes
+        Find unused includes
+        implement method (header->inline, cpp->normal)
+        remove unused headers
+        renaming class renames files and includes
+        rearrange methods (text list; can be reordered; grouped by access role)
+        class generator: when inheriting pure virtual class, auto-add pure methods
+        create case from switch type
+        add default case
+        invert if condition
+        add/change to c++-cast
+        change to auto
+        rearrange methods by moving in header (changes source also)
+        signature change: show editable list of changes in project
+
+
+*** Yasnippet
+implement switch for all enum values
+
+*** Templight
+[[https://github.com/mikael-s-persson/templight][Templight]]
+[[https://github.com/mikael-s-persson/templight-tools][templight-tools]]
+** Cog
+[[https://nedbatchelder.com/code/cog/][Ned Batchelder: Cog]]
+
+** Python
+[[https://github.com/proofit404/anaconda-mode][proofit404/anaconda-mode]]
+
+** QML
+[[http://doc.qt.io/qt-5/qtqml-javascript-expressions.html][JavaScript Expressions in QML Documents]]
+[[https://github.com/eclipse-cdt/cdt/commit/f9143ebfdc17541e9b44c65482952a1eb247382b][Bug 481126 - QML Static Analysis based on Tern.js · eclipse-cdt/cdt@f9143eb · GitHub]]
+[[http://code.qt.io/cgit/qt-labs/vstools.git/tree/src/vsqml][Qt Visual Studio Add-in]]
+[[https://github.com/Gaubee/acorn-qml][GitHub - Gaubee/acorn-qml: qml parser base on acorn]]
+[[https://github.com/acornjs/acorn/find/master][File Finder · GitHub]]
+[[https://github.com/mutaphysis/qml-tools][QML Coverage and other tools]]
+[[https://www.froglogic.com/blog/measuring-qml-coverage/][Measuring QML Coverage]]
+[[https://github.com/skozlovf/Sublime-QML][QML support for Sublime Text 2 and Sublime Text 3]]
+qmltestrunner
+qt quick test
+
+** XML/XSLT
+[[https://emacs.stackexchange.com/questions/20931/how-do-i-edit-an-xml-file-in-emacs-with-tag-autocompletion-from-a-known-xsd-sche][nxml - How do I edit an XML file in Emacs with tag autocompletion from a known XSD schema?]]
+[[https://blog.xml.rocks/debugging-complex-xslt-modules/][Know-how: Debugging complex XSLT modules]]
+[[https://sourceforge.net/projects/xslide/files/][xslide Emacs mode for XSL stylesheets]]
+[[https://lgfang.github.io/mynotes/emacs/emacs-xml.html][Editing XML in Emacs]]
+Schema compare
+close xml tag on </
+xsd-based aoutcomplete -> nxml-mode
+surround selection with tag
+XPATH test in XML doc
+
+** Debugging
+filter of methods for debugger not to step into
+[[https://www.gnu.org/software/emacs/manual/html_mono/ccmode.html#Custom-Auto_002dnewlines][Debugging with GDB: Skipping Over Functions and Files]]
+[[https://github.com/yyoncho/dap-mode][Debug Adapter Protocol for Emacs]]
+start debugger and run to current line
+debug: run to current line
+boost visualizers
+[[http://marketplace.eclipse.org/content/graphheap][GraphHeap]]
+debug: restart on segfault; auto-step to last statement before faulty one
+notes for break points
+when debugging show which case of the if statement ran
+array visualization (segments if too large)
+debugger shows inline variable values
+
+** Unit tests
+[[https://github.com/piece/makegood/wiki][makegood]]
+[[https://github.com/google/googletest/blob/master/googlemock/docs/ForDummies.md][googletest/ForDummies]]
+[[https://github.com/google/googletest/blob/master/googlemock/docs/CookBook.md#mocking-nonvirtual-methods][googletest/CookBook]]
+[[https://github.com/google/googletest/blob/master/googlemock/docs/CheatSheet.md][googletest/CheatSheet]]
+[[http://www.ncrunch.net][NCrunch for Visual Studio]]
+[[http://www.github.com/infinitest][Infinitest]]
+test list
+
+** Git
+[[https://github.com/eamodio/vscode-gitlens/blob/master/README.md#gutter-blame-][vscode-gitlens]]
+Locate Gitignore Files
+magit-diff-trace-definition
+Commits in Branch1 that are not in Branch2: git log Branch1 ^Branch2
+(eval-after-load 'magit
+  '(progn
+     (defun magit-insert-unmerged-commits ()
+       (magit-git-insert-section (unmerged "Unmerged commits:")
+                                 (apply-partially 'magit-wash-log 'unique)
+                                 "log" "--format=format:%h %s" "master..HEAD"))
+
+     (magit-define-section-jumper unmerged  "Unmerged commits")
+
+     (add-hook 'magit-status-sections-hook 'magit-insert-unmerged-commits t)))
+
+** EDiff
+[[https://www.gnu.org/software/emacs/manual/html_node/ediff/Major-Entry-Points.html#Major-Entry-Points][Major Entry Points - Ediff User's Manual]]
+[[https://www.gnu.org/software/emacs/manual/html_node/emacs/Overview-of-Emerge.html][Overview of Emerge - GNU Emacs Manual]]
+Conflict Solver: Take Both
+*** Smerge-mode
+Don't forget smerge-ediff
+
+
+(def-package! smerge-mode
+  :init
+  (add-hook 'find-file-hook #'+vcs|enable-smerge-mode-maybe)
+  :config
+  (when (featurep! :feature hydra)
+    (require 'hydra)
+
+    (when (version< emacs-version "26")
+      (defalias 'smerge-keep-upper 'smerge-keep-mine)
+      (defalias 'smerge-keep-lower 'smerge-keep-other)
+      (defalias 'smerge-diff-base-upper 'smerge-diff-base-mine)
+      (defalias 'smerge-diff-upper-lower 'smerge-diff-mine-other)
+      (defalias 'smerge-diff-base-lower 'smerge-diff-base-other))
+
+    (defhydra +hydra-smerge (:hint nil
+                             :pre (smerge-mode 1)
+                             ;; Disable `smerge-mode' when quitting hydra if
+                             ;; no merge conflicts remain.
+                             :post (smerge-auto-leave))
+    "
+                                                    ╭────────┐
+  Movement   Keep           Diff              Other │ smerge │
+  ╭─────────────────────────────────────────────────┴────────╯
+     ^_g_^       [_b_] base       [_<_] upper/base    [_C_] Combine
+     ^_C-k_^     [_u_] upper      [_=_] upper/lower   [_r_] resolve
+     ^_k_ ↑^     [_l_] lower      [_>_] base/lower    [_R_] remove
+     ^_j_ ↓^     [_a_] all        [_H_] hightlight
+     ^_C-j_^     [_RET_] current  [_E_] ediff             ╭──────────
+     ^_G_^                                            │ [_q_] quit"
+      ("g" (progn (goto-char (point-min)) (smerge-next)))
+      ("G" (progn (goto-char (point-max)) (smerge-prev)))
+      ("C-j" smerge-next)
+      ("C-k" smerge-prev)
+      ("j" next-line)
+      ("k" previous-line)
+      ("b" smerge-keep-base)
+      ("u" smerge-keep-upper)
+      ("l" smerge-keep-lower)
+      ("a" smerge-keep-all)
+      ("RET" smerge-keep-current)
+      ("\C-m" smerge-keep-current)
+      ("<" smerge-diff-base-upper)
+      ("=" smerge-diff-upper-lower)
+      (">" smerge-diff-base-lower)
+      ("H" smerge-refine)
+      ("E" smerge-ediff)
+      ("C" smerge-combine-with-next)
+      ("r" smerge-resolve)
+      ("R" smerge-kill-current)
+("q" nil :color blue))))
+
+
+(defun my-enable-smerge-maybe ()
+  (when (and buffer-file-name (vc-backend buffer-file-name))
+    (save-excursion
+      (goto-char (point-min))
+      (when (re-search-forward "^<<<<<<< " nil t)
+        (smerge-mode +1)))))
+
+(add-hook 'buffer-list-update-hook #'my-enable-smerge-maybe)
+
+
+** Docker
+[[https://docs.docker.com/engine/reference/commandline/logs/#options][docker logs | Docker Documentation]]
+
+** Language Server
+[[https://microsoft.github.io/language-server-protocol/specification][Specification]]
+
+** org-mode
+M-S-return (org-insert-todo-heading) inserts a new heading at the same level as the previous one
+cpped-org-agenda-reschedule-to-today
+org-occur
+org-mode: org-babel-demarcate-block (split blocks, move point to next line first)
+
+** Misc
+[[https://github.com/google/bloaty][Bloaty McBloatface: a size profiler for binaries]]
+[[https://github.com/namhyung/uftrace][namhyung/uftrace: Function (graph) tracer for user-space]]
+[[https://github.com/Milys/NC-Gcode][Milys/NC-Gcode]]
+Idea: keymap put into the text properties (or overlays)
+project-wide replace with preview
+json autocomplete: github.com/bali182/autocomplete-json
+js: tern
+suspicious code: github.com/MaxfieldWalker/neumann
+electric-quote-chars (setq electric-quote-context-sensitive t)
+The new function 'call-shell-region' executes a command in an inferior shell with the buffer region as input.
+helm freedesktop application menu
+
+#+BEGIN_SRC emacs-lisp
+(setq comint-terminfo-terminal "xterm-256color")
+#+END_SRC
+
+*** editing
+;; do not require mark to copy/kill
+;; (require 'bind-key)
+;; (bind-keys
+;;   ("C-S-a". edit-at-point-word-copy)
+;;   ("C-S-b". edit-at-point-word-cut)
+;;   ("C-S-c". edit-at-point-word-delete)
+;;   ("C-S-d". edit-at-point-word-paste)
+;;   ("C-S-e". edit-at-point-symbol-copy)
+;;   ("C-S-f". edit-at-point-symbol-cut)
+;;   ("C-S-g". edit-at-point-symbol-delete)
+;;   ("C-S-h". edit-at-point-symbol-paste)
+;;   ("C-S-i". edit-at-point-str-copy)
+;;   ("C-S-j". edit-at-point-str-cut)
+;;   ("C-S-k". edit-at-point-str-delete)
+;;   ("C-S-l". edit-at-point-str-paste)
+;;   ("C-S-m". edit-at-point-line-copy)
+;;   ("C-S-n". edit-at-point-line-cut)
+;;   ("C-S-o". edit-at-point-line-delete)
+;;   ("C-S-p". edit-at-point-line-paste)
+;;   ("C-S-q". edit-at-point-line-dup)
+;;   ("C-S-r". edit-at-point-line-up)
+;;   ("C-S-s". edit-at-point-line-down)
+;;   ("C-S-t". edit-at-point-paren-copy)
+;;   ("C-S-u". edit-at-point-paren-cut)
+;;   ("C-S-v". edit-at-point-paren-delete)
+;;   ("C-S-w". edit-at-point-paren-paste)
+;;   ("C-S-x". edit-at-point-paren-dup)
+;;   ("C-S-y". edit-at-point-defun-copy)
+;;   ("C-S-z". edit-at-point-defun-cut)
+;;   ("C-{"  . edit-at-point-defun-delete)
+;;   ("C-:"  . edit-at-point-defun-paste)
+;;   ("C-\"" . edit-at-point-defun-dup))
+
