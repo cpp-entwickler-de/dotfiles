@@ -6588,7 +6588,7 @@ Do not use scientific form so quickly
 ** Serial Devices
 #+BEGIN_SRC emacs-lisp
 (defcustom cpped-serial-port nil "The last used serial port.")
-(defcustom cpped-serial-port-baudrate 155200 "The last used serial port baud rate.")
+(defcustom cpped-serial-port-baudrate 115200 "The last used serial port baud rate.")
 
 (defun cpped-serial-terminal (port baudrate)
   (interactive (let ((ports (directory-files "/dev/" nil "ttyUSB[0-9]+" t)))
