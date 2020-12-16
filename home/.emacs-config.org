@@ -185,6 +185,15 @@ Do not load outdated byte code
     (bounds-of-thing-at-point 'word)))
 #+END_SRC
 
+** Waiting time information
+#+BEGIN_SRC emacs-lisp :tangle no
+(use-package explain-pause-mode
+  :quelpa (explain-pause-mode
+           :fetcher github
+           :repo "lastquestion/explain-pause-mode")
+  :config (explain-pause-mode t))
+#+END_SRC
+
 * User Interface
 ** Startup
 *** Disable startup screen
