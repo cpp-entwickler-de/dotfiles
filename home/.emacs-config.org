@@ -1259,7 +1259,7 @@ Indicate recursive minibuffer
 
 *** Kill unused buffers automatically
 #+BEGIN_SRC emacs-lisp
-(defun cpped-clean-buffer-list-delay-3hours (name)
+(defun cpped-clean-buffer-list-delay-1hour (name)
   "Wrapper around clean-buffer-list-delay to allow delays in hours instead of days"
   (or (assoc-default name clean-buffer-list-kill-buffer-names #'string=
                      clean-buffer-list-delay-special)
@@ -1270,7 +1270,7 @@ Indicate recursive minibuffer
                      clean-buffer-list-delay-special)
       (* 60 60)))
 
-(fset 'clean-buffer-list-delay 'cpped-clean-buffer-list-delay-3hours)
+(fset 'clean-buffer-list-delay 'cpped-clean-buffer-list-delay-1hour)
 (run-with-timer 0 (* 60 60) 'clean-buffer-list)
 #+END_SRC
 
