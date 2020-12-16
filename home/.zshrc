@@ -379,6 +379,7 @@ else
     alias ag="grep"
 fi
 
+alias find="fd --glob"
 alias r=$LESS_COMMAND
 alias l="ls -AFhl1v --color --group-directories-first $*"
 alias lstree="l -R $*"
