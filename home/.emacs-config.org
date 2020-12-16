@@ -5346,6 +5346,7 @@ When using Magit >= 2.4.0
   (magit-popup-show-common-commands nil)
   (magit-process-popup-time 3)
   (magit-save-repository-buffers 'dontask)
+  (magit-section-initial-visibility-alist '((stashes . hide) (untracked . hide) (unpushed . hide)))
   (magit-status-show-hashes-in-headers nil)
   (magit-log-arguments '("--graph"
                          "--color"
