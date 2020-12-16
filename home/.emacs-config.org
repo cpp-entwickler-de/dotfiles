@@ -53,7 +53,8 @@ Do not load outdated byte code
                                             (auto-package-update-maybe)))
       :custom
       (auto-package-update-interval 14)
-      (auto-package-update-delete-old-versions t)))
+      (auto-package-update-delete-old-versions t)
+      (auto-package-update-hide-results t)))
 #+END_SRC
 
 ** [[https://github.com/Malabarba/paradox/][Paradox]]
