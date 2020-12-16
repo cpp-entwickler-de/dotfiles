@@ -56,3 +56,10 @@ source ~/.gdbinit.user
 
 # remove startup message
 shell clear
+
+# allow breakpoints to be set later
+set breakpoint pending on
+
+# automatically break when this is called
+#break function-name
+
