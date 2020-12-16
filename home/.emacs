@@ -29,7 +29,8 @@
 (setq custom-file "~/.emacs.d/customizations.el")
 (load custom-file 'noerror)
 
-(setq vc-follow-symlinks t)
+(setq vc-follow-symlinks t
+      load-prefer-newer t)
 
 ;; temporarily disable the file name handler.
 (defvar default-file-name-handler-alist file-name-handler-alist)
