@@ -1489,7 +1489,7 @@ Indicate recursive minibuffer
 
 *** Environment
 #+BEGIN_SRC emacs-lisp
-(setenv "PAGER" "cat")
+(setenv "PAGER" "ccat")
 (setenv "BROWSER" "eww")
 #+END_SRC
 
@@ -1548,6 +1548,19 @@ https://github.com/purcell/exec-path-from-shell
 (defun eshell/kill ()
   "Use helm-top to kill processes."
   (helm-top))
+
+(defun eshell/ccat (file)
+  "Like `cat' but output with Emacs syntax highlighting."
+  (with-temp-buffer
+    (insert-file-contents file)
+    (let ((buffer-file-name file))
+      (delay-mode-hooks
+        (set-auto-mode)
+        (if (fboundp 'font-lock-ensure)
+            (font-lock-ensure)
+          (with-no-warnings
+            (font-lock-fontify-buffer)))))
+    (buffer-string)))
 #+END_SRC
 
 **** Git support
