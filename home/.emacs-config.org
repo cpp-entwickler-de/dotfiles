@@ -1147,7 +1147,7 @@ Switch to previous buffer
   (switch-to-buffer (other-buffer (current-buffer) 1)))
 #+END_SRC
 
-*** [[https://github.com/ShingoFukuyama/helm-swoo][In-buffer search]]
+*** [[https://github.com/ShingoFukuyama/helm-swoop][In-buffer search]]
 #+BEGIN_SRC emacs-lisp
 (use-package helm-swoop
   :custom (helm-swoop-use-fuzzy-match t))
@@ -1410,7 +1410,7 @@ Indicate recursive minibuffer
   (eshell-error-if-no-glob t)
   (eshell-hist-ignoredups t)
   (eshell-history-size 20000)
-  (eshell-save-history-o7n-exit t)
+  (eshell-save-history-on-exit t)
   (eshell-input-filter 'eshell-input-filter-initial-space)
   (eshell-prefer-lisp-functions nil)
   (eshell-list-files-after-cd t)
