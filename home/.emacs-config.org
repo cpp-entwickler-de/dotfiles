@@ -4836,7 +4836,7 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
   (setq-local comment-start "; ")
   (setq-local comment-start-skip "[#;] *")
   (setq-local font-lock-defaults '(ini-mode-font-lock-keywords))
-  (setq-local imenu-generic-expression '(("Section" "^\\[\\([a-zA-Z0-9]+\\)\\] *" 1)))
+  (setq-local imenu-generic-expression '(("Section" "^\\[\\([a-zA-Z0-9 ]+\\)\\] *" 1)))
   (setq-local outline-regexp "\\["))
 
 (push '("\\.conf\\'" . ini-mode) auto-mode-alist)
