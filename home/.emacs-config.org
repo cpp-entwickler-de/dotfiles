@@ -3079,6 +3079,8 @@ Some useful abbreviations
   (ispell-personal-dictionary "~/.emacs.d/.aspell.en.pws")
   (ispell-program-name "/usr/bin/aspell")
   (ispell-silently-savep t)
+  (ispell-extra-args '("--sug-mode=ultra"
+                       "--lang=en_US"))
   :config
   (cpped-install-system-package "aspell")
   (cpped-install-system-package "aspell-en")
