@@ -413,6 +413,11 @@ Disable prettification if cursor is at edge of expression
 (load-theme cpped-theme t)
 #+END_SRC
 
+*** Always load themes without confirmation
+#+BEGIN_SRC emacs-lisp
+(setq custom-safe-themes t)
+#+END_SRC
+
 ** [[https://github.com/rakanalh/emacs-dashboard][Dashboard]]
 #+BEGIN_SRC emacs-lisp
 (use-package dashboard
