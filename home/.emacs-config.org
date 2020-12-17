@@ -4027,6 +4027,7 @@ Custom error highlighting (colored line under location)
                            (_ 'default)))
                    (overlay (make-overlay begin begin)))
               (overlay-put overlay 'before-string (concat
+                                                   (propertize " " 'face face)
                                                    (propertize (all-the-icons-faicon5 (pcase level
                                                                                        ("error" "times-circle")
                                                                                        ("warning" "exclamation-triangle")
