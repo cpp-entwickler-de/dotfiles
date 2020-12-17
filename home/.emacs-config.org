@@ -2769,6 +2769,7 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
       electric-pair-mode t
       show-trailing-whitespace t
       tab-always-indent 'complete
+      tab-width 4
       text-mode-hook '(turn-on-auto-fill text-mode-hook-identify)
       require-final-newline nil)
 (show-paren-mode)
@@ -4578,7 +4579,7 @@ https://github.com/google/googletest
 *** CMake
 #+BEGIN_SRC emacs-lisp
 (use-package cmake-mode
-  :custom (cmake-tab-width 4)
+  :custom (cmake-tab-width tab-width)
   :config
   (push '("CMakeLists\\.txt\\'" . cmake-mode) auto-mode-alist)
   (push '(".\\cmake\\'" . cmake-mode) auto-mode-alist)
