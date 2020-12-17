@@ -2331,7 +2331,6 @@ https://github.com/purcell/exec-path-from-shell
 **** Preview
 #+BEGIN_SRC emacs-lisp
 (use-package peep-dired
-  :defer t
   :bind (:map dired-mode-map ("v" . peep-dired)))
 #+END_SRC
 
