@@ -2293,7 +2293,8 @@ https://github.com/purcell/exec-path-from-shell
 **** Show Icons
 #+BEGIN_SRC emacs-lisp
 (use-package all-the-icons-dired
-  :hook dired-mode)
+  :after all-the-icons
+  :hook (dired-mode . all-the-icons-dired-mode))
 #+END_SRC
 
 **** Collapse empty directories
