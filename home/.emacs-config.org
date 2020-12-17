@@ -826,18 +826,19 @@ Find path of current position in XML docuement
 
 #+BEGIN_SRC emacs-lisp
 (defun cpped-powerline-which-function (icon-face)
-  (when which-function-mode
-    (let ((current-function (if (equal major-mode 'nxml-mode)
-                                (cpped-nxml-where)
-                                (which-function))))
-      (unless (= 0 (length current-function))
-        (concat
-         (propertize (all-the-icons-faicon5 "puzzle-piece")
-                     'face (list ':family (all-the-icons-faicon5-family)
-                                 ':background (face-attribute icon-face :background))
-                     'display '(raise -0.0))
-         " "
-         current-function)))))
+  (let ((current-function (pcase major-mode
+                            ('nxml-mode (cpped-nxml-where))
+                            ('eshell-mode eshell-last-command-name)
+                            (_ (when which-function-mode
+                                 (which-function))))))
+    (unless (= 0 (length current-function))
+      (concat
+       (propertize (all-the-icons-faicon5 "puzzle-piece")
+                   'face (list ':family (all-the-icons-faicon5-family)
+                               ':background (face-attribute icon-face :background))
+                   'display '(raise -0.0))
+       " "
+       current-function))))
 #+END_SRC
 
 *** Check Status
