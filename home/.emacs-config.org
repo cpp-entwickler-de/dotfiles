@@ -2093,9 +2093,14 @@ https://github.com/purcell/exec-path-from-shell
       kept-old-versions 5)
 #+END_SRC
 
-** Move deleted files to trash instead of deleting
+** [[https://github.com/shingo256/trashed][Use system trash]]
 #+BEGIN_SRC emacs-lisp
 (setq delete-by-moving-to-trash t)
+
+(use-package trashed
+  :custom
+  (trashed-action-confirmer 'y-or-n-p)
+  (trashed-size-format 'human-readable))
 #+END_SRC
 
 ** Automatically silently reload unmodified buffers when file has changed on disk
@@ -7806,6 +7811,7 @@ Tools                      ^^Last Command    ^^System
   _x_: Regex Builder           _f_: Resume       _p_: Show processes
   _e_: Evaluate expression                     ^^_s_: Show system services
                                              ^^^^_d_: Docker
+                                             ^^^^_t_: Trash
 
 _=_: Directory Diff
 "
@@ -7818,7 +7824,8 @@ _=_: Directory Diff
   ("a" cpped-run-application)
   ("p" helm-top)
   ("s" helm-systemd)
-  ("d" cpped-hydra-tools-docker/body))
+  ("d" cpped-hydra-tools-docker/body)
+  ("t" trashed))
 
 (global-set-key (kbd "C-t") #'cpped-hydra-tools/body)
 #+END_SRC
