@@ -1468,6 +1468,7 @@ Indicate recursive minibuffer
   (eshell-cmpl-dir-ignore "\\`\\(\\.\\.?\\|CVS\\|.git\\|.svn\\|.bzr\\)/\\'")
   (eshell-cmpl-expand-before-complete t)
   (eshell-cmpl-ignore-case t)
+  (eshell-show-lisp-completions t)
   (eshell-command-completions-alist '(("e" . "\\.pdf\\'")
                                       ("ar" . "\\.[ao]\\'")
                                       ("e" . "\\.[Cc]\\([Cc]\\|[PpXx][PpXx]\\)?\\'")
