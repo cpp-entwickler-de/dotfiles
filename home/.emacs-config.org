@@ -4124,10 +4124,17 @@ TODO
 
 ***** Show status in mode line
 #+BEGIN_SRC emacs-lisp
-(defvar-local compilation-run-p nil "Flag to indicate if a comilation was run for the current buffer.")
+(defvar-local compilation-run-p nil "Flag to indicate if a compilation was run for the current buffer.")
+(defvar-local compilation-finished-successfully-p nil "Flag to indicate if a compilation finished successfully.")
 
-(add-to-list 'compilation-finish-functions '(lambda ()
-                                              (setq compilation-run-p t)
+(add-hook 'compilation-start-hook (lambda (process)
+                                    (setq cpped-process-running t
+                                          cpped-current-process-start-time (current-time))))
+
+(add-to-list 'compilation-finish-functions '(lambda (buffer message)
+                                              (setq cpped-process-running nil
+                                                    compilation-run-p t
+                                                    compilation-finished-successfully-p (string-match "^finished" message))
                                               (force-mode-line-update)))
 
 (defun cpped-powerline-compilation-status ()
@@ -4135,10 +4142,12 @@ TODO
   (when compilation-run-p
     (mapconcat 'identity
                (remove nil (list (propertize (all-the-icons-faicon5 "hammer")
-                                             'face (list ':inherit (cond ((> compilation-num-errors-found 0) 'cpped-check-status-error)
-                                                                         ((> compilation-num-warnings-found 0) 'cpped-check-status-warning)
-                                                                         ((> compilation-num-infos-found 0) 'cpped-check-status-info)
-                                                                         (t 'cpped-check-status-info))
+                                             'face (list ':inherit (if compilation-finished-successfully-p
+                                                                       (cond ((> compilation-num-errors-found 0) 'cpped-check-status-error)
+                                                                             ((> compilation-num-warnings-found 0) 'cpped-check-status-warning)
+                                                                             ((> compilation-num-infos-found 0) 'cpped-check-status-info)
+                                                                             (t 'cpped-check-status-info))
+                                                                     'cpped-check-status-error)
                                                          ':family (all-the-icons-faicon5-family))
                                              'display '(raise -0.0))
                                  (mapconcat 'identity
