@@ -168,6 +168,9 @@ Do not load outdated byte code
                       (list-dependencies-of . "gem dependency")))
                t)
   (cpped-install-system-package "rubygems" :executable "gem"))
+
+(use-package use-package-ensure-system-package
+  :after system-packages)
 #+END_SRC
 
 * Internals
@@ -7244,7 +7247,7 @@ _C-<right>_: Next word                 _y_: Down block                 _C-t_: Ne
 
 ** Finding
 #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-s") 'helm-swoop)
+(global-set-key (kbd "C-s") 'helm-occur)
 (global-set-key (kbd "M-s") 'helm-ag-buffers)
 (global-set-key (kbd "M-S-s") 'helm-projectile-ag)
 #+END_SRC
