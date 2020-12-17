@@ -5434,6 +5434,22 @@ When using Magit >= 2.4.0
   (jump-to-register :magit-fullscreen))
 #+END_SRC
 
+***** Show ToDos in status window
+#+BEGIN_SRC emacs-lisp
+(use-package magit-todos
+  :ensure-system-package "ripgrep"
+  :custom
+  (magit-todos-auto-group-items 'always)
+  (magit-todos-group-by '(magit-todos-item-keyword magit-todos-item-filename))
+  (magit-todos-ignore-case t)
+  (magit-todos-ignored-keywords '("NOTE" "INFO"))
+  (magit-todos-insert-at 'untracked)
+  (magit-todos-keyword-suffix ".?")
+  (magit-todos-nice nil)
+  (magit-todos-update 10)
+  :config (magit-todos-mode))
+#+END_SRC
+
 ***** [[https://github.com/magit/forge][Git forge integration]]
 #+BEGIN_SRC emacs-lisp
 (use-package forge
@@ -6802,6 +6818,7 @@ CMake              ^^Git                         ^^Directories         ^^Shell  
 
   ("f" (helm-ag (or (helm-ag--project-root)
                     default-directory)))
+  ("t" magit-todos-list)
   ("L" add-change-log-entry)
   ("t" cpped-find-todos-in-project))
 
