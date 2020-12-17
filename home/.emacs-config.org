@@ -1927,6 +1927,24 @@ https://github.com/purcell/exec-path-from-shell
                                                (force-mode-line-update t)))
 #+END_SRC
 
+*** Show last command status in mode line
+#+BEGIN_SRC emacs-lisp
+(defun cpped-powerline-eshell-status ()
+  "Format the mode line eshell status information."
+  (when (and (equal major-mode 'eshell-mode)
+             (> eshell-last-command-status 0))
+    (concat (propertize (all-the-icons-faicon5 "exclamation-triangle")
+                                             'face `(:family ,(all-the-icons-faicon5-family)
+                                                     :foreground ,(face-attribute 'error :foreground)
+                                                     :weight 'bold)
+                                             'display '(raise -0.0))
+            (propertize (format " %d" eshell-last-command-status)
+                        'face `(:foreground, (face-attribute 'error :foreground)
+                                :weight 'bold)))))
+
+(add-to-list 'cpped-powerline-check-status-functions 'cpped-powerline-eshell-status)
+#+END_SRC
+
 *** Notify when long-running command finishes
 #+BEGIN_SRC emacs-lisp
 (defcustom cpped-eshell-minimum-interesting-run-time 30 "The minimum time a command has to take to be interesting.")
