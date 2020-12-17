@@ -2574,6 +2574,13 @@ https://github.com/mivok/markdownlint
   (global-auto-highlight-symbol-mode t))
 #+END_SRC
 
+*** [[https://github.com/alvarogonzalezsotillo/region-occurrences-highlighter][Highlight current region]]
+#+BEGIN_SRC emacs-lisp :tangle no
+(use-package region-occurrences-highlighter
+  :functions region-occurrences-highlighter
+  :hook (prog-mode . region-occurrences-highlighter-mode))
+#+END_SRC
+
 *** Highlight number packs
 Use custom regex to ignore color definitions (numbers starting with a # sign)
 #+BEGIN_SRC emacs-lisp
