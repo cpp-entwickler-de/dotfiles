@@ -1443,8 +1443,6 @@ Indicate recursive minibuffer
                                        comint-postoutput-scroll-to-bottom
                                        comint-watch-for-password-prompt
                                        comint-truncate-buffer)
-      eshell-scroll-to-bottom-on-input 'this
-      eshell-scroll-to-bottom-on-output 'this
       eshell-kill-processes-on-exit t
       term-buffer-maximum-size 100000)
 (add-hook 'term-exec-hook #'term-char-mode)
