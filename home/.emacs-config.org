@@ -2874,7 +2874,7 @@ Save system clipboard contents to kill ring before killing
 *** Cut/copy whole line if no region is active
 #+BEGIN_SRC emacs-lisp
 (use-package whole-line-or-region
-  :config (whole-line-or-region-mode t))
+  :config (whole-line-or-region-global-mode t))
 #+END_SRC
 
 *** [[https://github.com/ongaeshi/duplicate-thing][Duplicate lines/regions]]
