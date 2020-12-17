@@ -2983,6 +2983,15 @@ Some useful abbreviations
   (insert (format-time-string "%FT%T%z" (current-time))))
 #+END_SRC
 
+*** Insert UUID
+#+BEGIN_SRC emacs-lisp
+(cpped-install-system-package "util-linux")
+(defun cpped-insert-uuid ()
+  "Insert a UUID at point."
+  (interactive)
+  (insert (replace-regexp-in-string "\n" "" (shell-command-to-string (executable-find "uuidgen")))))
+#+END_SRC
+
 *** Thesaurus
 #+BEGIN_SRC emacs-lisp
 (use-package synosaurus
@@ -7143,8 +7152,8 @@ Mark                            ^^Modify                        ^^Act
 Date         ^^Time         ^^Timestamp    ^^Block                    ^^Special
   _d_: local     _t_: local     _s_: local     _3_: License               _l_: Link
   _D_: ISO                    ^^_S_: ISO       _f_: File                  _u_: Unicode Character
-                                         ^^^^^^_c_: Snippet               _T_: Markdown table of contents
-                                         ^^^^^^_C_: Automatic snippet
+                                         ^^^^^^_c_: Snippet               _i_: UUID
+                                         ^^^^^^_C_: Automatic snippet     _T_: Markdown table of contents
 "
   ("d" cpped-insert-date)
   ("D" cpped-insert-iso-date)
@@ -7157,6 +7166,7 @@ Date         ^^Time         ^^Timestamp    ^^Block                    ^^Special
   ("C" aya-expand)
   ("l" cpped-org-insert-link-dwim)
   ("u" helm-ucs :exit nil)
+  ("i" cpped-insert-uuid)
   ("T" markdown-toc-generate-or-refresh-toc))
 
 (defhydra cpped-hydra-edit-sort (:exit t :columns 1)
