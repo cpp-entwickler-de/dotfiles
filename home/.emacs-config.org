@@ -1016,6 +1016,34 @@ Find path of current position in XML docuement
   (helm-find-files-ignore-thing-at-point t)
   (helm-follow-mode-persistent nil)
   (helm-google-suggest-use-curl-p t)
+  (helm-google-suggest-actions '(("DuckDuckGo" . (lambda (candidate)
+                                                   (helm-search-suggest-perform-additional-action
+                                                    "https://duckduckgo.com/?q=%s"
+                                                    candidate)))
+                                 ("C++ Reference" . (lambda (candidate)
+                                                      (helm-search-suggest-perform-additional-action
+                                                       "https://en.cppreference.com/mwiki/index.php?title=Special:Search&search=%s"
+                                                       candidate)))
+                                 ("Qt Documentation" . (lambda (candidate)
+                                                         (helm-search-suggest-perform-additional-action
+                                                          "https://doc.qt.io/qt-5/search-results.html?q=%s"
+                                                          candidate)))
+                                 ("GitHub" . (lambda (candidate)
+                                               (helm-search-suggest-perform-additional-action
+                                                "https://github.com/search?type=Code&q=%s&ref=opensearch"
+                                                candidate)))
+                                 ("Stack Overflow" . (lambda (candidate)
+                                                       (helm-search-suggest-perform-additional-action
+                                                        "http://stackoverflow.com/search?q=%s"
+                                                        candidate)))
+                                 ("Stack Snippet" . (lambda (candidate)
+                                                      (helm-search-suggest-perform-additional-action
+                                                       "http://www.stacksnippet.com/#gsc.tab=0&gsc.q=%s"
+                                                       candidate)))
+                                 ("Unicode Character" . (lambda (candidate)
+                                                          (helm-search-suggest-perform-additional-action
+                                                           "https://unicode-table.com/en/search/?q=%s&p"
+                                                           candidate)))))
   (helm-grep-ignored-directories '("SCCS" "RCS" "CVS" "MCVS" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" ".gvfs" "branches" "tags"))
   (helm-imenu-fuzzy-match t)
   (helm-input-idle-delay 0.01)
