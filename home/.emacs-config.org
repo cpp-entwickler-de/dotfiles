@@ -3857,8 +3857,8 @@ Handler to close buffer after quitting ccmake.
 (use-package company
   :hook (after-init . global-company-mode)
   :custom
-  (company-auto-complete nil)
-  (company-auto-complete-chars '(32 95 41 119 46))
+  (company-auto-commit t)
+  (company-auto-commit-chars ".<>($!~")
   (company-frontends '(company-preview-if-just-one-frontend company-pseudo-tooltip-unless-just-one-frontend))
   (company-backends '((company-keywords company-yasnippet company-files company-capf company-dabbrev)))
   (company-idle-delay 0)
