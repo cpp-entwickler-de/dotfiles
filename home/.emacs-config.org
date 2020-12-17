@@ -442,6 +442,17 @@ Disable prettification if cursor is at edge of expression
 #+END_SRC
 
 ** Mode Line
+#+BEGIN_SRC emacs-lisp
+(defun cpped-buffer-name ()
+  "Returns a (virtual) buffer name, for non-file modes."
+  (pcase major-mode
+    ('eshell-mode (eshell/pwd))
+    ('shell-mode default-directory)
+    ('term-mode default-directory)
+    ('dired-mode default-directory)
+    (_ buffer-file-name)))
+#+END_SRC
+
 *** Base Location
 #+BEGIN_SRC emacs-lisp
 (defun cpped-tramp-file-remote-p (file)
@@ -461,7 +472,8 @@ Disable prettification if cursor is at edge of expression
               (ignore-errors (vc-call-backend backend 'root default-directory)))))))
 
 (defun cpped-powerline-project-id (icon-face)
-    (when buffer-file-name
+  (let ((buffer-location (cpped-buffer-name)))
+  (when buffer-location
       (let ((project-name (if (and (ignore-errors (projectile-project-p))
                                    (fboundp 'projectile-project-name)
                                    (projectile-project-name))
@@ -472,23 +484,23 @@ Disable prettification if cursor is at edge of expression
                                   (file-name-nondirectory (directory-file-name (file-name-directory (ignore-errors (vc-call-backend backend 'root default-directory)))))))))))
         (concat
          (propertize (all-the-icons-faicon5 (cond ((not (= 0 (length project-name))) "folder")
-                                                 ((and (not (cpped-tramp-file-remote-p buffer-file-name))
+                                                 ((and (not (cpped-tramp-file-remote-p buffer-location))
                                                        (string-prefix-p (getenv "HOME")
-                                                                        (if (tramp-tramp-file-p buffer-file-name)
-                                                                            (tramp-file-name-localname (tramp-dissect-file-name buffer-file-name))
-                                                                          buffer-file-name))) "home")
-                                                 ((cpped-tramp-file-remote-p buffer-file-name) "cloud")
+                                                                        (if (tramp-tramp-file-p buffer-location)
+                                                                            (tramp-file-name-localname (tramp-dissect-file-name buffer-location))
+                                                                          buffer-location))) "home")
+                                                 ((cpped-tramp-file-remote-p buffer-location) "cloud")
                                                  (t "desktop")))
                                 'face (list ':family (all-the-icons-faicon5-family)
                                             ':background (face-attribute icon-face :background))
                                 'display '(raise -0.0))
-         (let ((location (if (cpped-tramp-file-remote-p buffer-file-name)
+         (let ((location (if (cpped-tramp-file-remote-p buffer-location)
                              tramp-current-host
                            (when (not (= 0 (length project-name)))
                              (propertize project-name
                                          'help-echo (cpped-project-dir))))))
            (unless (= 0 (length location))
-               (concat " " location))))))))
+               (concat " " location)))))))))
 #+END_SRC
 
 *** Major mode icon
@@ -512,13 +524,15 @@ Helper function to figure out version control root directory
 (with-eval-after-load "projectile"
   (defun cpped-powerline-buffer-id (icon-face)
     (let* ((home-dir (getenv "HOME"))
-           (buffer-name (let ((name (if (and buffer-file-name
-                                             (tramp-tramp-file-p buffer-file-name))
-                                        (tramp-file-name-localname (tramp-dissect-file-name buffer-file-name))
+           (buffer-virtual-name (cpped-buffer-name))
+           (buffer-name (let ((name (if buffer-virtual-name
+                                        (if (tramp-tramp-file-p buffer-virtual-name)
+                                            (tramp-file-name-localname (tramp-dissect-file-name buffer-virtual-name))
+                                          buffer-virtual-name)
                                       (format-mode-line "%b"))))
                           (or (cdr (assoc name cpped-special-buffer-names-alist))
                               name)))
-           (filename (when buffer-file-name
+           (filename (if buffer-virtual-name
                        (file-truename buffer-name)))
            (project-root (or (cpped-project-dir)
                              (when (and filename
