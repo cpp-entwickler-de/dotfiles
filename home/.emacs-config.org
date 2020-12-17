@@ -2780,6 +2780,9 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 (defvar whitespace-global-modes t)
 (defvar whitespace-line-column nil)
 (defvar whitespace-style '(face))
+
+(add-hook 'minibuffer-setup-hook (lambda () (electric-pair-mode 0)))
+(add-hook 'minibuffer-exit-hook (lambda () (electric-pair-mode 1)))
 #+END_SRC
 
 *** [[https://gitlab.com/emacs-stuff/indent-tools][Indent tools]]
