@@ -2762,8 +2762,10 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 *** Indentation
 #+BEGIN_SRC emacs-lisp
 (setq-default indent-tabs-mode nil)
-(setq-default fill-column 160)
-(setq comment-empty-lines t
+(setq-default fill-column 120)
+(global-display-fill-column-indicator-mode)
+(setq auto-fill-mode t
+      comment-empty-lines t
       electric-indent-mode t
       electric-layout-mode t
       electric-pair-mode t
