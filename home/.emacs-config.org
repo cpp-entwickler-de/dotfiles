@@ -5054,6 +5054,14 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
          (emacs-lisp-mode . easy-escape-minor-mode)))
 #+END_SRC
 
+**** [[https://github.com/Malabarba/comment-or-uncomment-sexp][Un-/Comment SEXPs]]
+#+BEGIN_SRC emacs-lisp
+(use-package comment-or-uncomment-sexp
+  :quelpa (comment-or-uncomment-sexp
+           :fetcher github
+           :repo "Malabarba/comment-or-uncomment-sexp"))
+#+END_SRC
+
 **** Auto-completion
 #+BEGIN_SRC emacs-lisp
 (add-hook 'elisp-mode-hook (lambda()
@@ -7483,7 +7491,9 @@ Identifier    ^^Namespace
   ("6" base64-encode-region)
   ("&" base64-decode-region)
 
-  ("/" comment-dwim-2)
+  ("/" (if (derived-mode-p 'emacs-lisp-mode)
+           (comment-or-uncomment-sexp)
+         (comment-dwim-2)))
   ("f" cpped-hydra-refactor/body :exit t)
   ("e" (if (region-active-p)
            (eval-region (region-beginning) (region-end))
