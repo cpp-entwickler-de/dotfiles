@@ -6389,7 +6389,7 @@ Archive when done, remove flag if reset to todo.
                                    ("n" "Notes" tags "+CATEGORY=\"Notes\""
                                     ((org-agenda-overriding-header "Notes")
                                      (org-agenda-prefix-format '((tags . "%(org-format-outline-path (org-get-outline-path)) ")))))
-                                   ("d" "Daily Timesheet" agenda ""
+                                   ("d" "Scrum Daily Timesheet" agenda ""
                                     ((org-agenda-overriding-header "Last Day")
                                      (org-agenda-span (if (= 1 (nth 6 (decode-time)))
                                                           4
@@ -6402,7 +6402,15 @@ Archive when done, remove flag if reset to todo.
                                      (org-agenda-time-grid nil)
                                      (org-agenda-include-diary nil)
                                      (org-agenda-clockreport-parameter-plist '(:scope agenda-with-archives :indent t :link t :emphasize t :tcolumns 1 :maxlevel 6 :fileskip0 t :formula %))))
-                                   ("p" "Monthly Timesheet" agenda ""
+                                   ("D" "Today's Timesheet" agenda ""
+                                    ((org-agenda-overriding-header "Today")
+                                     (org-agenda-span 'day)
+                                     (org-agenda-start-on-weekday nil)
+                                     (org-agenda-start-with-clockreport-mode t)
+                                     (org-agenda-time-grid nil)
+                                     (org-agenda-include-diary nil)
+                                     (org-agenda-clockreport-parameter-plist '(:scope agenda-with-archives :indent t :link t :emphasize t :tcolumns 1 :maxlevel 6 :fileskip0 t :formula %))))
+                                   ("p" "This Month's Timesheet" agenda ""
                                     ((org-agenda-overriding-header (concat (if (< (nth 3 (decode-time)) 25)
                                                                                "Last"
                                                                              "This")
@@ -6423,7 +6431,15 @@ Archive when done, remove flag if reset to todo.
                                      (org-agenda-start-with-clockreport-mode t)
                                      (org-agenda-time-grid nil)
                                      (org-agenda-include-diary nil)
-                                     (org-agenda-clockreport-parameter-plist '(:scope agenda-with-archives :indent t :link t :emphasize t :tcolumns 1 :maxlevel 2 :fileskip0 t :formula %))))))
+                                     (org-agenda-clockreport-parameter-plist '(:scope agenda-with-archives :indent t :link t :emphasize t :tcolumns 1 :maxlevel 2 :fileskip0 t :formula %))))
+                                   ("y" "This Year's Timesheet" agenda ""
+                                    ((org-agenda-span 'year)
+                                     (org-agenda-start-day (format "%04d-01-01" (nth 5 (decode-time))))
+                                     (org-agenda-start-on-weekday nil)
+                                     (org-agenda-start-with-clockreport-mode t)
+                                     (org-agenda-time-grid nil)
+                                     (org-agenda-include-diary nil)
+                                     (org-agenda-clockreport-parameter-plist '(:scope agenda-with-archives :indent t :link t :emphasize t :tcolumns 1 :maxlevel 5 :fileskip0 t :formula %))))))
 #+END_SRC
 
 *** Reschedule to today
@@ -8068,11 +8084,11 @@ Run            ^^Info
   "
 ☰ Planning %s(format \"%s %s\" (cpped-print-time) (cpped-print-remaining-work-time))
 
-Open                ^^Create       ^^Work         ^^Task                        ^^Chart
-  _a_: Agenda           _c_: Entry     _b_: Break     _r_: Clock in recent task     _d_: Daily timesheet
-  _u_: Current Task                               ^^^^_i_: Clock in                 _m_: Monthly timesheet
-                                                ^^^^^^_o_: Clock out
-  _t_: ToDos                                      ^^^^_E_: Set estimate
+Open                ^^Create       ^^Work         ^^Task                        ^^Timesheet
+  _a_: Agenda           _c_: Entry     _b_: Break     _r_: Clock in recent task     _d_: Daily Scrum
+  _u_: Current Task                               ^^^^_i_: Clock in                 _D_: Today
+                                                ^^^^^^_o_: Clock out                _m_: This Month
+  _t_: ToDos                                      ^^^^_E_: Set estimate             _y_: This Year
   _b_: Bugs                                       ^^^^_+_: Increase estimate
   _n_: Notes
   _e_: Events
@@ -8110,7 +8126,9 @@ Open                ^^Create       ^^Work         ^^Task                        
            (org-set-effort nil t))))
 
   ("d" (org-agenda nil "d"))
-  ("m" (org-agenda nil "p")))
+  ("D" (org-agenda nil "D"))
+  ("m" (org-agenda nil "p"))
+  ("y" (org-agenda nil "y")))
 
 (global-set-key (kbd "C-l") #'cpped-hydra-planning/body)
 #+END_SRC
