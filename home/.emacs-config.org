@@ -6278,6 +6278,10 @@ Archive when done, remove flag if reset to todo.
               :buffer "*helm org headings*")
         (error "Aborted"))))
 
+(defun cpped-select-agenda-topic ()
+  "Select an agenda topic."
+  (cpped-select-topic "" org-agenda-files))
+
 (defun cpped-select-todo-topic ()
   "Select a todo topic."
   (cpped-select-topic "" org-default-todos-file))
