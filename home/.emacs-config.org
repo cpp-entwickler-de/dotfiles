@@ -5365,7 +5365,7 @@ Set correct major mode
 
 Auto-highlight details
 #+BEGIN_SRC emacs-lisp
-(add-hook 'diff-mode-hook 'diff-auto-refine-mode)
+(setq diff-refine 'font-lock)
 #+END_SRC
 
 *** Quit smerge-mode after last resolved conflict
