@@ -7866,6 +7866,7 @@ Focus                  ^^^^Close                ^^Split               ^^Align   
                                                                                      ^^^^^^^^^^_<C-end>_: End of other window
                                                                                            ^^^^^^^^^^_1_: Toggle line numbers
                                                                                            ^^^^^^^^^^_#_: Toggle relative line numbers
+                                                                                           ^^^^^^^^^^_w_: Widen
 "
   ("x" delete-window :exit t)
   ("X" delete-other-windows :exit t)
@@ -7890,6 +7891,7 @@ Focus                  ^^^^Close                ^^Split               ^^Align   
   ("#" (if (eq display-line-numbers 'relative)
            (setq display-line-numbers t)
          (setq display-line-numbers 'relative)))
+  ("w" widen)
   ("C-+" cpped-zoom-in)
   ("C--" cpped-zoom-out)
   ("f" toggle-frame-fullscreen :exit t)
