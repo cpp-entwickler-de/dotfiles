@@ -2774,7 +2774,6 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
       tab-width 4
       text-mode-hook '(turn-on-auto-fill text-mode-hook-identify)
       require-final-newline nil)
-(show-paren-mode)
 
 (defvar cpped-default-indentation 4 "The default number of spaces to indent.")
 (defvar autopair-skip-whitespace t)
