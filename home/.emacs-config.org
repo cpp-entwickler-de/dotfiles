@@ -2549,16 +2549,10 @@ https://github.com/mivok/markdownlint
   (flymd-output-directory temporary-file-directory))
 #+END_SRC
 
-*** Highlight edited areas shortly
+*** [[https://github.com/minad/goggles][Highlight edited areas shortly]]
 #+BEGIN_SRC emacs-lisp
-(use-package volatile-highlights
-  :custom
-  (Vhl/highlight-zero-width-ranges t)
-  (vhl/use-etags-extension-p nil)
-  (vhl/use-hideshow-extension-p t)
-  (vhl/use-nonincremental-search-extension-p nil)
-  (vhl/use-occur-extension-p nil)
-  :config (volatile-highlights-mode t))
+(use-package goggles
+  :hook (find-file . goggles-mode))
 #+END_SRC
 
 *** Highlight current symbol
