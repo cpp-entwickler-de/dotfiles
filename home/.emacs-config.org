@@ -934,7 +934,7 @@ Find path of current position in XML docuement
                                   (powerline-raw version mode-line))
                                 (when version
                                   (funcall separator-left mode-line face2))
-                                (powerline-raw (cpped-powerline-remote (symbol-value 'face2)) face2)
+                                (powerline-raw (cpped-powerline-remote (symbol-value 'face2)) face2 'r)
                                 (powerline-raw (cpped-powerline-su (symbol-value 'face2)) face2 'r)
                                 (powerline-raw (cpped-powerline-modified (symbol-value 'face2)) face2)
                                 (powerline-raw (cpped-powerline-overwrite-mode (symbol-value 'face2)) face2 'l)
