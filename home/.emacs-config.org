@@ -3810,12 +3810,16 @@ Handler to close buffer after quitting ccmake.
 (defvar-local cpped-format-region-function nil "The function to call to format the current region.")
 (defvar-local cpped-format-buffer-function nil "The function to call to format the whole buffer.")
 (defvar-local cpped-auto-format-enabled-p t "Whether to enable auto-formatting for the current buffer.")
+
+(add-hook 'find-file-hook (lambda()
+                            (setq cpped-auto-format-enabled-p (not (cpped-tramp-file-remote-p (cpped-buffer-name))))))
 #+END_SRC
 
 ****** Auto-format
 #+BEGIN_SRC emacs-lisp
 (add-hook 'before-save-hook #'(lambda()
-                                (when (and cpped-auto-format-enabled-p
+                                (when (and (not (cpped-tramp-file-remote-p (cpped-buffer-name)))
+                                           cpped-auto-format-enabled-p
                                            cpped-format-buffer-function)
                                   (funcall cpped-format-buffer-function))))
 #+END_SRC
