@@ -176,7 +176,7 @@ Do not load outdated byte code
 * Internals
 ** Include cl package
 #+BEGIN_SRC emacs-lisp
-(use-package cl)
+(use-package cl-lib)
 #+END_SRC
 
 ** Utilities
@@ -988,9 +988,9 @@ Find path of current position in XML docuement
   (projectile-find-dir-includes-top-level t)
   (projectile-git-submodule-command nil)
   (projectile-idle-timer-hook nil)
-  (projectile-project-search-path (remove-if (lambda (directory)
-                                               (not (file-directory-p directory)))
-                                             (mapcar #'expand-file-name cpped-project-directories)))
+  (projectile-project-search-path (cl-remove-if (lambda (directory)
+                                                  (not (file-directory-p directory)))
+                                                (mapcar #'expand-file-name cpped-project-directories)))
   (projectile-sort-order 'recently-active)
   (projectile-switch-project-action 'helm-projectile)
   (projectile-verbose nil)
@@ -5398,8 +5398,8 @@ Auto-highlight details
          (buffer-b ediff-buffer-B)
          (buffer-c ediff-buffer-C)
          (buffer-control (current-buffer))
-         (modified-buffers (remove-if-not 'buffer-modified-p
-                                          (list buffer-a buffer-b buffer-c))))
+         (modified-buffers (cl-remove-if-not 'buffer-modified-p
+                                             (list buffer-a buffer-b buffer-c))))
     (let ((save (if modified-buffers
                     (yes-or-no-p "Save changes?")
                   nil)))
