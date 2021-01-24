@@ -188,6 +188,12 @@ Do not load outdated byte code
     (bounds-of-thing-at-point 'word)))
 #+END_SRC
 
+** [[https://github.com/jschaf/esup][Startup Profiler]]
+#+BEGIN_SRC emacs-lisp
+(use-package esup
+  :commands (esup))
+#+END_SRC
+
 ** Waiting time information
 #+BEGIN_SRC emacs-lisp :tangle no
 (use-package explain-pause-mode
@@ -7912,6 +7918,8 @@ Settings                       ^^Snippets            ^^Abbreviations            
 
   _s_: Set variable
 
+  _#_: Profile startup
+
   _d_: %s(if debug-on-error
              \"Disable\"
            \"Enable\") debug on error
@@ -7927,7 +7935,8 @@ Settings                       ^^Snippets            ^^Abbreviations            
   ("v" customize-variable)
   ("g" customize-group)
   ("s" set-variable)
-  ("d" (setq debug-on-error (not debug-on-error))))
+  ("d" (setq debug-on-error (not debug-on-error)))
+  ("#" esup))
 
 (global-set-key (kbd "C-S-s") #'cpped-hydra-settings/body)
 #+END_SRC
