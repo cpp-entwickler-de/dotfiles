@@ -4200,6 +4200,12 @@ TODO
   (add-to-list 'cpped-powerline-check-status-functions 'cpped-powerline-compilation-status)
 #+END_SRC
 
+***** Show notification
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'compilation-finish-functions '(lambda (buffer message)
+                                              (notifications-notify :title "Compilation finished")))
+#+END_SRC
+
 **** Documentation
 ***** API
 #+BEGIN_SRC emacs-lisp
