@@ -5276,7 +5276,7 @@ Set correct major mode
   (add-to-list 'org-src-lang-modes '("plantuml" . plantuml)))
 
 (defun cpped-preview-plantuml-file ()
-  ""
+  "Preview a plantuml file."
   (when (equal major-mode 'plantuml-mode)
     (plantuml-preview-string 4 (buffer-string))))
 
