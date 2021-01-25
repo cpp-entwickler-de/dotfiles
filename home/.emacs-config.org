@@ -5546,6 +5546,14 @@ When using Magit >= 2.4.0
 (use-package magit-popup)
 #+END_SRC
 
+You can easily create git scripts with magit commands. For instance, for auto rebasing a branch "MY-BRANCH" and push
+forcing it by running
+#+BEGIN_SRC emacs-lisp :tangle no
+(magit-checkout "MY-BRANCH")
+(magit-rebase-onto-upstream nil)
+(magit-push-current-to-pushremote "-f")
+#+END_SRC
+
 ***** Full screen magit-status
 #+BEGIN_SRC emacs-lisp
 (defadvice magit-status (around magit-fullscreen activate)
