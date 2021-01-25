@@ -1480,7 +1480,6 @@ Indicate recursive minibuffer
                                        comint-postoutput-scroll-to-bottom
                                        comint-watch-for-password-prompt
                                        comint-truncate-buffer)
-      eshell-kill-processes-on-exit t
       term-buffer-maximum-size 100000)
 (add-hook 'term-exec-hook #'term-char-mode)
 
@@ -1566,9 +1565,12 @@ Indicate recursive minibuffer
                                     eshell-handle-control-codes
                                     eshell-handle-ansi-color
                                     eshell-watch-for-password-prompt))
-  (eshell-review-quick-commands t)
-  (eshell-scroll-to-bottom-on-output 'all)
-  (eshell-show-lisp-completions t))
+  :config
+  (require 'em-smart)
+  (setq eshell-where-to-jump 'begin
+        eshell-review-quick-commands nil
+        eshell-smart-space-goes-to-end t)
+  (add-hook 'eshell-mode-hook 'eshell-smart-initialize))
 #+END_SRC
 
 *** Environment
