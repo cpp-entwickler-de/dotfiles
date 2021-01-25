@@ -497,19 +497,19 @@ Disable prettification if cursor is at edge of expression
                                 (when backend
                                   (file-name-nondirectory (directory-file-name (file-name-directory (ignore-errors (vc-call-backend backend 'root default-directory)))))))))))
         (concat
-         (propertize (all-the-icons-faicon5 (cond ((not (= 0 (length project-name))) "folder")
-                                                 ((and (not (cpped-tramp-file-remote-p buffer-location))
-                                                       (string-prefix-p (getenv "HOME")
-                                                                        (if (tramp-tramp-file-p buffer-location)
-                                                                            (tramp-file-name-localname (tramp-dissect-file-name buffer-location))
-                                                                          buffer-location))) "home")
-                                                 ((cpped-tramp-file-remote-p buffer-location) "cloud")
-                                                 (t "desktop")))
+         (propertize (all-the-icons-faicon5 (cond ((cpped-tramp-file-remote-p buffer-location) "cloud")
+                                                  ((not (= 0 (length project-name))) "folder")
+                                                  ((and (not (cpped-tramp-file-remote-p buffer-location))
+                                                        (string-prefix-p (getenv "HOME")
+                                                                         (if (tramp-tramp-file-p buffer-location)
+                                                                             (tramp-file-name-localname (tramp-dissect-file-name buffer-location))
+                                                                           buffer-location))) "home")
+                                                  (t "desktop")))
                                 'face (list ':family (all-the-icons-faicon5-family)
                                             ':background (face-attribute icon-face :background))
                                 'display '(raise -0.0))
          (let ((location (if (cpped-tramp-file-remote-p buffer-location)
-                             tramp-current-host
+                             (tramp-file-name-host (tramp-dissect-file-name buffer-location))
                            (when (not (= 0 (length project-name)))
                              (propertize project-name
                                          'help-echo (cpped-project-dir))))))
