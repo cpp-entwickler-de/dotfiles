@@ -1134,6 +1134,25 @@ Find path of current position in XML docuement
     (add-hook 'helm-cleanup-hook #'cpped-popwin-help-mode-on)))
 #+END_SRC
 
+*** Multiple Cursors Fix
+When running helm-M-x with multiple-cursors-mode, the command will only run on one cursor.
+
+#+BEGIN_SRC emacs-lisp
+(defun cpped-helm-M-x ()
+    (interactive)
+    (if (call-interactively 'helm-M-x)
+        (let ((command (intern (car extended-command-history))))
+          (if multiple-cursors-mode
+              (if (and command
+                       (not (memq command mc--default-cmds-to-run-once))
+                       (not (memq command mc/cmds-to-run-once))
+                       (or mc/always-run-for-all
+                           (memq command mc--default-cmds-to-run-for-all)
+                           (memq command mc/cmds-to-run-for-all)
+                           (mc/prompt-for-inclusion-in-whitelist command)))
+                  (mc/execute-command-for-all-fake-cursors command))))))
+#+END_SRC
+
 ** Imenu
 *** Automatically rescan
 #+BEGIN_SRC emacs-lisp
@@ -6883,8 +6902,8 @@ Do not use scientific form so quickly
 
 ** Helm
 #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "M-x") 'helm-M-x)
-(global-set-key (kbd "<menu>") 'helm-M-x)
+(global-set-key (kbd "M-x") 'cpped-helm-M-x)
+(global-set-key (kbd "<menu>") 'cpped-helm-M-x)
 #+END_SRC
 
 ** Hydra
