@@ -2395,7 +2395,7 @@ https://github.com/purcell/exec-path-from-shell
                                  (setq-local ediff-quit-hook (lambda ()
                                                                (ediff-kill-buffer-carefully ediff-buffer-A)
                                                                (ediff-kill-buffer-carefully ediff-buffer-B)
-                                                               (set-window-configuration cpped-dired-ediff-window-configuration.))))))))
+                                                               (set-window-configuration cpped-dired-ediff-window-configuration))))))))
 
 (define-key dired-mode-map "d" 'cpped-dired-ediff-files)
 #+END_SRC
