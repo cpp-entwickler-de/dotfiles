@@ -835,11 +835,11 @@ Find path of current position in XML docuement
 
 #+BEGIN_SRC emacs-lisp
 (defun cpped-powerline-which-function (icon-face)
-  (let ((current-function (pcase major-mode
-                            ('nxml-mode (cpped-nxml-where))
-                            ('eshell-mode eshell-last-command-name)
-                            (_ (when which-function-mode
-                                 (which-function))))))
+  (let ((current-function (substring-no-properties (pcase major-mode
+                                                     ('nxml-mode (cpped-nxml-where))
+                                                     ('eshell-mode eshell-last-command-name)
+                                                     (_ (when which-function-mode
+                                                          (which-function)))))))
     (unless (= 0 (length current-function))
       (concat
        (propertize (all-the-icons-faicon5 "puzzle-piece")
