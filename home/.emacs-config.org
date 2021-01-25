@@ -3844,6 +3844,13 @@ Handler to close buffer after quitting ccmake.
 (use-package smart-forward)
 #+END_SRC
 
+***** Limit view to function when navigating
+#+BEGIN_SRC emacs-lisp
+(add-hook 'imenu-after-jump-hook #'(lambda ()
+                                     (when (derived-mode-p 'prog-mode)
+                                       (narrow-to-defun))))
+#+END_SRC
+
 **** Editing
 ***** Formatting
 #+BEGIN_SRC emacs-lisp
