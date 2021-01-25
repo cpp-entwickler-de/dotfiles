@@ -3017,7 +3017,9 @@ Some useful abbreviations
 
 *** [[https://github.com/rejeep/wrap-region.el][Wrap Region]]
 #+BEGIN_SRC emacs-lisp
-(use-package wrap-region)
+(use-package wrap-region
+  :hook ((wrap-region-before-wrap . (lambda () (electric-pair-mode 0)))
+         (wrap-region-after-wrap . (lambda () (electric-pair-mode 1)))))
 #+END_SRC
 
 *** Insert Date/Time
