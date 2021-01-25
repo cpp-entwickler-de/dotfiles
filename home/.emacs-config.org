@@ -3883,22 +3883,14 @@ Handler to close buffer after quitting ccmake.
 
 (use-package iedit)
 
-(defun iedit-dwim (arg)
-  "Starts iedit but uses \\[narrow-to-defun] to limit its scope."
-  (interactive "P")
-  (if arg
-      (iedit-mode)
-    (save-excursion
-      (save-restriction
-        (widen)
-        (if iedit-mode
-            (iedit-done)
-          (let ((word (current-word))
-                (end (progn (funcall cpped-end-of-function)
-                            (point)))
-                (begin (progn (funcall cpped-beginning-of-function)
-                              (point))))
-            (iedit-start word begin end)))))))
+(defun cpped-iedit-scoped (orig-fn)
+  "Call `iedit-mode' with function-local scope, or global scope if called with a universal prefix."
+  (interactive)
+  (pcase-exhaustive current-prefix-arg
+    ('nil (funcall orig-fn '(0)))
+    ('(4) (funcall orig-fn))))
+
+(advice-add #'iedit-mode :around #'cpped-iedit-scoped)
 #+END_SRC
 
 ***** Change numbers
@@ -7477,7 +7469,7 @@ Identifier    ^^Namespace
 
                                 ^^Rename           ^^Replace                     ^^Change          ^^^Format                        ^^Text             ^^Transform            ^^Code
   _d_: Duplicate                    _n_: Local         _r_: String/Regex             _c_: Case          _>_: Indentation                _t_: Translate     _6_: Encode Base64     _/_: Comment
-  _D_: Duplicate & Comment          _N_: File-wide     _p_: in Project               _\"_: String       _m_: Move                       _y_: Synonym       _&_: Decode Base64     _f_: Refactor
+  _D_: Duplicate & Comment                           ^^_p_: in Project               _\"_: String       _m_: Move                       _y_: Synonym       _&_: Decode Base64     _f_: Refactor
   _i_: Insert                                        ^^_G_: With previous commit     _+_: Value +       _j_: Join lines                 _l_: Spelling                             _e_: Evaluate
   _'_: Quoted insert                                                             ^^^^_-_: Value -       _:_: Fill paragraph             _s_: Sort          _k_: Encrypt           _E_: Evaluate & Replace
   _<_: Complete                                                                  ^^^^_#_: Base          _<tab>_: Spaces → Tabs          _x_: Transpose     _K_: Decrypt           _._: Suggestion
@@ -7499,8 +7491,7 @@ Identifier    ^^Namespace
   ("&" typo-mode)
   ("a" aya-create)
 
-  ("n" iedit-dwim)
-  ("N" iedit-mode)
+  ("n" iedit-mode)
 
   ("r" vr/query-replace)
   ("p" projectile-replace)
@@ -7596,10 +7587,10 @@ Insert at position
 
 (defun cpped-yank-to-global-mark (prefix)
   (interactive "P")
-  (if (cua--global-mark-active)
+  (if cua--global-mark-active
       (with-current-buffer (marker-buffer cua--global-mark-marker)
         (goto-char (marker-position cua--global-mark-marker))
-        (whole-line-or-region-yank prefix)
+        (yank)
         (cua--activate-global-mark)
         (message "Copied to global mark in %s:%d"
 	         (buffer-name (marker-buffer cua--global-mark-marker))
@@ -7659,7 +7650,7 @@ Copy                     ^^Other
 
 (global-set-key (kbd "M-w") '(lambda(prefix)
                                (interactive "P")
-                               (whole-line-or-region-call-with-region 'kill-ring-save prefix t)
+                               (call-interactively #'whole-line-or-region-kill-ring-save)
                                (cpped-yank-to-global-mark prefix)))
 (global-set-key (kbd "M-k") #'cpped-hydra-copy/whole-line-or-region-kill-ring-save)
 
@@ -7711,16 +7702,16 @@ Cut                   ^^Delete                               ^^Other
 
 (global-set-key (kbd "C-w") '(lambda(prefix)
                                (interactive "P")
-                               (whole-line-or-region-call-with-region 'kill-region prefix t)
+                               (call-interactively #'whole-line-or-region-kill-region)
                                (cpped-yank-to-global-mark prefix)))
 (global-set-key (kbd "C-k") #'cpped-hydra-kill/body)
 
 (defhydra cpped-hydra-yank (:hint nil :exit nil)
   "Yank"
-  ("C-y" whole-line-or-region-yank :exit nil)
+  ("C-y" yank :exit nil)
   ("M-y" helm-show-kill-ring :exit t))
 
-(global-set-key (kbd "C-y") #'cpped-hydra-yank/whole-line-or-region-yank)
+(global-set-key (kbd "C-y") #'cpped-hydra-yank/yank)
 (global-set-key (kbd "M-y") #'helm-show-kill-ring)
 
 (define-key term-raw-map (kbd "C-c C-y") 'term-paste)
