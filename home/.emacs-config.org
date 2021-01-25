@@ -2390,6 +2390,8 @@ https://github.com/purcell/exec-path-from-shell
          (file2 (if (cdr files)
                     (cadr files)
                   (read-file-name "Diff to: " (dired-dwim-target-directory)))))
+    (when (file-newer-than-file-p file1 file2)
+      (cl-rotatef file1 file2))
     (setq cpped-dired-ediff-window-configuration (current-window-configuration))
     (ediff-files file1 file2 '((lambda ()
                                  (setq-local ediff-quit-hook (lambda ()
