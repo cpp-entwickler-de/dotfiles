@@ -726,6 +726,20 @@ Helper function to figure out version control root directory
             (count-words (region-end) (region-beginning))
             (- (region-end) (region-beginning)))))
 #+END_SRC
+
+*** IEdit Info
+#+BEGIN_SRC emacs-lisp
+(defun cpped-powerline-iedit-info (icon-face)
+  (when iedit-mode
+    (format "%s %s/%s"
+            (propertize (all-the-icons-faicon5 "pencil-alt")
+                        'face (list ':family (all-the-icons-faicon5-family)
+                                    ':background (face-attribute icon-face :background))
+                        'display '(raise -0.0))
+            iedit-occurrence-index
+            (iedit-counter))))
+#+END_SRC
+
 *** Show if overwrite mode is active
 #+BEGIN_SRC emacs-lisp
 (defun cpped-powerline-overwrite-mode (icon-face)
@@ -947,6 +961,7 @@ Find path of current position in XML docuement
                                 (powerline-raw (cpped-powerline-term-input-mode (symbol-value 'face2)) face2 'l)
                                 (powerline-raw (cpped-powerline-position-info (symbol-value 'face2)) face2 'l)
                                 (powerline-raw (cpped-powerline-region-info (symbol-value 'face2)) face2 'l)
+                                (powerline-raw (cpped-powerline-iedit-info (symbol-value 'face2)) face2 'l)
                                 (when show-check-status
                                   (powerline-raw check-status face2 'l))
                                 (funcall separator-left face2 mode-line)
