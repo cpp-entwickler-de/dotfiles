@@ -2758,7 +2758,14 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 *** [[https://github.com/tam17aki/ace-isearch][Jump to any symbol]]
 #+BEGIN_SRC emacs-lisp
 (use-package avy
-  :custom (avy-all-windows t))
+  :custom
+  (avy-all-windows t)
+  (avy-style 'words)
+  (avy-dispatch-alist '((?K . avy-action-kill-move)
+                        (?R . avy-action-kill-stay)
+                        (?T . avy-action-teleport)
+                        (?W . avy-action-copy)
+                        (?Y . avy-action-yank))))
 
 (use-package ace-isearch
   :custom
