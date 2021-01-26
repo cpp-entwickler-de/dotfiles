@@ -2202,6 +2202,8 @@ https://github.com/purcell/exec-path-from-shell
       buffer-save-without-query t)
 
 (auto-save-visited-mode)
+
+(add-hook 'focus-out-hook (lambda () (save-some-buffers t)))
 #+END_SRC
 
 *** [[https://github.com/bbatsov/super-save][Save when losing focus]]
