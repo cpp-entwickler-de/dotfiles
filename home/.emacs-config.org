@@ -2378,15 +2378,6 @@ https://github.com/purcell/exec-path-from-shell
   :bind (:map dired-mode-map ("v" . peep-dired)))
 #+END_SRC
 
-**** [[https://github.com/clemera/dired-git-info][Show git information]]
-#+BEGIN_SRC emacs-lisp
-(use-package dired-git-info
-  :quelpa (dired-git-info
-           :fetcher github
-           :repo "clemera/dired-git-info")
-  :functions dired-git-info
-  :hook dired-mode)
-#+END_SRC
 
 **** Diff files
 #+BEGIN_SRC emacs-lisp
