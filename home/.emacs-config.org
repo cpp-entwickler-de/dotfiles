@@ -6428,11 +6428,11 @@ Archive when done, remove flag if reset to todo.
                              org-default-notes-file)
       org-agenda-format-date "%A, %e.%m.%Y"
       org-agenda-include-diary t
-      org-agenda-prefix-format '((agenda  . "  %-24(org-format-outline-path (org-get-outline-path)) %-8T%?-12t% s  ")
-                                 (timeline  . "  %l% s")
-                                 (todo  . "  %-26(org-format-outline-path (org-get-outline-path)) %-6T%?-12t")
-                                 (tags  . "  %-26(org-format-outline-path (org-get-outline-path)) %-6T")
-                                 (search . "  %(org-format-outline-path (org-get-outline-path))%-6T"))
+      org-agenda-prefix-format '((agenda  . "  %(org-format-outline-path (org-get-outline-path)) %?-6T%?-12t")
+                                 (timeline  . "  %l")
+                                 (todo  . "  %(org-format-outline-path (org-get-outline-path)) %?-6T%?-12t")
+                                 (tags  . "  %(org-format-outline-path (org-get-outline-path)) %?-6T")
+                                 (search . "  %(org-format-outline-path (org-get-outline-path))%?-6T"))
       org-agenda-remove-tags 'prefix
       org-agenda-restore-windows-after-quit t
       org-agenda-show-all-dates nil
