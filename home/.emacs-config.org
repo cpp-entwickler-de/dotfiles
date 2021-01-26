@@ -3017,6 +3017,8 @@ Some useful abbreviations
   :config (yas-global-mode 1))
 #+END_SRC
 
+[[https://joaotavora.github.io/yasnippet/snippet-development.html][Snippet Development Documentation]]
+
 ***** [[https://github.com/abo-abo/auto-yasnippet][Automatic snippets]]
 #+BEGIN_SRC emacs-lisp
 (use-package auto-yasnippet)
