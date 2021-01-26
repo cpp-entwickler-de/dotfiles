@@ -5862,6 +5862,12 @@ forcing it by running
 (use-package gitattributes-mode)
 #+END_SRC
 
+**** [[https://github.com/sei40kr/gitignore-snippets][Snippets]]
+#+begin_SRC emacs-lisp
+(use-package gitignore-snippets
+  :config (gitignore-snippets-init))
+#+end_SRC
+
 * Viewer
 ** Man Pages
 #+BEGIN_SRC emacs-lisp
