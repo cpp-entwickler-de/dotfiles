@@ -6935,6 +6935,27 @@ Do not use scientific form so quickly
 #+END_SRC
 
 * [[https://github.com/abo-abo/hydra][Keybindings]]
+** Quit from any context
+#+BEGIN_SRC emacs-lisp
+(defun cpped-keyboard-quit-context ()
+  "Quit from any context."
+  (interactive)
+  (cond ((region-active-p)
+         (setq saved-region-selection nil)
+         (let (select-active-region-regions)
+           (deactivate-mark)))
+        ((eq last-command 'mode-exited) nil)
+        (current-prefix-arg nil)
+        ((active-minibuffer-window)
+         (when (get-buffer-window "*Completions*")
+           (minibuffer-hide-completions))
+         (abort-recursive-edit))
+        (t
+         (keyboard-quit))))
+
+(global-set-key [remap keyboard-quit] #'cpped-keyboard-quit-context)
+#+END_SRC
+
 ** Use Escape instead of C-g
 #+BEGIN_SRC emacs-lisp
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
