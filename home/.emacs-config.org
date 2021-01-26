@@ -442,19 +442,10 @@ Disable prettification if cursor is at edge of expression
 (use-package dashboard
   :after helm-buffers
   :custom
-  (dashboard-startup-banner (let ((image-url (with-current-buffer (url-retrieve-synchronously (format-time-string "http://dilbert.com/%Y-%m-%d"))
-                                               (goto-char (point-min))
-                                               (when (re-search-forward (rx "src=\"" (group "//assets.amuniversal.com/" (+ hex-digit)) "\"")
-                                                                        nil t)
-                                                 (setq url (concat "http:" (match-string 1))))
-                                               (kill-buffer)
-                                               url))
-                                  (image-file (make-temp-file "emacs-dilbert" nil ".png")))
-                              (when image-file
-                                (url-copy-file image-url image-file t)
-                                (add-hook 'kill-emacs-hook `(lambda()
-                                                              (delete-file ,image-file))))
-                              image-file))
+  (dashboard-startup-banner (let ((logo (expand-file-name "logo.png" "~/")))
+                              (if (file-exists-p logo)
+                                  logo
+                                nil)))
   (dashboard-banner-logo-title "")
   (dashboard-page-separator "\n\n")
   (dashboard-items '((recents . 20)
