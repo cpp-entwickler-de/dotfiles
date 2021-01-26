@@ -173,6 +173,16 @@ Do not load outdated byte code
   :after system-packages)
 #+END_SRC
 
+*** Helm support
+#+BEGIN_SRC emacs-lisp
+  (use-package helm-system-packages
+    :disabled
+    :after helm
+    :quelpa (helm-system-packages
+             :fetcher github
+             :repo "emacs-helm/helm-system-packages"))
+#+END_SRC
+
 * Internals
 ** Include cl package
 #+BEGIN_SRC emacs-lisp
@@ -3700,7 +3710,7 @@ Handler to close buffer after quitting ccmake.
             (push '("FALSE" . ?🚫) prettify-symbols-alist)))
 #+END_SRC
 
-***** [[https://github.com/tarsius/hl-todo][Highlight TODO/FIXME/…
+***** [[https://github.com/tarsius/hl-todo][Highlight TODO/FIXME/…]]
 #+BEGIN_SRC emacs-lisp
 (defface hl-todo-info '((t :inherit info))
   "Face used for info text."
@@ -8013,8 +8023,8 @@ Focus                  ^^^^Close                ^^Split               ^^Align   
 ☰ Settings
 
 Settings                       ^^Snippets            ^^Abbreviations             ^^Packages
-  _c_: Open config file            _Y_: New snippet      _A_: New abbreviation       _p_: Show packages
-  _m_: Open customization file     _y_: Edit snippet     _a_: Edit abbreviations
+  _c_: Open config file            _Y_: New snippet      _A_: New abbreviation       _p_: Emacs packages
+  _m_: Open customization file     _y_: Edit snippet     _a_: Edit abbreviations     _P_: system packages
   _t_: Edit theme
   _v_: Customize variable
   _g_: Customize group
@@ -8034,6 +8044,7 @@ Settings                       ^^Snippets            ^^Abbreviations            
   ("a" edit-abbrevs)
   ("A" add-inverse-global)
   ("p" list-packages)
+  ("P" helm-system-packages)
   ("t" (custom-theme-visit-theme cpped-theme))
   ("v" customize-variable)
   ("g" customize-group)
@@ -8090,6 +8101,7 @@ Tools                      ^^Last Command    ^^System
   _c_: Calculator              _r_: Repeat       _a_: Run application
   _x_: Regex Builder           _f_: Resume       _p_: Show processes
   _e_: Evaluate expression                     ^^_s_: Show system services
+                                             ^^^^_P_: Manage system packages
                                              ^^^^_d_: Docker
                                              ^^^^_t_: Trash
 
@@ -8105,6 +8117,7 @@ _=_: Directory Diff
   ("a" cpped-run-application)
   ("p" helm-top)
   ("s" helm-systemd)
+  ("P" helm-system-packages)
   ("d" cpped-hydra-tools-docker/body)
   ("t" trashed))
 
