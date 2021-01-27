@@ -8103,7 +8103,7 @@ Tools                      ^^Last Command    ^^System
   _x_: Regex Builder           _f_: Resume       _p_: Show processes
   _e_: Evaluate expression                     ^^_s_: Show system services
                                              ^^^^_P_: Manage system packages
-                                             ^^^^_d_: Docker
+  _/_: Open directory                          ^^_d_: Docker
                                              ^^^^_t_: Trash
 
 _=_: Directory Diff
@@ -8111,6 +8111,7 @@ _=_: Directory Diff
   ("c" helm-calcul-expression)
   ("x" re-builder)
   ("e" eval-expression)
+  ("/" dired)
   ("=" ztree-diff)
   ("r" repeat)
   ("f" (let ((current-prefix-arg '(4)))
