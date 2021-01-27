@@ -1471,7 +1471,8 @@ Indicate recursive minibuffer
 
 ** Shell
 #+BEGIN_SRC emacs-lisp
-(setq comint-buffer-maximum-size 10000
+(setq comint-terminfo-terminal "xterm-256color"
+      comint-buffer-maximum-size 10000
       comint-scroll-show-maximum-output t
       comint-input-ring-size 500
       comint-input-ignoredups t
