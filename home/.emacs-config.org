@@ -2557,7 +2557,11 @@ https://github.com/purcell/exec-path-from-shell
    ("\\.markdown\\'" . markdown-mode))
   :hook (markdown-mode . (lambda ()
                            (typo-mode -1)))
-  :custom (markdown-command "multimarkdown"))
+  :custom
+  (markdown-command "multimarkdown")
+  (markdown-enable-wiki-links t)
+  (markdown-italic-underscore t)
+  (markdown-make-gfm-checkboxes-buttons t))
 #+END_SRC
 
 ***** Editing
