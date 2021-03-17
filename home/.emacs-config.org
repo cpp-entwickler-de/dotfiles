@@ -7823,11 +7823,11 @@ Format          ^^Markup         ^^Script            ^^Diagram        ^^Other
   ("p" (cpped-org-expand-template "p"))
   ("*" (cpped-org-expand-template "*")))
 
-(define-key org-mode-map "#" (lambda ()
-                               (interactive)
-                               (if (looking-back "^")
-                                   (cpped-hydra-org-structure-template/body)
-                                 (self-insert-command 1))))
+(define-key org-mode-map (kbd "#") (lambda ()
+                                     (interactive)
+                                     (if (looking-back "^")
+                                         (cpped-hydra-org-structure-template/body)
+                                       (self-insert-command 1))))
 #+END_SRC
 
 ** PDF-View-Mode
