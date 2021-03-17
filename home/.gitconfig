@@ -140,7 +140,7 @@ xfuncname = "^\\*+ ([a-zA-Z0-9]+.+)$"
 
 
 [diff "ini"]
-# Use org headline in diff
+# Use section name in diff
 xfuncname = "^\\[([a-zA-Z0-9]+)\\]$"
 
 
