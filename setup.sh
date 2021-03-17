@@ -192,6 +192,8 @@ if [ "$PRINTERS" = TRUE ]; then
     for FILE in $QT_PRINTER_FILES; do
         curl --show-error --create-dirs --output "$PRETTY_PRINTER_DIR/qt/$FILE" "https://cgit.kde.org/kdevelop.git/plain/plugins/gdb/printers/$FILE"
     done
+
+    git_install git://github.com/ruediger/Boost-Pretty-Printer.git "$PRETTY_PRINTER_DIR/Boost-Pretty-Printer"
 fi
 
 if [ "$FONTS" = TRUE ]; then

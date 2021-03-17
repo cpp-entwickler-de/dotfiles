@@ -43,6 +43,10 @@ sys.path.insert(0, expanduser("~/.gdb"))
 from stl import register_libstdcxx_printers 
 register_libstdcxx_printers (None) 
 
+sys.path.insert(0, '~/.gdb/Boost-Pretty-Printer')
+import boost
+boost.register_printers()
+
 sys.path.insert(0, expanduser("~/.gdb/qt"))
 from qt import register_qt_printers
 register_qt_printers (None)
