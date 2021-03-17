@@ -722,3 +722,5 @@ fi
 if [ -e ~/.zshrc.user ]; then
     source ~/.zshrc.user
 fi
+
+export PATH="$PATH:/home/player/.local/bin"
