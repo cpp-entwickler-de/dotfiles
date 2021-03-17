@@ -1,3 +1,4 @@
+*.el      diff=lisp
 *.org     diff=org
 *.ini     diff=ini
 *.conf    diff=ini

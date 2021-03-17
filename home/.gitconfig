@@ -130,6 +130,9 @@ colorMoved = default
 # Show log of submodules
 submodule = log
 
+[diff "lisp"]
+# Use function name in diff
+xfuncname = "^(\\(.*)$"
 
 [diff "org"]
 # Use org headline in diff
