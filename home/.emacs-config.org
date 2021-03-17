@@ -3115,11 +3115,6 @@ Some useful abbreviations
   :after (wgrep helm))
 #+END_SRC
 
-**** [[https://github.com/lateau/charmap][Unicode table]]
-#+BEGIN_SRC emacs-lisp
-(use-package charmap)
-#+END_SRC
-
 ** [[http://www-sop.inria.fr/members/Manuel.Serrano/flyspell/flyspell.html][Spell checking]]
 #+BEGIN_SRC emacs-lisp
 (use-package flyspell
