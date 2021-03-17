@@ -6063,8 +6063,8 @@ Hide info buffer in buffer list
       (write-file file)
       (cpped-kill-default-buffer))))
 
-(cpped-create-default-file org-default-bugs-file "#+CATEGORY: Bugs\n\n")
-(cpped-create-default-file org-default-todos-file "#+CATEGORY: ToDos\n\n")
+(cpped-create-default-file org-default-bugs-file "#+CATEGORY: Bugs\n#+BEGIN: clocktable :maxlevel 5 :scope file :block thisweek :step day :compact nil :narrow 80\n#+END:\n\n")
+(cpped-create-default-file org-default-todos-file "#+CATEGORY: ToDos\n#+BEGIN: clocktable :maxlevel 5 :scope file :block thisweek :step day :compact nil :narrow 80\n#+END:\n\n")
 (cpped-create-default-file org-default-events-file)
 (cpped-create-default-file org-default-notes-file "#+CATEGORY: Notes\n\n")
 #+END_SRC
