@@ -2136,6 +2136,11 @@ https://github.com/purcell/exec-path-from-shell
 (defvar cpped-config-file "~/.emacs-config.org")
 #+END_SRC
 
+** Ignore case for file names
+#+BEGIN_SRC emacs-lisp
+(setq read-file-name-completion-ignore-case t)
+#+END_SRC
+
 ** Do not ask if file should be created
 #+BEGIN_SRC emacs-lisp
 (setq confirm-nonexistent-file-or-buffer nil
