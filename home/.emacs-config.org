@@ -2,6 +2,7 @@
 #+OPTIONS: toc:4
 #+PROPERTY: header-args :results silent :tangle yes :comments yes
 #+STARTUP: showeverything
+#+auto_tangle: t
 
 * Custom configuration
 #+BEGIN_SRC emacs-lisp
@@ -6100,6 +6101,12 @@ Remove check on buffer close
     (apply wrapped-function arguments)))
 
 (advice-add 'org-check-running-clock :around #'cpped-silence-org-clock)
+#+END_SRC
+
+** Tangling
+#+BEGIN_SRC emacs-lisp
+(use-package org-auto-tangle
+  :hook (org-mode . org-auto-tangle-mode))
 #+END_SRC
 
 ** Lists
