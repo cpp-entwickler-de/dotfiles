@@ -8275,5 +8275,6 @@ Open                ^^Create       ^^Work         ^^Task                        
 
 * Notify when loading is finished
 #+BEGIN_SRC emacs-lisp
-(notifications-notify :title "IDE ready")
+(add-hook 'after-init-hook (lambda ()
+                             (notifications-notify :title "IDE ready")))
 #+END_SRC
