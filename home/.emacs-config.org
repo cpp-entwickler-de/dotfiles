@@ -1819,17 +1819,6 @@ https://github.com/purcell/exec-path-from-shell
 
   (add-to-list 'eshell-visual-options '("git" "--help")))
 #+END_SRC
-
-*** Open shell in project directory
-#+BEGIN_SRC emacs-lisp
-(defun cpped-shell-project-dir ()
-  "Open eshell in project directory."
-  (interactive)
-  (let ((default-directory (cpped-project-dir)))
-    (if default-directory
-        (cpped-eshell-maybe-new-session))))
-#+END_SRC
-
 *** [[https://github.com/kyagi/shell-pop-el][Popup]]
 #+BEGIN_SRC emacs-lisp
 (use-package shell-pop
@@ -2039,6 +2028,12 @@ https://github.com/purcell/exec-path-from-shell
 (add-hook 'eshell-mode-hook #'(lambda ()
                                 (add-hook 'eshell-pre-command-hook #'cpped-eshell-current-command-start nil t)
                                 (add-hook 'eshell-post-command-hook #'cpped-eshell-current-command-stop nil t)))
+#+END_SRC
+
+*** Helm support
+#+BEGIN_SRC emacs-lisp
+(use-package helm-switch-shell
+  :after helm)
 #+END_SRC
 
 ** Help
@@ -3481,16 +3476,6 @@ Handler to close buffer after quitting ccmake.
     (projectile-remove-known-project (cpped-cmake-source-dir build-dir))))
 #+END_SRC
 
-**** Open shell in build directory
-#+BEGIN_SRC emacs-lisp
-(defun cpped-shell-build-dir ()
-  "Open a shell in the current build directory."
-  (interactive)
-  (let ((build-dir (cpped-build-dir)))
-    (when build-dir
-      (let ((default-directory (cpped-cmake-build-dir)))
-        (ansi-term)))))
-#+END_SRC
 
 **** List targets
 #+BEGIN_SRC emacs-lisp
@@ -7075,10 +7060,15 @@ CMake              ^^Git                         ^^Directories         ^^Shell  
   ("d" projectile-find-dir)
   ("b" (if cmake-ide-build-dir
            (dired cmake-ide-build-dir)))
-  ("#" cpped-shell-project-dir)
-  (":" ansi-term)
-  ("B" cpped-shell-build-dir)
 
+  ("#" (let ((default-directory (cpped-project-dir)))
+         (if default-directory
+             (helm-switch-shell))))
+  (":" helm-switch-shell)
+  ("B" (let ((build-dir (cpped-build-dir)))
+         (when build-dir
+           (let ((default-directory (cpped-cmake-build-dir)))
+             (helm-switch-shell)))))
   ("f" (helm-ag (or (helm-ag--project-root)
                     default-directory)))
   ("t" magit-todos-list)
