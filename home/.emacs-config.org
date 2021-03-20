@@ -3052,7 +3052,8 @@ Some useful abbreviations
 
 ***** [[https://github.com/abo-abo/auto-yasnippet][Automatic snippets]]
 #+BEGIN_SRC emacs-lisp
-(use-package auto-yasnippet)
+(use-package auto-yasnippet
+  :after yasnippet)
 #+END_SRC
 
 *** [[https://github.com/rejeep/wrap-region.el][Wrap Region]]
