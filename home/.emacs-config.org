@@ -1640,16 +1640,29 @@ https://github.com/purcell/exec-path-from-shell
 
 (defun eshell/cat (arguments)
   "Like `cat' but output with Emacs syntax highlighting."
-  (with-temp-buffer
-    (insert-file-contents file)
-    (let ((buffer-file-name file))
-      (delay-mode-hooks
-        (set-auto-mode)
-        (if (fboundp 'font-lock-ensure)
-            (font-lock-ensure)
-          (with-no-warnings
-            (font-lock-fontify-buffer)))))
-    (buffer-string)))
+  (let ((files (eshell-flatten-list arguments)))
+    (while files
+      (let* ((file (expand-file-name (car files)))
+             (type (file-name-extension file)))
+        (eshell-printn
+         (if (or (string= type "jpg")
+                 (string= type "jpeg")
+                 (string= type "png")
+                 (string= type "gif")
+                 (string= type "tiff")
+                 (string= type "svg"))
+             (propertize " " 'display (create-image file))
+           (with-temp-buffer
+             (insert-file-contents file)
+             (let ((buffer-file-name file))
+               (delay-mode-hooks
+                 (set-auto-mode)
+                 (if (fboundp 'font-lock-ensure)
+                     (font-lock-ensure)
+                   (with-no-warnings
+                     (font-lock-fontify-buffer)))))
+               (buffer-string))))
+         (setq files (cdr files))))))
 #+END_SRC
 
 **** Git support
