@@ -2232,7 +2232,11 @@ https://github.com/purcell/exec-path-from-shell
 
 ** [[https://github.com/nflath/sudo-edit][Allow editing via sudo]]
 #+BEGIN_SRC emacs-lisp
-(use-package sudo-edit)
+(use-package su
+  :after helm-files
+  :config
+  (su-mode +1)
+  (su-helm-integration-mode +1))
 #+END_SRC
 
 ** [[https://github.com/m00natic/vlfi][Allow opening large files]]
@@ -7194,11 +7198,7 @@ Open                             ^^Save                      ^^Close            
              (if word
                  (loccur word)
                (call-interactively 'loccur))))
-  ("!" (progn (read-only-mode)
-              (when (and buffer-read-only
-                         buffer-file-name)
-                (unless (file-writable-p buffer-file-name)
-                  (sudo-edit-current-file)))))
+  ("!" (read-only-mode))
   ("h" hexl-mode)
   ("6" (base64-decode-region (point-min) (point-max)))
   ("&" (base64-encode-region (point-min) (point-max)))
