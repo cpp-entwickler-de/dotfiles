@@ -95,9 +95,6 @@ if [ "$PACKAGES" = TRUE ]; then
 
     sudo pip install howdoi
 
-    # git-undo
-    git_install https://github.com/jwiegley/git-undo-el.git ~/.emacs.d/elpa/git-undo
-
     # ccls
     git_install https://github.com/MaskRay/ccls.git /tmp/ccls
     (

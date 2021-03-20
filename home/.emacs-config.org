@@ -5919,7 +5919,11 @@ forcing it by running
 
 **** [[https://github.com/jwiegley/git-undo-el][Git undo]]
 #+BEGIN_SRC emacs-lisp
-(load (concat (file-name-as-directory user-emacs-directory) "elpa/git-undo/git-undo.el"))
+(use-package git-undo
+  :ensure quelpa
+  :quelpa (git-undo
+           :fetcher github
+           :repo "jwiegley/git-undo-el"))
 #+END_SRC
 
 **** [[https://github.com/emacs-helm/helm-ls-git][Browse other git projects with helm]]
