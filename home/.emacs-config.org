@@ -7580,7 +7580,7 @@ Identifier    ^^Namespace
   _'_: Quoted insert                                                             ^^^^_-_: Value -       _:_: Fill paragraph             _s_: Sort          _k_: Encrypt           _E_: Evaluate & Replace
   _<_: Complete                                                                  ^^^^_#_: Base          _<tab>_: Spaces → Tabs          _x_: Transpose     _K_: Decrypt           _._: Suggestion
   _g_: Edit area                                                                 ^^^^_1_: Flip bool     _<backtab>_: Tabs → Spaces
-  ___: Overwrite Mode                                                            ^^^^_C_: Color
+  ___: Overwrite Mode                                                            ^^^^_C_: Color                                                                             ^^^^^^_o_: Split org-mode code block
   _&_: Typographic Mode                                                          ^^^^_L_: To Link
 
   _a_: Create Automatic snippet
@@ -7664,7 +7664,8 @@ Identifier    ^^Namespace
                   (expression (buffer-substring-no-properties beginning end)))
              (kill-region beginning end)
              (eval-expression (car (read-from-string (format "(progn %s)" expression))) t))
-           (crux-eval-and-replace))))
+           (crux-eval-and-replace)))
+  ("o" org-babel-demarcate-block))
 
 (global-set-key (kbd "C-e") 'cpped-hydra-edit/body)
 #+END_SRC
