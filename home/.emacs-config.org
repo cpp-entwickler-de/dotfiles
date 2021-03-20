@@ -6283,6 +6283,17 @@ Note: For this to work, Org must be version 8.3 or higher. Org is bundled with e
     (setq buffer-file-name file-name)))
 #+END_SRC
 
+*** Support Dockerfiles
+#+BEGIN_SRC emacs-lisp
+(use-package ob-docker-build
+  :after org
+  :ensure-system-package podman
+  :quelpa ((ob-docker-build :fetcher github :repo "ifitzpat/ob-docker-build"))
+  :config
+  (add-to-list 'org-babel-load-languages '(docker-build . t))
+  (org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages))
+#+END_SRC
+
 ** Structure Templates
 #+BEGIN_SRC emacs-lisp
 (setq org-structure-template-alist '(("a" . "ASCII")
