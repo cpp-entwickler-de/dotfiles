@@ -5297,6 +5297,11 @@ Set correct major mode
 (use-package systemd)
 #+END_SRC
 
+[[https://github.com/SebastianMeisel/journalctl-mode][Journalctl-Mode]]
+#+BEGIN_SRC emacs-lisp
+(use-package journalctl-mode)
+#+END_SRC
+
 *** [[https://github.com/skuro/plantuml-mode][UML]]
 #+BEGIN_SRC emacs-lisp
 (use-package plantuml-mode
@@ -7223,11 +7228,11 @@ Open                             ^^Save                      ^^Close            
 
 Text                    ^^Code                                ^^Version Control         ^^System             ^^Other
   _._: Character            _d_: Documentation                    _c_: Commit Message       _p_: Processes       _t_: ToDos
-  _#_: Number               _r_: References                       _b_: Blame                _M_: Man page        _w_: Weather
-  _f_: Define               _h_: Caller hierarchy                                         ^^_I_: Info page
   _x_: Translate            _m_: Member hierarchy
-  _s_: Synonym              _i_: Inheritance hierarchy
-  _g_: Google
+  _#_: Number               _r_: References                       _b_: Blame                _B_: Boot log        _w_: Weather
+  _f_: Define               _h_: Caller hierarchy                                         ^^_S_: System log
+  _s_: Synonym              _i_: Inheritance hierarchy                                    ^^_M_: Man page
+  _g_: Google                                                                           ^^^^_I_: Info page
   _G_: Find on GitHub       _+_: Preprocess
   _o_: Preview markdown     _l_: Count lines of code
   _R_: Compare Regions      _j_: Copy JSON path
@@ -7262,6 +7267,8 @@ Text                    ^^Code                                ^^Version Control 
   ("b" magit-blame-popup)
 
   ("p" helm-top)
+  ("B" journalctl-boot)
+  ("S" journalctl-unit)
   ("M" helm-man-woman)
   ("I" info)
 
