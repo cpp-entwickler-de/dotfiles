@@ -6301,7 +6301,7 @@ Note: For this to work, Org must be version 8.3 or higher. Org is bundled with e
                                      ("*" . "SRC calc")
                                      ("c" . "CENTER")
                                      ("+" . "SRC c++")
-                                     ("d" . "SRC dot :file  :cmdline -Kdot -Tpng")
+                                     ("d" . "SRC dot :file :cmdline -Kdot -Tpng")
                                      ("e" . "EXAMPLE")
                                      ("h" . "HTML")
                                      ("l" . "SRC emacs-lisp")
