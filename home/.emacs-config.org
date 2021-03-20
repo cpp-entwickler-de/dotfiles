@@ -3043,6 +3043,13 @@ Some useful abbreviations
 
 [[https://joaotavora.github.io/yasnippet/snippet-development.html][Snippet Development Documentation]]
 
+***** Licenses
+#+BEGIN_SRC emacs-lisp
+(use-package license-snippets
+  :after yasnippet
+  :config (license-snippets-init))
+#+END_SRC
+
 ***** [[https://github.com/abo-abo/auto-yasnippet][Automatic snippets]]
 #+BEGIN_SRC emacs-lisp
 (use-package auto-yasnippet)
