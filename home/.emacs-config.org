@@ -2164,7 +2164,7 @@ https://github.com/purcell/exec-path-from-shell
 ** [[https://gitlab.com/kisaragi-hiu/didyoumean.el/][Prefer existing files]]
 #+BEGIN_SRC emacs-lisp
 (use-package didyoumean
-  :hook (after-init . didyoumean-mode))
+  :config (add-hook 'after-init #'(run-with-timer 60 nil didyoumean-mode)))
 #+END_SRC
 
 ** Save backup files to /tmp
