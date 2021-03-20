@@ -7473,6 +7473,8 @@ Date         ^^Time         ^^Timestamp    ^^Block                    ^^Special
   _D_: ISO                    ^^_S_: ISO       _f_: File                  _u_: Unicode Character
                                          ^^^^^^_c_: Snippet               _i_: UUID
                                          ^^^^^^_C_: Automatic snippet     _T_: Markdown table of contents
+                                                                  ^^^^^^^^_H_: Org-mode Heading
+                                                                  ^^^^^^^^_h_: Org-mode Subheading
 "
   ("d" cpped-insert-date)
   ("D" cpped-insert-iso-date)
@@ -7486,7 +7488,9 @@ Date         ^^Time         ^^Timestamp    ^^Block                    ^^Special
   ("l" cpped-org-insert-link-dwim)
   ("u" helm-ucs :exit nil)
   ("i" cpped-insert-uuid)
-  ("T" markdown-toc-generate-or-refresh-toc))
+  ("T" markdown-toc-generate-or-refresh-toc)
+  ("H" org-insert-heading)
+  ("h" org-insert-subheading))
 
 (defhydra cpped-hydra-edit-sort (:exit t :columns 1)
   "
