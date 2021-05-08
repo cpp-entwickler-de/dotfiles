@@ -6161,18 +6161,18 @@ Note: For this to work, Org must be version 8.3 or higher. Org is bundled with e
 
 ** TODO-States
 #+BEGIN_SRC emacs-lisp
-(setq cpped-org-todo-keyword-todo "⚠ To Do"
-      cpped-org-todo-keyword-done "✓ Done"
-      cpped-org-todo-keyword-bug "🐛 Bug"
-      cpped-org-todo-keyword-analysis "🔎 Analysis"
-      cpped-org-todo-keyword-correction "🛠 Correction"
-      cpped-org-todo-keyword-fixed "✓ Fixed"
-      cpped-org-todo-keyword-fixme "🗫 Fixme"
-      cpped-org-todo-keyword-in-progress "▶ In Progress"
-      cpped-org-todo-keyword-waiting "🕓 Waiting"
-      cpped-org-todo-keyword-suspended "💤 Suspended"
-      cpped-org-todo-keyword-review "🗫 Review"
-      cpped-org-todo-keyword-canceled "🗙 Canceled"
+(setq cpped-org-todo-keyword-todo "ToDo"
+      cpped-org-todo-keyword-done "Done"
+      cpped-org-todo-keyword-bug "Bug"
+      cpped-org-todo-keyword-analysis "Analysis"
+      cpped-org-todo-keyword-correction "Correction"
+      cpped-org-todo-keyword-fixed "Fixed"
+      cpped-org-todo-keyword-fixme "Fixme"
+      cpped-org-todo-keyword-in-progress "In Progress"
+      cpped-org-todo-keyword-waiting "Waiting"
+      cpped-org-todo-keyword-suspended "Suspended"
+      cpped-org-todo-keyword-review "Review"
+      cpped-org-todo-keyword-canceled "Canceled"
       org-todo-keywords `((sequence ,(concat cpped-org-todo-keyword-todo "(t)")
                                     ,(concat cpped-org-todo-keyword-in-progress "(p!)")
                                     ,(concat cpped-org-todo-keyword-review "(r!/@)")
@@ -6212,6 +6212,21 @@ Format according to the state.
                                (,cpped-org-todo-keyword-waiting . org-todo-keyword-waiting)
                                (,cpped-org-todo-keyword-suspended . org-todo-keyword-suspended)
                                (,cpped-org-todo-keyword-canceled . org-todo-keyword-canceled)))
+
+(with-eval-after-load "org-superstar"
+  (setq org-superstar-todo-bullet-alist `((,cpped-org-todo-keyword-todo . ?)
+                                          (,cpped-org-todo-keyword-done . ?)
+                                          (,cpped-org-todo-keyword-bug . ?)
+                                          (,cpped-org-todo-keyword-analysis . ?)
+                                          (,cpped-org-todo-keyword-correction . ?)
+                                          (,cpped-org-todo-keyword-fixed . ?)
+                                          (,cpped-org-todo-keyword-fixme . ?)
+                                          (,cpped-org-todo-keyword-in-progress . ?)
+                                          (,cpped-org-todo-keyword-waiting . ?)
+                                          (,cpped-org-todo-keyword-suspended . ?鈴)
+                                          (,cpped-org-todo-keyword-review . ?)
+                                          (,cpped-org-todo-keyword-canceled . ?ﰸ)))
+  (org-superstar-restart))
 #+END_SRC
 
 Archive when done, remove flag if reset to todo.
