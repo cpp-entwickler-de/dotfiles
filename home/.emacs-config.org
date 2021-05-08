@@ -1850,7 +1850,7 @@ https://github.com/purcell/exec-path-from-shell
 *** History
 #+BEGIN_SRC emacs-lisp
 (add-hook 'eshell-mode-hook (lambda ()
-                              (define-key eshell-mode-map "M-l" 'helm-eshell-history)))
+                              (define-key eshell-mode-map (kbd "M-r") 'helm-eshell-history)))
 #+END_SRC
 
 *** [[https://github.com/magit/with-editor][Use emacs as editor]]
