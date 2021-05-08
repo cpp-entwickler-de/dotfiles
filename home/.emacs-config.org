@@ -4954,7 +4954,7 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
   "Highlight rules for `ini-mode'.")
 
 (defun ini-mode-indent-line ()
-  "Indent current line as WPDL code"
+  "Indent current line."
   (interactive)
   (beginning-of-line))
 
