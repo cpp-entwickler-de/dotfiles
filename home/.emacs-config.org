@@ -350,9 +350,9 @@ Disable prettification if cursor is at edge of expression
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'find-file-hook (lambda ()
-                            (push '("\t" . ?⇥) prettify-symbols-alist)
+                            (push '("\t" . ?) prettify-symbols-alist)
                             (push '("lambda" . ?λ) prettify-symbols-alist)
-                            (push '("\r" . ?↵) prettify-symbols-alist)))
+                            (push '("\r" . ?) prettify-symbols-alist)))
 
 (global-prettify-symbols-mode)
 #+END_SRC
@@ -483,7 +483,7 @@ Disable prettification if cursor is at edge of expression
             (when backend
               (ignore-errors (vc-call-backend backend 'root default-directory)))))))
 
-(defun cpped-powerline-project-id (icon-face)
+(defun cpped-powerline-project-id ()
   (let ((buffer-location (cpped-buffer-name)))
   (when buffer-location
       (let ((project-name (if (and (ignore-errors (projectile-project-p))
@@ -495,17 +495,14 @@ Disable prettification if cursor is at edge of expression
                                 (when backend
                                   (file-name-nondirectory (directory-file-name (file-name-directory (ignore-errors (vc-call-backend backend 'root default-directory)))))))))))
         (concat
-         (propertize (all-the-icons-faicon5 (cond ((cpped-tramp-file-remote-p buffer-location) "cloud")
-                                                  ((not (= 0 (length project-name))) "folder")
-                                                  ((and (not (cpped-tramp-file-remote-p buffer-location))
-                                                        (string-prefix-p (getenv "HOME")
-                                                                         (if (tramp-tramp-file-p buffer-location)
-                                                                             (tramp-file-name-localname (tramp-dissect-file-name buffer-location))
-                                                                           buffer-location))) "home")
-                                                  (t "desktop")))
-                                'face (list ':family (all-the-icons-faicon5-family)
-                                            ':background (face-attribute icon-face :background))
-                                'display '(raise -0.0))
+         (cond ((cpped-tramp-file-remote-p buffer-location) "")
+               ((not (= 0 (length project-name))) "")
+               ((and (not (cpped-tramp-file-remote-p buffer-location))
+                     (string-prefix-p (getenv "HOME")
+                                      (if (tramp-tramp-file-p buffer-location)
+                                          (tramp-file-name-localname (tramp-dissect-file-name buffer-location))
+                                        buffer-location))) "")
+               (t ""))
          (let ((location (if (cpped-tramp-file-remote-p buffer-location)
                              (tramp-file-name-host (tramp-dissect-file-name buffer-location))
                            (when (not (= 0 (length project-name)))
@@ -576,12 +573,9 @@ Helper function to figure out version control root directory
 #+BEGIN_SRC emacs-lisp
 (cpped-install-system-package "docker")
 
-(defun cpped-powerline-docker-project (icon-face)
+(defun cpped-powerline-docker-project ()
   (when (cpped-is-docker-project-p)
-    (propertize (all-the-icons-faicon5 "docker")
-                'face (list ':family (all-the-icons-faicon5-family)
-                            ':background (face-attribute icon-face :background))
-                'display '(raise -0.0))))
+    ""))
 #+END_SRC
 
 *** Git Info
@@ -592,15 +586,10 @@ Helper function to figure out version control root directory
       (let* ((branch (magit-get-current-branch))
              (branch-head (magit-rev-parse "--short" branch))
              (revision (magit-rev-parse "--short" "HEAD")))
-        (concat
-         (propertize (all-the-icons-octicon "git-branch")
-                     'face `(:family ,(all-the-icons-octicon-family))
-                     'display '(raise -0.1))
-         (format " %s" branch)
-         (unless (string= revision branch-head)
-           (format " · %s (%s)" revision (magit-git-string "rev-list"
-                                                           "--count"
-                                                           (concat revision ".." branch-head)))))))))
+        (concat " " branch (unless (string= revision branch-head)
+                              (format " · %s (%s)" revision (magit-git-string "rev-list"
+                                                                              "--count"
+                                                                              (concat revision ".." branch-head)))))))))
 #+END_SRC
 
 *** Running process
@@ -636,90 +625,58 @@ Helper function to figure out version control root directory
 
 (defun cpped-powerline-eshell-process-running ()
   (when cpped-eshell-process-running
-    (concat (propertize "\xf085" ; cogs
-                        'face `(:family ,(all-the-icons-faicon5-family))
-                        'display '(raise -0.1))
-            " "
-            (cpped-format-run-time (cpped-get-run-time)))))
+    (concat "  " (cpped-format-run-time (cpped-get-run-time)))))
 #+END_SRC
 
 *** Show if file is remote
 #+BEGIN_SRC emacs-lisp
-(defun cpped-powerline-remote (icon-face)
+(defun cpped-powerline-remote ()
   (when (cpped-tramp-file-remote-p default-directory)
-    (propertize (all-the-icons-faicon5 "cloud")
-                'face (list ':family (all-the-icons-faicon5-family)
-                            ':background (face-attribute icon-face :background))
-                'display '(raise -0.0))))
+    ""))
 #+END_SRC
 
 *** Show if file is opened in su-mode
 #+BEGIN_SRC emacs-lisp
-(defun cpped-powerline-su (icon-face)
+(defun cpped-powerline-su ()
   (when (string-match "^/su\\(do\\)?:" default-directory)
-    (propertize (all-the-icons-faicon5 "user-plus")
-                'face (list ':family (all-the-icons-faicon5-family)
-                            ':foreground (face-attribute 'warning :foreground)
-                            ':background (face-attribute icon-face :background))
-                'display '(raise -0.0))))
+    ""))
 #+END_SRC
 
 *** Modification
 #+BEGIN_SRC emacs-lisp
-(defun cpped-powerline-modified (icon-face)
-  (propertize (pcase (format-mode-line "%*")
-                (`"*" (all-the-icons-faicon5 "pencil-alt"))
-                (`"-"
-                 (if buffer-file-name
-                     (if vc-mode
-                         (if (string-equal (vc-state buffer-file-name) 'edited)
-                             (all-the-icons-faicon5 "save")
-                           (all-the-icons-faicon5 "cloud"))
-                       (all-the-icons-faicon5 "save"))
-                   (all-the-icons-faicon5 "star")))
-                (`"%" (all-the-icons-faicon5 "lock"))
-                (_ (all-the-icons-faicon5 "question")))
-              'face (list ':family (all-the-icons-faicon5-family)
-                          ':background (face-attribute icon-face :background))
-              'display '(raise -0.0)))
+(defun cpped-powerline-modified ()
+  (pcase (format-mode-line "%*")
+    (`"*" "")
+    (`"-" (if buffer-file-name
+              (if vc-mode
+                  (if (string-equal (vc-state buffer-file-name) 'edited)
+                      ""
+                    "")
+                "")
+            "留"))
+    (`"%" "𓄗")
+    (_ "")))
 #+END_SRC
 
 *** Auto-format
 #+BEGIN_SRC emacs-lisp
-(defun cpped-powerline-auto-format (icon-face)
+(defun cpped-powerline-auto-format ()
   (when (and cpped-auto-format-enabled-p
              cpped-format-buffer-function)
-    (propertize (all-the-icons-faicon5 "indent")
-                'face (list ':family (all-the-icons-faicon5-family)
-                            ':background (face-attribute icon-face :background))
-                'display '(raise -0.0))))
+    ""))
 #+END_SRC
 
 *** Cursor position
 #+BEGIN_SRC emacs-lisp
-(defun cpped-powerline-position-info (icon-face)
-  (concat
-   (propertize (all-the-icons-faicon5 "arrows-alt-v")
-               'face (list ':family (all-the-icons-faicon5-family)
-                           ':background (face-attribute icon-face :background))
-               'display '(raise -0.0))
-   (format-mode-line "%4l ")
-   (propertize (all-the-icons-faicon5 "arrows-alt-h")
-               'face (list :family (all-the-icons-faicon5-family)
-                           ':background (face-attribute icon-face :background))
-               'display '(raise -0.0))
-   (format-mode-line "%3c")))
+(defun cpped-powerline-position-info ()
+  (format "%s %s" (format-mode-line "%4l ") (format-mode-line "%3c")))
 #+END_SRC
 
 *** Selected region
 #+BEGIN_SRC emacs-lisp
-(defun cpped-powerline-region-info (icon-face)
+(defun cpped-powerline-region-info ()
   (when mark-active
-    (format "%s %s/%s/%s"
-            (propertize (all-the-icons-faicon5 "crop")
-                        'face (list ':family (all-the-icons-faicon5-family)
-                                    ':background (face-attribute icon-face :background))
-                        'display '(raise -0.0))
+    (format " %s/%s/%s"
             (count-lines (region-beginning) (region-end))
             (count-words (region-end) (region-beginning))
             (- (region-end) (region-beginning)))))
@@ -727,56 +684,40 @@ Helper function to figure out version control root directory
 
 *** IEdit Info
 #+BEGIN_SRC emacs-lisp
-(defun cpped-powerline-iedit-info (icon-face)
+(defun cpped-powerline-iedit-info ()
   (when iedit-mode
-    (format "%s %s/%s"
-            (propertize (all-the-icons-faicon5 "pencil-alt")
-                        'face (list ':family (all-the-icons-faicon5-family)
-                                    ':background (face-attribute icon-face :background))
-                        'display '(raise -0.0))
+    (format " %s/%s"
             iedit-occurrence-index
             (iedit-counter))))
 #+END_SRC
 
 *** Show if overwrite mode is active
 #+BEGIN_SRC emacs-lisp
-(defun cpped-powerline-overwrite-mode (icon-face)
+(defun cpped-powerline-overwrite-mode ()
   (when overwrite-mode
-    (propertize (all-the-icons-faicon5 "eraser")
-                'face (list ':family (all-the-icons-faicon5-family)
-                            ':background (face-attribute icon-face :background))
-                'display '(raise -0.0))))
+    "סּ"))
 #+END_SRC
 
 *** Show if typo mode is active
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load "typo"
-  (defun cpped-powerline-typo-mode (icon-face)
+  (defun cpped-powerline-typo-mode ()
     (when typo-mode
-      (propertize (all-the-icons-faicon5 "book")
-                  'face (list ':family (all-the-icons-faicon5-family)
-                              ':background (face-attribute icon-face :background))
-                  'display '(raise -0.0)))))
+      "")))
 #+END_SRC
 
 *** Show if buffer is narrowed
 #+BEGIN_SRC emacs-lisp
-(defun cpped-powerline-narrowed (icon-face)
+(defun cpped-powerline-narrowed ()
     (when (buffer-narrowed-p)
-      (propertize (all-the-icons-octicon "fold")
-                  'face (list ':family (all-the-icons-octicon-family)
-                              ':background (face-attribute icon-face :background))
-                  'display '(raise -0.0))))
+      ""))
 #+END_SRC
 
 *** Show if buffer is filtered
 #+BEGIN_SRC emacs-lisp
-(defun cpped-powerline-filtered (icon-face)
+(defun cpped-powerline-filtered ()
     (when loccur-mode
-      (propertize (all-the-icons-faicon5 "filter")
-                  'face (list ':family (all-the-icons-faicon5-family)
-                              ':background (face-attribute icon-face :background))
-                  'display '(raise -0.0))))
+      ""))
 #+END_SRC
 
 *** Key Lock
@@ -784,23 +725,19 @@ Helper function to figure out version control root directory
 (defvar cpped-caps-lock-active nil "Indicates if caps lock is enabled.")
 (defvar cpped-num-lock-active nil "Indicates if num lock is enabled.")
 
-(run-with-timer 0 3 '(lambda ()
-                       (with-temp-buffer
-                         (call-process "xset" nil t nil "q")
-                         (let ((led-mask (string-to-number (save-match-data
-                                                             (and (string-match ".*LED mask:[[:space:]]*\\([[:alnum:]]+\\).*" (buffer-string))
-                                                                  (match-string 1 (buffer-string))))
-                                                           16)))
-                           (setq cpped-caps-lock-active (eq (logand led-mask 1) 1)
-                                 cpped-num-lock-active (eq (logand led-mask 2) 2))))))
+(add-hook 'after-init-hook (run-with-timer 60 3 '(lambda ()
+                                                   (with-temp-buffer
+                                                     (call-process "xset" nil t nil "q")
+                                                     (let ((led-mask (string-to-number (save-match-data
+                                                                                         (and (string-match ".*LED mask:[[:space:]]*\\([[:alnum:]]+\\).*" (buffer-string))
+                                                                                              (match-string 1 (buffer-string))))
+                                                                                       16)))
+                                                       (setq cpped-caps-lock-active (eq (logand led-mask 1) 1)
+                                                             cpped-num-lock-active (eq (logand led-mask 2) 2)))))))
 
-(defun cpped-powerline-key-lock (lock icon icon-face)
+(defun cpped-powerline-key-lock (lock icon)
    (when lock
-     (propertize (all-the-icons-faicon5 icon)
-                 'face `(:family ,(all-the-icons-faicon5-family)
-                         :background ,(face-attribute icon-face :background)
-                         :height 1.1)
-                 'display '(raise -0.0))))
+     icon))
 #+END_SRC
 
 *** Line/Character Mode
@@ -813,14 +750,10 @@ Helper function to figure out version control root directory
 (advice-add 'term-line-mode :after (lambda ()
                                      (setq cpped-term-char-mode nil)))
 
-(defun cpped-powerline-term-input-mode (icon-face)
+(defun cpped-powerline-term-input-mode ()
   (when (and (equal major-mode 'term-mode)
              cpped-term-char-mode)
-    (propertize (all-the-icons-faicon5 "terminal")
-                'face `(:family ,(all-the-icons-faicon5-family)
-                                :background ,(face-attribute icon-face :background)
-                                :height 1.1)
-                'display '(raise -0.0))))
+    ""))
 #+END_SRC
 
 *** Current function
@@ -846,20 +779,14 @@ Find path of current position in XML docuement
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(defun cpped-powerline-which-function (icon-face)
+(defun cpped-powerline-which-function ()
   (let ((current-function (substring-no-properties (pcase major-mode
                                                      ('nxml-mode (cpped-nxml-where))
                                                      ('eshell-mode eshell-last-command-name)
                                                      (_ (when which-function-mode
                                                           (which-function)))))))
     (unless (= 0 (length current-function))
-      (concat
-       (propertize (all-the-icons-faicon5 "puzzle-piece")
-                   'face (list ':family (all-the-icons-faicon5-family)
-                               ':background (face-attribute icon-face :background))
-                   'display '(raise -0.0))
-       " "
-       current-function))))
+      (concat " " current-function))))
 #+END_SRC
 
 *** Check Status
@@ -920,11 +847,11 @@ Find path of current position in XML docuement
                           (separator-right (intern (format "powerline-%s-%s"
                                                            (powerline-current-separator)
                                                            (car powerline-default-separator-dir))))
-                          (project-id (cpped-powerline-project-id (symbol-value 'mode-line)))
+                          (project-id (cpped-powerline-project-id))
                           (show-project (not (= 0 (length project-id))))
                           (version (when (fboundp 'cpped-powerline-version-control)
                                      (cpped-powerline-version-control)))
-                          (current-function (cpped-powerline-which-function (symbol-value 'mode-line)))
+                          (current-function (cpped-powerline-which-function))
                           (show-function (not (= 0 (length current-function))))
                           (check-status (cpped-powerline-check-status (symbol-value 'face2)))
                           (show-check-status (and check-status
@@ -933,7 +860,7 @@ Find path of current position in XML docuement
                                 (when show-project
                                   (powerline-raw project-id mode-line 'l))
                                 (when show-project
-                                  (powerline-raw (cpped-powerline-docker-project (symbol-value 'mode-line)) mode-line 'l))
+                                  (powerline-raw (cpped-powerline-docker-project) mode-line 'l))
                                 (when show-project
                                   (funcall separator-left mode-line face1))
                                 (powerline-raw (cpped-powerline-mode-icon face1) face1)
@@ -946,20 +873,20 @@ Find path of current position in XML docuement
                                   (powerline-raw version mode-line))
                                 (when version
                                   (funcall separator-left mode-line face2))
-                                (powerline-raw (cpped-powerline-remote (symbol-value 'face2)) face2 'r)
-                                (powerline-raw (cpped-powerline-su (symbol-value 'face2)) face2 'r)
-                                (powerline-raw (cpped-powerline-modified (symbol-value 'face2)) face2)
-                                (powerline-raw (cpped-powerline-overwrite-mode (symbol-value 'face2)) face2 'l)
-                                (powerline-raw (cpped-powerline-auto-format (symbol-value 'face2)) face2 'l)
-                                (powerline-raw (cpped-powerline-typo-mode (symbol-value 'face2)) face2 'l)
-                                (powerline-raw (cpped-powerline-narrowed (symbol-value 'face2)) face2 'l)
-                                (powerline-raw (cpped-powerline-filtered (symbol-value 'face2)) face2 'l)
-                                (powerline-raw (cpped-powerline-key-lock (symbol-value 'cpped-caps-lock-active) "sort-alpha-down" (symbol-value 'face2)) face2 'l)
-                                (powerline-raw (cpped-powerline-key-lock (symbol-value 'cpped-num-lock-active) "sort-numeric-down" (symbol-value 'face2)) face2 'l)
-                                (powerline-raw (cpped-powerline-term-input-mode (symbol-value 'face2)) face2 'l)
-                                (powerline-raw (cpped-powerline-position-info (symbol-value 'face2)) face2 'l)
-                                (powerline-raw (cpped-powerline-region-info (symbol-value 'face2)) face2 'l)
-                                (powerline-raw (cpped-powerline-iedit-info (symbol-value 'face2)) face2 'l)
+                                (powerline-raw (cpped-powerline-remote) face2 'r)
+                                (powerline-raw (cpped-powerline-su) face2 'r)
+                                (powerline-raw (cpped-powerline-modified) face2)
+                                (powerline-raw (cpped-powerline-overwrite-mode) face2 'l)
+                                (powerline-raw (cpped-powerline-auto-format) face2 'l)
+                                (powerline-raw (cpped-powerline-typo-mode) face2 'l)
+                                (powerline-raw (cpped-powerline-narrowed) face2 'l)
+                                (powerline-raw (cpped-powerline-filtered) face2 'l)
+                                (powerline-raw (cpped-powerline-key-lock (symbol-value 'cpped-caps-lock-active) "") face2 'l)
+                                (powerline-raw (cpped-powerline-key-lock (symbol-value 'cpped-num-lock-active) "") face2 'l)
+                                (powerline-raw (cpped-powerline-term-input-mode) face2 'l)
+                                (powerline-raw (cpped-powerline-position-info) face2 'l)
+                                (powerline-raw (cpped-powerline-region-info) face2 'l)
+                                (powerline-raw (cpped-powerline-iedit-info) face2 'l)
                                 (when show-check-status
                                   (powerline-raw check-status face2 'l))
                                 (funcall separator-left face2 mode-line)
@@ -1716,9 +1643,7 @@ https://github.com/purcell/exec-path-from-shell
 
 (defun cpped-eshell-prompt-result ()
   (unless (= 0 0)
-    (propertize (cpped-eshell-prompt-concat (propertize (all-the-icons-faicon5 "exclamation-triangle")
-                                                        'face `(:family ,(all-the-icons-faicon5-family))
-                                                        'display '(raise -0.1))
+    (propertize (cpped-eshell-prompt-concat ""
                                             eshell-last-command-status)
                 'face '(:foreground ,(face-attribute 'warning :foreground)
                                     :weight 'bold))))
@@ -1726,25 +1651,17 @@ https://github.com/purcell/exec-path-from-shell
 (defun cpped-eshell-prompt-user ()
   (if (string= "root"
                (getenv "USER"))
-      (concat (propertize (all-the-icons-faicon5 "user-plus")
-                          'face `(:family ,(all-the-icons-faicon5-family)
-                                          :foreground ,(face-attribute 'warning :foreground))
-                          'display '(raise -0.0)))
+      (concat "")
     (unless (string= (getenv "LOGNAME")
                      (getenv "USER"))
-        (cpped-eshell-prompt-concat (propertize (all-the-icons-faicon5 "user")
-                                                'face `(:family ,(all-the-icons-faicon5-family))
-                                                'display '(raise -0.0))
+        (cpped-eshell-prompt-concat "𓄅"
                                     (user-login-name)))))
 
 (defun cpped-eshell-prompt-host ()
   (when (let ((host (getenv "SSH_CONNECTION")))
           (and host
                (not (string= "" host))))
-    (cpped-eshell-prompt-concat (propertize (all-the-icons-faicon5 "desktop")
-                                            'face `(:family ,(all-the-icons-faicon5-family))
-                                            'display '(raise -0.1))
-                                (system-name))))
+    (cpped-eshell-prompt-concat "" (system-name))))
 
 (defun cpped-eshell-prompt-docker ()
   (let* ((id (shell-command-to-string "cat /proc/self/cgroup | grep docker | head -n 1 | cut -d '/' -f3"))
@@ -1753,15 +1670,10 @@ https://github.com/purcell/exec-path-from-shell
                       (shell-command-to-string (concat "docker inspect -f '{{.Config.Image}}' "
                                                        id)))))
     (when container
-      (cpped-eshell-prompt-concat (propertize (all-the-icons-faicon5 "docker")
-                                              'face `(:family ,(all-the-icons-faicon5-family))
-                                              'display '(raise -0.1))
-                                  container))))
+      (cpped-eshell-prompt-concat "" container))))
 
 (defun cpped-eshell-prompt-path ()
-  (cpped-eshell-prompt-concat (propertize (all-the-icons-faicon5 "folder-open")
-                                          'face `(:family ,(all-the-icons-faicon5-family))
-                                          'display '(raise -0.1))
+  (cpped-eshell-prompt-concat "ﱮ"
                               (propertize (eshell/pwd)
                                           'face `(:weight 'ultra-bold))))
 
@@ -1973,14 +1885,9 @@ https://github.com/purcell/exec-path-from-shell
   "Format the mode line eshell status information."
   (when (and (equal major-mode 'eshell-mode)
              (> eshell-last-command-status 0))
-    (concat (propertize (all-the-icons-faicon5 "exclamation-triangle")
-                                             'face `(:family ,(all-the-icons-faicon5-family)
-                                                     :foreground ,(face-attribute 'error :foreground)
-                                                     :weight 'bold)
-                                             'display '(raise -0.0))
-            (propertize (format " %d" eshell-last-command-status)
-                        'face `(:foreground, (face-attribute 'error :foreground)
-                                :weight 'bold)))))
+    (concat "" (propertize (format " %d" eshell-last-command-status)
+                            'face `(:foreground, (face-attribute 'error :foreground)
+                                                 :weight 'bold)))))
 
 (add-to-list 'cpped-powerline-check-status-functions 'cpped-powerline-eshell-status)
 #+END_SRC
@@ -2052,9 +1959,7 @@ https://github.com/purcell/exec-path-from-shell
 (with-eval-after-load "all-the-icons"
   (defun cpped-print-date ()
     (concat
-     (propertize (all-the-icons-faicon5 "calendar-alt")
-                 'face `(:family ,(all-the-icons-faicon5-family))
-                 'display '(raise -0.0))
+     ""
      (propertize (format-time-string " %W")
                  'face '(:weight ultra-light))
      (format-time-string " %e.%-m.%G")))
@@ -3169,12 +3074,8 @@ Some useful abbreviations
     "Format the modeline flyspell information."
     (when (and flyspell-mode
                (> cpped-flyspell-errors 0))
-      (concat (propertize (all-the-icons-faicon5 "comment")
-                          'face (list ':inherit 'cpped-check-status-error
-                                      ':family (all-the-icons-faicon5-family))
-                          'display '(raise -0.0))
-              (propertize (format " %d" cpped-flyspell-errors)
-                          'face 'cpped-check-status-error))))
+      (propertize (format " %d" cpped-flyspell-errors)
+                          'face 'cpped-check-status-error)))
   (add-to-list 'cpped-powerline-check-status-functions 'cpped-powerline-flyspell-status))
 
 (use-package helm-flyspell
@@ -3749,14 +3650,14 @@ Handler to close buffer after quitting ccmake.
                            ("TODO" . hl-todo-warning)
                            ("XXX" . hl-todo-warning)))
   :config
-  (push '("???" . ?🛈) prettify-symbols-alist)
-  (push '("FAIL" . ?⛐) prettify-symbols-alist)
-  (push '("FIXME" . ?🛠) prettify-symbols-alist)
-  (push '("HACK" . ?☢) prettify-symbols-alist)
-  (push '("INFO" . ?🛈) prettify-symbols-alist)
-  (push '("NOTE" . ?🗈) prettify-symbols-alist)
-  (push '("TODO" . ?🛠) prettify-symbols-alist)
-  (push '("XXX" . ?☓) prettify-symbols-alist))
+  (push '("???" . ?) prettify-symbols-alist)
+  (push '("FAIL" . ?) prettify-symbols-alist)
+  (push '("FIXME" . ?) prettify-symbols-alist)
+  (push '("HACK" . ?ྸ) prettify-symbols-alist)
+  (push '("INFO" . ?) prettify-symbols-alist)
+  (push '("NOTE" . ?) prettify-symbols-alist)
+  (push '("TODO" . ?) prettify-symbols-alist)
+  (push '("XXX" . ?) prettify-symbols-alist))
 #+END_SRC
 
 ***** Find ToDos in file or project
@@ -3829,12 +3730,8 @@ Handler to close buffer after quitting ccmake.
     "Format the modeline coverage information."
     (when cov-coverage-file
       (let ((face (cpped-coverage-status-face)))
-        (concat (propertize (all-the-icons-faicon5 "tasks")
-                            'face (list ':inherit face
-                                        ':family (all-the-icons-faicon5-family))
-                            'display '(raise -0.0))
-                (propertize (format " %d%%" cpped-cov-percentage-covered)
-                            'face face)))))
+        (propertize (format " %d%%" cpped-cov-percentage-covered)
+                    'face face))))
   (add-to-list 'cpped-powerline-check-status-functions 'cpped-powerline-coverage))
 #+END_SRC
 
@@ -4057,13 +3954,8 @@ Handler to close buffer after quitting ccmake.
       (let ((issues (let-alist (flycheck-count-errors flycheck-current-errors)
                       (+ (or .warning 0) (or .error 0) (or .info 0))))
             (face (cpped-powerline-flycheck-status-face)))
-        (concat
-         (propertize (all-the-icons-faicon5 "bug")
-                     'face (list ':inherit face
-                                 ':family (all-the-icons-faicon5-family))
-                     'display '(raise -0.0))
-         (propertize (format " %d" issues)
-                     'face face)))))
+        (propertize (format " %d" issues)
+                     'face face))))
   (add-to-list 'cpped-powerline-check-status-functions 'cpped-powerline-flycheck-status))
 #+END_SRC
 
@@ -4096,18 +3988,15 @@ Custom error highlighting (colored line under location)
                            ("info" 'flycheck-info)
                            (_ 'default)))
                    (overlay (make-overlay begin begin)))
-              (overlay-put overlay 'before-string (concat
-                                                   (propertize " " 'face face)
-                                                   (propertize (all-the-icons-faicon5 (pcase level
-                                                                                       ("error" "times-circle")
-                                                                                       ("warning" "exclamation-triangle")
-                                                                                       ("info" "info-circle")
-                                                                                       (_ "question-circle")))
-                                                               'face (list ':inherit face
-                                                                           ':family (all-the-icons-faicon5-family))
-                                                               'display '(raise -0.0))
-                                                   (propertize (concat " " (flycheck-error-message error) "\n") 'face face)))
-              (overlay-put overlay 'cpped-flycheck-inline-error t))) flycheck-current-errors))
+              (overlay-put overlay 'before-string (propertize (format " %s %s\n"
+                                                                      (pcase level
+                                                                        ("error" "")
+                                                                        ("warning" "")
+                                                                        ("info" "")
+                                                                        (_ ""))
+                                                                      (flycheck-error-message error))
+                                                              'face face))
+            (overlay-put overlay 'cpped-flycheck-inline-error t))) flycheck-current-errors))
 
 (add-hook 'flycheck-after-syntax-check-hook #'cpped-flycheck-inline-error-messages)
 (add-hook 'flycheck-status-changed-functions #'cpped-flycheck-clear)
@@ -4394,21 +4283,16 @@ TODO
 #+BEGIN_SRC emacs-lisp
 (add-hook 'c++-mode-hook (lambda ()
                            (push '("void" . ?∅) prettify-symbols-alist)
-                           (push '("const" . ?🔒) prettify-symbols-alist)
-                           (push '("mutable" . ?🔓) prettify-symbols-alist)
-                           (push '("default" . ?✓) prettify-symbols-alist)
-                           (push '("delete" . ?❌) prettify-symbols-alist)
-                           (push '("final" . ?🔒) prettify-symbols-alist)
-                           (push '("virtual" . ?🖋) prettify-symbols-alist)
-                           (push '("override" . ?🖋) prettify-symbols-alist)
-                           (push '("//" . ?🗩) prettify-symbols-alist)
-                           (push '("/*" . ?🗩) prettify-symbols-alist)
-                           (push '("*/" . ?​) prettify-symbols-alist)
-                           (push '("... " . ?…) prettify-symbols-alist)
+                           (push '("const" . ?𓄗) prettify-symbols-alist)
+                           (push '("mutable" . ?) prettify-symbols-alist)
+                           (push '("default" . ?) prettify-symbols-alist)
+                           (push '("delete" . ?) prettify-symbols-alist)
+                           (push '("final" . ?𓄗) prettify-symbols-alist)
+                           (push '("virtual" . ?) prettify-symbols-alist)
+                           (push '("override" . ?) prettify-symbols-alist)
                            (push '("[]" . ?λ) prettify-symbols-alist)
-                           (push '("#include" . ?⮈) prettify-symbols-alist)
-                           (push '("#pragma once" . ?❶) prettify-symbols-alist)
-                           (push '("::" . ?⸬) prettify-symbols-alist)))
+                           (push '("#include" . ?ﱐ) prettify-symbols-alist)
+                           (push '("#pragma once" . ?❶) prettify-symbols-alist)))
 #+END_SRC
 
 **** Navigation
@@ -5698,132 +5582,50 @@ forcing it by running
 
 ***** Icons for changes
 #+BEGIN_SRC emacs-lisp
-(defvar prettify-magit-alist (list (list (rx (= 7 (in "0-9a-f")) space (+ (in space punctuation "*" "/" "\\" "|")) (group "|"))
-                                         "│")
-                                   (list (rx (= 7 (in "0-9a-f")) space (+ (in space punctuation "*" "/" "\\" "|")) (group "/"))
-                                         "╱")
-                                   (list (rx (= 7 (in "0-9a-f")) space (+ (in space punctuation "*" "/" "\\" "|")) (group "\\"))
-                                         "╲")
-                                   (list (rx (= 7 (in "0-9a-f")) space (+ (in space punctuation "*" "/" "\\" "|")) (group "*"))
-                                         "┝")
-                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "add" (? (or "s" "ed"))) eow)
-                                         (all-the-icons-faicon5 "plus")
-                                         `(:family ,(all-the-icons-faicon5-family)))
-                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "allow" (? (or "s" "ed"))) eow)
-                                         (all-the-icons-faicon5 "thumbs-up")
-                                         `(:family ,(all-the-icons-faicon5-family)))
-                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group (or "remove" "delete") (? (in "sd"))) eow)
-                                         (all-the-icons-faicon5 "trash")
-                                         `(:family ,(all-the-icons-faicon5-family)))
-                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group (? "bug") "fix" (? (or "up" (group "e" (in "sd"))))) eow)
-                                         (all-the-icons-faicon5 "bug")
-                                         `(:family ,(all-the-icons-faicon5-family)))
-                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "call" (? (or "s" "ed"))) eow)
-                                         "↴")
-                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "fixup" (? "!")))
-                                         (all-the-icons-faicon5 "wrench")
-                                         `(:family ,(all-the-icons-faicon5-family) :foreground ,(face-attribute 'warning :foreground)))
-                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "clean" (? (or "s" "ed")) (? (? " ") "up")) eow)
-                                         (all-the-icons-faicon5 "paint-brush")
-                                         `(:family ,(all-the-icons-faicon5-family)))
-                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "update" (? (in "sd"))) eow)
-                                         "⇪")
-                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "sync" (? (or "s" "ed"))) eow)
-                                         (all-the-icons-faicon5 "sync")
-                                         `(:family ,(all-the-icons-faicon5-family)))
-                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "refactor" (? (or "s" "ed"))) eow)
-                                         (all-the-icons-faicon5 "industry")
-                                         `(:family ,(all-the-icons-faicon5-family)))
-                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group (or "replace" "exchange") (? (in "sd"))) eow)
-                                         (all-the-icons-faicon5 "exchange-alt")
-                                         `(:family ,(all-the-icons-faicon5-family)))
-                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "import" (? (or "s" "ed"))) eow)
-                                         (all-the-icons-faicon5 "cart-plus")
-                                         `(:family ,(all-the-icons-faicon5-family)))
-                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "increase" (? (in "sd"))) eow)
-                                         (all-the-icons-faicon5 "chevron-up")
-                                         `(:family ,(all-the-icons-faicon5-family)))
-                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "decrease" (? (in "sd"))) eow)
-                                         (all-the-icons-faicon5 "chevron-down")
-                                         `(:family ,(all-the-icons-faicon5-family)))
-                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group (or "enable" "activate") (? (in "sd"))) eow)
-                                         (all-the-icons-faicon5 "toggle-on")
-                                         `(:family ,(all-the-icons-faicon5-family)))
-                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group (or "disable" "deactivate") (? (in "sd"))) eow)
-                                         (all-the-icons-faicon5 "toggle-off")
-                                         `(:family ,(all-the-icons-faicon5-family)))
-                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "move" (? (in "sd"))) eow)
-                                         (all-the-icons-faicon5 "arrow-right")
-                                         `(:family ,(all-the-icons-faicon5-family)))
-                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "optimize" (? (in "sd"))) eow)
-                                         (all-the-icons-faicon5 "forward")
-                                         `(:family ,(all-the-icons-faicon5-family)))
-                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "set" (? "s")) eow)
-                                         "="
-                                         '(:weight 'black :height 1.3))
-                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "show" (? (in "s"))) eow)
-                                         (all-the-icons-faicon5 "eye")
-                                         `(:family ,(all-the-icons-faicon5-family)))
-                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "hide" (? (in "s"))) eow)
-                                         (all-the-icons-faicon5 "eye-slash")
-                                         `(:family ,(all-the-icons-faicon5-family)))
-                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "lock" (? (or "s" "ed"))) eow)
-                                         (all-the-icons-faicon5 "lock")
-                                         `(:family ,(all-the-icons-faicon5-family)))
-                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "unlock" (? (or "s" "ed"))) eow)
-                                         (all-the-icons-faicon5 "lock-open")
-                                         `(:family ,(all-the-icons-faicon5-family)))
-                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "use" (? (or "s" "ed"))) eow)
-                                         (all-the-icons-faicon5 "puzzle-piece")
-                                         `(:family ,(all-the-icons-faicon5-family)))
-                                   (list (rx bol (not (in "+@-")) (+ any) bow (group "master") eow)
-                                         (all-the-icons-faicon5 "home")
-                                         `(:family ,(all-the-icons-faicon5-family)))
-                                   (list (rx bol (not (in "+@-")) (+ any) bow (group "origin") eow)
-                                         (all-the-icons-faicon5 "cloud")
-                                         `(:family ,(all-the-icons-faicon5-family)))
-                                   (list (rx bol (not (in "+@-")) (+ any) bow (group "HEAD") eow)
-                                         (all-the-icons-faicon5 "cloud")
-                                         `(:family ,(all-the-icons-faicon5-family)))
-                                   (list (rx bol (not (in "+@-")) (+ any) bow (group "Merge" (? " branch")) eow)
-                                         (all-the-icons-octicon "git-merge")
-                                         `(:family ,(all-the-icons-octicon-family)))
-                                   (list (rx bol (group (or (group "edit" (? (or "s" "ed"))) (group "modif" (or "y" (group "ie" (in "sd")))))) eow)
-                                         (all-the-icons-faicon5 "pencil-alt")
-                                         `(:family ,(all-the-icons-faicon5-family)))
-                                   (list (rx bol (group "new file") eow)
-                                         (all-the-icons-faicon5 "plus")
-                                         `(:family ,(all-the-icons-faicon5-family)))
-                                   (list (rx bol (group "delete" (? (in "sd"))) eow)
-                                         (all-the-icons-faicon5 "trash")
-                                         `(:family ,(all-the-icons-faicon5-family)))
-                                   (list (rx bol (group "rename" (? (in "sd"))) eow)
-                                         (all-the-icons-faicon5 "file")
-                                         `(:family ,(all-the-icons-faicon5-family)))
-                                   (list (rx bol (group "@@"))
-                                         (all-the-icons-faicon5 "align-left")
-                                         `(:family ,(all-the-icons-faicon5-family)))
-                                   (list (rx bol "@@" (+ any) (group "@@"))
-                                         (all-the-icons-faicon5 "puzzle-piece")
-                                         `(:family ,(all-the-icons-faicon5-family)))
-                                   (list (rx bol (group "pick"))
-                                         (all-the-icons-faicon5 "check")
-                                         `(:family ,(all-the-icons-faicon5-family)))
-                                   (list (rx bol (group "kill"))
-                                         (all-the-icons-faicon5 "trash")
-                                         `(:family ,(all-the-icons-faicon5-family)))
-                                   (list (rx bol (group "squash"))
-                                         (all-the-icons-faicon5 "check")
-                                         `(:family ,(all-the-icons-faicon5-family)))
-                                   (list (rx bol (group "exec"))
-                                         (all-the-icons-faicon5 "cogs")
-                                         `(:family ,(all-the-icons-faicon5-family)))
-                                   (list (rx bol (group "break"))
-                                         (all-the-icons-faicon5 "pause")
-                                         `(:family ,(all-the-icons-faicon5-family)))
-                                   (list (rx bol "Magithub is " (group "OFFLINE") eow)
-                                         (all-the-icons-octicon "plug")
-                                         `(:family ,(all-the-icons-octicon-family))))
+(defvar prettify-magit-alist (list (list (rx (= 7 (in "0-9a-f")) space (+ (in space punctuation "*" "/" "\\" "|")) (group "|")) "│")
+                                   (list (rx (= 7 (in "0-9a-f")) space (+ (in space punctuation "*" "/" "\\" "|")) (group "/")) "╱")
+                                   (list (rx (= 7 (in "0-9a-f")) space (+ (in space punctuation "*" "/" "\\" "|")) (group "\\")) "╲")
+                                   (list (rx (= 7 (in "0-9a-f")) space (+ (in space punctuation "*" "/" "\\" "|")) (group "*")) "┝")
+                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "add" (? (or "s" "ed"))) eow) "")
+                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "allow" (? (or "s" "ed"))) eow) "")
+                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group (or "remove" "delete") (? (in "sd"))) eow) "")
+                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group (? "bug") "fix" (? (or "up" (group "e" (in "sd"))))) eow) "")
+                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "call" (? (or "s" "ed"))) eow) "↴")
+                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "fixup" (? "!"))) "")
+                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "clean" (? (or "s" "ed")) (? (? " ") "up")) eow) "")
+                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "update" (? (in "sd"))) eow) "⇪")
+                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "sync" (? (or "s" "ed"))) eow) "痢")
+                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "refactor" (? (or "s" "ed"))) eow) "")
+                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group (or "replace" "exchange") (? (in "sd"))) eow) "")
+                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "import" (? (or "s" "ed"))) eow) "")
+                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "increase" (? (in "sd"))) eow) "")
+                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "decrease" (? (in "sd"))) eow) "")
+                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group (or "enable" "activate") (? (in "sd"))) eow) "")
+                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group (or "disable" "deactivate") (? (in "sd"))) eow) "")
+                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "move" (? (in "sd"))) eow) "")
+                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "optimize" (? (in "sd"))) eow) "輪")
+                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "set" (? "s")) eow) "=" '(:weight 'black :height 1.3))
+                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "show" (? (in "s"))) eow) "")
+                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "hide" (? (in "s"))) eow) "")
+                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "lock" (? (or "s" "ed"))) eow) "𓄗")
+                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "unlock" (? (or "s" "ed"))) eow) "")
+                                   (list (rx bol (= 7 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "use" (? (or "s" "ed"))) eow) "")
+                                   (list (rx bol (not (in "+@-")) (+ any) bow (group "master") eow) "")
+                                   (list (rx bol (not (in "+@-")) (+ any) bow (group "origin") eow) "")
+                                   (list (rx bol (not (in "+@-")) (+ any) bow (group "HEAD") eow) "")
+                                   (list (rx bol (not (in "+@-")) (+ any) bow (group "Merge" (? " branch")) eow) "")
+                                   (list (rx bol (group (or (group "edit" (? (or "s" "ed"))) (group "modif" (or "y" (group "ie" (in "sd")))))) eow) "")
+                                   (list (rx bol (group "new file") eow) "ﱐ")
+                                   (list (rx bol (group "delete" (? (in "sd"))) eow) "")
+                                   (list (rx bol (group "rename" (? (in "sd"))) eow) "")
+                                   (list (rx bol (group "@@")) "𓄥")
+                                   (list (rx bol "@@" (+ any) (group "@@")) "")
+                                   (list (rx bol (group "pick")) "")
+                                   (list (rx bol (group "kill")) "")
+                                   (list (rx bol (group "squash")) "ﲐ")
+                                   (list (rx bol (group "exec")) "")
+                                   (list (rx bol (group "break")) "")
+                                   (list (rx bol "Magithub is " (group "OFFLINE") eow) ""))
   "An alist of expressions and icon properties to replace strings with icons in magit logs.")
 
 (defun cpped-prettify-magit (&rest arguments)
@@ -6058,7 +5860,7 @@ Hide info buffer in buffer list
   (org-cycle-separator-lines 0)
   (org-default-notes-file "~/.notes.org")
   (org-duration-format 'h:mm)
-  (org-ellipsis " ▼")
+  (org-ellipsis " ")
   (org-enforce-todo-checkbox-dependencies t)
   (org-enforce-todo-dependencies t)
   (org-fast-tag-selection-single-key t)
@@ -6426,9 +6228,9 @@ Archive when done, remove flag if reset to todo.
 
 (use-package org-fancy-priorities
   :hook (org-mode . org-fancy-priorities-mode)
-  :custom (org-fancy-priorities-list '((?A . "⚠")
-                                       (?B . "⏲")
-                                       (?C . "☕"))))
+  :custom (org-fancy-priorities-list '((?A . ?)
+                                       (?B . ?)
+                                       (?C . ?⏾))))
 #+END_SRC
 
 ** Capture Templates
@@ -6810,10 +6612,7 @@ Archive when done, remove flag if reset to todo.
   (if (and cpped-show-work-time
              (org-clock-is-active))
       (let* ((difference (cpped-remaining-work-minutes))
-             (display-text (format "%s %s%d:%02d"
-                                   (propertize (all-the-icons-faicon5 "briefcase")
-                                               'face (list ':family (all-the-icons-faicon5-family))
-                                               'display '(raise -0.0))
+             (display-text (format " %s%d:%02d"
                                    (if (< difference 0)
                                        "-"
                                      "+")
@@ -7083,10 +6882,10 @@ Do not use scientific form so quickly
 #+BEGIN_SRC emacs-lisp
 (defhydra cpped-hydra-projects (:exit t :hint nil)
   "
-☰ Project 🗁 %s(or (ignore-errors (projectile-project-root))
+☰ Project  %s(or (ignore-errors (projectile-project-root))
                    default-directory)%s(let ((build-dir (cpped-build-dir)))
                                           (if build-dir
-                                              (concat \" 🛠 \" build-dir)
+                                              (concat \"  \" build-dir)
                                             \"\"))
 
 CMake              ^^Git                         ^^Directories         ^^Shell                    ^^Other
@@ -7143,14 +6942,8 @@ CMake              ^^Git                         ^^Directories         ^^Shell  
 #+BEGIN_SRC emacs-lisp
 (defun cpped-buffersize ()
   (when (not vlf-mode)
-    (concat
-     (propertize (all-the-icons-faicon5 "file-alt")
-                 'face `(:family ,(all-the-icons-faicon5-family))
-                 'display '(raise -0.0))
+    (format " %s  %s"
      (format-mode-line " %I ")
-     (propertize (all-the-icons-faicon5 "align-left")
-                 'face `(:family ,(all-the-icons-faicon5-family))
-                 'display '(raise -0.0))
      (save-excursion
        (goto-char (point-max))
        (format-mode-line " %l")))))
@@ -7158,20 +6951,13 @@ CMake              ^^Git                         ^^Directories         ^^Shell  
 
 #+BEGIN_SRC emacs-lisp
 (defun cpped-file-encoding ()
-  (concat
-   (propertize (all-the-icons-faicon5 "language")
-               'face `(:family ,(all-the-icons-faicon5-family))
-               'display '(raise -0.0))
-   " "
-   (symbol-name (coding-system-type buffer-file-coding-system))
-   " "
-   (propertize (pcase (coding-system-eol-type buffer-file-coding-system)
-                 (`0  (all-the-icons-faicon5 "linux"))
-                 (`1  (all-the-icons-faicon5 "windows"))
-                 (`2 (all-the-icons-faicon5 "apple"))
-                 (_ (all-the-icons-faicon5 "question")))
-               'face `(:family ,(all-the-icons-faicon5-family))
-               'display '(raise -0.0))))
+  (format " %s %s"
+          (symbol-name (coding-system-type buffer-file-coding-system))
+          (pcase (coding-system-eol-type buffer-file-coding-system)
+                 (`0 "")
+                 (`1 "")
+                 (`2 "")
+                 (_ ""))))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
