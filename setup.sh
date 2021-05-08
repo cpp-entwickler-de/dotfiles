@@ -151,7 +151,7 @@ if [ "$LINKS" = TRUE ]; then
                 *)
                 ;;
             esac
-        done <<< "$(curl --silent freegeoip.net/xml)"
+        done <<< "$(curl --location --silent freegeoip.net/xml)"
         
         read -r -e -p "Please enter your location name: " -i "$CITY" CITY
         read -r -e -p "Please enter your latitude:      " -i "$LATITUDE" LATITUDE
@@ -182,12 +182,12 @@ if [ "$PRINTERS" = TRUE ]; then
     mkdir -p $PRETTY_PRINTER_DIR/stl
     CPP_PRINTER_FILES="__init__.py printers.py xmethods.py"
     for FILE in $CPP_PRINTER_FILES; do
-        curl --show-error --create-dirs --output "$PRETTY_PRINTER_DIR/stl/$FILE" "https://gcc.gnu.org/git/?p=gcc.git;a=blob_plain;f=libstdc%2B%2B-v3/python/libstdcxx/v6/$FILE"
+        curl --location --show-error --create-dirs --output "$PRETTY_PRINTER_DIR/stl/$FILE" "https://gcc.gnu.org/git/?p=gcc.git;a=blob_plain;f=libstdc%2B%2B-v3/python/libstdcxx/v6/$FILE"
     done
     mkdir -p $PRETTY_PRINTER_DIR/qt
     QT_PRINTER_FILES="helper.py kde.py qt.py"
     for FILE in $QT_PRINTER_FILES; do
-        curl --show-error --create-dirs --output "$PRETTY_PRINTER_DIR/qt/$FILE" "https://cgit.kde.org/kdevelop.git/plain/plugins/gdb/printers/$FILE"
+        curl --location --show-error --create-dirs --output "$PRETTY_PRINTER_DIR/qt/$FILE" "https://cgit.kde.org/kdevelop.git/plain/plugins/gdb/printers/$FILE"
     done
 
     git_install git://github.com/ruediger/Boost-Pretty-Printer.git "$PRETTY_PRINTER_DIR/Boost-Pretty-Printer"
@@ -199,13 +199,13 @@ if [ "$FONTS" = TRUE ]; then
     FONT_DIR=~/.fonts/
     ALL_THE_ICONS_FONTS="all-the-icons file-icons octicons weathericons"
     for FONT in $ALL_THE_ICONS_FONTS; do
-        curl --show-error --output "$FONT_DIR/$FONT.ttf" "https://raw.githubusercontent.com/domtronn/all-the-icons.el/master/fonts/$FONT.ttf"
+        curl --location --show-error --output "$FONT_DIR/$FONT.ttf" "https://raw.githubusercontent.com/domtronn/all-the-icons.el/master/fonts/$FONT.ttf"
     done
     FONTAWESOME_FONTS="fa-brands-400 fa-regular-400 fa-solid-900"
     for FONT in $FONTAWESOME_FONTS; do
-        curl --show-error --create-dirs --output "$FONT_DIR/$FONT.ttf" "https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/webfonts/$FONT.ttf"
+        curl --location --show-error --create-dirs --output "$FONT_DIR/$FONT.ttf" "https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/webfonts/$FONT.ttf"
     done
-    curl --show-error --create-dirs --output "$FONT_DIR/MaterialIcons-Regular.ttf" "https://raw.githubusercontent.com/google/material-design-icons/master/iconfont/MaterialIcons-Regular.ttf"
+    curl --location --show-error --create-dirs --output "$FONT_DIR/MaterialIcons-Regular.ttf" "https://raw.githubusercontent.com/google/material-design-icons/master/iconfont/MaterialIcons-Regular.ttf"
     curl --location --show-error --create-dirs --output "$FONT_DIR/FiraCode.zip" https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/FiraCode.zip
     unzip -ou "$FONT_DIR/FiraCode.zip" -d "$FONT_DIR/"
     rm "$FONT_DIR/FiraCode.zip"
@@ -217,11 +217,11 @@ if [ "$DOCUMENTATION" = TRUE ]; then
     DOCSET_DIR=~/.docsets
     DOCSETS="Bash Boost C C++ CMake Docker Emacs_Lisp GLib HTML Man_Pages OpenGL_4 Qt_5 SVG XSLT"
     for DOCSET in $DOCSETS; do
-        curl --create-dirs --output "$DOCSET_DIR/$DOCSET.tgz" "http://sanfrancisco.kapeli.com/feeds/$DOCSET.tgz"
+        curl --location --create-dirs --output "$DOCSET_DIR/$DOCSET.tgz" "http://sanfrancisco.kapeli.com/feeds/$DOCSET.tgz"
         tar xfz "$DOCSET_DIR/$DOCSET.tgz" --overwrite -C "$DOCSET_DIR"
         rm "$DOCSET_DIR/$DOCSET.tgz"
     done
-    curl --show-error --create-dirs --output "$DOCSET_DIR/IntelASM.pdf" https://software.intel.com/sites/default/files/managed/a4/60/325383-sdm-vol-2abcd.pdf
+    curl --location --show-error --create-dirs --output "$DOCSET_DIR/IntelASM.pdf" https://software.intel.com/sites/default/files/managed/a4/60/325383-sdm-vol-2abcd.pdf
 fi
 
 # install zsh plugins
