@@ -155,6 +155,9 @@ tool = meld
 # Merge upstream branches when called without argument
 defaultToUpstream = true
 
+# Use diff3 style
+conflictStyle = diff3
+
 
 [merge "keep-local"]
 # Pseudo-driver to always keep local changes on merge
