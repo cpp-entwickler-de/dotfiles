@@ -6252,6 +6252,37 @@ Archive when done, remove flag if reset to todo.
                                        (?C . ?⏾))))
 #+END_SRC
 
+** Prettify symbols
+#+BEGIN_SRC emacs-lisp
+(add-hook 'org-mode-hook (lambda ()
+                           (push '("[ ]" . ?) prettify-symbols-alist)
+                           (push '("[X]" . ?) prettify-symbols-alist)
+                           (push '("[-]" . ?) prettify-symbols-alist)
+                           (push '("#+BEGIN_SRC" . ?) prettify-symbols-alist)
+                           (push '("#+begin_src" . ?) prettify-symbols-alist)
+                           (push '("#+END_SRC" . ?) prettify-symbols-alist)
+                           (push '("#+end_src" . ?) prettify-symbols-alist)
+                           (push '("#+RESULTS" . ?⇒) prettify-symbols-alist)
+                           (push '("#+results" . ?⇒) prettify-symbols-alist)
+                           (push '("#+BEGIN_EXAMPLE" . ?﬒) prettify-symbols-alist)
+                           (push '("#+begin_example" . ?﬒) prettify-symbols-alist)
+                           (push '("#+END_EXAMPLE" . ?﬒) prettify-symbols-alist)
+                           (push '("#+end_example" . ?﬒) prettify-symbols-alist)
+                           (push '("#+BEGIN_HTML" . ?爵) prettify-symbols-alist)
+                           (push '("#+begin_html" . ?爵) prettify-symbols-alist)
+                           (push '("#+END_HTML" . ?爵) prettify-symbols-alist)
+                           (push '("#+end_html" . ?爵) prettify-symbols-alist)
+                           (push '("#+BEGIN_QUOTE" . ?“) prettify-symbols-alist)
+                           (push '("#+begin_quote" . ?“) prettify-symbols-alist)
+                           (push '("#+END_QUOTE" . ?”) prettify-symbols-alist)
+                           (push '("#+end_quote" . ?”) prettify-symbols-alist)
+                           (push '("#+BEGIN_VERBATIM" . ?) prettify-symbols-alist)
+                           (push '("#+begin_verbatim" . ?) prettify-symbols-alist)
+                           (push '("#+END_VERBATIM" . ?) prettify-symbols-alist)
+                           (push '("#+end_verbatim" . ?) prettify-symbols-alist)
+                           (prettify-symbols-mode)))
+#+END_SRC
+
 ** Capture Templates
 #+BEGIN_SRC emacs-lisp
 (defun cpped-select-topic (name files)
