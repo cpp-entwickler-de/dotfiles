@@ -4400,7 +4400,7 @@ TODO
 #+BEGIN_SRC emacs-lisp
 (define-abbrev-table 'c++-mode-abbrev-table '(
                                               ("breif" "brief")
-                                              ("a" "auto")
+                                              ("au" "auto")
                                               ("co" "const")
                                               ("cosnt" "const")
                                               ("#d" "#define")
@@ -4425,7 +4425,7 @@ TODO
                                               ("si" "signals:")
                                               ("st" "std::")
                                               ("std" "std::")
-                                              ("v" "void")
+                                              ("vd" "void")
                                               ))
 #+END_SRC
 
