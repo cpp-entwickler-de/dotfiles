@@ -5988,19 +5988,18 @@ Remove check on buffer close
   :hook (org-mode . org-autolist-mode))
 #+END_SRC
 
-*** Show actual bullets for header items
+*** Hide stars for header items
 #+BEGIN_SRC emacs-lisp
-(use-package org-bullets
+(use-package org-superstar
   :after org
-  :hook (org-mode . org-bullets-mode)
-  :custom (org-bullets-bullet-list '("❶" "❷" "❸" "❹" "❺" "❻" "❼" "❽" "❾" "❿")))
-#+END_SRC
-
-*** Show actual bullets for list items
-#+BEGIN_SRC emacs-lisp
-(font-lock-add-keywords 'org-mode
-                        '(("^[ \t]*\\(-\\) "
-                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+  :hook (org-mode . (lambda () (org-superstar-mode 1)))
+  :custom
+  (org-superstar-headline-bullets-list '(""))
+  (org-superstar-leading-bullet ?\s)
+  (org-superstar-item-bullet-alist '((?* . ?•)
+                                     (?+ . ?•)
+                                     (?- . ?•)))
+  (org-superstar-special-todo-items t))
 #+END_SRC
 
 ** Use current heading as function name
