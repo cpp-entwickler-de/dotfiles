@@ -1945,7 +1945,12 @@ https://github.com/purcell/exec-path-from-shell
 (use-package helpful
   :after helm-buffers
   :custom (helpful-max-buffers 3)
-  :config (push "\\*helpful.*\\*" helm-boring-buffer-regexp-list))
+  :config
+  (push "\\*helpful.*\\*" helm-boring-buffer-regexp-list)
+  (advice-add 'describe-function :override #'helpful-function)
+  (advice-add 'describe-variable :override #'helpful-variable)
+  (advice-add 'describe-key :override #'helpful-key)
+  (advice-add 'describe-symbol :override #'helpful-symbol))
 #+END_SRC
 
 ** Utilites
