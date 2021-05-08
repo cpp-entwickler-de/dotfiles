@@ -341,10 +341,6 @@ Show below other windows
 #+END_SRC
 
 ** Fonts
-*** Set fallback font for symbols
-#+BEGIN_SRC emacs-lisp
-(set-fontset-font "fontset-default" 'unicode "Symbola")
-#+END_SRC
 
 *** Show pretty symbols
 Disable prettification if cursor is at edge of expression

@@ -170,6 +170,6 @@
  '(dashboard-heading ((t (:inherit helm-source-header))))
  '(magit-header-line ((t (:inherit (magit-section-heading)))))
  '(magit-section-heading ((t (:inherit helm-source-header))))
- '(default ((t (:inherit nil :stipple nil :background "gray5" :foreground "white smoke" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight semi-bold :height 120 :width normal :foundry "ADBO" :family "Source Code Pro")))))
+ '(default ((t (:inherit nil :stipple nil :background "gray5" :foreground "white smoke" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight semi-bold :height 120 :width normal :family "Fira Code")))))
 
 (provide-theme 'cpp-entwickler.de)
