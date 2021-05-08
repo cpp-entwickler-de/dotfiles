@@ -7992,9 +7992,7 @@ Settings                       ^^Snippets            ^^Abbreviations            
   "
 ☰ Help
 "
-  ("f" helpful-callable "Function")
-  ("v" describe-variable "Variable")
-  ("s" describe-symbol "Symbol")
+  ("h" helm-apropos "Help")
   ("k" describe-key "Key")
   ("p" finder-commentary "Package")
   ("y" describe-syntax "Syntax")
