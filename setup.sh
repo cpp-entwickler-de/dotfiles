@@ -206,8 +206,9 @@ if [ "$FONTS" = TRUE ]; then
         curl --show-error --create-dirs --output "$FONT_DIR/$FONT.ttf" "https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/webfonts/$FONT.ttf"
     done
     curl --show-error --create-dirs --output "$FONT_DIR/MaterialIcons-Regular.ttf" "https://raw.githubusercontent.com/google/material-design-icons/master/iconfont/MaterialIcons-Regular.ttf"
-    make_link "$DOTFILES_DIRECTORY/home/10-symbols.conf" "$(realpath ~)/.config/fontconfig/conf.d/10-symbols.conf"
-    fc-cache --force
+    curl --location --show-error --create-dirs --output "$FONT_DIR/FiraCode.zip" https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/FiraCode.zip
+    unzip -ou "$FONT_DIR/FiraCode.zip" -d "$FONT_DIR/"
+    rm "$FONT_DIR/FiraCode.zip"
 fi
 
 if [ "$DOCUMENTATION" = TRUE ]; then
