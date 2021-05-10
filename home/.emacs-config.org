@@ -436,10 +436,13 @@ Disable prettification if cursor is at edge of expression
 
 ** [[https://github.com/rakanalh/emacs-dashboard][Dashboard]]
 #+BEGIN_SRC emacs-lisp
+(defvar cpped-dashboard-footer nil "Th dashboard footer text")
+
 (use-package dashboard
   :after helm-buffers
+  :hook (dashboard-mode . (lambda () (display-fill-column-indicator-mode -1)))
   :custom
-  (dashboard-startup-banner (let ((logo (expand-file-name "logo.png" "~/")))
+  (dashboard-startup-banner (let ((logo (expand-file-name "~/.logo.svg")))
                               (if (file-exists-p logo)
                                   logo
                                 nil)))
@@ -448,9 +451,51 @@ Disable prettification if cursor is at edge of expression
   (dashboard-items '((recents . 20)
                      (projects . 5)
                      (agenda . 10)))
-  :config
-  (push (regexp-quote dashboard-buffer-name) helm-boring-buffer-regexp-list)
-  (dashboard-setup-startup-hook))
+  (dashboard-heading-icons '((recents   . "")
+                             (bookmarks . "")
+                             (agenda    . "")
+                             (projects . "")
+                             (registers . "")))
+   (dashboard-set-heading-icons t)
+   (dashboard-set-init-info nil)
+   (dashboard-set-footer nil)
+   (dashboard-footer-icon "")
+   (dashboard-footer-messages (let ((file (expand-file-name "~/.dashboard-messages")))
+                                (when (file-exists-p file)
+                                  (with-temp-buffer
+                                    (insert-file-contents file)
+                                    (split-string (buffer-string) "\n" t)))))
+   :config
+   (setq cpped-dashboard-footer (dashboard-random-footer))
+   (advice-add 'dashboard-insert-banner :after #'(lambda ()
+                                                   (insert "\n")
+                                                   (dashboard-center-line cpped-dashboard-footer)
+                                                   (insert " ")
+                                                   (insert (propertize cpped-dashboard-footer 'face 'dashboard-footer))
+                                                   (insert "\n")))
+   (defun cpped-dashboard-insert-heading (heading &optional shortcut)
+     "Insert a widget HEADING in dashboard buffer, adding SHORTCUT if provided."
+     (when (and (display-graphic-p)
+                dashboard-set-heading-icons)
+       (insert (cond
+                ((string-equal heading "Recent Files:")
+                 (cdr (assoc 'recents dashboard-heading-icons)))
+                ((string-equal heading "Bookmarks:")
+                 (cdr (assoc 'bookmarks dashboard-heading-icons)))
+                ((or (string-equal heading "Agenda for today:")
+                     (string-equal heading "Agenda for the coming week:"))
+                 (cdr (assoc 'agenda dashboard-heading-icons)))
+                ((string-equal heading "Registers:")
+                 (cdr (assoc 'registers dashboard-heading-icons)))
+                ((string-equal heading "Projects:")
+                 (cdr (assoc 'projects dashboard-heading-icons)))
+                (t " ")))
+       (insert " "))
+     (insert (propertize heading 'face 'dashboard-heading))
+     (when shortcut (insert (format " (%s)" shortcut))))
+   (advice-add 'dashboard-insert-heading :override 'cpped-dashboard-insert-heading)
+   (push (regexp-quote dashboard-buffer-name) helm-boring-buffer-regexp-list)
+   (dashboard-setup-startup-hook))
 #+END_SRC
 
 ** Mode Line
