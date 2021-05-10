@@ -3855,7 +3855,16 @@ Handler to close buffer after quitting ccmake.
 
 ***** [[https://github.com/remyferre/comment-dwim-2][Smarter commenting]]
 #+BEGIN_SRC emacs-lisp
-(use-package comment-dwim-2)
+(use-package comment-dwim-2
+  :config
+  (defun cpped-comment-line ()
+    "Comment SEXPs instead of region in lisp code."
+    (if (cd2/empty-line-p)
+        (comment-dwim nil)
+      (if (derived-mode-p 'emacs-lisp-mode)
+          (comment-or-uncomment-sexp)
+        (comment-region (line-beginning-position) (line-end-position)))))
+  (advice-add 'cd2/comment-line :override 'cpped-comment-line))
 #+END_SRC
 
 ***** [[https://github.com/victorhge/iedit][Edit all occurences within function]]
@@ -7585,9 +7594,7 @@ Identifier    ^^Namespace
   ("6" base64-encode-region)
   ("&" base64-decode-region)
 
-  ("/" (if (derived-mode-p 'emacs-lisp-mode)
-           (comment-or-uncomment-sexp)
-         (comment-dwim-2)))
+  ("/" comment-dwim-2)
   ("f" cpped-hydra-refactor/body :exit t)
   ("e" (if (region-active-p)
            (eval-region (region-beginning) (region-end))
