@@ -989,6 +989,10 @@ Find path of current position in XML docuement
                                                       (helm-search-suggest-perform-additional-action
                                                        "http://www.stacksnippet.com/#gsc.tab=0&gsc.q=%s"
                                                        candidate)))
+                                 ("Bropages" . (lambda (candidate)
+                                                      (helm-search-suggest-perform-additional-action
+                                                       "http://bropages.org/search/%s"
+                                                       candidate)))
                                  ("Unicode Character" . (lambda (candidate)
                                                           (helm-search-suggest-perform-additional-action
                                                            "https://unicode-table.com/en/search/?q=%s&p"
