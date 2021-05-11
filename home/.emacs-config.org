@@ -5813,6 +5813,99 @@ forcing it by running
   :config (gitignore-snippets-init))
 #+end_SRC
 
+**** Show contributors
+#+BEGIN_SRC emacs-lisp
+(defun cpped-get-contributor-info (files &optional start end)
+  "Get contributor information for file(s) or region."
+  (let ((lines (if (and start end)
+                   (format "-L %d,%d" (line-number-at-pos start t) (line-number-at-pos end t))
+                 ""))
+        (contributor-list)
+        (linecount 0)
+        (output "Contributors:\n"))
+    (setq contributor-list (sort (dolist (file files contributor-list)
+                                   (dolist (entry (split-string (shell-command-to-string (concat "git blame " lines " --line-porcelain " file))
+                                                                "\n"
+                                                                t))
+                                     (when (string-match (rx bol "author " (group (+ any))) entry)
+                                       (let* ((contributor (match-string 1 entry))
+                                              (count (alist-get contributor contributor-list 0 nil 'string=)))
+                                         (setf (alist-get contributor contributor-list 0 nil 'string=) (1+ count)))
+                                       (setq linecount (1+ linecount)))))
+                                 (lambda (first second) (> (cdr first) (cdr second)))))
+    (dolist (entry contributor-list output)
+      (setq output (format "%s    %s (%d%%)\n" output (car entry) (/ (* (cdr entry) 100) linecount))))
+    (concat output "\n")))
+
+(defun cpped-show-contributor-info (files position type &optional start end)
+  "Show contributor information."
+  (remove-overlays nil nil type t)
+  (let* ((overlay (make-overlay position position)))
+    (overlay-put overlay 'before-string (cpped-get-contributor-info files start end))
+    (overlay-put overlay type t)))
+
+
+(defun cpped-show-project-contributor-info ()
+  "Show contributor information for current project."
+  (interactive)
+  (let* ((backend (vc-deduce-backend))
+         (project-root (when backend
+                         (ignore-errors (vc-call-backend backend 'root default-directory))))
+         (default-directory project-root))
+    (when project-root
+      (cpped-show-contributor-info (mapcar (lambda (file)
+                                             (expand-file-name file project-root))
+                                           (split-string (shell-command-to-string (concat "git ls-files --full-name")) "\n" t))
+                                   (save-excursion
+                                       (save-restriction
+                                         (point-min)))
+                                   'cpped-project-contributor-info))))
+
+(defun cpped-show-file-contributor-info ()
+  "Show contributor information for current file."
+  (interactive)
+  (when (and buffer-file-name
+             (vc-state buffer-file-name)
+             (not (string-equal (vc-state buffer-file-name) 'unregistered)))
+    (cpped-show-contributor-info `(,buffer-file-name)
+                                 (save-excursion
+                                     (save-restriction
+                                       (point-min)))
+                                 'cpped-file-contributor-info)))
+
+(defun cpped-show-region-contributor-info ()
+  "Show contributor information for current region. If no region is selected, defaults to current function"
+  (interactive)
+  (when (and buffer-file-name
+             (vc-state buffer-file-name)
+             (not (string-equal (vc-state buffer-file-name) 'unregistered)))
+    (let ((start (if (region-active-p)
+                     (region-beginning)
+                   (save-excursion
+                     (save-restriction
+                       (funcall cpped-beginning-of-function)
+                       (point)))))
+          (end (if (region-active-p)
+                   (region-end)
+                 (save-excursion
+                     (save-restriction
+                       (funcall cpped-end-of-function)
+                       (point))))))
+      (cpped-show-contributor-info `(,buffer-file-name)
+                                   (save-excursion
+                                     (save-restriction
+                                       (goto-char start)
+                                       (line-beginning-position)))
+                                   'cpped-region-contributor-info
+                                   start
+                                   end))))
+
+(add-hook 'find-file-hook 'cpped-show-file-contributor-info)
+(add-hook 'after-save-hook 'cpped-show-file-contributor-info)
+(add-hook 'magit-post-commmit-hook 'cpped-show-file-contributor-info)
+(add-hook 'magit-post-refresh-hook 'cpped-show-file-contributor-info)
+#+END_SRC
+
 * Viewer
 ** Man Pages
 #+BEGIN_SRC emacs-lisp
@@ -7213,13 +7306,13 @@ Open                             ^^Save                      ^^Close            
   "
 ☰ Information %s(format \"%s %s\" (cpped-print-date) (cpped-print-time))
 
-Text                    ^^Code                                ^^Version Control         ^^System             ^^Other
-  _._: Character            _d_: Documentation                    _c_: Commit Message       _p_: Processes       _t_: ToDos
-  _x_: Translate            _m_: Member hierarchy
-  _#_: Number               _r_: References                       _b_: Blame                _B_: Boot log        _w_: Weather
-  _f_: Define               _h_: Caller hierarchy                                         ^^_S_: System log
-  _s_: Synonym              _i_: Inheritance hierarchy                                    ^^_M_: Man page
-  _g_: Google                                                                           ^^^^_I_: Info page
+Text                    ^^Code                                ^^Version Control               ^^System             ^^Other
+  _._: Character            _d_: Documentation                    _c_: Commit Message             _p_: Processes       _t_: ToDos
+  _#_: Number               _r_: References                       _b_: Blame                      _B_: Boot log        _w_: Weather
+  _f_: Define               _h_: Caller hierarchy                                               ^^_S_: System log
+  _x_: Translate            _m_: Member hierarchy                 _C_: Region Contributors
+  _s_: Synonym              _i_: Inheritance hierarchy                                          ^^_M_: Man page
+  _g_: Google                                                                                 ^^^^_I_: Info page
   _G_: Find on GitHub       _+_: Preprocess
   _o_: Preview markdown     _l_: Count lines of code
   _R_: Compare Regions      _j_: Copy JSON path
@@ -7252,6 +7345,7 @@ Text                    ^^Code                                ^^Version Control 
 
   ("c" git-messenger:popup-message)
   ("b" magit-blame-popup)
+  ("C" cpped-show-region-contributor-info)
 
   ("p" helm-top)
   ("B" journalctl-boot)
