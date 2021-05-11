@@ -5907,6 +5907,49 @@ Hide info buffer in buffer list
 (use-package strace-mode)
 #+END_SRC
 
+** Certificates
+#+BEGIN_SRC emacs-lisp
+(defvar certificate-mode-font-lock-keywords
+  '(("^\\(-----[^-]*-----\\)"
+     (1 font-lock-comment-face)))
+  "Highlight rules for `certificate-mode'.")
+
+(define-derived-mode certificate-mode text-mode "Certificate-Mode"
+  "A major mode for viewing certificate files."
+  (setq-local comment-start "-----")
+  (setq-local comment-end "-----")
+  (setq-local comment-start-skip "-----")
+  (setq-local comment-end-skip "-----")
+  (setq-local font-lock-defaults '(certificate-mode-font-lock-keywords))
+
+  (setq-local outline-regexp "-----"))
+
+(push '("-----BEGIN CERTIFICATE-----" . certificate-mode) magic-mode-alist)
+
+(define-key certificate-mode-map (kbd "q") 'cpped-kill-default-buffer)
+
+(provide 'certificate-mode)
+
+(defun cpped-show-certificate-info ()
+  "Show certificate information"
+  (remove-overlays  nil nil 'cpped-certificate-info t)
+  (let* ((begin (save-excursion
+                  (save-restriction
+                    (point-min))))
+         (overlay (make-overlay begin begin)))
+    (overlay-put overlay 'before-string (replace-regexp-in-string "issuer=" "  "
+                                                                  (replace-regexp-in-string "subject=" "  "
+                                                                                            (replace-regexp-in-string "notBefore=" "  "
+                                                                                                                      (replace-regexp-in-string "notAfter=" "  "
+                                                                                                                                                (replace-regexp-in-string "SHA1 Fingerprint=" "  "
+                                                                                                                                                                          (concat (shell-command-to-string (concat "openssl x509 -in '" buffer-file-name "' -noout -issuer -subject -dates -fingerprint")) "\n")))))))
+    (overlay-put overlay 'cpped-certificate-info t)))
+
+(add-hook 'certificate-mode-hook '(lambda ()
+                                    (cpped-show-certificate-info)
+                                    (read-only-mode)))
+#+END_SRC
+
 * Org-Mode
 #+BEGIN_SRC emacs-lisp
 (use-package helm-org
