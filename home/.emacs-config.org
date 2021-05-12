@@ -341,6 +341,29 @@ Show below other windows
 #+END_SRC
 
 ** Fonts
+*** [[https://github.com/mickeynp/ligature.el][Support Ligatures]]
+#+begin_SRC emacs-lisp
+(use-package ligature
+  :quelpa ((ligature :repo "mickeynp/ligature.el" :fetcher github))
+  :config
+  (ligature-set-ligatures 't '("www"))
+  (ligature-set-ligatures 'eww-mode '("ff" "fi" "ffi"))
+  (ligature-set-ligatures 'prog-mode '("|||>" "<|||" "<==>" "<!--" "####" "~~>" "***" "||=" "||>"
+                                       ":::" "::=" "=:=" "===" "==>" "=!=" "=>>" "=<<" "=/=" "!=="
+                                       "!!." ">=>" ">>=" ">>>" ">>-" ">->" "->>" "-->" "---" "-<<"
+                                       "<~~" "<~>" "<*>" "<||" "<|>" "<$>" "<==" "<=>" "<=<" "<->"
+                                       "<--" "<-<" "<<=" "<<-" "<<<" "<+>" "</>" "###" "#_(" "..<"
+                                       "..." "+++" "/==" "///" "_|_" "www" "&&" "^=" "~~" "~@" "~="
+                                       "~>" "~-" "**" "*>" "*/" "||" "|}" "|]" "|=" "|>" "|-" "{|"
+                                       "[|" "]#" "::" ":=" ":>" ":<" "$>" "==" "=>" "!=" "!!" ">:"
+                                       ">=" ">>" ">-" "-~" "-|" "->" "--" "-<" "<~" "<*" "<|" "<:"
+                                       "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!"
+                                       "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"
+                                       "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
+                                       "\\\\" "://"))
+  (ligature-set-ligatures '(html-mode nxml-mode web-mode) '("<!--" "-->" "</>" "</" "/>" "://"))
+  (global-ligature-mode t))
+#+end_SRC
 
 *** Show pretty symbols
 Disable prettification if cursor is at edge of expression
@@ -2452,18 +2475,8 @@ https://github.com/purcell/exec-path-from-shell
 *** Pretty symbols
 #+BEGIN_SRC emacs-lisp
 (add-hook 'text-mode-hook (lambda()
-                            (push '("=/=" . ?≠) prettify-symbols-alist)
-                            (push '(">=" . ?≧) prettify-symbols-alist)
-                            (push '("<=" . ?≦) prettify-symbols-alist)
-
-                            (push '("->" . ?→) prettify-symbols-alist)
-                            (push '("<-" . ?←) prettify-symbols-alist)
-                            (push '("<->" . ?↔) prettify-symbols-alist)
                             (push '("<_->" . ?⇄) prettify-symbols-alist)
                             (push '("<-_>" . ?⇆) prettify-symbols-alist)
-
-                            (push '("-->" . ?⤍) prettify-symbols-alist)
-                            (push '("<--" . ?⤌) prettify-symbols-alist)
 
                             (push '("--->" . ?⤏) prettify-symbols-alist)
                             (push '("<---" . ?⤎) prettify-symbols-alist)
@@ -2472,13 +2485,10 @@ https://github.com/purcell/exec-path-from-shell
                             (push '("<|-" . ?⇽) prettify-symbols-alist)
                             (push '("<|-|>" . ?⇿) prettify-symbols-alist)
 
-                            (push '("==>" . ?⇒) prettify-symbols-alist)
-                            (push '("<==" . ?⇐) prettify-symbols-alist)
                             (push '("=/=>" . ?⇏) prettify-symbols-alist)
                             (push '("<=/=" . ?⇍) prettify-symbols-alist)
                             (push '("=|=>" . ?⤃) prettify-symbols-alist)
                             (push '("<=|=" . ?⤂) prettify-symbols-alist)
-                            (push '("<=>" . ?⇔) prettify-symbols-alist)
                             (push '("<=|=>" . ?⤄) prettify-symbols-alist)
                             (push '("<=/=>" . ?↮) prettify-symbols-alist)
 
@@ -2502,12 +2512,7 @@ https://github.com/purcell/exec-path-from-shell
                             (push '("^||v" . ?⇅) prettify-symbols-alist)
                             (push '("v||^" . ?⇵) prettify-symbols-alist)
 
-                            (push '("~>" . ?⤳) prettify-symbols-alist)
-                            (push '("<~>" . ?↭) prettify-symbols-alist)
-                            (push '("\/v" . ?↯) prettify-symbols-alist)
-
-                            (push '("|>" . ?▶) prettify-symbols-alist)
-                            (push '("<|" . ?◀) prettify-symbols-alist)))
+                            (push '("\/v" . ?↯) prettify-symbols-alist)))
 #+END_SRC
 
 *** Syntax types
@@ -3666,16 +3671,11 @@ Handler to close buffer after quitting ccmake.
 #+BEGIN_SRC emacs-lisp
 (add-hook 'prog-mode-hook
           (lambda ()
-            (push '("!=" . ?≠) prettify-symbols-alist)
-            (push '("==" . ?⩵) prettify-symbols-alist)
-            (push '(">=" . ?≧) prettify-symbols-alist)
-            (push '("<=" . ?≦) prettify-symbols-alist)
-            (push '("->" . ?➔) prettify-symbols-alist)
-            (push '("return" . ?⮠) prettify-symbols-alist)
-            (push '("true" . ?✓) prettify-symbols-alist)
-            (push '("TRUE" . ?✓) prettify-symbols-alist)
-            (push '("false" . ?🚫) prettify-symbols-alist)
-            (push '("FALSE" . ?🚫) prettify-symbols-alist)))
+            (push '("return" . ?) prettify-symbols-alist)
+            (push '("true" . ?) prettify-symbols-alist)
+            (push '("TRUE" . ?) prettify-symbols-alist)
+            (push '("false" . ?) prettify-symbols-alist)
+            (push '("FALSE" . ?) prettify-symbols-alist)))
 #+END_SRC
 
 ***** [[https://github.com/tarsius/hl-todo][Highlight TODO/FIXME/…]]
