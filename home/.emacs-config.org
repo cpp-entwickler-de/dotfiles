@@ -770,15 +770,16 @@ Helper function to figure out version control root directory
 (defvar cpped-caps-lock-active nil "Indicates if caps lock is enabled.")
 (defvar cpped-num-lock-active nil "Indicates if num lock is enabled.")
 
-(add-hook 'after-init-hook (run-with-timer 60 3 '(lambda ()
-                                                   (with-temp-buffer
-                                                     (call-process "xset" nil t nil "q")
-                                                     (let ((led-mask (string-to-number (save-match-data
-                                                                                         (and (string-match ".*LED mask:[[:space:]]*\\([[:alnum:]]+\\).*" (buffer-string))
-                                                                                              (match-string 1 (buffer-string))))
-                                                                                       16)))
-                                                       (setq cpped-caps-lock-active (eq (logand led-mask 1) 1)
-                                                             cpped-num-lock-active (eq (logand led-mask 2) 2)))))))
+(add-hook 'after-init-hook '(lambda ()
+                              (run-with-timer 60 3 '(lambda ()
+                                                      (with-temp-buffer
+                                                        (call-process "xset" nil t nil "q")
+                                                        (let ((led-mask (string-to-number (save-match-data
+                                                                                            (and (string-match ".*LED mask:[[:space:]]*\\([[:alnum:]]+\\).*" (buffer-string))
+                                                                                                 (match-string 1 (buffer-string))))
+                                                                                          16)))
+                                                          (setq cpped-caps-lock-active (eq (logand led-mask 1) 1)
+                                                                cpped-num-lock-active (eq (logand led-mask 2) 2))))))))
 
 (defun cpped-powerline-key-lock (lock icon)
    (when lock
