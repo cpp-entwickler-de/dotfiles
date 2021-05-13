@@ -1,5 +1,5 @@
 # -*- mode: snippet -*-
-# key: a
+# key: au
 # name: auto variable
 # --
 auto${2:$$(yas-choose-value '(" " " & " " * " " * const "))}${3:name} = ${4:${2:$(when (or (string= yas-text " * ")

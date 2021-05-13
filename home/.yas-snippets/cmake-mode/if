@@ -1,8 +1,8 @@
 # -*- mode: snippet -*-
-# name: if
+# name: if … else
 # key: if
 # --
-if(${1:cond})
-   `yas-selected-text`$2
+if(${1:condition})
+    $0
+${2:else(${3:condition})}
 endif()
-$0

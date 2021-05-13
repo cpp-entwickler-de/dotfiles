@@ -2,7 +2,7 @@
 # name: for
 # key: for
 # --
-for (${1:auto }${2:index} = ${3:0u}; $2 <${4:=} ${5:maximum}; ++$2)
+for (${1:auto }${2:$$(yas-choose-value '("index" "count"))} = ${3:0u}; $2 <${4:=} ${5:maximum}; ++$2)
 {
     $0
 }

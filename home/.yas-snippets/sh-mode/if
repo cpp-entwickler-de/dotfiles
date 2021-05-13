@@ -1,8 +1,8 @@
 # -*- mode: snippet -*-
-# name: if
+# name: if … else
 # key: if
 # --
-if ${1:[ -f file]}
-   then ${2:do}
+if ${1:condition}; then
+    $0
+${2:else}
 fi
-$0
