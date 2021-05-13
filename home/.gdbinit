@@ -67,6 +67,10 @@ shell clear
 # allow breakpoints to be set later
 set breakpoint pending on
 
+# skip standard library sources
+skip -rfunction ^std::.*\(
+skip -rfunction ^boost::.*\(
+
 # automatically break when this is called
 #break function-name
 
