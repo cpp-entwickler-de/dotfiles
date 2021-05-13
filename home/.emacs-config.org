@@ -6961,6 +6961,16 @@ Archive when done, remove flag if reset to todo.
 
 * Utilities
 ** System
+*** [[https://github.com/tecosaur/emacs-everywhere][Use emacs for editing everywhere]]
+Add global shortcut with
+#+BEGIN_SRC shell :tangle no
+emacsclient --eval "(emacs-everywhere)"
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package emacs-everywhere)
+#+END_SRC
+
 *** Processes
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load "helm"
