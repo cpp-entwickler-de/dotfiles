@@ -7,6 +7,9 @@ set history expansion on
 # disable confirmation
 set confirm off
 
+# disable pagination
+set pagination off
+
 # use zsh prompt format, show frame and thread
 set extended-prompt \[\e[38;5;250;48;5;69m\]GDB \[\e[38;5;231m\]\f \[\e[38;5;250m\]thread \[\e[38;5;231m\]\t\[\e[0m\]\[\e[38;5;69m\]\n\[\e[38;5;231m\]▶ 
 show extended-prompt
