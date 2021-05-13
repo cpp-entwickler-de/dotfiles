@@ -2822,6 +2822,13 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 (use-package fix-word)
 #+END_SRC
 
+*** [[https://github.com/ainame/smart-newline.el][Smart Newline]]
+#+BEGIN_SRC emacs-lisp
+(use-package smart-newline
+  :commands smart-newline-mode
+  :hook (prog-mode . smart-newline-mode))
+#+END_SRC
+
 *** [[https://github.com/davidshepherd7/aggressive-fill-paragraph-mode][Auto-fill paragraphs]]
 #+BEGIN_SRC emacs-lisp
 (use-package aggressive-fill-paragraph
