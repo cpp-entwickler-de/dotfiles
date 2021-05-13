@@ -3934,15 +3934,6 @@ Handler to close buffer after quitting ccmake.
 (use-package company-quickhelp
   :config (company-quickhelp-mode 1))
 
-(use-package company-lsp
-  :after company
-  :custom
-  (company-transformers nil)
-  (company-lsp-async t)
-  (company-lsp-cache-candidates nil)
-  (company-lsp-enable-snippet t)
-  (company-lsp-enable-recompletion t))
-
 (use-package company-box
   :hook (company-mode . company-box-mode))
 #+END_SRC
@@ -4452,7 +4443,7 @@ TODO
   :custom (company-c-headers-path-user '("." "../Includes/")))
 
 (add-hook 'c-mode-common-hook (lambda()
-                                (set (make-local-variable 'company-backends) '((company-yasnippet company-lsp company-files company-capf company-dabbrev-code company-ispell cpped-company-line-backend)))))
+                                (set (make-local-variable 'company-backends) '((company-yasnippet company-files company-capf company-dabbrev-code company-ispell cpped-company-line-backend)))))
 #+END_SRC
 
 ***** Abbreviations
@@ -4828,7 +4819,7 @@ https://github.com/google/googletest
 ***** Autocompletion
 #+BEGIN_SRC emacs-lisp
 (add-hook 'dockerfile-mode-hook (lambda()
-                                  (set (make-local-variable 'company-backends) '((company-yasnippet company-lsp company-files company-capf company-dabbrev-code company-ispell cpped-company-line-backend)))))
+                                  (set (make-local-variable 'company-backends) '((company-yasnippet company-files company-capf company-dabbrev-code company-ispell cpped-company-line-backend)))))
 #+END_SRC
 
 ***** [[https://github.com/redcoolbeans/dockerlint][Syntax checker]]
@@ -4977,7 +4968,7 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 ***** Auto-completion
 #+BEGIN_SRC emacs-lisp
 (add-hook 'c-mode-common-hook (lambda()
-                                (set (make-local-variable 'company-backends) '((company-yasnippet company-lsp company-files company-capf company-dabbrev-code company-ispell cpped-company-line-backend)))))
+                                (set (make-local-variable 'company-backends) '((company-yasnippet company-files company-capf company-dabbrev-code company-ispell cpped-company-line-backend)))))
 #+END_SRC
 
 ***** [[https://github.com/thedaviddias/HTMLHint][Syntax checker]]
@@ -5221,7 +5212,7 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 #+BEGIN_SRC emacs-lisp
 (use-package company-shell
   :hook (sh-mode . (lambda()
-                     (set (make-local-variable 'company-backends) '((company-yasnippet company-lsp company-shell company-keywords company-files company-capf company-dabbrev-code company-ispell cpped-company-line-backend))))))
+                     (set (make-local-variable 'company-backends) '((company-yasnippet company-shell company-keywords company-files company-capf company-dabbrev-code company-ispell cpped-company-line-backend))))))
 #+END_SRC
 
 ***** Syntax checkers
