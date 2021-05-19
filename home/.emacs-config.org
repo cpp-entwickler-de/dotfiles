@@ -3718,36 +3718,15 @@ Handler to close buffer after quitting ccmake.
 
 ***** Find ToDos in file or project
 #+BEGIN_SRC emacs-lisp
-(defun cpped-find-todos-in-project ()
-  "Show all ToDo items in the project and allow jumping to specific item."
-  (interactive)
-  (let* ((helm-ag-command-option (concat "--all-text --context=0 --after=0 --depth=-1 --follow --numbers --nobreak --nogroup --noheading --case-sensitive"))
-         (current-prefix-arg nil))
-    (cl-letf (((symbol-function 'helm-ag--marked-input) '(lambda (escape)
-                                                           (concat "[[:space:]/*#;]("
-                                                                   (string-join (mapcar (lambda (element)
-                                                                                          (regexp-quote (car element)))
-                                                                                        hl-todo-keyword-faces) "|")
-                                                                   ")[[:space:]:]"))))
-      (helm-do-ag (if (ignore-errors (projectile-project-p))
-                      (projectile-project-root)
-                    default-directory)))))
-
-(defun cpped-find-todos-in-file ()
-  "Show all ToDo items in the file and allow jumping to specific item."
-  (interactive)
-  (let ((original-helm-swoop-pre-input-function helm-swoop-pre-input-function)
-        (helm-case-fold-search nil)
-        (case-fold-search nil))
-    (unwind-protect
-        (progn
-          (setq helm-swoop-pre-input-function (lambda ()
-                                                (concat "[[:space:]/*#;]\\(" (string-join (mapcar (lambda (element)
-                                                                                                  (regexp-quote (car element)))
-                                                                                                hl-todo-keyword-faces) "\\|")
-                                                        "\\)[[:space:]:]")))
-          (helm-swoop))
-      (setq helm-swoop-pre-input-function original-helm-swoop-pre-input-function))))
+(with-eval-after-load "helm-imenu"
+  (defun cpped-find-todos-in-file ()
+    "Show all ToDo items in the file and allow jumping to specific item."
+    (interactive)
+    (let ((imenu-generic-expression (mapcar (lambda (element)
+                                              (let ((type (car element)))
+                                                (list type (rx (literal type) (one-or-more space) (group (one-or-more any)) eol) 1)))
+                                            hl-todo-keyword-faces)))
+      (call-interactively 'helm-imenu))))
 #+END_SRC
 
 ***** Show current function in mode-line
