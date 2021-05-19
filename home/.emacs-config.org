@@ -227,27 +227,19 @@ Do not load outdated byte code
   (setq inhibit-startup-echo-area-message username))
 #+END_SRC
 
-*** Fullscreen
-#+BEGIN_SRC emacs-lisp
-(set-frame-parameter nil 'fullscreen 'fullboth)
-#+END_SRC
-
 ** Frame Setup
-Show normal for single monitor, fullscreen on right side on dual-monitor
+Show normal for single monitor, fullscreen for non-4k monitor
 #+BEGIN_SRC emacs-lisp
-(defvar cpped-is-dual-monitor nil "Indicates if a dual monitor setup is available.")
+(defvar cpped-is-4k-monitor nil "Indicates if a 4k monitor is available.")
 
 (add-hook 'before-make-frame-hook '(lambda ()
                                      (setq default-frame-alist `((title . "IDE")
                                                                  (name . "IDE")))
-                                     (let* ((screen-width (x-display-pixel-width))
-                                            (screen-height (x-display-pixel-height))
-                                            (aspect-ratio (/ screen-width screen-height)))
-                                       (when (> aspect-ratio 2) ; dual-monitor-setup
-                                         (setq cpped-is-dual-monitor t)
-                                         (push `(left . ,screen-width) default-frame-alist)
-                                         (push `(width . ,(/ screen-width 2)) default-frame-alist)
-                                         (push '(fullscreen . fullboth) default-frame-alist)))))
+                                     (if (<= (x-display-pixel-width) 1920)
+                                         (progn
+                                           (setq cpped-is-4k-monitor nil)
+                                           (push '(fullscreen . fullboth) default-frame-alist))
+                                       (setq cpped-is-4k-monitor t))))
 #+END_SRC
 
 Show below other windows
@@ -257,7 +249,7 @@ Show below other windows
   (interactive)
   (with-selected-frame (or frame (selected-frame))
     (when (and window-system
-               cpped-is-dual-monitor)
+               (not cpped-is-4k-monitor))
       (x-send-client-message nil 0 nil "_NET_WM_STATE" 32 '(1 "_NET_WM_STATE_BELOW" 0)))))
 
 (add-hook 'after-make-frame-functions #'cpped-move-frame-below-others t)
