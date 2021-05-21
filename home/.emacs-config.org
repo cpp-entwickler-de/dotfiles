@@ -5252,7 +5252,7 @@ Set correct major mode
   :mode "\\.p\\(lant\\)?uml\\'"
   :custom
   (plantuml-jar-path "/usr/share/java/plantuml.jar")
-  (org-plantuml-jar-path plantuml-jar-path)
+  (org-plantuml-jar-path "/usr/share/java/plantuml.jar")
   :config
   (cpped-install-system-package "plantuml")
   (cpped-install-system-package "graphviz")
