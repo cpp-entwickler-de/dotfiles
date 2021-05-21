@@ -2180,25 +2180,16 @@ https://github.com/purcell/exec-path-from-shell
     (write-region begin end copy nil nil nil mustbenew)))
 #+END_SRC
 
-** Auto-save buffers
-#+BEGIN_SRC emacs-lisp
-(defconst cpped-autosave-delay 1 "The number of seconds to wait before saving automatically.")
 
-(setq auto-save-timeout cpped-autosave-delay
-      auto-save-interval 100
-      buffer-save-without-query t)
-
-(auto-save-visited-mode)
-
-(add-hook 'focus-out-hook (lambda () (save-some-buffers t)))
-#+END_SRC
-
-*** [[https://github.com/bbatsov/super-save][Save when losing focus]]
+** [[https://github.com/bbatsov/super-save][Auto-save buffers]]
 #+BEGIN_SRC emacs-lisp
 (use-package super-save
-  :commands super-save-mode
-  :custom (super-save-auto-save-when-idle nil)
-  :config (super-save-mode +1))
+  :custom
+  (super-save-auto-save-when-idle t)
+  (super-save-idle-duration 2)
+  (super-save-remote-files t)
+  :config
+  (super-save-mode +1))
 #+END_SRC
 
 ** [[https://github.com/nflath/sudo-edit][Allow editing via sudo]]
@@ -6227,7 +6218,7 @@ Remove check on buffer close
 ** Inline code
 *** Auto-save
 #+BEGIN_SRC emacs-lisp
-(setq org-edit-src-auto-save-idle-delay cpped-autosave-delay)
+(setq org-edit-src-auto-save-idle-delay super-save-idle-duration)
 #+END_SRC
 
 *** Allow evaluation
