@@ -28,6 +28,9 @@ set print elements unlimited
 # print object runtime information
 set print object on
 
+# enable symbol demangling for assembler code
+set print asm-demangle on
+
 # show status of asynchronous processes
 set exec-done-display on
 
