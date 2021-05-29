@@ -1170,6 +1170,14 @@ When running helm-M-x with multiple-cursors-mode, the command will only run on o
 #+END_SRC
 
 ** Buffers
+*** Optimize scrolling
+#+BEGIN_SRC emacs-lisp
+(setq fast-but-imprecise-scrolling t
+      redisplay-skip-fontification-on-input t)
+
+(pixel-scroll-mode 1)
+#+END_SRC
+
 *** Do not adjust auto-window-vscroll
 This optimizes line-scrolling.
 #+BEGIN_SRC emacs-lisp
