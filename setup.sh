@@ -7,7 +7,6 @@ function show_help
     echo "    --links          Create links for configuration files from this repository to ~/"
     echo "    --printers       Download and install pretty-printers for GDB"
     echo "    --fonts          Download and install special fonts for emacs"
-    echo "    --documentation  Download and install DASH documentation files"
     echo "    --shell          Install zsh and plugins"
     echo "    --all            Do all of the above"
     exit 1
@@ -32,9 +31,6 @@ for ARGUMENT in "$@"; do
         --fonts)
         FONTS=TRUE
         ;;
-        --documentation)
-        DOCUMENTATION=TRUE
-        ;;
         --shell)
         SHELL=TRUE
         ;;
@@ -43,7 +39,6 @@ for ARGUMENT in "$@"; do
         LINKS=TRUE
         PRINTERS=TRUE
         FONTS=TRUE
-        DOCUMENTATION=TRUE
         SHELL=TRUE
         ;;
         *)
@@ -209,19 +204,6 @@ if [ "$FONTS" = TRUE ]; then
     curl --location --show-error --create-dirs --output "$FONT_DIR/FiraCode.zip" https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/FiraCode.zip
     unzip -ou "$FONT_DIR/FiraCode.zip" -d "$FONT_DIR/"
     rm "$FONT_DIR/FiraCode.zip"
-fi
-
-if [ "$DOCUMENTATION" = TRUE ]; then
-    # install dash docsets
-    echo "Installing DASH docsets."
-    DOCSET_DIR=~/.docsets
-    DOCSETS="Bash Boost C C++ CMake Docker Emacs_Lisp GLib HTML Man_Pages OpenGL_4 Qt_5 SVG XSLT"
-    for DOCSET in $DOCSETS; do
-        curl --location --create-dirs --output "$DOCSET_DIR/$DOCSET.tgz" "http://sanfrancisco.kapeli.com/feeds/$DOCSET.tgz"
-        tar xfz "$DOCSET_DIR/$DOCSET.tgz" --overwrite -C "$DOCSET_DIR"
-        rm "$DOCSET_DIR/$DOCSET.tgz"
-    done
-    curl --location --show-error --create-dirs --output "$DOCSET_DIR/IntelASM.pdf" https://software.intel.com/sites/default/files/managed/a4/60/325383-sdm-vol-2abcd.pdf
 fi
 
 # install zsh plugins

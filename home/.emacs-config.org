@@ -4172,13 +4172,17 @@ TODO
 #+END_SRC
 
 **** Documentation
-***** API
+***** [[https://github.com/blahgeek/emacs-devdocs-browser][API]]
+Show API info via [[https://devdocs.io][devdocs.io]]
 #+BEGIN_SRC emacs-lisp
-(use-package helm-dash
-  :custom
-  (helm-dash-browser-func 'eww)
-  (helm-dash-docsets-url "https://api.github.com/repos/Kapeli/feeds/contents/")
-  (helm-dash-enable-debugging nil))
+(use-package devdocs-browser
+  :quelpa ((devdocs-browser :fetcher github :repo "blahgeek/emacs-devdocs-browser"))
+  :config (defun cpped-add-apidocs (mode doclist)
+            "Install API documentation and enable for mode."
+            (mapcar (lambda (doc)
+                      (devdocs-browser-install-doc doc))
+                    doclist)
+            (push `(,mode . ,doclist) devdocs-browser-major-mode-docs-alist)))
 #+END_SRC
 
 ***** Change Log
@@ -4536,12 +4540,10 @@ TODO
 #+END_SRC
 
 **** Documentation
-***** DASH
 #+BEGIN_SRC emacs-lisp
-(add-hook 'c-mode-common-hook (lambda()
-                                (set (make-local-variable 'helm-dash-docsets) '("C" "GLib" "OpenGL4"))))
-(add-hook 'c++-mode-hook (lambda()
-                           (set (make-local-variable 'helm-dash-docsets) '("C++" "C" "Boost" "GLib" "Qt" "OpenGL4"))))
+(with-eval-after-load "devdocs-browser"
+    (cpped-add-apidocs 'c-mode '("c"))
+    (cpped-add-apidocs 'c++-mode '("cpp" "c" "qt~5.15")))
 #+END_SRC
 
 **** Utilities
@@ -4743,8 +4745,8 @@ https://github.com/google/googletest
 
 **** Documentation
 #+BEGIN_SRC emacs-lisp
-(add-hook 'cmake-mode-hook (lambda()
-                             (set (make-local-variable 'helm-dash-docsets) '("CMake"))))
+(with-eval-after-load "devdocs-browser"
+  (cpped-add-apidocs 'cmake-mode '("bash" "cmake~3.20" "gcc~11" "git")))
 #+END_SRC
 
 *** CSS
@@ -4765,8 +4767,8 @@ https://github.com/google/googletest
 
 **** Documentation
 #+BEGIN_SRC emacs-lisp
-(use-package css-eldoc
-  :hook (css-mode . turn-on-css-eldoc))
+(with-eval-after-load "devdocs-browser"
+    (cpped-add-apidocs 'css-mode '("css")))
 #+END_SRC
 
 *** [[http://elpa.gnu.org/packages/csv-mode.html][CSV]]
@@ -4782,8 +4784,8 @@ https://github.com/google/googletest
 
 **** Documentation
 #+BEGIN_SRC emacs-lisp
-(add-hook 'dockerfile-mode-hook (lambda()
-                                  (set (make-local-variable 'helm-dash-docsets) '("Docker"))))
+(with-eval-after-load "devdocs-browser"
+    (cpped-add-apidocs 'dockerfile-mode '("bash" "docker~19" "git")))
 #+END_SRC
 
 **** [[https://github.com/Silex/docker.el][Control]]
@@ -4950,6 +4952,12 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 (push '("\\.x?html?\\'" . html-mode) auto-mode-alist)
 #+END_SRC
 
+**** Documentation
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "devdocs-browser"
+  (cpped-add-apidocs 'html-mode '("css" "dom" "html" "http")))
+#+END_SRC
+
 **** Editing
 ***** Language server
 #+BEGIN_SRC emacs-lisp
@@ -5017,6 +5025,12 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 #+END_SRC
 
 *** Javascript
+**** Documentation
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "devdocs-browser"
+  (cpped-add-apidocs 'js-mode '("javascript")))
+#+END_SRC
+
 **** Editing
 ***** Syntax checkers
 #+BEGIN_SRC emacs-lisp
@@ -5063,6 +5077,14 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 (push '("\\.tex\\'" . latex-mode) auto-mode-alist)
 (push '("\\.txi\\'" . Texinfo-mode) auto-mode-alist)
 (push '("\\.bib\\'" . bibtex-mode) auto-mode-alist)
+#+END_SRC
+
+**** Documentation
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "devdocs-browser"
+  (cpped-add-apidocs 'latex-mode '("latex"))
+  (cpped-add-apidocs 'texinfo-mode '("latex"))
+  (cpped-add-apidocs 'bibtex-mode '("latex")))
 #+END_SRC
 
 *** Lisp
@@ -5117,17 +5139,20 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 
 **** Documentation
 #+BEGIN_SRC emacs-lisp
-(add-hook 'elisp-mode-hook (lambda()
-                             (set (make-local-variable 'helm-dash-docsets) '("Emacs Lisp"))))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "devdocs-browser"
+    (cpped-add-apidocs 'emacs-lisp-mode '("elisp")))
 #+END_SRC
 
 *** Make
 #+BEGIN_SRC emacs-lisp
 (push '("Makefile\\'" . makefile-mode) auto-mode-alist)
 (push '("\\.mak\\'" . makefile-mode) auto-mode-alist)
+#+END_SRC
+
+**** Documentation
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "devdocs-browser"
+  (cpped-add-apidocs 'makefile-mode '("gcc~11")))
 #+END_SRC
 
 *** Perl
@@ -5172,8 +5197,8 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 
 **** Documentation
 #+BEGIN_SRC emacs-lisp
-(add-hook 'qml-mode-hook (lambda()
-                           (set (make-local-variable 'helm-dash-docsets) '("Qt"))))
+(with-eval-after-load "devdocs-browser"
+    (cpped-add-apidocs 'qml-mode '("qt~5.15")))
 #+END_SRC
 
 *** Shell
@@ -5247,8 +5272,9 @@ Set correct major mode
 
 **** Documentation
 #+BEGIN_SRC emacs-lisp
-(add-hook 'sh-mode-hook (lambda()
-                          (set (make-local-variable 'helm-dash-docsets) '("Bash" "Man Pages"))))
+(with-eval-after-load "devdocs-browser"
+  (cpped-add-apidocs 'sh-mode '("bash" "elisp" "gcc~11" "git"))
+  (cpped-add-apidocs 'bash-mode '("bash" "elisp" "gcc~11" "git")))
 #+END_SRC
 
 
@@ -5367,8 +5393,8 @@ Set correct major mode
 
 **** Documentation
 #+BEGIN_SRC emacs-lisp
-(add-hook 'nxml-mode-hook (lambda()
-                            (set (make-local-variable 'helm-dash-docsets) '("HTML" "SVG" "XSLT"))))
+(with-eval-after-load "devdocs-browser"
+    (cpped-add-apidocs 'nxml-mode '("dom" "html" "svg" "xslt_xpath")))
 #+END_SRC
 
 *** [[https://github.com/yoshiki/yaml-mode][YAML]]
@@ -6997,6 +7023,12 @@ Do not use scientific form so quickly
   (cpped-install-system-package "gnuplot"))
 #+END_SRC
 
+*** Documentation
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "devdocs-browser"
+  (cpped-add-apidocs 'gnuplot-mode '("gnuplot")))
+#+END_SRC
+
 ** Weather
 #+BEGIN_SRC emacs-lisp
 (use-package wttrin
@@ -7308,7 +7340,7 @@ Text                    ^^Code                                ^^Version Control 
   ("d" (if (or (derived-mode-p 'asm-mode)
                (derived-mode-p 'nasm-mode))
            (call-interactively 'x86-lookup)
-         (call-interactively 'helm-dash-at-point)))
+         (call-interactively 'devdocs-browser-open)))
   ("r" lsp-ui-peek-find-references)
   ("h" (cquery-call-hierarchy nil))
   ("m" cquery-member-hierarchy)
