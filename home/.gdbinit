@@ -61,9 +61,6 @@ end
 # include user-specific config
 source ~/.gdbinit.user
 
-# remove startup message
-shell clear
-
 # allow breakpoints to be set later
 set breakpoint pending on
 
@@ -74,3 +71,5 @@ skip -rfunction ^boost::.*\(
 # automatically break when this is called
 #break function-name
 
+# remove startup message
+shell clear
