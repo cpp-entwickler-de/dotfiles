@@ -1,3 +1,6 @@
+# be less verbose
+set verbose off
+
 # save history
 set history save on
 set history size 10000
