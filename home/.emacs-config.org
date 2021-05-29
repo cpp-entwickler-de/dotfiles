@@ -199,6 +199,11 @@ Do not load outdated byte code
     (bounds-of-thing-at-point 'word)))
 #+END_SRC
 
+** Increase subprocess read chunk size
+#+BEGIN_SRC emacs-lisp
+(setq read-process-output-max (* 16 1024 1024))
+#+END_SRC
+
 ** [[https://github.com/jschaf/esup][Startup Profiler]]
 #+BEGIN_SRC emacs-lisp
 (use-package esup
