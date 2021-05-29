@@ -44,8 +44,11 @@ handle SIG32 pass nostop
 set output-radix 0x10
 set input-radix 0x10
 
-# Enable pretty-printing
+# enable pretty-printing
 set print pretty on
+
+# do not print addresses
+set print address off
 
 python
 import sys
