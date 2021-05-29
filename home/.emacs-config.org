@@ -338,6 +338,11 @@ Show below other windows
 #+END_SRC
 
 ** Fonts
+*** Disable font cache compacting
+#+BEGIN_SRC emacs-lisp
+(setq inhibit-compacting-font-caches t)
+#+END_SRC
+
 *** [[https://github.com/mickeynp/ligature.el][Support Ligatures]]
 #+begin_SRC emacs-lisp
 (use-package ligature
