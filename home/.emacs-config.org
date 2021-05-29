@@ -1436,6 +1436,11 @@ Indicate recursive minibuffer
 #+END_SRC
 
 ** Cursor
+*** Stretch block cursor to cover glyph
+#+BEGIN_SRC emacs-lisp
+(setq-default x-stretch-cursor t)
+#+END_SRC
+
 *** Center Cursor
 #+BEGIN_SRC emacs-lisp
 (use-package centered-cursor-mode
