@@ -1453,6 +1453,11 @@ Indicate recursive minibuffer
   :config (bar-cursor-mode 1))
 #+END_SRC
 
+*** Hide cursor in non-selected windows
+#+BEGIN_SRC emacs-lisp
+(setq-default cursor-in-non-selected-windows nil)
+#+END_SRC
+
 ** [[https://www.emacswiki.org/emacs/UndoTree][Undo]]
 #+BEGIN_SRC emacs-lisp
   (use-package undo-tree
