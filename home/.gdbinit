@@ -17,6 +17,9 @@ show extended-prompt
 # print all frame arguments in backtrace
 set print frame-arguments all
 
+# print filenames for symbols
+set print symbol-filename on
+
 # print complete arrays
 set print array on
 set print array-indexes on
