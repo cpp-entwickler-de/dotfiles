@@ -1186,7 +1186,9 @@ This optimizes line-scrolling.
 
 *** Disable bidirectional support
 #+BEGIN_SRC emacs-lisp
-(setq-default bidi-display-reordering nil)
+(setq-default bidi-display-reordering 'left-to-right
+              bidi-paragraph-direction 'left-to-right)
+(setq bidi-inhibit-bpa t)
 #+END_SRC
 
 *** Remember open buffers
