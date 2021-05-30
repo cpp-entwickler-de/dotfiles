@@ -5087,7 +5087,7 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 *** Latex
 #+BEGIN_SRC emacs-lisp
 (push '("\\.tex\\'" . latex-mode) auto-mode-alist)
-(push '("\\.txi\\'" . Texinfo-mode) auto-mode-alist)
+(push '("\\.txi\\'" . texinfo-mode) auto-mode-alist)
 (push '("\\.bib\\'" . bibtex-mode) auto-mode-alist)
 #+END_SRC
 
