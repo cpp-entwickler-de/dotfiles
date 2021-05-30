@@ -481,7 +481,6 @@ Allow prettification in comments
 
 (use-package dashboard
   :after helm-buffers
-  :hook (dashboard-mode . (lambda () (display-fill-column-indicator-mode -1)))
   :custom
   (dashboard-startup-banner (let ((logo (expand-file-name "~/.logo.svg")))
                               (if (file-exists-p logo)
@@ -2808,7 +2807,6 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 #+BEGIN_SRC emacs-lisp
 (setq-default indent-tabs-mode nil)
 (setq-default fill-column 120)
-(global-display-fill-column-indicator-mode)
 (setq auto-fill-mode t
       comment-empty-lines t
       electric-indent-mode t
