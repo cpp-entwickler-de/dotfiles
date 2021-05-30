@@ -4188,6 +4188,7 @@ Show API info via [[https://devdocs.io][devdocs.io]]
 #+BEGIN_SRC emacs-lisp
 (use-package devdocs-browser
   :quelpa ((devdocs-browser :fetcher github :repo "blahgeek/emacs-devdocs-browser"))
+  :hook (eww-mode . devdocs-browser-eww-mode)
   :config (defun cpped-add-apidocs (mode doclist)
             "Install API documentation and enable for mode."
             (mapcar (lambda (doc)
