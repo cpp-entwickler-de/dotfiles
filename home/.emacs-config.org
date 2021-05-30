@@ -2439,6 +2439,7 @@ https://github.com/purcell/exec-path-from-shell
   (treemacs-filewatch-mode t)
   (treemacs-follow-after-init t)
   (treemacs-follow-mode t)
+  (treemacs-fringe-indicator-mode t)
   (treemacs-git-integration t)
   (treemacs-is-never-other-window t)
   (treemacs-silent-filewatch t)
