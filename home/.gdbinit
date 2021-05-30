@@ -79,6 +79,7 @@ set breakpoint pending on
 # skip standard library sources
 skip -rfunction ^std::.*\(
 skip -rfunction ^boost::.*\(
+skip -rfunction ^Q[A-Z][a-zA-z0-9_]+(<.*>)?::.*\(
 
 # automatically break when this is called
 #break function-name
