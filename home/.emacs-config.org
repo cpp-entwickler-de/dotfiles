@@ -2441,6 +2441,7 @@ https://github.com/purcell/exec-path-from-shell
   (treemacs-follow-mode t)
   (treemacs-git-integration t)
   (treemacs-is-never-other-window t)
+  (treemacs-silent-filewatch t)
   (treemacs-silent-refresh t)
   (treemacs-header-function 'treemacs-projectile-create-header)
   :config
