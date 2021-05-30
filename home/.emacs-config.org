@@ -2431,7 +2431,7 @@ https://github.com/purcell/exec-path-from-shell
 #+BEGIN_SRC emacs-lisp
 (use-package treemacs
   :after helm-buffers
-  :bind ("<f1>" . treemacs-toggle)
+  :bind ("<f1>" . treemacs)
   :custom
   (treemacs-change-root-without-asking t)
   (treemacs-collapse-dirs 3)
