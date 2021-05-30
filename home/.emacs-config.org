@@ -1838,19 +1838,6 @@ https://github.com/purcell/exec-path-from-shell
 
   (add-to-list 'eshell-visual-options '("git" "--help")))
 #+END_SRC
-*** [[https://github.com/kyagi/shell-pop-el][Popup]]
-#+BEGIN_SRC emacs-lisp
-(use-package shell-pop
-  :after helm-buffers
-  :bind ("C-#" . shell-pop)
-  :custom
-  (shell-pop-shell-type '("eshell" "*eshell*" (lambda nil
-                                                (cpped-eshell-maybe-new-session))))
-  (shell-pop-universal-key "C-#")
-  (shell-pop-window-size 60)
-  (shell-pop-full-span t)
-  (shell-pop-window-position "bottom"))
-#+END_SRC
 
 *** Navigation
 **** [[https://github.com/Fuco1/eshell-bookmark][Bookmarks]]
