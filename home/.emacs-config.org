@@ -1931,15 +1931,19 @@ https://github.com/purcell/exec-path-from-shell
 *** Add sudo to command line
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load "eshell"
-(defun cpped-add-sudo ()
-  "Add sudo to the curent command."
-  (interactive)
-  (save-excursion
-    (eshell-bol)
-    (insert "sudo ")))
+  (defun cpped-add-sudo ()
+    "Add sudo to the curent command."
+    (interactive)
+    (save-excursion
+      (eshell-bol)
+      (let ((commands (buffer-substring-no-properties (point) (point-max))))
+        (if (string-match-p "^sudo " commands)
+            (while (re-search-forward "sudo " nil t)
+              (replace-match "" t nil))
+          (insert "sudo ")))))
 
-(add-hook 'eshell-mode-hook (lambda ()
-                              (define-key eshell-mode-map (kbd "C-M-s") 'cpped-add-sudo))))
+  (add-hook 'eshell-mode-hook (lambda ()
+                                (define-key eshell-mode-map (kbd "C-M-s") 'cpped-add-sudo))))
 #+END_SRC
 
 *** History
