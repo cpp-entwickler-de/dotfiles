@@ -746,8 +746,7 @@ Helper function to figure out version control root directory
 *** Auto-format
 #+BEGIN_SRC emacs-lisp
 (defun cpped-powerline-auto-format ()
-  (when (and cpped-auto-format-enabled-p
-             cpped-format-buffer-function)
+  (when (bound-and-true-p format-all-mode)
     ""))
 #+END_SRC
 
@@ -3825,23 +3824,11 @@ Handler to close buffer after quitting ccmake.
 #+END_SRC
 
 **** Editing
-***** Formatting
+***** [[https://github.com/lassik/emacs-format-all-the-code][Formatting]]
 #+BEGIN_SRC emacs-lisp
-(defvar-local cpped-format-region-function nil "The function to call to format the current region.")
-(defvar-local cpped-format-buffer-function nil "The function to call to format the whole buffer.")
-(defvar-local cpped-auto-format-enabled-p t "Whether to enable auto-formatting for the current buffer.")
-
-(add-hook 'find-file-hook (lambda()
-                            (setq cpped-auto-format-enabled-p (not (cpped-tramp-file-remote-p (cpped-buffer-name))))))
-#+END_SRC
-
-****** Auto-format
-#+BEGIN_SRC emacs-lisp
-(add-hook 'before-save-hook #'(lambda()
-                                (when (and (not (cpped-tramp-file-remote-p (cpped-buffer-name)))
-                                           cpped-auto-format-enabled-p
-                                           cpped-format-buffer-function)
-                                  (funcall cpped-format-buffer-function))))
+(use-package format-all
+  :hook ((prog-mode . format-all-mode)
+         (format-all-mode . format-all-ensure-formatter)))
 #+END_SRC
 
 ****** Fill function calls
@@ -4497,15 +4484,6 @@ Show API info via [[https://devdocs.io][devdocs.io]]
   :hook (c-mode-common . smart-dash-mode))
 #+END_SRC
 
-***** Formatting
-#+BEGIN_SRC emacs-lisp
-(use-package clang-format
-  :custom (clang-format-executable "clang-format")
-  :hook (c-mode-common . (lambda ()
-                           (setq cpped-format-region-function 'clang-format)
-                           (setq cpped-format-buffer-function 'clang-format-buffer))))
-#+END_SRC
-
 ***** Syntax checkers
 ****** Clang
 #+BEGIN_SRC emacs-lisp
@@ -4666,22 +4644,7 @@ https://github.com/google/googletest
 
 ***** Formatting
 #+BEGIN_SRC emacs-lisp
-(cpped-install-system-package "cmake_format" :package-manager 'pip)
-
-(defun cpped-cmake-format-buffer ()
-  "Format the buffer with cmake-format."
-  (interactive)
-  (when (executable-find "cmake-format")
-    (call-process "cmake-format"
-                  nil
-                  nil
-                  nil
-                  "--in-place"
-                  (buffer-file-name))
-  (revert-buffer t t t)))
-
-(add-hook 'cmake-mode-hook (lambda ()
-                             (setq cpped-format-buffer-function 'cpped-cmake-format-buffer)))
+(cpped-install-system-package "cmake-format" :package-manager 'pip)
 #+END_SRC
 
 ***** Spell checking
@@ -5080,12 +5043,6 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 #+END_SRC
 
 **** Editing
-***** Formatting
-#+BEGIN_SRC emacs-lisp
-(add-hook 'json-mode-hook (lambda ()
-                            (setq cpped-format-region-function 'json-pretty-print)
-                            (setq cpped-format-buffer-function 'json-pretty-print-buffer)))
-#+END_SRC
 
 *** Latex
 #+BEGIN_SRC emacs-lisp
@@ -5222,24 +5179,6 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 #+END_SRC
 
 **** Editing
-***** Formatting
-#+BEGIN_SRC emacs-lisp
-(cpped-install-system-package "beautysh" :package-manager 'pip)
-
-(defun cpped-beautysh-format-region (start end)
-  "Format a shell buffer with beautysh."
-  (interactive
-   (if (use-region-p)
-       (list (region-beginning) (region-end))
-     (list (beginning-of-buffer) (point))))
-  (when (executable-find "beautysh")
-    (call-process-region start end "beautysh" t t t "-" (buffer-file-name))))
-
-(add-hook 'sh-mode-hook (lambda ()
-                          (setq cpped-format-region-function 'cpped-beautysh-format-region)
-                          (setq cpped-format-buffer-function 'cpped-beautysh-format-region)))
-#+END_SRC
-
 ***** Autocompletion
 #+BEGIN_SRC emacs-lisp
 (use-package company-shell
@@ -5260,6 +5199,11 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
   (cpped-install-system-package "devscripts-checkbashisms" :executable "checkbashisms")
   (cpped-install-system-package "ShellCheck" :executable "shellcheck")
   (add-to-list 'flycheck-checkers 'sh-checkbashisms t))
+#+END_SRC
+
+***** Formatting
+#+BEGIN_SRC emacs-lisp
+(system-packages-ensure "shfmt")
 #+END_SRC
 
 **** BASH
@@ -5384,26 +5328,16 @@ Set correct major mode
 
 ***** Formatting
 #+BEGIN_SRC emacs-lisp
-(with-eval-after-load "system-packages"
+(with-eval-after-load "format-all"
   (cpped-install-system-package "xmllint")
-  (defun cpped-xml-format-buffer ()
-    "Format the buffer with xmllint."
-    (interactive)
-    (let ((position (point)))
-      (call-process-region (point-min)
-                           (point-max)
-                           "xmllint"
-                           t
-                           (current-buffer)
-                           t
-                           "--format"
-                           "--nowarning"
-                           "-")
-      (goto-char position)))
-
-  (add-hook 'nxml-mode-hook (lambda ()
-                              (setq cpped-format-region-function nil)
-                              (setq cpped-format-buffer-function 'cpped-xml-format-buffer))))
+  (define-format-all-formatter xmllint-fmt
+    (:executable "xmllint")
+    (:install)
+    (:languages "XML")
+    (:format (format-all--buffer-easy executable
+                                      "--format"
+                                      "--nowarning"
+                                      "-"))))
 #+END_SRC
 
 **** Documentation
@@ -7261,9 +7195,7 @@ Open                             ^^Save                      ^^Close            
          (gist-region-or-buffer)))
   ("I" (when (yes-or-no-p "Upload as private gist?")
          (gist-region-or-buffer-private)))
-  ("F" (if cpped-auto-format-enabled-p
-           (setq-local cpped-auto-format-enabled-p nil)
-         (setq-local cpped-auto-format-enabled-p t)))
+  ("F" (format-all-mode 'toggle))
   ("e" epa-encrypt-file)
 
   ("x" cpped-kill-default-buffer)
