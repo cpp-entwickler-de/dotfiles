@@ -6112,6 +6112,11 @@ Remove check on buffer close
 (advice-add 'org-check-running-clock :around #'cpped-silence-org-clock)
 #+END_SRC
 
+*** Show clock information
+#+BEGIN_SRC emacs-lisp
+(add-hook 'org-mode-hook #'org-clock-display)
+#+END_SRC
+
 ** Tangling
 #+BEGIN_SRC emacs-lisp
 (use-package org-auto-tangle
