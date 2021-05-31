@@ -3716,6 +3716,8 @@ Handler to close buffer after quitting ccmake.
   :hook (prog-mode . hl-todo-mode)
   :custom
   (global-hl-todo-mode t)
+  (hl-todo-include-modes '(prog-mode text-mode org-mode))
+  (hl-todo-exclude-modes nil)
   (hl-todo-keyword-faces '(("???" . hl-todo-info)
                            ("FAIL" . hl-todo-error)
                            ("FIXME" . hl-todo-error)
