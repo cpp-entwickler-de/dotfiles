@@ -27,37 +27,6 @@ Do not load outdated byte code
   (auto-compile-on-save-mode))
 #+END_SRC
 
-** Use Quelpa
-#+BEGIN_SRC emacs-lisp
-(use-package quelpa
-  :after use-package
-  :demand t
-  :custom
-  (quelpa-build-verbose nil)
-  (quelpa-stable-p nil)
-  (quelpa-upgrade-p t)
-  (quelpa-verbose nil))
-
-(use-package quelpa-use-package
-  :after quelpa
-  :demand t
-  :config (quelpa-use-package-activate-advice))
-#+END_SRC
-
-** [[https://github.com/rranelli/auto-package-update.el][Automatically update packages]]
-#+BEGIN_SRC emacs-lisp 
-(defvar cpped-auto-update-packages nil "Enable auto-updating of packages.")
-
-(if cpped-auto-update-packages
-    (use-package auto-package-update
-      :hook (after-make-frame-functions . (lambda (_)
-                                            (auto-package-update-maybe)))
-      :custom
-      (auto-package-update-interval 14)
-      (auto-package-update-delete-old-versions t)
-      (auto-package-update-hide-results t)))
-#+END_SRC
-
 ** [[https://github.com/Malabarba/paradox/][Paradox]]
 #+BEGIN_SRC emacs-lisp
 (use-package paradox
@@ -179,9 +148,10 @@ Do not load outdated byte code
   (use-package helm-system-packages
     :disabled
     :after helm
-    :quelpa (helm-system-packages
-             :fetcher github
-             :repo "emacs-helm/helm-system-packages"))
+    :straight (helm-system-packages
+               :type git
+               :host github
+               :repo "emacs-helm/helm-system-packages"))
 #+END_SRC
 
 * Internals
@@ -211,12 +181,13 @@ Do not load outdated byte code
 #+END_SRC
 
 ** Waiting time information
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
 (use-package explain-pause-mode
-  :quelpa (explain-pause-mode
-           :fetcher github
-           :repo "lastquestion/explain-pause-mode")
-  :config (explain-pause-mode t))
+  :straight (explain-pause-mode
+             :type git
+             :host github
+             :repo "lastquestion/explain-pause-mode")
+  :config (explain-pause-mode))
 #+END_SRC
 
 * User Interface
@@ -346,7 +317,10 @@ Show below other windows
 *** [[https://github.com/mickeynp/ligature.el][Support Ligatures]]
 #+begin_SRC emacs-lisp
 (use-package ligature
-  :quelpa ((ligature :repo "mickeynp/ligature.el" :fetcher github))
+  :straight (ligature
+             :type git
+             :host github
+             :repo "mickeynp/ligature.el")
   :config
   (ligature-set-ligatures 't '("www"))
   (ligature-set-ligatures 'eww-mode '("ff" "fi" "ffi"))
@@ -2370,9 +2344,10 @@ https://github.com/purcell/exec-path-from-shell
 **** [[https://github.com/calancha/dired-du][Show directory sizes]]
 #+BEGIN_SRC emacs-lisp
 (use-package dired-du
-  :quelpa (dired-du
-           :fetcher github
-           :repo "calancha/dired-du")
+  :straight (dired-du
+             :type git
+             :host github
+             :repo "calancha/dired-du")
   :custom (dired-du-size-format t))
 #+END_SRC
 
@@ -4180,7 +4155,10 @@ TODO
 Show API info via [[https://devdocs.io][devdocs.io]]
 #+BEGIN_SRC emacs-lisp
 (use-package devdocs-browser
-  :quelpa ((devdocs-browser :fetcher github :repo "blahgeek/emacs-devdocs-browser"))
+  :straight (devdocs-browser
+             :type git
+             :host github
+             :repo "blahgeek/emacs-devdocs-browser")
   :hook (eww-mode . devdocs-browser-eww-mode)
   :config (defun cpped-add-apidocs (mode doclist)
             "Install API documentation and enable for mode."
@@ -5101,9 +5079,10 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 **** [[https://github.com/Malabarba/comment-or-uncomment-sexp][Un-/Comment SEXPs]]
 #+BEGIN_SRC emacs-lisp
 (use-package comment-or-uncomment-sexp
-  :quelpa (comment-or-uncomment-sexp
-           :fetcher github
-           :repo "Malabarba/comment-or-uncomment-sexp"))
+  :straight (comment-or-uncomment-sexp
+             :type git
+             :host github
+             :repo "Malabarba/comment-or-uncomment-sexp"))
 #+END_SRC
 
 **** Auto-completion
@@ -5572,9 +5551,13 @@ forcing it by running
 #+BEGIN_SRC emacs-lisp
 (use-package magit-gerrit
   :after (magit magit-popup)
-  :quelpa (magit-gerrit
-           :fetcher github
-           :repo "ispras/magit-gerrit"))
+  :straight (magit-gerrit
+             :type git
+             :host github
+             :repo "ispras/magit-gerrit")
+  :custom
+  (magit-gerrit-remote "")
+  (magit-gerrit-ssh-creds ""))
 #+END_SRC
 
 ***** Find other projects
@@ -5725,10 +5708,10 @@ forcing it by running
 **** [[https://github.com/jwiegley/git-undo-el][Git undo]]
 #+BEGIN_SRC emacs-lisp
 (use-package git-undo
-  :ensure quelpa
-  :quelpa (git-undo
-           :fetcher github
-           :repo "jwiegley/git-undo-el"))
+  :straight (git-undo
+             :type git
+             :host github
+             :repo "jwiegley/git-undo-el"))
 #+END_SRC
 
 **** [[https://github.com/emacs-helm/helm-ls-git][Browse other git projects with helm]]
@@ -5848,6 +5831,28 @@ forcing it by running
 (add-hook 'after-save-hook 'cpped-show-file-contributor-info)
 (add-hook 'magit-post-commmit-hook 'cpped-show-file-contributor-info)
 (add-hook 'magit-post-refresh-hook 'cpped-show-file-contributor-info)
+#+END_SRC
+
+****  [[https://github.com/syohex/emacs-smeargle][Highlight file change age]]
+#+BEGIN_SRC emacs-lisp
+(defun cpped-maybe-enable-smeargle ()
+    "Enable smeargle for version-controlled files."
+    (if (and buffer-file-name
+             (vc-state buffer-file-name)
+             (not (string-equal (vc-state buffer-file-name) 'unregistered)))
+        (ignore-errors (smeargle))
+      (smeargle-clear)))
+
+(use-package smeargle
+  :hook ((find-file after-save magit-post-commmit magit-post-refresh) . cpped-maybe-enable-smeargle)
+  :custom (smeargle-colors '((older-than-1day   . "#1e0000")
+                             (older-than-3day   . "#1e1500")
+                             (older-than-1week  . "#1e1e00")
+                             (older-than-2week  . "#021e00")
+                             (older-than-1month . "#1e0000")
+                             (older-than-3month . "#001e16")
+                             (older-than-6month . "#00171e")
+                             (older-than-1year  . "#00001e"))))
 #+END_SRC
 
 * Viewer
@@ -5989,11 +5994,8 @@ Hide info buffer in buffer list
 
 * Org-Mode
 #+BEGIN_SRC emacs-lisp
-(use-package helm-org
-:after helm)
-
 (use-package org
-  :after (helm helm-org helm-buffers popwin)
+  :after (helm helm-buffers popwin)
   :mode ("\\.org\\'" . org-mode)
   :bind (("C-c l" . org-store-link))
   :custom
@@ -6055,6 +6057,9 @@ Hide info buffer in buffer list
   (push '("*Org Select*" :height 0.2 :position bottom :noselect nil :stick t) popwin:special-display-config)
   (push '("^CAPTURE-.+\*.org$" :position left :regexp t) popwin:special-display-config)
   (font-lock-add-keywords 'org-mode `(("^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\|\\([0-9]+\\)/\\2\\)\\][^\n]*\n\\)" 1 'org-headline-done prepend)) 'append))
+
+(use-package helm-org
+  :after (helm org))
 #+END_SRC
 
 ** Default files
@@ -6275,7 +6280,10 @@ Note: For this to work, Org must be version 8.3 or higher. Org is bundled with e
 (use-package ob-docker-build
   :after org
   :ensure-system-package podman
-  :quelpa ((ob-docker-build :fetcher github :repo "ifitzpat/ob-docker-build"))
+  :straight (ob-docker-build
+             :type git
+             :host github
+             :repo "ifitzpat/ob-docker-build")
   :config
   (add-to-list 'org-babel-load-languages '(docker-build . t))
   (org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages))

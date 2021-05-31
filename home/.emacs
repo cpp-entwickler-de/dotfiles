@@ -1,29 +1,23 @@
-;; Set up package
-(require 'package)
-(setq-default package-archives
-              '(("elpa" . "https://elpa.gnu.org/packages/")
-                ("melpa" . "https://melpa.org/packages/")
-                ("org"   . "https://orgmode.org/elpa/")))
-(setq load-prefer-newer t)
-(package-initialize)
-
 (setq debug-on-error t)
 
 ;; Break when showing message
 ;; (setq debug-on-message "")
 
-;; Bootstrap use-package
-;; Install use-package if it's not already installed.
-;; use-package configures the rest of the packages.
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-
+(defvar bootstrap-version)
+(setq straight-use-package-by-default t)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 (setq use-package-enable-imenu-support t)
-(eval-when-compile
-  (require 'use-package)
-  (setq use-package-always-ensure t
-        use-package-verbose t))
+(straight-use-package 'use-package)
 
 ;; Save customizations to different file
 (setq custom-file "~/.emacs.d/customizations.el")
@@ -39,6 +33,7 @@
 ;; increase garbage collection threshold for initialization
 (let ((gc-cons-threshold (* 100 1024 1024))
       (gc-cons-percentage 0.6))
+  (use-package org)
   ;; Load actual configuration.
   (org-babel-load-file "~/.emacs-config.org"))
 
