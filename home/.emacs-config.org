@@ -2314,11 +2314,11 @@ https://github.com/purcell/exec-path-from-shell
 (setq dired-listing-switches "-aFhl1v --group-directories-first")
 #+END_SRC
 
-**** [[https://github.com/purcell/diredful/][Coloring]]
+**** [[https://github.com/purcell/diredfl/][Coloring]]
 #+BEGIN_SRC emacs-lisp
-(use-package diredful
+(use-package diredfl
   :config
-  (diredful-mode 1))
+  (diredfl-global-mode))
 #+END_SRC
 
 **** Show lines in alternating colors
