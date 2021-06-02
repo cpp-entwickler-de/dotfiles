@@ -36,7 +36,7 @@ Do not load outdated byte code
   (paradox-enable))
 #+END_SRC
 
-** [[https://github.com/jabranham/system-packages][System packages]]
+** [[https://gitlab.com/jabranham/system-packages][System packages]]
 Do not ask for confirmation for new shell buffers
 #+begin_SRC emacs-lisp
 (setq async-shell-command-buffer 'new-buffer)
