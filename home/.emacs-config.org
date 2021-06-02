@@ -43,27 +43,30 @@ Do not ask for confirmation for new shell buffers
 #+end_SRC
 
 #+BEGIN_SRC emacs-lisp
-(require 'tramp)
+(use-package use-package-ensure-system-package)
+
+
 (use-package system-packages
-  :after tramp
-  :custom (system-packages-noconfirm t)
-  :config
+  :ensure-system-package ((pip . python3-pip) npm (gem . rubygems))
+  :custom (system-packages-noconfirm t))
+(with-eval-after-load "system-packages"
   (defun cpped-run-command-sync-logged (wrapped-function &rest arguments)
     "Run a command synchronously and return the output."
     (shell-command-to-string (car arguments)))
+  (advice-add 'async-shell-command :around #'cpped-run-command-sync-logged)
+  (add-hook 'after-init-hook '(lambda ()
+                                (advice-remove 'async-shell-command #'cpped-run-command-sync-logged)))
   (defun cpped-install-system-package (package &rest arguments)
     "Wrapper around system-packages-install to install only missing packages."
     (let ((system-packages-packagemanager (or (plist-get arguments :package-manager)
                                               system-packages-packagemanager)))
-      (advice-add 'async-shell-command :around #'cpped-run-command-sync-logged)
       (if (not (or (executable-find (or (plist-get arguments :executable)
                                         package))
                    (string-match (concat ".*" package ".*") (system-packages--run-command 'list-installed-packages nil package))))
           (progn
             (message (concat "Installing system package '" package "'."))
             (system-packages-install package))
-        (message (concat "System package '" package "' is already installed. Skipping.")))
-      (advice-remove 'async-shell-command #'cpped-run-command-sync-logged))
+        (message (concat "System package '" package "' is already installed. Skipping."))))
     nil)
   (add-to-list 'system-packages-supported-package-managers
                '(dnf .
@@ -102,7 +105,6 @@ Do not ask for confirmation for new shell buffers
                       (list-installed-packages-all . nil)
                       (list-dependencies-of . nil)))
                t)
-  (cpped-install-system-package "python3-pip" :executable "pip3")
   (add-to-list 'system-packages-supported-package-managers
                '(npm .
                      ((default-sudo . t)
@@ -122,7 +124,6 @@ Do not ask for confirmation for new shell buffers
                       (list-installed-packages-all . nil)
                       (list-dependencies-of . nil)))
                t)
-  (cpped-install-system-package "npm")
   (add-to-list 'system-packages-supported-package-managers
                '(gem .
                      ((default-sudo . nil)
@@ -141,22 +142,17 @@ Do not ask for confirmation for new shell buffers
                       (list-installed-packages . "gem list")
                       (list-installed-packages-all . nil)
                       (list-dependencies-of . "gem dependency")))
-               t)
-  (cpped-install-system-package "rubygems" :executable "gem"))
-
-(use-package use-package-ensure-system-package
-  :after system-packages)
+               t))
 #+END_SRC
 
 *** Helm support
 #+BEGIN_SRC emacs-lisp
-  (use-package helm-system-packages
-    :disabled
-    :after helm
-    :straight (helm-system-packages
-               :type git
-               :host github
-               :repo "emacs-helm/helm-system-packages"))
+(use-package helm-system-packages
+  :after helm
+  :straight (helm-system-packages
+             :type git
+             :host github
+             :repo "emacs-helm/helm-system-packages"))
 #+END_SRC
 
 * Internals
@@ -973,15 +969,13 @@ Find path of current position in XML docuement
 (defvar cpped-project-directories (list "~/Projects" "~/projects") "A list of directories to check for projects.")
 
 (use-package ag
-  :after system-packages
+  :ensure-system-package (ag . the_silver_searcher)
   :custom
   (ag-arguments '("--smart-case"))
   (ag-context-lines 3)
   (ag-highlight-search t)
   (ag-project-root-function nil)
-  (ag-reuse-window t)
-  :config
-  (cpped-install-system-package "the_silver_searcher" :executable "ag"))
+  (ag-reuse-window t))
 
 (use-package projectile
   :after ag
@@ -1005,7 +999,8 @@ Find path of current position in XML docuement
 ** [[https://github.com/emacs-helm/helm][Helm UI]]
 #+BEGIN_SRC emacs-lisp
 (use-package helm
-  :after popwin
+  :after (popwin system-packages)
+  :ensure-system-package curl
   :bind (:map helm-map (("M-SPC" . helm-toggle-all-marks)
                         ("C-M-y" . helm-copy-to-buffer)))
   :custom
@@ -1075,7 +1070,6 @@ Find path of current position in XML docuement
   (helm-session-fuzzy-match t)
   (helm-split-window-in-side-p t)
   :config
-  (cpped-install-system-package "curl")
   (advice-add 'helm-ff-filter-candidate-one-by-one
               :around (lambda (fcn file)
                         (unless (string-match "\\(?:/\\|\\`\\)\\.\\{1,2\\}\\'" file)
@@ -3069,11 +3063,10 @@ Some useful abbreviations
 *** Thesaurus
 #+BEGIN_SRC emacs-lisp
 (use-package synosaurus
-  :after system-packages
+  :ensure-system-package "wordnet"
   :hook (after-init . synosaurus-mode)
   :custom (synosaurus-choose-method 'default)
   :config
-  (cpped-install-system-package "wordnet")
   (setq-default synosaurus-backend 'synosaurus-backend-wordnet))
 #+END_SRC
 
@@ -3107,6 +3100,7 @@ Some useful abbreviations
 #+BEGIN_SRC emacs-lisp
 (use-package flyspell
   :after (helm-buffers system-packages)
+  :ensure-system-package (aspell aspell-en aspell-de)
   :custom
   (flyspell-issue-welcome-flag nil)
   (flyspell-issue-message-flag nil)
@@ -3122,9 +3116,6 @@ Some useful abbreviations
   (ispell-extra-args '("--sug-mode=ultra"
                        "--lang=en_US"))
   :config
-  (cpped-install-system-package "aspell")
-  (cpped-install-system-package "aspell-en")
-  (cpped-install-system-package "aspell-de")
   (when (string-match-p "--camel-case"
                         (shell-command-to-string (concat ispell-program-name " --help")))
     (push "--camel-case" ispell-extra-args))
@@ -5176,15 +5167,14 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 ***** Syntax checkers
 #+BEGIN_SRC emacs-lisp
 (use-package flycheck-checkbashisms
-  :after (flycheck system-packages)
+  :after flycheck
+  :ensure-system-package ((checkbashisms . devscripts-checkbashisms) (shellcheck . ShellCheck))
   :hook (sh-mode . (lambda ()
                      (flycheck-select-checker 'sh-bash)
                      (flycheck-add-next-checker 'sh-bash '(t . sh-zsh))
                      (flycheck-add-next-checker 'sh-zsh '(t . sh-checkbashisms))
                      (flycheck-add-next-checker 'sh-checkbashisms '(t . sh-shellcheck))))
   :config
-  (cpped-install-system-package "devscripts-checkbashisms" :executable "checkbashisms")
-  (cpped-install-system-package "ShellCheck" :executable "shellcheck")
   (add-to-list 'flycheck-checkers 'sh-checkbashisms t))
 #+END_SRC
 
@@ -5242,14 +5232,13 @@ Set correct major mode
 *** [[https://github.com/skuro/plantuml-mode][UML]]
 #+BEGIN_SRC emacs-lisp
 (use-package plantuml-mode
-  :after (org popwin system-packages)
+  :after (org popwin)
+  :ensure-system-package (plantuml graphviz)
   :mode "\\.p\\(lant\\)?uml\\'"
   :custom
   (plantuml-jar-path "/usr/share/java/plantuml.jar")
   (org-plantuml-jar-path "/usr/share/java/plantuml.jar")
   :config
-  (cpped-install-system-package "plantuml")
-  (cpped-install-system-package "graphviz")
   (push '("*PLANTUML Preview*" :dedicated t :width 60 :position right :noselect :stick) popwin:special-display-config)
   (add-to-list 'org-src-lang-modes '("plantuml" . plantuml)))
 
@@ -5345,9 +5334,9 @@ Set correct major mode
   (cpped-install-system-package "js-yaml" :package-manager 'npm))
 
 (use-package flycheck-yamllint
-  :after (flycheck system-packages)
-  :config (cpped-install-system-package "yamllint")
-          (flycheck-yamllint-setup)
+  :after flycheck
+  :ensure-system-package yamllint
+  :config (flycheck-yamllint-setup)
           (flycheck-add-next-checker 'yaml-jsyaml '(t . yaml-yamllint)))
 #+END_SRC
 
@@ -5533,7 +5522,7 @@ forcing it by running
 ***** Show ToDos in status window
 #+BEGIN_SRC emacs-lisp
 (use-package magit-todos
-  :ensure-system-package "ripgrep"
+  :ensure-system-package ripgrep
   :custom
   (magit-todos-auto-group-items 'always)
   (magit-todos-group-by '(magit-todos-item-keyword magit-todos-item-filename))
@@ -5884,7 +5873,8 @@ Hide info buffer in buffer list
 ** [[https://github.com/politza/pdf-tools][PDF]]
 #+BEGIN_SRC emacs-lisp
 (use-package pdf-tools
-  :after (popwin system-packages)
+  :after (popwin)
+  :ensure-system-package (poppler-devel poppler-glib-devel)
   :bind (:map pdf-view-mode-map ("q" . kill-this-buffer))
   :mode ("\\.pdf\\'" . pdf-view-mode)
   :hook (pdf-view-mode . pdf-view-midnight-minor-mode)
@@ -5895,8 +5885,6 @@ Hide info buffer in buffer list
   (pdf-view-resize-factor 1.1)
   (pdf-view-midnight-colors `(,(face-attribute 'default :foreground) . ,(face-attribute 'default :background)))
   :config
-  (cpped-install-system-package "poppler-devel")
-  (cpped-install-system-package "poppler-glib-devel")
   (push '("%PDF" . pdf-view-mode) magic-mode-alist)
   (pdf-tools-install t t t)
   (push "\\.pdf\\'" cpped-no-hexedit-extensions)
@@ -6984,16 +6972,14 @@ Do not use scientific form so quickly
 ** GNUPlot
 #+BEGIN_SRC emacs-lisp
 (use-package gnuplot
-  :after system-packages
+  :ensure-system-package gnuplot
   :mode ("\\.gnuplot\\'" . gnuplot-mode)
   :hook (gnuplot-mode . flyspell-prog-mode)
   :custom
   (gnuplot-eldoc-mode t)
   (gnuplot-image-format "svg")
   (gnuplot-inline-image-mode 'dedicated)
-  (gnuplot-tab-completion t)
-  :config
-  (cpped-install-system-package "gnuplot"))
+  (gnuplot-tab-completion t))
 #+END_SRC
 
 *** Documentation
