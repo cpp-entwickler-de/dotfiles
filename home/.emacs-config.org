@@ -1871,17 +1871,6 @@ https://github.com/purcell/exec-path-from-shell
                                 (add-hook 'eshell-pre-command-hook #'cpped-eshell-reenter nil t)))
 #+END_SRC
 
-*** [[https://github.com/mhayashi1120/Emacs-shelldoc][Show man page for shell commands]]
-#+BEGIN_SRC emacs-lisp
-(use-package shelldoc
-  :after (helm-buffers popwin)
-  :hook ((eshell-mode sh-mode shell-mode) . shelldoc-minor-mode-on)
-  :custom (shelldoc-keep-man-locale nil)
-  :config
-  (push "\\*Shelldoc\\*" helm-boring-buffer-regexp-list)
-  (push '("*Shelldoc*" :position bottom :height 30) popwin:special-display-config))
-#+END_SRC
-
 *** Auto-completion
 **** Company (commands)
 #+BEGIN_SRC emacs-lisp
