@@ -4721,6 +4721,12 @@ https://github.com/google/googletest
   :mode ("\\.[Cc][Ss][Vv]\\'" . csv-mode))
 #+END_SRC
 
+*** [[https://github.com/schspa/dtb-mode][DTB]]
+#+begin_src emacs-lisp
+(use-package dtb-mode
+  :ensure-system-package dtc)
+#+end_src
+
 *** Docker
 #+BEGIN_SRC emacs-lisp
 (use-package dockerfile-mode)
