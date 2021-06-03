@@ -631,8 +631,6 @@ Helper function to figure out version control root directory
 
 *** Docker project
 #+BEGIN_SRC emacs-lisp
-(cpped-install-system-package "docker")
-
 (defun cpped-powerline-docker-project ()
   (when (cpped-is-docker-project-p)
     ""))
@@ -3242,6 +3240,8 @@ Open binary files in hexl-mode
 
 *** Use docker to run tools for docker-based projects
 #+BEGIN_SRC emacs-lisp
+(system-packages-ensure "docker")
+
 (defvar default-docker-compose-file "docker-compose.yml" "The default name for the docker-compose file.")
 (defvar default-docker-start-script "docker-run.sh" "The default path to a script to start applications in a docker container.")
 
