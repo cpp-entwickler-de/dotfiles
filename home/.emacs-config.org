@@ -1666,6 +1666,14 @@ https://github.com/purcell/exec-path-from-shell
                      (font-lock-fontify-buffer)))))
                (buffer-string))))
          (setq files (cdr files))))))
+
+(with-eval-after-load "dired"
+  (defun eshell/pack (argument)
+    "Compress files."
+    (dired-compress-file argument))
+  (defun eshell/unpack (argument)
+    "Uncompress file."
+    (dired-compress-file argument)))
 #+END_SRC
 
 **** Git support
