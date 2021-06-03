@@ -5424,6 +5424,11 @@ Set correct major mode
 
 ** Diff/Merge
 *** Diff support
+Use smerge-mode
+#+BEGIN_SRC emacs-lisp
+(add-hook 'diff-mode-hook 'smerge-mode)
+#+END_SRC
+
 #+BEGIN_SRC emacs-lisp
 (push '("\\.diff\\'" . diff-mode) auto-mode-alist)
 (push '("\\.patch\\'" . diff-mode) auto-mode-alist)
