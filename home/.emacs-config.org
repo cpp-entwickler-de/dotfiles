@@ -4305,6 +4305,8 @@ Show API info via [[https://devdocs.io][devdocs.io]]
   (ccls-sem-highlight-method 'font-lock)
   :config
   (ccls-use-default-rainbow-sem-highlight))
+
+(add-hook 'c-mode-common-hook 'lsp)
 #+END_SRC
 
 **** Highlighting
@@ -4610,10 +4612,16 @@ https://github.com/google/googletest
   (add-hook 'cmake-mode-hook 'wrap-region-mode))
 #+END_SRC
 
+***** Language Server
+#+BEGIN_SRC emacs-lisp
+(cpped-install-system-package "cmake-language-server" :package-manager 'pip)
+(add-hook 'cmake-mode-hook 'lsp)
+#+END_SRC
+
 ***** Autocompletion
 #+BEGIN_SRC emacs-lisp
 (add-hook 'cmake-mode-hook (lambda()
-                             (set (make-local-variable 'company-backends) '((company-yasnippet company-cmake company-files company-capf company-dabbrev-code company-ispell cpped-company-line-backend)))))
+                             (set (make-local-variable 'company-backends) '((company-yasnippet company-lsp company-files company-capf company-dabbrev-code company-ispell cpped-company-line-backend)))))
 #+END_SRC
 
 ***** Formatting
@@ -4920,7 +4928,8 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 ***** Language server
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load "system-packages"
-  (cpped-install-system-package "vscode-html-languageserver-bin" :package-manager 'npm))
+  (cpped-install-system-package "vscode-html-languageserver-bin" :package-manager 'npm)
+  (add-hook 'html-mode 'lsp))
 #+END_SRC
 
 ***** Auto-completion
@@ -4980,9 +4989,38 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 (push '("\\.service\\'" . ini-mode) auto-mode-alist)
 
 (provide 'ini-mode)
+
+;    Detection of duplicate properties and sections
+;(defun flycheck-ini--start (checker callback)
+;  "Flycheck start function for CHECKER, invoking CALLBACK."
+;  (funcall callback
+;           'finished
+;           (flycheck-increment-error-columns
+;            (mapcar (lambda (x)
+;                      (apply #'flycheck-error-new-at `(,@x :checker ,checker)))
+;                    (condition-case err
+;                        (when (package-lint-looks-like-a-package-p)
+;                          (package-lint-buffer (current-buffer)))
+;                      (error
+;                       (funcall callback 'errored (error-message-string err))
+;                       (signal (car err) (cdr err))))))))
+;;; Checker definition
+
+;(flycheck-define-generic-checker 'ini-file
+;  "A checker for ini files."
+;  :start #'flycheck-ini--start
+;  :modes '(ini))
+
+;(add-to-list 'flycheck-checkers 'ini t)
+;; (flycheck-add-next-checker 'ini 'ini-file t)
 #+END_SRC
 
 *** Javascript
+**** Language Server
+#+BEGIN_SRC emacs-lisp
+(add-hook 'js-mode 'lsp)
+#+END_SRC
+
 **** Documentation
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load "devdocs-browser"
@@ -5021,6 +5059,10 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
                             (setq imenu-create-index-function #'imenu-default-create-index-function)
                             (setq-local imenu-generic-expression '(("Items" "[\"\']\\([[:alnum:]-]+\\)[\"\'][[:space:]]*:[\n[:space:]]*[\\[\\{]" 1))))))
 #+END_SRC
+**** Language Server
+#+begin_SRC emacs-lisp
+(add-hook 'json-mode-hook 'lsp)
+#+end_SRC
 
 **** Editing
 
@@ -5194,6 +5236,12 @@ Set correct major mode
 (push '("\\.bash\\'" . bash-mode) auto-mode-alist)
 #+END_SRC
 
+***** Language server
+#+BEGIN_SRC emacs-lisp
+(cpped-install-system-package "bash-language-server" :package-manager 'npm)
+(add-hook 'bash-mode-hook 'lsp)
+#+END_SRC
+
 **** ZSH
 Set correct major mode
 #+BEGIN_SRC emacs-lisp
@@ -5295,6 +5343,11 @@ Set correct major mode
   :config (cpped-install-system-package "saxon"))
 #+END_SRC
 
+***** Language Server
+#+BEGIN_SRC emacs-lisp
+(add-hook 'nxml-mode-hook 'lsp)
+#+END_SRC
+
 ***** Syntax checkers
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load "system-packages"
@@ -5328,6 +5381,7 @@ Set correct major mode
 *** [[https://github.com/yoshiki/yaml-mode][YAML]]
 #+BEGIN_SRC emacs-lisp
 (use-package yaml-mode
+  :hook (yaml-mode . lsp)
   :mode "\.yml\'")
 #+END_SRC
 
