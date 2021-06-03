@@ -5571,7 +5571,7 @@ forcing it by running
                                    (list (rx bol (= 8 (in "0-9a-f")) space (+ (in space punctuation)) bow (group (? "bug") "fix" (? (or "up" (group "e" (in "sd"))))) eow) "")
                                    (list (rx bol (= 8 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "call" (? (or "s" "ed"))) eow) "↴")
                                    (list (rx bol (= 8 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "fixup" (? "!"))) "")
-                                   (list (rx bol (= 8 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "clean" (? (or "s" "ed")) (? (? " ") "up")) eow) "")
+                                   (list (rx bol (= 8 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "clea" (or "n" "r") (? (or "s" "ed")) (? (? " ") "up")) eow) "")
                                    (list (rx bol (= 8 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "update" (? (in "sd"))) eow) "⇪")
                                    (list (rx bol (= 8 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "sync" (? (or "s" "ed"))) eow) "")
                                    (list (rx bol (= 8 (in "0-9a-f")) space (+ (in space punctuation)) bow (group "refactor" (? (or "s" "ed"))) eow) "")
