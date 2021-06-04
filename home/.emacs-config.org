@@ -1778,6 +1778,13 @@ https://github.com/purcell/exec-path-from-shell
       eshell-prompt-regexp (rx bol "▶ "))
 #+END_SRC
 
+*** [[https://github.com/akreisher/eshell-syntax-highlighting/][Syntax Highlighting]]
+#+BEGIN_SRC emacs-lisp
+(use-package eshell-syntax-highlighting
+  :after eshell
+  :config (eshell-syntax-highlighting-global-mode +1))
+#+END_SRC
+
 *** Clear buffer
 #+BEGIN_SRC emacs-lisp
 (defun cpped-clear-comint-buffer ()
