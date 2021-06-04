@@ -1898,7 +1898,7 @@ https://github.com/purcell/exec-path-from-shell
 **** Autosuggest
 #+BEGIN_SRC emacs-lisp
 (use-package esh-autosuggest
-  :hook eshell-mode)
+  :hook (eshell-mode . esh-autosuggest-mode))
 #+END_SRC
 
 *** Add sudo to command line
