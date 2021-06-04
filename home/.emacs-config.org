@@ -4462,52 +4462,41 @@ Show API info via [[https://devdocs.io][devdocs.io]]
 #+END_SRC
 
 ***** Syntax checkers
-****** Clang
 #+BEGIN_SRC emacs-lisp
-(setq flycheck-clang-pedantic t
-      flycheck-clang-warnings '("all" "extra" "ctor-dtor-privacy" "effc++" "old-style-cast" "overloaded-virtual" "format=2" "null-dereference" "missing-include-dirs" "switch-default" "switch-enum" "unused-parameter" "uninitialized" "float-equal" "shadow" "cast-qual" "conversion" "extra-tokens" "ambiguous-member-template" "bind-to-temporary-copy"))
-(add-hook 'c-mode-common-hook (lambda ()
-                                (flycheck-select-checker 'c/c++-clang)))
-(add-hook 'c++-mode-hook (lambda ()
-                           (setq flycheck-clang-language-standard "c++17")))
-(push "\\*clang-.*\\*" helm-boring-buffer-regexp-list)
-#+END_SRC
-
-****** GCC
-#+BEGIN_SRC emacs-lisp
-(setq flycheck-gcc-pedantic t
-      flycheck-gcc-pedantic-errors nil
-      flycheck-gcc-warnings '("all" "extra" "ctor-dtor-privacy" "effc++" "old-style-cast" "overloaded-virtual" "format=2" "missing-include-dirs" "switch-default" "switch-enum" "unused-parameter" "uninitialized" "float-equal" "shadow" "cast-qual" "conversion" "double-promotion" "zero-as-null-pointer-constant" "useless-cast" "logical-op"))
-(flycheck-add-next-checker 'c/c++-clang '(t . c/c++-gcc))
-(add-hook 'c++-mode-hook (lambda ()
-                           (setq flycheck-gcc-language-standard "c++17")))
-#+END_SRC
-
-****** [[https://clang-analyzer.llvm.org/][Clang Analyzer]]
-#+BEGIN_SRC emacs-lisp
-(use-package flycheck-clang-analyzer
-  :after flycheck
-  :config (flycheck-add-next-checker 'c/c++-gcc '(warning . clang-analyzer)))
-#+END_SRC
-
-****** CPPCheck
-#+BEGIN_SRC emacs-lisp
-(with-eval-after-load "system-packages"
-  (cpped-install-system-package "cppcheck")
-  (setq flycheck-cppcheck-checks '("warning" "style" "performance" "portability" "information" "missingInclude"))
-  (flycheck-add-next-checker 'clang-analyzer '(t . c/c++-cppcheck))
+(with-eval-after-load "flycheck"
+  (setq flycheck-clang-pedantic t
+        flycheck-clang-warnings '("all" "extra" "ctor-dtor-privacy" "effc++" "old-style-cast" "overloaded-virtual" "format=2" "null-dereference" "missing-include-dirs" "switch-default" "switch-enum" "unused-parameter" "uninitialized" "float-equal" "shadow" "cast-qual" "conversion" "extra-tokens" "ambiguous-member-template" "bind-to-temporary-copy"))
+  (add-hook 'c-mode-common-hook (lambda ()
+                                  (flycheck-select-checker 'c/c++-clang)))
   (add-hook 'c++-mode-hook (lambda ()
-                             (setq flycheck-cppcheck-standards "c++11"))))
+                             (setq flycheck-clang-language-standard "c++17")))
+  (push "\\*clang-.*\\*" helm-boring-buffer-regexp-list)
+
+  (setq flycheck-gcc-pedantic t
+        flycheck-gcc-pedantic-errors nil
+        flycheck-gcc-warnings '("all" "extra" "ctor-dtor-privacy" "effc++" "old-style-cast" "overloaded-virtual" "format=2" "missing-include-dirs" "switch-default" "switch-enum" "unused-parameter" "uninitialized" "float-equal" "shadow" "cast-qual" "conversion" "double-promotion" "zero-as-null-pointer-constant" "useless-cast" "logical-op"))
+  (flycheck-add-next-checker 'c/c++-clang '(t . c/c++-gcc))
+  (add-hook 'c++-mode-hook (lambda ()
+                             (setq flycheck-gcc-language-standard "c++17")))
+
+  (use-package flycheck-clang-analyzer
+    :after flycheck
+    :config (flycheck-add-next-checker 'c/c++-gcc '(warning . clang-analyzer)))
+
+  (with-eval-after-load "system-packages"
+    (cpped-install-system-package "cppcheck")
+    (setq flycheck-cppcheck-checks '("warning" "style" "performance" "portability" "information" "missingInclude"))
+    (flycheck-add-next-checker 'clang-analyzer '(t . c/c++-cppcheck))
+    (add-hook 'c++-mode-hook (lambda ()
+                               (setq flycheck-cppcheck-standards "c++11"))))
+
+  (use-package flycheck-clang-tidy
+    :after flycheck
+    :hook (cpped-after-project-load-update-project-file-hook . (lambda ()
+                                                                 (setq-local flycheck-clang-tidy-build-path (cpped-build-dir))))
+    :config (flycheck-add-next-checker 'c/c++-cppcheck '(t . c/c++-clang-tidy))))
 #+END_SRC
 
-****** [[https://github.com/ch1bo/flycheck-clang-tidy][Clang-tidy]]
-#+BEGIN_SRC emacs-lisp
-(use-package flycheck-clang-tidy
-  :after flycheck
-  :hook (cpped-after-project-load-update-project-file-hook . (lambda ()
-                                                               (setq-local flycheck-clang-tidy-build-path (cpped-build-dir))))
-  :config (flycheck-add-next-checker 'c/c++-cppcheck '(t . c/c++-clang-tidy)))
-#+END_SRC
 
 **** Documentation
 #+BEGIN_SRC emacs-lisp
