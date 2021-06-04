@@ -3135,13 +3135,6 @@ Some useful abbreviations
   :config (advice-add #'flyspell-auto-correct-word :override #'helm-flyspell-correct))
 #+END_SRC
 
-*** [[https://github.com/redguardtoo/wucuo][Allow spell-checking for CamelCase word]]
-#+BEGIN_SRC emacs-lisp
-(use-package wucuo
-  :after flyspell
-  :hook (find-file . wucuo-start))
-#+END_SRC
-
 *** [[https://github.com/nschum/auto-dictionary-mode][Automatic dictionary selection]]
 #+BEGIN_SRC emacs-lisp
 (use-package guess-language
@@ -4627,80 +4620,6 @@ https://github.com/google/googletest
 ***** Formatting
 #+BEGIN_SRC emacs-lisp
 (cpped-install-system-package "cmake-format" :package-manager 'pip)
-#+END_SRC
-
-***** Spell checking
-#+BEGIN_SRC emacs-lisp
-  (with-eval-after-load "wucuo"
-    (setq wucuo-personal-font-faces-to-check
-          (nconc wucuo-personal-font-faces-to-check '(cquery-sem-local-face
-                                                      cquery-sem-member-face
-                                                      cquery-sem-static-face
-                                                      cquery-sem-type-face-0
-                                                      cquery-sem-type-face-1
-                                                      cquery-sem-type-face-2
-                                                      cquery-sem-type-face-3
-                                                      cquery-sem-type-face-4
-                                                      cquery-sem-type-face-5
-                                                      cquery-sem-type-face-6
-                                                      cquery-sem-type-face-7
-                                                      cquery-sem-type-face-8
-                                                      cquery-sem-type-face-9
-                                                      cquery-sem-macro-face-0
-                                                      cquery-sem-macro-face-1
-                                                      cquery-sem-macro-face-2
-                                                      cquery-sem-macro-face-3
-                                                      cquery-sem-macro-face-4
-                                                      cquery-sem-macro-face-5
-                                                      cquery-sem-macro-face-6
-                                                      cquery-sem-macro-face-7
-                                                      cquery-sem-macro-face-8
-                                                      cquery-sem-macro-face-9
-                                                      cquery-sem-variable-face-0
-                                                      cquery-sem-variable-face-1
-                                                      cquery-sem-variable-face-2
-                                                      cquery-sem-variable-face-3
-                                                      cquery-sem-variable-face-4
-                                                      cquery-sem-variable-face-5
-                                                      cquery-sem-variable-face-6
-                                                      cquery-sem-variable-face-7
-                                                      cquery-sem-variable-face-8
-                                                      cquery-sem-variable-face-9
-                                                      cquery-sem-function-face-0
-                                                      cquery-sem-function-face-1
-                                                      cquery-sem-function-face-2
-                                                      cquery-sem-function-face-3
-                                                      cquery-sem-function-face-4
-                                                      cquery-sem-function-face-5
-                                                      cquery-sem-function-face-6
-                                                      cquery-sem-function-face-7
-                                                      cquery-sem-function-face-8
-                                                      cquery-sem-function-face-9
-                                                      cquery-sem-namespace-face-0
-                                                      cquery-sem-namespace-face-1
-                                                      cquery-sem-namespace-face-2
-                                                      cquery-sem-namespace-face-3
-                                                      cquery-sem-namespace-face-4
-                                                      cquery-sem-namespace-face-5
-                                                      cquery-sem-namespace-face-6
-                                                      cquery-sem-namespace-face-7
-                                                      cquery-sem-namespace-face-8
-                                                      cquery-sem-namespace-face-9
-                                                      cquery-sem-parameter-face-0
-                                                      cquery-sem-parameter-face-1
-                                                      cquery-sem-parameter-face-2
-                                                      cquery-sem-parameter-face-3
-                                                      cquery-sem-parameter-face-4
-                                                      cquery-sem-parameter-face-5
-                                                      cquery-sem-parameter-face-6
-                                                      cquery-sem-parameter-face-7
-                                                      cquery-sem-parameter-face-8
-                                                      cquery-sem-parameter-face-9
-                                                      cquery-inactive-region-face
-                                                      cquery-sem-static-field-face
-                                                      cquery-sem-static-method-face
-                                                      cquery-sem-local-function-face
-                                                      cquery-sem-global-variable-face))))
 #+END_SRC
 
 **** Documentation
