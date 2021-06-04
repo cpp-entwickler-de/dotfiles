@@ -1351,6 +1351,7 @@ Indicate recursive minibuffer
 **** Highlight current line
 #+BEGIN_SRC emacs-lisp
 (use-package hl-line
+  :hook (after-init . global-hl-line-mode)
   :config
   (advice-add 'hl-line-highlight :after (lambda ()
                                           (unless (window-minibuffer-p)
@@ -1359,8 +1360,7 @@ Indicate recursive minibuffer
   (advice-add 'global-hl-line-highlight :after (lambda ()
                                                  (unless (window-minibuffer-p)
                                                    (when hl-line-overlay
-                                                     (overlay-put hl-line-overlay 'priority 1000)))))
-  (global-hl-line-mode))
+                                                     (overlay-put hl-line-overlay 'priority 1000))))))
 #+END_SRC
 
 **** Break long lines
