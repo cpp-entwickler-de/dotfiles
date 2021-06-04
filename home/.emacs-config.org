@@ -2946,6 +2946,12 @@ Save system clipboard contents to kill ring before killing
 (use-package sort-words)
 #+END_SRC
 
+*** [[https://github.com/mkcms/interactive-align][Regex alignment]]
+#+BEGIN_SRC emacs-lisp
+(use-package ialign
+  :custom (ialign-align-with-tabs indent-tabs-mode))
+#+END_SRC
+
 *** [[https://github.com/benma/visual-regexp.el][Visual regular expressions]]
 #+BEGIN_SRC emacs-lisp
 (use-package visual-regexp
@@ -7604,7 +7610,7 @@ Identifier    ^^Namespace
   _'_: Quoted insert                                                             ^^^^_-_: Value -       _:_: Fill paragraph             _s_: Sort          _k_: Encrypt           _E_: Evaluate & Replace
   _<_: Complete                                                                  ^^^^_#_: Base          _<tab>_: Spaces → Tabs          _x_: Transpose     _K_: Decrypt           _._: Suggestion
   _g_: Edit area                                                                 ^^^^_1_: Flip bool     _<backtab>_: Tabs → Spaces
-  ___: Overwrite Mode                                                            ^^^^_C_: Color                                                                             ^^^^^^_o_: Split org-mode code block
+  ___: Overwrite Mode                                                            ^^^^_C_: Color         _=_: Align                                                            ^^^^_o_: Split org-mode code block
   _&_: Typographic Mode                                                          ^^^^_L_: To Link
 
   _a_: Create Automatic snippet
@@ -7639,6 +7645,7 @@ Identifier    ^^Namespace
   (">" indent-tools-hydra/body :exit t)
   ("m" cpped-hydra-edit-move/body :exit t)
   ("j" cpped-join-lines)
+  ("=" ialign)
   (":" (if (derived-mode-p 'prog-mode)
            (if (nth 4 (syntax-ppss))
                (fill-paragraph)
