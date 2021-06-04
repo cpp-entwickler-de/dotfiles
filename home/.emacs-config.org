@@ -2417,7 +2417,10 @@ https://github.com/purcell/exec-path-from-shell
   (push "\\*Desktop Treemacs Helper\\*" helm-boring-buffer-regexp-list))
 
 (use-package treemacs-projectile
-  :after treemacs projectile)
+  :after (treemacs projectile))
+
+(use-package lsp-treemacs
+  :after (treemacs lsp-mode))
 #+END_SRC
 
 * Text
