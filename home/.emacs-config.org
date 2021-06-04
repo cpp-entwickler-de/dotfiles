@@ -27,15 +27,6 @@ Do not load outdated byte code
   (auto-compile-on-save-mode))
 #+END_SRC
 
-** [[https://github.com/Malabarba/paradox/][Paradox]]
-#+BEGIN_SRC emacs-lisp
-(use-package paradox
-  :config
-  (setq paradox-execute-asynchronously t
-        paradox-display-star-count nil)
-  (paradox-enable))
-#+END_SRC
-
 ** [[https://gitlab.com/jabranham/system-packages][System packages]]
 Do not ask for confirmation for new shell buffers
 #+begin_SRC emacs-lisp
@@ -8084,13 +8075,42 @@ Focus                  ^^^^Close                ^^Split               ^^Align   
 
 ** Settings
 #+BEGIN_SRC emacs-lisp
+(with-eval-after-load "ob-tangle"
+(defun cpped-check-emacs-config ()
+  "Test if emacs starts correctly."
+  (interactive)
+  (require 'async)
+  (async-start (lambda ()
+                 (shell-command-to-string (format "emacs --quick --batch --eval \"(condition-case e
+                                                                              (progn
+                                                                                (load \\\"%s\\\")
+                                                                                (message \\\"-OK-\\\"))
+                                                                              (error
+                                                                                (message \\\"ERROR!\\\")
+                                                                                (signal (car e) (cdr e))))\""
+                                                  (let ((kill-buffer-query-functions))
+                                                    (with-temp-buffer
+                                                      (insert-file-contents (expand-file-name cpped-config-file))
+                                                      (beginning-of-buffer)
+                                                      (mapcar #'expand-file-name (org-babel-tangle nil (expand-file-name (make-temp-name "emacs-config-test") temporary-file-directory)))))))
+                 `(lambda (output)
+                    (if (string-match "-OK-" output)
+                        (when ,(called-interactively-p 'any)
+                          (message "Config file is valid."))
+                      (switch-to-buffer-other-window "*Config Error*")
+                      (delete-region (point-min) (point-max))
+                      (insert output)
+                      (search-backward "ERROR!")))))))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
 (defhydra cpped-hydra-settings (:exit t :hint nil)
   "
 ☰ Settings
 
 Settings                       ^^Snippets            ^^Abbreviations             ^^Packages
-  _c_: Open config file            _Y_: New snippet      _A_: New abbreviation       _p_: Emacs packages
-  _m_: Open customization file     _y_: Edit snippet     _a_: Edit abbreviations     _P_: system packages
+  _c_: Open config file            _Y_: New snippet      _A_: New abbreviation       _p_: System packages
+  _m_: Open customization file     _y_: Edit snippet     _a_: Edit abbreviations
   _t_: Edit theme
   _v_: Customize variable
   _g_: Customize group
@@ -8109,8 +8129,7 @@ Settings                       ^^Snippets            ^^Abbreviations            
   ("Y" yas-new-snippet)
   ("a" edit-abbrevs)
   ("A" add-inverse-global)
-  ("p" list-packages)
-  ("P" helm-system-packages)
+  ("p" helm-system-packages)
   ("t" (custom-theme-visit-theme cpped-theme))
   ("v" customize-variable)
   ("g" customize-group)
