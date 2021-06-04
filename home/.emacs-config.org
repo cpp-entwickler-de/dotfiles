@@ -2791,6 +2791,7 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
       electric-pair-mode t
       show-trailing-whitespace t
       tab-always-indent 'complete
+      c-tab-always-indent 'complete
       tab-width 4
       text-mode-hook '(turn-on-auto-fill text-mode-hook-identify)
       require-final-newline nil)
