@@ -916,21 +916,18 @@ Find path of current position in XML docuement
                                                   (not (= (length check-status) 0))))
                           (lhs (list
                                 (when show-project
-                                  (powerline-raw project-id mode-line 'l))
-                                (when show-project
-                                  (powerline-raw (cpped-powerline-docker-project) mode-line 'l))
-                                (when show-project
+                                  (powerline-raw project-id mode-line 'l)
+                                  (powerline-raw (cpped-powerline-docker-project) mode-line 'l)
                                   (funcall separator-left mode-line face1))
                                 (powerline-raw (cpped-powerline-mode-icon face1) face1)
                                 (powerline-raw (cpped-powerline-buffer-id face1) face1 'l)
                                 (powerline-raw (cpped-powerline-eshell-process-running) face1 'l)
                                 (if version
-                                    (funcall separator-left face1 mode-line)
+                                    (progn
+                                      (funcall separator-left face1 mode-line)
+                                      (powerline-raw version mode-line)
+                                      (funcall separator-left mode-line face2))
                                   (funcall separator-left face1 face2))
-                                (when version
-                                  (powerline-raw version mode-line))
-                                (when version
-                                  (funcall separator-left mode-line face2))
                                 (powerline-raw (cpped-powerline-remote) face2 'r)
                                 (powerline-raw (cpped-powerline-su) face2 'r)
                                 (powerline-raw (cpped-powerline-modified) face2)
