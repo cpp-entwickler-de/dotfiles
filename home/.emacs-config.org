@@ -1775,7 +1775,7 @@ https://github.com/purcell/exec-path-from-shell
                                                                     (cpped-eshell-prompt-path))
                                        "\n▶ "))
       eshell-highlight-prompt nil
-      eshell-prompt-regexp "^[^▶]*\n▶ ")
+      eshell-prompt-regexp (rx bol "▶ "))
 #+END_SRC
 
 *** Clear buffer
