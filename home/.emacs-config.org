@@ -4335,12 +4335,6 @@ Show API info via [[https://devdocs.io][devdocs.io]]
 (add-to-list 'cc-imenu-c++-generic-expression '("Namespace" "^[[:space:]]*namespace[[:space:]]+\\([^/{]+\\)[[:space:]]*$" 1))
 #+END_SRC
 
-***** Share imenu results
-#+BEGIN_SRC emacs-lisp
-(with-eval-after-load "imenu-anywhere"
-  (push '(c-mode c++-mode) imenu-anywhere-friendly-modes))
-#+END_SRC
-
 **** Editing
 ***** Mark/navigation functions
 #+BEGIN_SRC emacs-lisp
