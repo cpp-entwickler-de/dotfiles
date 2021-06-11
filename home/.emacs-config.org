@@ -5247,9 +5247,10 @@ Set correct major mode
 (with-eval-after-load "system-packages"
   (cpped-install-system-package "xmllint")
   (cpped-install-system-package "xmlstarlet")
-  (flycheck-add-next-checker 'xml-xmllint '(t . xml-xmlstarlet))
-  (add-hook 'nxml-mode-hook (lambda ()
-                              (flycheck-select-checker 'xml-xmllint))))
+  (with-eval-after-load "flycheck"
+    (flycheck-add-next-checker 'xml-xmllint '(t . xml-xmlstarlet))
+    (add-hook 'nxml-mode-hook (lambda ()
+                                (flycheck-select-checker 'xml-xmllint)))))
 #+END_SRC
 
 ***** Formatting
