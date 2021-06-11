@@ -1296,16 +1296,14 @@ Indicate recursive minibuffer
 
 *** Kill current buffer by default
 #+BEGIN_SRC emacs-lisp
-(defvar cpped-bury-buffers-list nil "A list of buffer names to bury instead of kill.")
+(defvar cpped-bury-buffers-list '("*scratch*" "*Messages*") "A list of buffer names to bury instead of kill.")
 
 (defun cpped-kill-default-buffer ()
   "Kill the currently active buffer."
   (interactive)
   (let ((kill-buffer-query-functions)
         (name (substring-no-properties (buffer-name))))
-    (if (or (string= name "*scratch*")
-            (string= name "*Messages*")
-            (member name cpped-bury-buffers-list))
+    (if (member name cpped-bury-buffers-list)
         (bury-buffer)
       (when (and buffer-file-name
                (buffer-modified-p))
