@@ -6159,7 +6159,9 @@ Remove check on buffer close
                                  (setq begin (car bounds)
                                        end (cdr bounds)))
                              (let ((bounds (bounds-of-thing-at-point 'word)))
-                               (setq url (read-string "URL: ")
+                               (setq url (if (string-match-p "^http" (current-kill 0))
+                                             (current-kill 0)
+                                           (read-string "URL: "))
                                      begin (car bounds)
                                      end (cdr bounds))))))
                        (when (and begin
