@@ -36,7 +36,6 @@ Do not ask for confirmation for new shell buffers
 #+BEGIN_SRC emacs-lisp
 (use-package use-package-ensure-system-package)
 
-
 (use-package system-packages
   :ensure-system-package ((pip . python3-pip) npm (gem . rubygems))
   :custom (system-packages-noconfirm t))
@@ -2176,7 +2175,6 @@ https://github.com/purcell/exec-path-from-shell
     (write-region begin end copy nil nil nil mustbenew)))
 #+END_SRC
 
-
 ** [[https://github.com/bbatsov/super-save][Auto-save buffers]]
 #+BEGIN_SRC emacs-lisp
 (use-package super-save
@@ -2356,7 +2354,6 @@ https://github.com/purcell/exec-path-from-shell
 (use-package peep-dired
   :bind (:map dired-mode-map ("v" . peep-dired)))
 #+END_SRC
-
 
 **** Diff files
 #+BEGIN_SRC emacs-lisp
