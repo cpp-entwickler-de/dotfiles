@@ -3604,15 +3604,23 @@ Handler to close buffer after quitting ccmake.
   :custom
   (lsp-auto-configure t)
   (lsp-log-max 100)
-  (lsp-prefer-flymake nil)
-  (lsp-report-if-no-buffer nil)
   (lsp-restart 'auto-restart)
-  (lsp-ui-doc-include-signature nil)
-  (lsp-ui-sideline-show-symbol nil)
   (lsp-signature-function 'lsp-signature-posframe)
+  (lsp-headerline-breadcrumb-enable nil)
   :config (push "^\\*lsp-.+" helm-boring-buffer-regexp-list))
 
-(use-package lsp-ui)
+(use-package lsp-ui
+  :bind (([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
+         ([remap xref-find-references] . lsp-ui-peek-find-references))
+  :custom
+  (lsp-ui-sideline-show-diagnostics nil)
+  (lsp-ui-sideline-show-hover t)
+  (lsp-ui-sideline-show-code-actions t)
+  (lsp-ui-doc-include-signature t)
+  (lsp-ui-sideline-show-symbol nil))
+
+(use-package helm-lsp
+  :after (helm lsp-mode))
 #+END_SRC
 
 **** Highlighting
