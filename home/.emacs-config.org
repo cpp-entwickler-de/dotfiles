@@ -2578,7 +2578,7 @@ https://github.com/mivok/markdownlint
 Use custom regex to ignore color definitions (numbers starting with a # sign)
 #+BEGIN_SRC emacs-lisp
 (use-package num3-mode
-  :hook prog-mode
+  :hook find-file
   :custom (num3--number-re (concat "[^#]0[xX]\\([[:xdigit:]]+\\)"
                                    "\\|"
                                    "[^#]\\(?1:\\b\\(?:[0-9]+[a-fA-F]\\|[a-fA-F]+[0-9]\\)[[:xdigit:]]*\\b\\)"
