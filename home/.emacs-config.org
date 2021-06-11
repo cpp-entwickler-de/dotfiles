@@ -2118,7 +2118,7 @@ https://github.com/purcell/exec-path-from-shell
   :config (add-hook 'after-init #'(run-with-timer 60 nil didyoumean-mode)))
 #+END_SRC
 
-** Save backup files to /tmp
+** Save backup files to .emacs.d/backups
 #+BEGIN_SRC emacs-lisp
 (setq backup-directory-alist `((".*" . ,(expand-file-name "backups" user-emacs-directory)))
       backup-by-copying t
