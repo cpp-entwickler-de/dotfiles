@@ -1348,7 +1348,8 @@ Indicate recursive minibuffer
 **** Highlight current line
 #+BEGIN_SRC emacs-lisp
 (use-package hl-line
-  :hook (after-init . global-hl-line-mode)
+  :hook ((after-init . global-hl-line-mode)
+         (find-file . hl-line-mode))
   :config
   (advice-add 'hl-line-highlight :after (lambda ()
                                           (unless (window-minibuffer-p)
