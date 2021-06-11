@@ -1879,12 +1879,6 @@ https://github.com/purcell/exec-path-from-shell
                               (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)))
 #+END_SRC
 
-**** Autosuggest
-#+BEGIN_SRC emacs-lisp
-(use-package esh-autosuggest
-  :hook (eshell-mode . esh-autosuggest-mode))
-#+END_SRC
-
 *** Add sudo to command line
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load "eshell"
