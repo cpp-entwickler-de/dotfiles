@@ -442,7 +442,7 @@ Allow prettification in comments
 
 ** [[https://github.com/rakanalh/emacs-dashboard][Dashboard]]
 #+BEGIN_SRC emacs-lisp
-(defvar cpped-dashboard-footer nil "Th dashboard footer text")
+(defvar cpped-dashboard-footer nil "The dashboard footer text")
 
 (use-package dashboard
   :after helm-buffers
