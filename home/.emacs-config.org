@@ -7320,11 +7320,11 @@ Text                           ^^Code                                 Marker    
   _<right>_: Right                   _C-s_: Next S-EXPR                _C-i_: Next instance          _C-h_: Next hunk         _C-u_: URL
  _C-<left>_: Previous word             _w_: Up block                 _C-S-t_: Previous ToDo                                   ^^_C-q_: XQuery
 _C-<right>_: Next word                 _y_: Down block                 _C-t_: Next ToDo                                       ^^_C-x_: XPath
-   _<home>_: Beginning of line         _q_: Left block               _C-S-e_: Previous error
-    _<end>_: End of line           _C-S-f_: Beginning of function      _C-e_: Next error
-     _<up>_: Previous line           _C-f_: End of function          _C-S-a_: Previous Annotation
-   _<down>_: Next line               _C-s_: Symbol declaration         _C-a_: Next Annotation
-   _<C-up>_: Previous paragraph      _C-m_: Function
+   _<home>_: Beginning of line         _q_: Left block                   _t_: Select ToDo
+    _<end>_: End of line           _C-S-f_: Beginning of function    _C-S-e_: Previous error
+     _<up>_: Previous line           _C-f_: End of function            _C-e_: Next error
+   _<down>_: Next line               _C-s_: Symbol declaration       _C-S-a_: Previous Annotation
+   _<C-up>_: Previous paragraph      _C-m_: Function                   _C-a_: Next Annotation
  _<C-down>_: Next paragraph        _C-S-m_: Function (all buffers)
  _<C-home>_: Begining of file      _C-S-n_: Previous namespace
   _<C-end>_: End of file             _C-n_: Next namespace
@@ -7371,6 +7371,7 @@ _C-<right>_: Next word                 _y_: Down block                 _C-t_: Ne
   ("C-i" smartscan-symbol-go-forward)
   ("C-S-t" hl-todo-previous)
   ("C-t" hl-todo-next)
+  ("t" cpped-find-todos-in-file)
   ("C-S-e" (progn (flycheck-previous-error)
                   (cpped-hydra-flycheck/body) :exit t))
   ("C-e" (progn (flycheck-next-error)
