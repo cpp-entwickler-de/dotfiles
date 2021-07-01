@@ -2737,6 +2737,21 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 (use-package goto-last-change)
 #+END_SRC
 
+*** [[https://github.com/Overdr0ne/gumshoe][Jump to one of the last locations]]
+#+begin_SRC emacs-lisp
+(use-package gumshoe
+  :straight (gumshoe :type git
+                     :host github
+                     :repo "Overdr0ne/gumshoe")
+  :config
+  (global-gumshoe-mode 1)
+  (defun cpped-gumshow-list ()
+    "Show a list of "
+    (interactive)
+    (let ((global-mark-ring (ring-elements gumshoe--log)))
+      (helm-global-mark-ring))))
+#+end_SRC
+
 *** URIs
 **** Allow clicking on URIs
 #+BEGIN_SRC emacs-lisp
@@ -7317,10 +7332,10 @@ Text                    ^^Code                                ^^Version Control 
 
 Text                           ^^Code                                 Marker                     ^^Diff                 ^^Other
    _<left>_: Left                  _C-S-s_: Previous S-EXPR          _C-S-i_: Previous instance      _C-S-h_: Previous hunk   _C-c_: Last change
-  _<right>_: Right                   _C-s_: Next S-EXPR                _C-i_: Next instance          _C-h_: Next hunk         _C-u_: URL
- _C-<left>_: Previous word             _w_: Up block                 _C-S-t_: Previous ToDo                                   ^^_C-q_: XQuery
-_C-<right>_: Next word                 _y_: Down block                 _C-t_: Next ToDo                                       ^^_C-x_: XPath
-   _<home>_: Beginning of line         _q_: Left block                   _t_: Select ToDo
+  _<right>_: Right                   _C-s_: Next S-EXPR                _C-i_: Next instance          _C-h_: Next hunk         _M-c_: Select location
+ _C-<left>_: Previous word             _w_: Up block                 _C-S-t_: Previous ToDo                                 ^^_C-u_: URL
+_C-<right>_: Next word                 _y_: Down block                 _C-t_: Next ToDo                                     ^^_C-q_: XQuery
+   _<home>_: Beginning of line         _q_: Left block                   _t_: Select ToDo                                     ^^_C-x_: XPath
     _<end>_: End of line           _C-S-f_: Beginning of function    _C-S-e_: Previous error
      _<up>_: Previous line           _C-f_: End of function            _C-e_: Next error
    _<down>_: Next line               _C-s_: Symbol declaration       _C-S-a_: Previous Annotation
@@ -7385,6 +7400,7 @@ _C-<right>_: Next word                 _y_: Down block                 _C-t_: Ne
   ("C-h" diff-hl-next-hunk)
 
   ("C-c" goto-last-change :exit t)
+  ("M-c" cpped-gumshow-list :exit t)
   ("C-u" cpped-jump-to-url :exit t)
   ("C-q" xquery-tool-query :exit t)
   ("C-x" helm-x-path-walker :exit t))
