@@ -3215,6 +3215,17 @@ Open binary files in hexl-mode
                               (hexl-mode))))
 #+END_SRC
 
+** Support cpio
+#+begin_SRC emacs-lisp
+(use-package cpio-mode
+  :bind (:map cpio-mode-map ("q" . kill-this-buffer))
+  :config
+  (push "\\.cpio\\'" cpped-no-hexedit-extensions)
+  (push '("070707" . cpio-mode) magic-mode-alist)
+  (push '("0123456789abcdef" . cpio-mode) magic-mode-alist)
+  (push '("0123456789abcdefCPIO archive" . cpio-mode) magic-mode-alist))
+#+end_SRC
+
 * Images
 ** Disable hex edit mode for images
 #+BEGIN_SRC emacs-lisp
