@@ -5810,7 +5810,7 @@ forcing it by running
 (add-hook 'magit-post-refresh-hook 'cpped-show-file-contributor-info)
 #+END_SRC
 
-****  [[https://github.com/syohex/emacs-smeargle][Highlight file change age]]
+**** [[https://github.com/syohex/emacs-smeargle][Highlight file change age]]
 #+BEGIN_SRC emacs-lisp
 (defun cpped-maybe-enable-smeargle ()
     "Enable smeargle for version-controlled files."
@@ -6793,7 +6793,7 @@ Archive when done, remove flag if reset to todo.
   "Return the remaining time between clocked time today and `cpped-daily-work-minutes`. "
   (interactive)
   (if (and cpped-show-work-time
-             (org-clock-is-active))
+           (org-clock-is-active))
       (let* ((difference (cpped-remaining-work-minutes))
              (display-text (format " %s%d:%02d"
                                    (if (< difference 0)
