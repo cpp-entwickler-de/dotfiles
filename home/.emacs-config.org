@@ -2719,11 +2719,11 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
   :custom
   (avy-all-windows t)
   (avy-style 'words)
-  (avy-dispatch-alist '((?K . avy-action-kill-move)
-                        (?R . avy-action-kill-stay)
-                        (?T . avy-action-teleport)
-                        (?W . avy-action-copy)
-                        (?Y . avy-action-yank))))
+  (avy-dispatch-alist '((?k . avy-action-kill-move)
+                        (?r . avy-action-kill-stay)
+                        (?t . avy-action-teleport)
+                        (?w . avy-action-copy)
+                        (?y . avy-action-yank))))
 
 (use-package ace-isearch
   :custom
