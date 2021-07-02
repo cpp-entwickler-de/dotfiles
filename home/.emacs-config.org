@@ -6007,6 +6007,7 @@ Hide info buffer in buffer list
   (org-fontify-quote-and-verse-blocks t)
   (org-fontify-whole-heading-line t)
   (org-remove-highlights-with-change t)
+  (org-return-follows-link t)
   (org-special-ctrl-a/e nil)
   (org-special-ctrl-k nil)
   (org-src-preserve-indentation t)
