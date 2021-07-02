@@ -2346,6 +2346,22 @@ https://github.com/purcell/exec-path-from-shell
   :bind (:map dired-mode-map ("v" . peep-dired)))
 #+END_SRC
 
+**** [[https://github.com/dalanicolai/mediator][Open in application]]
+#+BEGIN_SRC emacs-lisp
+(use-package mediator
+  :straight (mediator
+             :type git
+             :host github
+             :repo "dalanicolai/mediator")
+  :bind (:map dired-mode-map ("o" . cpped-dired-open-xdg))
+  :custom (mediator-data-directories "/usr/share//")
+  :config
+  (defun cpped-dired-open-xdg ()
+    "Open a file selected in dired with the default xdg application."
+    (interactive)
+    (mediator-open-file (dired-get-file-for-visit))))
+#+END_SRC
+
 **** Diff files
 #+BEGIN_SRC emacs-lisp
 (defvar cpped-dired-ediff-window-configuration nil)
