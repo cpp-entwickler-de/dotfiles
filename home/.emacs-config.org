@@ -3717,9 +3717,16 @@ Handler to close buffer after quitting ccmake.
   :group 'hl-todo)
 
 (use-package hl-todo
-  :hook (prog-mode . hl-todo-mode)
+  :hook ((find-file . (lambda ()
+                        (push '("???" . ?) prettify-symbols-alist)
+                        (push '("FAIL" . ?) prettify-symbols-alist)
+                        (push '("FIXME" . ?) prettify-symbols-alist)
+                        (push '("HACK" . ?ྸ) prettify-symbols-alist)
+                        (push '("INFO" . ?) prettify-symbols-alist)
+                        (push '("NOTE" . ?) prettify-symbols-alist)
+                        (push '("TODO" . ?) prettify-symbols-alist)
+                        (push '("XXX" . ?) prettify-symbols-alist))))
   :custom
-  (global-hl-todo-mode t)
   (hl-todo-include-modes '(prog-mode text-mode org-mode))
   (hl-todo-exclude-modes nil)
   (hl-todo-keyword-faces '(("???" . hl-todo-info)
@@ -3730,15 +3737,7 @@ Handler to close buffer after quitting ccmake.
                            ("NOTE" . hl-todo-info)
                            ("TODO" . hl-todo-warning)
                            ("XXX" . hl-todo-warning)))
-  :config
-  (push '("???" . ?) prettify-symbols-alist)
-  (push '("FAIL" . ?) prettify-symbols-alist)
-  (push '("FIXME" . ?) prettify-symbols-alist)
-  (push '("HACK" . ?ྸ) prettify-symbols-alist)
-  (push '("INFO" . ?) prettify-symbols-alist)
-  (push '("NOTE" . ?) prettify-symbols-alist)
-  (push '("TODO" . ?) prettify-symbols-alist)
-  (push '("XXX" . ?) prettify-symbols-alist))
+  :config (global-hl-todo-mode 1))
 #+END_SRC
 
 ***** Find ToDos in file or project
