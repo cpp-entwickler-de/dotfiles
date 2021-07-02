@@ -8127,8 +8127,8 @@ Focus                  ^^^^Close                ^^Split               ^^Align   
   "
 ☰ Settings
 
-Settings                       ^^Snippets            ^^Abbreviations             ^^Packages
-  _c_: Open config file            _Y_: New snippet      _A_: New abbreviation       _p_: System packages
+Settings                       ^^Snippets            ^^Abbreviations
+  _c_: Open config file            _Y_: New snippet      _A_: New abbreviation
   _m_: Open customization file     _y_: Edit snippet     _a_: Edit abbreviations
   _t_: Edit theme
   _v_: Customize variable
@@ -8148,7 +8148,6 @@ Settings                       ^^Snippets            ^^Abbreviations            
   ("Y" yas-new-snippet)
   ("a" edit-abbrevs)
   ("A" add-inverse-global)
-  ("p" helm-system-packages)
   ("t" (custom-theme-visit-theme cpped-theme))
   ("v" customize-variable)
   ("g" customize-group)
