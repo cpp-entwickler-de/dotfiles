@@ -7293,7 +7293,7 @@ Text                    ^^Code                                ^^Version Control 
   ("D" shelldoc-toggle-doc-window)
 
   ("c" git-messenger:popup-message)
-  ("b" magit-blame-popup)
+  ("b" magit-blame)
   ("C" cpped-show-region-contributor-info)
 
   ("p" helm-top)
