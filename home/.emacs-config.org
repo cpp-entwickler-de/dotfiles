@@ -3326,6 +3326,7 @@ Handler to close buffer after quitting ccmake.
 (defvar cpped-build-base-directory "~/Build" "The default build directory.")
 (defvar cpped-build-directories nil "An alist of all build directories per source directory.")
 (defvar cpped-current-build-directories nil "An alist of the selected build directory per source directory.")
+(defvar cpped-dependencies-file "dependencies.dot" "The name of the file containig the target dependencies graph.")
 
 (defun cpped-cmake-configure (source-dir build-dir)
   "Configure the CMake project for the current file."
@@ -3350,7 +3351,7 @@ Handler to close buffer after quitting ccmake.
                   (make-directory build-dir t))
                 (let ((default-directory build-dir))
                   (ansi-term (getenv "SHELL") (concat "*CMake Cache (" build-dir ")*"))
-                  (let* ((full-command (cpped-maybe-run-in-docker source-dir `(ccmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -G Ninja ,source-dir)))
+                  (let* ((full-command (cpped-maybe-run-in-docker source-dir `(ccmake -DGRAPHVIZ_CUSTOM_TARGETS=TRUE ,(concat "--graphviz=" cpped-dependencies-file) -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -G Ninja ,source-dir)))
                          (command (car full-command))
                          (arguments (cdr full-command)))
                     (term-exec (current-buffer) command command nil arguments))
@@ -3370,7 +3371,7 @@ Handler to close buffer after quitting ccmake.
       (if (cpped-cmake-build-directory-p build-dir)
           (let ((default-directory build-dir))
             (ansi-term (getenv "SHELL") "CMake Cache")
-            (let* ((full-command (cpped-maybe-run-in-docker (cpped-cmake-source-dir build-dir) '(ccmake .)))
+            (let* ((full-command (cpped-maybe-run-in-docker (cpped-cmake-source-dir build-dir) '(ccmake -DGRAPHVIZ_CUSTOM_TARGETS=TRUE ,(concat "--graphviz=" cpped-dependencies-file) .)))
                    (command (car full-command))
                    (arguments (cdr full-command)))
               (term-exec (current-buffer) command command nil arguments))
@@ -3509,6 +3510,42 @@ Handler to close buffer after quitting ccmake.
 (defun cpped-build-target ()
   "Get the selected build target for the curent build directory."
   (cdr (assoc (cpped-build-dir) cpped-current-targets)))
+#+END_SRC
+
+**** Show target dependencies
+#+BEGIN_SRC emacs-lisp
+(defun cpped-show-target-dependencies (build-dir)
+  "Show the target dependencies."
+  (interactive (list (or (cpped-build-dir)
+                         (read-directory-name "Build-directory: "
+                                              (file-name-as-directory cpped-build-base-directory)))))
+  (let ((dot (executable-find "dot"))
+        (inhibit-read-only t))
+    (if dot
+        (progn
+          (switch-to-buffer (get-buffer-create "*Target Dependencies*"))
+          (erase-buffer)
+          (insert (shell-command-to-string (format "%s -Tsvg %s"
+                                                   dot
+                                                   (helm :sources (helm-build-sync-source "Target Dependencies"
+                                                                    :candidates
+                                                                    (let ((candidates (list (cons "all" (expand-file-name cpped-dependencies-file build-dir)))))
+                                                                      (mapc (lambda (element)
+                                                                              (when (string-match (rx (literal cpped-dependencies-file) "." (group (+ (not "."))) (group (? ".dependers")) eol) element)
+                                                                                (push (cons (concat (match-string 1 element)
+                                                                                                    (if (match-string 3 element)
+                                                                                                        " (dependents)"
+                                                                                                       ""))
+                                                                                            element)
+                                                                                      candidates)))
+                                                                            (directory-files build-dir t (format "^%s.*" cpped-dependencies-file)))
+                                                                      candidates))
+                                                         :prompt "Target: "
+                                                         :preselect (or (cdr (assoc build-dir cpped-current-targets))
+                                                                        "all")
+                                                         :buffer "*helm target dependencies*"))))
+          (image-mode))
+      (error "The dot tool is not installed."))))
 #+END_SRC
 
 **** Utilities
@@ -7105,12 +7142,14 @@ CMake              ^^Git                         ^^Directories         ^^Shell  
   _-_: Reset                                       ^^_b_: Build            _B_: Build directory
   _x_: Close           _v_: Clone
                      ^^_V_: Clone from GitHub
+  _T_: Show target dependencies
 "
   ("o" cpped-load-project)
   ("c" cpped-cmake-configure)
   ("r" cpped-cmake-reconfigure)
   ("-" cpped-cmake-reset)
   ("x" projectile-kill-buffers)
+  ("T" cpped-show-target-dependencies)
   ("g" magit-status)
   ("G" (let ((current-prefix-arg 4))
          (call-interactively #'magit-status)))
