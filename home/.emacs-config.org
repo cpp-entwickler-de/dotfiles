@@ -2958,6 +2958,23 @@ Save system clipboard contents to kill ring before killing
     (call-interactively 'sort-lines)))
 #+END_SRC
 
+*** Remove duplicate adjacent lines
+#+BEGIN_SRC emacs-lisp
+(defun cpped-remove-duplicate-lines ()
+  "Remove duplicate adjacent lines in a region or buffer."
+  (interactive)
+  (save-excursion
+    (let ((begin (if (region-active-p)
+                     (region-beginning)
+                   (point-min)))
+          (end (if (region-active-p)
+                   (region-end)
+                 (point-max))))
+      (goto-char begin)
+      (while (re-search-forward "^\\(.*\n\\)\\1+" end t)
+        (replace-match "\\1")))))
+#+END_SRC
+
 *** Sort words
 #+BEGIN_SRC emacs-lisp
 (use-package sort-words)
@@ -7663,10 +7680,11 @@ Identifier    ^^Namespace
   _D_: Duplicate & Comment                           ^^_p_: in Project               _\"_: String        _m_: Move                       _y_: Synonym       _&_: Decode Base64     _f_: Refactor
   _i_: Insert                                        ^^_G_: With previous commit     _+_: Value +       _j_: Join lines                 _l_: Spelling                           ^^_e_: Evaluate
   _'_: Quoted insert                                                             ^^^^_-_: Value -       _:_: Fill paragraph             _s_: Sort          _k_: Encrypt           _E_: Evaluate & Replace
-  _<_: Complete                                                                  ^^^^_#_: Base          _<tab>_: Spaces → Tabs          _x_: Transpose     _K_: Decrypt           _._: Suggestion
-  _g_: Edit area                                                                 ^^^^_1_: Flip bool     _<backtab>_: Tabs → Spaces
-  ___: Overwrite Mode                                                            ^^^^_C_: Color         _=_: Align                                                            ^^^^_o_: Split org-mode code block
-  _&_: Typographic Mode                                                          ^^^^_L_: To Link
+  _R_: Remove duplicate lines                                                    ^^^^_#_: Base          _<tab>_: Spaces → Tabs          _x_: Transpose     _K_: Decrypt           _._: Suggestion
+  _<_: Complete                                                                  ^^^^_1_: Flip bool     _<backtab>_: Tabs → Spaces
+  _g_: Edit area                                                                 ^^^^_C_: Color         _=_: Align                                                            ^^^^_o_: Split org-mode code block
+  ___: Overwrite Mode                                                            ^^^^_L_: To Link
+  _&_: Typographic Mode
 
   _a_: Create Automatic snippet
 "
@@ -7674,6 +7692,7 @@ Identifier    ^^Namespace
   ("D" crux-duplicate-and-comment-current-line-or-region)
   ("i" cpped-hydra-edit-insert/body)
   ("'" quoted-insert)
+  ("R" cpped-remove-duplicate-lines)
   ("<" helm-company)
   ("g" (if (equal major-mode 'org-mode)
            (org-edit-special)
