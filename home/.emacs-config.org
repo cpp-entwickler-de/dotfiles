@@ -7126,7 +7126,10 @@ Do not use scientific form so quickly
 (defun cpped-close-editor ()
   "Close the editor (either frame or emacs), depending on the current mode of operation."
   (interactive)
-  (if (= (length (frame-list)) 1)
+  (if (= (length (cl-remove-if (lambda (frame)
+                                 (frame-parent frame))
+                               (frame-list)))
+                 1)
       (kill-emacs)
     (delete-frame)))
 #+END_SRC
