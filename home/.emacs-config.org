@@ -5655,8 +5655,7 @@ forcing it by running
                                    (list (rx bol (group "kill")) "")
                                    (list (rx bol (group "squash")) "ﲐ")
                                    (list (rx bol (group "exec")) "")
-                                   (list (rx bol (group "break")) "")
-                                   (list (rx bol "Magithub is " (group "OFFLINE") eow) ""))
+                                   (list (rx bol (group "break")) ""))
   "An alist of expressions and icon properties to replace strings with icons in magit logs.")
 
 (defun cpped-prettify-magit (&rest arguments)
@@ -7170,7 +7169,6 @@ CMake                           ^^Git                           ^^Directories   
          (call-interactively #'magit-status)))
   ("l" magit-log-popup)
   ("v" magit-clone)
-  ("V" magithub-clone)
   ("/" projectile-dired)
   ("." dired-jump)
   ("d" projectile-find-dir)
