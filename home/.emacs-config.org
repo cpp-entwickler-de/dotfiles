@@ -7297,9 +7297,9 @@ Open                             ^^Save                      ^^Close            
   ("C-d" cpped-unix2dos)
   ("C-u" cpped-dos2unix)
   ("V" (let ((word (thing-at-point 'word)))
-             (if word
-                 (loccur word)
-               (call-interactively 'loccur))))
+         (if word
+             (loccur word)
+           (call-interactively 'loccur))))
   ("!" (read-only-mode))
   ("h" hexl-mode)
   ("6" (base64-decode-region (point-min) (point-max)))
