@@ -4340,20 +4340,27 @@ Show API info via [[https://devdocs.io][devdocs.io]]
 
 **** LOC counting/Metrics
 #+BEGIN_SRC emacs-lisp
-(with-eval-after-load "system-packages"
-  (cpped-install-system-package "sloccount")
-  (defun cpped-sloccount (argument)
-    "Count lines of code in file or project (with prefix argument)."
-    (interactive "P")
-    (let* ((project-root (cpped-project-dir))
-           (thing-to-process (if (and project-root
-                                      argument)
-                                 project-root
-                               (when buffer-file-name
-                                 (file-truename buffer-file-name)))))
-      (when thing-to-process
-        (with-output-to-temp-buffer "*SLOCCount*" (print (shell-command-to-string (concat  "sloccount " thing-to-process)))))))
-  (push "\\*SLOCCount\\*" helm-boring-buffer-regexp-list))
+(cpped-install-system-package "cloc")
+
+(defun cpped-cloc-project ()
+  "Count lines of code in project."
+  (interactive)
+  (let ((project-root (cpped-project-dir)))
+    (when project-root
+      (shell-command (concat  "cloc --quiet " project-root " &") "*Cloc*")
+      (switch-to-buffer "*Cloc*"))))
+
+(defun cpped-cloc-file ()
+  "Count lines of code in file."
+  (interactive)
+  (let ((cloc-input (make-temp-file "cloc-" nil (replace-regexp-in-string "[\\\\']" "" (car (rassq major-mode auto-mode-alist))))))
+    (write-region (point-min) (point-max) cloc-input)
+    (shell-command (concat  "cloc --quiet --skip-uniqueness " cloc-input) "*Cloc*")
+    (switch-to-buffer "*Cloc*")
+    (delete-file cloc-input)))
+
+(push "\\*Cloc\\*" helm-boring-buffer-regexp-list)
+(push "*Cloc*" cpped-bury-buffers-list)
 #+END_SRC
 
 *** Assembler
@@ -7154,13 +7161,13 @@ Do not use scientific form so quickly
                                               (concat \"  \" build-dir)
                                             \"\"))
 
-CMake              ^^Git                         ^^Directories         ^^Shell                    ^^Other
-  _o_: Load            _g_: Status                   _/_: Project          _#_: Project directory     _f_: Find
-  _c_: Configure       _G_: Other Project Status     _._: Current          _:_: Current directory     _L_: Add change log entry
-  _r_: Reconfigure     _l_: Log                      _d_: Subdirectory                              ^^_t_: Show ToDos
-  _-_: Reset                                       ^^_b_: Build            _B_: Build directory
   _x_: Close           _v_: Clone
                      ^^_V_: Clone from GitHub
+CMake                           ^^Git                           ^^Directories                ^^Shell                    ^^Other
+  _o_: Load                         _g_: Status                     _/_: Project                 _#_: Project directory     _f_: Find
+  _c_: Configure                    _G_: Other Project Status       _._: Current                 _:_: Current directory     _L_: Add change log entry
+  _r_: Reconfigure                  _l_: Log                        _d_: Subdirectory            _B_: Build directory       _C_: Count lines of code
+  _-_: Reset                                                      ^^_b_: Build                                            ^^_t_: Show ToDos
   _T_: Show target dependencies
 "
   ("o" cpped-load-project)
@@ -7193,6 +7200,7 @@ CMake              ^^Git                         ^^Directories         ^^Shell  
                     default-directory)))
   ("t" magit-todos-list)
   ("L" add-change-log-entry)
+  ("C" cpped-cloc-project)
   ("t" cpped-find-todos-in-project))
 
 (global-set-key (kbd "C-p") #'cpped-hydra-projects/body)
@@ -7305,6 +7313,7 @@ Open                             ^^Save                      ^^Close            
   ("&" (base64-encode-region (point-min) (point-max)))
   ("c" cpped-copy-file-name-to-clipboard)
   ("." dired-jump)
+  ("C" cpped-cloc-file)
   ("+" treemacs-toggle))
 
 (global-set-key (kbd "C-f") 'cpped-hydra-files/body)
