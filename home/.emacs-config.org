@@ -3098,11 +3098,10 @@ Some useful abbreviations
 *** Thesaurus
 #+BEGIN_SRC emacs-lisp
 (use-package synosaurus
-  :ensure-system-package "wordnet"
+  :ensure-system-package wordnet
   :hook (after-init . synosaurus-mode)
   :custom (synosaurus-choose-method 'default)
-  :config
-  (setq-default synosaurus-backend 'synosaurus-backend-wordnet))
+  :config (setq-default synosaurus-backend 'synosaurus-backend-wordnet))
 #+END_SRC
 
 *** [[https://github.com/magnars/change-inner.el][Change inner]]
