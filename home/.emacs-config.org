@@ -7167,7 +7167,7 @@ CMake                           ^^Git                           ^^Directories   
   ("g" magit-status)
   ("G" (let ((current-prefix-arg 4))
          (call-interactively #'magit-status)))
-  ("l" magit-log-popup)
+  ("l" magit-log)
   ("v" magit-clone)
   ("/" projectile-dired)
   ("." dired-jump)
@@ -7267,21 +7267,11 @@ Open                             ^^Save                      ^^Close            
   ("f" helm-ag-buffers)
 
   ("v" git-timemachine)
-  ("d" magit-diff-buffer-file-popup)
-  ("g" magit-log-buffer-file-popup)
-  ("G" magit-wip-log-current)
-  ("b" magit-blame-popup)
-  ("T" (when (region-active-p)
-         (let ((magit-log-arguments
-                (magit-popup-import-file-args
-                 `(,(format "-L %d,%d:%s"
-                            (line-number-at-pos (region-beginning))
-                            (line-number-at-pos (region-end))
-                            buffer-file-name)
-                   "--decorate"
-                   "--simplify-by-decoration")
-                 (list (magit-file-relative-name)))))
-           (magit-invoke-popup 'magit-log-popup nil nil))))
+  ("d" magit-diff-buffer-file)
+  ("g" magit-log-buffer-file)
+  ("G" magit-log)
+  ("b" magit-blame)
+  ("T" magit-log-trace-definition)
 
   ("<DEL>" crux-delete-file-and-buffer)
   ("m" crux-rename-file-and-buffer)
