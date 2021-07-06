@@ -2392,6 +2392,11 @@ https://github.com/purcell/exec-path-from-shell
 (define-key dired-mode-map "C" 'dired-do-compress-to)
 #+END_SRC
 
+**** Sync files
+#+BEGIN_SRC emacs-lisp
+(use-package dired-rsync)
+#+END_SRC
+
 *** [[https://github.com/Alexander-Miller/treemacs][Treemacs]]
 #+BEGIN_SRC emacs-lisp
 (use-package treemacs
