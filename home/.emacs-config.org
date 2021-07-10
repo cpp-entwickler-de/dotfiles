@@ -966,6 +966,7 @@ Find path of current position in XML docuement
   :after ag
   :custom
   (projectile-completion-system 'helm)
+  (projectile-create-missing-test-files t)
   (projectile-dynamic-mode-line nil)
   (projectile-enable-caching nil)
   (projectile-find-dir-includes-top-level t)
