@@ -2398,6 +2398,25 @@ https://github.com/purcell/exec-path-from-shell
 (use-package dired-rsync)
 #+END_SRC
 
+**** OCR files
+#+BEGIN_SRC emacs-lisp
+(cpped-install-system-package "tesseract")
+(cpped-install-system-package "tesseract-langpack-eng")
+(cpped-install-system-package "tesseract-langpack-deu")
+
+(defcustom cpped-ocr-language "deu+eng" "The language(s) for OCR.")
+
+(defun cpped-dired-ocr ()
+  "Copy text in images to kill ring."
+  (interactive)
+  (kill-new (mapconcat '(lambda (file)
+                          (shell-command-to-string (format "tesseract -l %s %s stdout" cpped-ocr-language file)))
+                       (dired-get-marked-files)
+                       "")))
+
+(define-key dired-mode-map "o" 'cpped-dired-ocr)
+#+END_SRC
+
 *** [[https://github.com/Alexander-Miller/treemacs][Treemacs]]
 #+BEGIN_SRC emacs-lisp
 (use-package treemacs
