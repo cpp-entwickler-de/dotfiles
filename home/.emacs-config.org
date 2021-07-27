@@ -4,12 +4,12 @@
 #+STARTUP: showeverything
 #+auto_tangle: t
 
-* Custom configuration
+*  Custom configuration
 #+BEGIN_SRC emacs-lisp
 (load "~/.emacs.user" t t)
 #+END_SRC
 
-* Package Management
+*  Package Management
 ** [[https://github.com/tarsius/auto-compile][Automatically compile packages]]
 Do not load outdated byte code
 #+BEGIN_SRC emacs-lisp
@@ -145,7 +145,7 @@ Do not ask for confirmation for new shell buffers
              :repo "emacs-helm/helm-system-packages"))
 #+END_SRC
 
-* Internals
+*  Internals
 ** Include cl package
 #+BEGIN_SRC emacs-lisp
 (use-package cl-lib)
@@ -181,7 +181,7 @@ Do not ask for confirmation for new shell buffers
   :config (explain-pause-mode))
 #+END_SRC
 
-* User Interface
+*  User Interface
 ** Startup
 *** Disable startup screen
 #+BEGIN_SRC emacs-lisp
@@ -2097,7 +2097,7 @@ https://github.com/purcell/exec-path-from-shell
   (zoom-mode t))
 #+END_SRC
 
-* File Handling
+*  File Handling
 ** Config
 #+BEGIN_SRC emacs-lisp
 (defvar cpped-config-file "~/.emacs-config.org")
@@ -2449,7 +2449,7 @@ https://github.com/purcell/exec-path-from-shell
   :custom (lsp-treemacs-sync-mode 1))
 #+END_SRC
 
-* Text
+*  Text
 #+BEGIN_SRC emacs-lisp
 (push '("\\.txt\\'" . text-mode) auto-mode-alist)
 #+END_SRC
@@ -3302,7 +3302,7 @@ Some useful abbreviations
       (google-translate-translate "auto" target-language text))))
 #+END_SRC
 
-* Binaries
+*  Binaries
 Open binary files in hexl-mode
 #+BEGIN_SRC emacs-lisp
 (defvar cpped-no-hexedit-extensions nil "File extensions for which automatic hex editing is disabled")
@@ -3333,7 +3333,7 @@ Open binary files in hexl-mode
   (push '("0123456789abcdefCPIO archive" . cpio-mode) magic-mode-alist))
 #+end_SRC
 
-* Images
+*  Images
 ** Disable hex edit mode for images
 #+BEGIN_SRC emacs-lisp
 (push "\\.jpg\\'" cpped-no-hexedit-extensions)
@@ -3343,7 +3343,7 @@ Open binary files in hexl-mode
 (push "\\.svg\\'" cpped-no-hexedit-extensions)
 #+END_SRC
 
-* Programming
+*  Programming
 ** Projects
 *** Find file in project
 #+BEGIN_SRC emacs-lisp
@@ -5970,7 +5970,7 @@ forcing it by running
                              (older-than-1year  . "#00001e"))))
 #+END_SRC
 
-* Viewer
+*  Viewer
 ** Man Pages
 #+BEGIN_SRC emacs-lisp
 (setq woman-fill-frame t
@@ -6106,7 +6106,7 @@ Hide info buffer in buffer list
                                     (read-only-mode)))
 #+END_SRC
 
-* Org-Mode
+*  Org-Mode
 #+BEGIN_SRC emacs-lisp
 (use-package org
   :after (helm helm-buffers popwin)
@@ -7044,7 +7044,7 @@ Archive when done, remove flag if reset to todo.
   :custom (org-mru-clock-how-many 100))
 #+END_SRC
 
-* Utilities
+*  Utilities
 ** System
 *** [[https://github.com/tecosaur/emacs-everywhere][Use emacs for editing everywhere]]
 Add global shortcut with
@@ -7118,7 +7118,7 @@ Do not use scientific form so quickly
   :custom (wttrin-default-cities `(,calendar-location-name)))
 #+END_SRC
 
-* Remote
+* ﯱ Remote
 ** Serial Devices
 #+BEGIN_SRC emacs-lisp
 (defcustom cpped-serial-port nil "The last used serial port.")
@@ -7163,7 +7163,7 @@ Do not use scientific form so quickly
   (tramp-histfile-override nil))
 #+END_SRC
 
-* [[https://github.com/abo-abo/hydra][Keybindings]]
+* [[https://github.com/abo-abo/hydra][ Keybindings]]
 ** Quit from any context
 #+BEGIN_SRC emacs-lisp
 (defun cpped-keyboard-quit-context ()
@@ -8505,7 +8505,7 @@ Open                ^^Create       ^^Work         ^^Task                        
 (global-set-key (kbd "C-l") #'cpped-hydra-planning/body)
 #+END_SRC
 
-* Notify when loading is finished
+*  Notify when loading is finished
 #+BEGIN_SRC emacs-lisp
 (add-hook 'after-init-hook (lambda ()
                              (notifications-notify :title "IDE ready")))
