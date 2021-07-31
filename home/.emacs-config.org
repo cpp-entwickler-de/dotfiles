@@ -2971,6 +2971,11 @@ Save system clipboard contents to kill ring before killing
 (setq save-interprogram-paste-before-kill t)
 #+END_SRC
 
+Set prefered clipboard formats
+#+BEGIN_SRC emacs-lisp
+(setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
+#+END_SRC
+
 *** Do not delete selected text when inserting characters
 #+BEGIN_SRC emacs-lisp
 (delete-selection-mode nil)
