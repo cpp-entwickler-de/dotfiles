@@ -359,6 +359,7 @@ Allow prettification in comments
                              (setq prettify-symbols-compose-predicate 'cpped-prettify-symbols-default-compose-p)))
 #+END_SRC
 
+Prettify common symbols
 #+BEGIN_SRC emacs-lisp
 (add-hook 'find-file-hook (lambda ()
                             (push '("\t" . ?) prettify-symbols-alist)
