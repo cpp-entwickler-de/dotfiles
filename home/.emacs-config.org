@@ -227,6 +227,11 @@ Show below other windows
 (setq minibuffer-auto-raise nil)
 #+END_SRC
 
+** Do not allow cursor in minibuffer
+#+BEGIN_SRC emacs-lisp
+(setq minibuffer-prompt-properties '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt))
+#+END_SRC
+
 ** GTK+ interface
 *** Disable Menus, Toolbars, Scrollbars and Dialogs
 #+BEGIN_SRC emacs-lisp
