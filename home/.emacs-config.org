@@ -262,6 +262,12 @@ Show below other windows
 (setq inhibit-message t)
 #+end_src
 
+** Remove annoying ellipsis when printing SEXP in message buffer
+#+BEGIN_SRC emacs-lisp
+(setq eval-expression-print-length nil
+      eval-expression-print-level nil)
+#+END_SRC
+
 ** Disable mouse
 #+BEGIN_SRC emacs-lisp
 (use-package disable-mouse
