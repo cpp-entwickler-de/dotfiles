@@ -4804,7 +4804,9 @@ https://github.com/google/googletest
 **** [[https://github.com/Lindydancer/cmake-font-lock][Highlighting]]
 #+BEGIN_SRC emacs-lisp
 (use-package cmake-font-lock
-  :hook (cmake-mode . cmake-font-lock-activate))
+  :hook (cmake-mode . cmake-font-lock-activate)
+  :config (font-lock-add-keywords 'cmake-mode
+                                  `((,(rx (group "end" (or "function" "macro" "if" "foreach" "while") (0+ " ") "()")) 1 '(face nil display "")))))
 #+END_SRC
 
 **** Editing
