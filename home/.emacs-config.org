@@ -5336,6 +5336,14 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 (push '("\\.sh\\'" . sh-mode) auto-mode-alist)
 #+END_SRC
 
+**** Prettification
+#+BEGIN_SRC emacs-lisp
+(setq cpped-font-lock-shebang `((,(rx bol (group "#!/" (? "usr/") (? "s") "bin/")) 1 '(face nil display " "))))
+
+(font-lock-add-keywords 'sh-mode cpped-font-lock-shebang)
+(font-lock-add-keywords 'shell-mode cpped-font-lock-shebang)
+#+END_SRC
+
 **** Editing
 ***** Autocompletion
 #+BEGIN_SRC emacs-lisp
@@ -5371,6 +5379,11 @@ Set correct major mode
 (push '("\\.bash\\'" . bash-mode) auto-mode-alist)
 #+END_SRC
 
+***** Prettification
+#+BEGIN_SRC emacs-lisp
+(font-lock-add-keywords 'bash-mode cpped-font-lock-shebang)
+#+END_SRC
+
 ***** Language server
 #+BEGIN_SRC emacs-lisp
 (cpped-install-system-package "bash-language-server" :package-manager 'npm)
@@ -5385,6 +5398,11 @@ Set correct major mode
 
 (add-to-list 'interpreter-mode-alist
              '("zsh" . sh-mode))
+#+END_SRC
+
+***** Prettification
+#+BEGIN_SRC emacs-lisp
+(font-lock-add-keywords 'zsh-mode cpped-font-lock-shebang)
 #+END_SRC
 
 **** DOS-Batch
