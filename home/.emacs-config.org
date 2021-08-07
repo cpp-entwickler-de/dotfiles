@@ -5409,6 +5409,11 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 (system-packages-ensure "shfmt")
 #+END_SRC
 
+***** Automatically set shell scripts to executable
+#+BEGIN_SRC emacs-lisp
+(add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
+#+END_SRC
+
 **** BASH
 Set correct major mode
 #+BEGIN_SRC emacs-lisp
