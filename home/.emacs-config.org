@@ -1095,6 +1095,7 @@ Find path of current position in XML docuement
 #+BEGIN_SRC emacs-lisp
 (use-package helm-projectile
   :after (helm projectile)
+  :custom (helm-projectile-fuzzy-match t)
   :config (helm-projectile-on))
 #+END_SRC
 
