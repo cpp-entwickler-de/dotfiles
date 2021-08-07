@@ -1602,6 +1602,11 @@ https://github.com/purcell/exec-path-from-shell
 *** Aliases
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load "em-alias"
+  (eshell/alias ".." "cd ..")
+  (eshell/alias "..." "cd ../..")
+  (eshell/alias "...." "cd ../../..")
+  (eshell/alias "....." "cd ../../../..")
+
   (eshell/alias "d" "dired $1")
   (eshell/alias "cd.." "cd ..")
   (eshell/alias "cp" "cp -i $*")
