@@ -37,6 +37,19 @@ templateDir  = ~/.git-templates
 # Detect color availability
 ui = auto
 
+[pager]
+    diff = delta
+    log = delta
+    reflog = delta
+    show = delta
+
+[interactive]
+    diffFilter = delta --color-only --features=interactive
+
+[delta]
+    features = decorations navigate relative-paths
+    line-numbers = true
+    side-by-side = true
 
 [status]
 # Show paths from project root
