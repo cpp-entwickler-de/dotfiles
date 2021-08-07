@@ -1080,9 +1080,9 @@ Find path of current position in XML docuement
   (helm-split-window-in-side-p t)
   :config
   (advice-add 'helm-ff-filter-candidate-one-by-one
-              :around (lambda (fcn file)
+              :around (lambda (fcn file &optional reverse skip-boring-check)
                         (unless (string-match "\\(?:/\\|\\`\\)\\.\\{1,2\\}\\'" file)
-                          (funcall fcn file)))) ;; hide current directory/parent directory in file list
+                          (funcall fcn file reverse skip-boring-check)))) ;; hide current directory/parent directory in file list
   (with-eval-after-load "popwin"
     (progn
       (push '("*helm kill ring*" :dedicated t :position bottom :height 40) popwin:special-display-config)
