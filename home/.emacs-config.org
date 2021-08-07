@@ -6388,8 +6388,9 @@ Remove check on buffer close
 ** Links
 *** [[https://orgmode.org/manual/Link-Abbreviations.html#Link-Abbreviations][Shortcuts]]
 #+BEGIN_SRC emacs-lisp
-(push '("google"  . "https://www.google.de/?gws_rd=ssl#q=%s") org-link-abbrev-alist)
-(push '("wikipedia"  . "https://en.wikipedia.org/wiki/%s") org-link-abbrev-alist)
+(push '("google" . "https://www.google.de/?gws_rd=ssl#q=%s") org-link-abbrev-alist)
+(push '("wikipedia" . "https://en.wikipedia.org/wiki/%s") org-link-abbrev-alist)
+(push '("github" . "https://github.com/%s") org-link-abbrev-alist)
 #+END_SRC
 
 *** Insertion
