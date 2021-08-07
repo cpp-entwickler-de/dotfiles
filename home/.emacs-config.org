@@ -4029,6 +4029,12 @@ Set bug-reference-url-format to open in browser.
   (prog-fill-auto-indent-p t))
 #+END_SRC
 
+Use [[https://editorconfig.org/][EditorConfig]] via [[https://github.com/editorconfig/editorconfig-emacs]] if available
+#+BEGIN_SRC emacs-lisp
+(use-package editorconfig
+  :config (editorconfig-mode 1))
+#+END_SRC
+
 ***** [[https://github.com/remyferre/comment-dwim-2][Smarter commenting]]
 #+BEGIN_SRC emacs-lisp
 (use-package comment-dwim-2
