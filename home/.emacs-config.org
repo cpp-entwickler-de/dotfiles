@@ -5395,6 +5395,11 @@ Set correct major mode
 #+BEGIN_SRC emacs-lisp
 (push '("#!/usr/bin/zsh" . sh-mode) magic-mode-alist)
 (push '("\\.zsh\\'" . sh-mode) auto-mode-alist)
+(push '("zlogin\\'" . sh-mode) auto-mode-alist)
+(push '("zlogout\\'" . sh-mode) auto-mode-alist)
+(push '("zprofile\\'" . sh-mode) auto-mode-alist)
+(push '("zshenv\\'" . sh-mode) auto-mode-alist)
+(push '("zshrc\\'" . sh-mode) auto-mode-alist)
 
 (add-to-list 'interpreter-mode-alist
              '("zsh" . sh-mode))
