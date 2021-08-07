@@ -1283,7 +1283,8 @@ Switch to previous buffer
 *** [[https://github.com/dimitri/switch-window][Use smarter window switching (numbered windows)]]
 #+BEGIN_SRC emacs-lisp
 (use-package switch-window
-  :custom (switch-window-background t))
+  :custom (switch-window-background t)
+  :config (global-set-key [remap other-window] #'switch-window))
 #+END_SRC
 
 *** Do not show buffer boundaries in fringe
