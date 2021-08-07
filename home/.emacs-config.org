@@ -4002,6 +4002,15 @@ Handler to close buffer after quitting ccmake.
                                        (narrow-to-defun))))
 #+END_SRC
 
+***** Bug references
+
+Set bug-reference-url-format to open in browser.
+
+#+begin_SRC emacs-lisp
+(add-hook 'text-mode-hook 'bug-reference-mode)
+(add-hook 'prog-mode-hook 'bug-reference-prog-mode)
+#+end_SRC
+
 **** Editing
 ***** [[https://github.com/lassik/emacs-format-all-the-code][Formatting]]
 #+BEGIN_SRC emacs-lisp
@@ -5702,6 +5711,11 @@ forcing it by running
   (magit-todos-update 10)
   :config (magit-todos-mode))
 #+END_SRC
+
+***** Highlight Bug References
+#+begin_SRC emacs-lisp
+(add-hook 'magit-mode-hook 'bug-reference-mode)
+#+end_SRC
 
 ***** [[https://github.com/magit/forge][Git forge integration]]
 #+BEGIN_SRC emacs-lisp
