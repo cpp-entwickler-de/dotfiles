@@ -2291,7 +2291,8 @@ https://github.com/purcell/exec-path-from-shell
 
 *** Dired
 #+BEGIN_SRC emacs-lisp
-(setq dired-recursive-copies 'always
+(setq dired-auto-revert-buffer t
+      dired-recursive-copies 'always
       dired-recursive-deletes 'top
       dired-dwim-target t)
 #+END_SRC
