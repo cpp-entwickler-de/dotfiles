@@ -7202,6 +7202,16 @@ Do not use scientific form so quickly
   :custom (wttrin-default-cities `(,calendar-location-name)))
 #+END_SRC
 
+** [[https://github.com/Zacalot/helm-convert][Unit conversion]]
+#+BEGIN_SRC emacs-lisp
+(use-package helm-convert
+  :after (helm-source calc-units)
+  :straight (helm-convert
+             :type git
+             :host github
+             :repo "Zacalot/helm-convert"))
+#+END_SRC
+
 * ﯱ Remote
 ** Serial Devices
 #+BEGIN_SRC emacs-lisp
@@ -8421,15 +8431,16 @@ Settings                       ^^Snippets            ^^Abbreviations
 
 Tools                      ^^Last Command    ^^System
   _c_: Calculator              _r_: Repeat       _a_: Run application
-  _b_: Bookmarks               _f_: Resume       _p_: Show processes
-  _x_: Regex Builder                           ^^_s_: Show system services
-  _e_: Evaluate expression                     ^^_P_: Manage system packages
-                                             ^^^^_d_: Docker
+  _u_: Convert unit            _f_: Resume       _p_: Show processes
+  _b_: Bookmarks                               ^^_s_: Show system services
+  _x_: Regex Builder                           ^^_P_: Manage system packages
+  _e_: Evaluate expression                     ^^_d_: Docker
   _/_: Open directory                          ^^_t_: Trash
 
 _=_: Directory Diff
 "
   ("c" helm-calcul-expression)
+  ("u" helm-convert-unit)
   ("b" helm-bookmarks)
   ("x" re-builder)
   ("e" eval-expression)
