@@ -4649,6 +4649,20 @@ Show API info via [[https://devdocs.io][devdocs.io]]
                                 (set (make-local-variable 'company-backends) '((company-yasnippet company-files company-capf company-dabbrev-code company-ispell cpped-company-line-backend)))))
 #+END_SRC
 
+***** Flip words
+#+begin_SRC emacs-lisp
+(with-eval-after-load "bool-flip"
+  (progn
+    (defun cpped-setup-c++-flip ()
+      (make-local-variable 'bool-flip-alist)
+      (push '("class" . "struct") bool-flip-alist)
+      (push '("struct" . "class") bool-flip-alist)
+      (push '("public" . "protected") bool-flip-alist)
+      (push '("protected" . "private") bool-flip-alist)
+      (push '("private" . "public") bool-flip-alist))
+    (add-hook 'c++-mode-hook 'cpped-setup-c++-flip)))
+#+end_SRC
+
 ***** Abbreviations
 #+BEGIN_SRC emacs-lisp
 (define-abbrev-table 'c++-mode-abbrev-table '(
@@ -5251,6 +5265,26 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
   :hook ((lisp-mode . easy-escape-minor-mode)
          (emacs-lisp-mode . easy-escape-minor-mode)))
 #+END_SRC
+
+**** Flip words
+#+begin_SRC emacs-lisp
+(with-eval-after-load "bool-flip"
+  (progn
+    (defun cpped-setup-elisp-flip ()
+      (make-local-variable 'bool-flip-alist)
+      (push '("t" . "nil") bool-flip-alist)
+      (push '("nil" . "t") bool-flip-alist)
+      (push '("let" . "let*") bool-flip-alist)
+      (push '("let*" . "let") bool-flip-alist)
+      (push '("when" . "unless") bool-flip-alist)
+      (push '("unless" . "when") bool-flip-alist)
+      (push '("advice-add" . "advice-remove") bool-flip-alist)
+      (push '("advice-remove" . "advice-add") bool-flip-alist)
+      (push '("add-hook" . "remove-hook") bool-flip-alist)
+      (push '("remove-hook" . "add-hook") bool-flip-alist))
+    (add-hook 'lisp-mode-hook 'cpped-setup-elisp-flip)
+    (add-hook 'emacs-lisp-mode-hook 'cpped-setup-elisp-flip)))
+#+end_SRC
 
 **** [[https://github.com/Malabarba/comment-or-uncomment-sexp][Un-/Comment SEXPs]]
 #+BEGIN_SRC emacs-lisp
@@ -7863,7 +7897,7 @@ Identifier    ^^Namespace
   _i_: Insert                                        ^^_G_: With previous commit     _+_: Value +       _j_: Join lines                 _l_: Spelling                           ^^_e_: Evaluate
   _'_: Quoted insert                                                             ^^^^_-_: Value -       _:_: Fill paragraph             _s_: Sort          _k_: Encrypt           _E_: Evaluate & Replace
   _R_: Remove duplicate lines                                                    ^^^^_#_: Base          _<tab>_: Spaces → Tabs          _x_: Transpose     _K_: Decrypt           _._: Suggestion
-  _<_: Complete                                                                  ^^^^_1_: Flip bool     _<backtab>_: Tabs → Spaces
+  _<_: Complete                                                                  ^^^^_!_: Flip      _<backtab>_: Tabs → Spaces
   _g_: Edit area                                                                 ^^^^_C_: Color         _=_: Align                                                            ^^^^_o_: Split org-mode code block
   ___: Overwrite Mode                                                            ^^^^_L_: To Link
   _&_: Typographic Mode
@@ -7894,7 +7928,7 @@ Identifier    ^^Namespace
   ("#" cpped-convert-number)
   ("+" shift-number-up)
   ("-" shift-number-down)
-  ("1" bool-flip-do-flip :exit nil)
+  ("!" bool-flip-do-flip :exit nil)
   ("C" cpped-hydra-color/body :exit t)
   ("L" cpped-org-convert-to-link-dwim :exit t)
 
