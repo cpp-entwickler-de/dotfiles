@@ -5799,6 +5799,15 @@ forcing it by running
   :after magit)
 #+END_SRC
 
+[[https://github.com/charignon/github-review][GitHub review]]
+#+BEGIN_SRC emacs-lisp
+(use-package github-review
+  :after magit forge
+  :config
+  (transient-append-suffix 'forge-dispatch "c u"
+    '("c r" "Review pull request" github-review-forge-pr-at-point)))
+#+END_SRC
+
 ***** [[https://github.com/terranpro/magit-gerrit][Gerrit integration]]
 #+BEGIN_SRC emacs-lisp
 (use-package magit-gerrit
