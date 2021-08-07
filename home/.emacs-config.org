@@ -4133,16 +4133,20 @@ Use [[https://editorconfig.org/][EditorConfig]] via [[https://github.com/editorc
   (interactive (list 'interactive))
   (cl-case command
     (interactive (company-begin-backend 'cpped-company-line-backend))
-    (prefix (company-grab-symbol))
-    (candidates
-     (let ((matches))
-       (save-excursion
-         (save-restriction
-           (widen)
-           (goto-char 1)
-           (while (search-forward arg nil t)
-             (push (concat arg (buffer-substring (point) (point-at-eol))) matches))))
-       matches))))
+    (prefix (company-grab-line "^[\t\s]*\\(.+\\)" 1))
+    (candidates (save-excursion
+                  (save-restriction
+                    (widen)
+                    (all-completions arg
+                                     (delete-dups (split-string
+                                                   (replace-regexp-in-string (rx bol (+ whitespace))
+                                                                             ""
+                                                                             (concat (buffer-substring-no-properties (point-min)
+                                                                                                                     (line-beginning-position))
+                                                                                     (buffer-substring-no-properties (line-end-position)
+                                                                                                                     (point-max))))
+                                                   (rx (or "\r\n" (any "\r\n")))
+                                                   t))))))))
 
 (add-to-list 'company-backends 'cpped-company-line-backend)
 #+END_SRC
