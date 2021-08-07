@@ -2294,7 +2294,8 @@ https://github.com/purcell/exec-path-from-shell
 (setq dired-auto-revert-buffer t
       dired-recursive-copies 'always
       dired-recursive-deletes 'top
-      dired-dwim-target t)
+      dired-dwim-target t
+      dired-create-destination-dirs 'ask)
 #+END_SRC
 
 **** Re-use dired buffers
