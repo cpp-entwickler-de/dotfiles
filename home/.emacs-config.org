@@ -5949,11 +5949,25 @@ forcing it by running
       (setq output (format "%s    %s (%d%%)\n" output (car entry) (/ (* (cdr entry) 100) linecount))))
     (concat output "\n")))
 
+(defun cpped-get-change-info (files &optional start end)
+  "Get last change date for file(s) or region."
+  (cadar (sort (mapcar (lambda (file)
+                        (split-string (shell-command-to-string (concat "git log -1 "
+                                                                       (if (and start end)
+                                                                           (format "-L %d,%d" (line-number-at-pos start t) (line-number-at-pos end t))
+                                                                         "")
+                                                                       " --format=\"%aI; %ar by %an (commit %h %s)\" -- "
+                                                                       file))
+                                      ";"))
+                      files)
+              (lambda (first second) (> (iso8601-parse (car first) (iso8601-parse (car second))))))))
+
 (defun cpped-show-contributor-info (files position type &optional start end)
   "Show contributor information."
   (remove-overlays nil nil type t)
   (let* ((overlay (make-overlay position position)))
-    (overlay-put overlay 'before-string (cpped-get-contributor-info files start end))
+    (overlay-put overlay 'before-string (concat (cpped-get-contributor-info files start end)
+                                                (cpped-get-change-info files start end)))
     (overlay-put overlay type t)))
 
 
