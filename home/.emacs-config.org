@@ -2554,6 +2554,12 @@ https://github.com/purcell/exec-path-from-shell
                             (push '("\/v" . ?↯) prettify-symbols-alist)))
 #+END_SRC
 
+[[https://github.com/iqbalansari/emacs-emojify][Emojis]]
+#+BEGIN_SRC emacs-lisp
+(use-package emojify
+  :hook (after-init-hook . global-emojify-mode))
+#+END_SRC
+
 *** Syntax types
 **** [[https://github.com/sensorflo/adoc-mode][AsciiDoc]]
 #+BEGIN_SRC emacs-lisp
@@ -7664,8 +7670,9 @@ Mark                            ^^Modify                        ^^Act
 Date         ^^Time         ^^Timestamp    ^^Block                    ^^Special
   _d_: local     _t_: local     _s_: local     _3_: License               _l_: Link
   _D_: ISO                    ^^_S_: ISO       _f_: File                  _u_: Unicode Character
-                                         ^^^^^^_c_: Snippet               _i_: UUID
-                                         ^^^^^^_C_: Automatic snippet     _T_: Markdown table of contents
+                                         ^^^^^^_c_: Snippet               _e_: Emoji
+                                         ^^^^^^_C_: Automatic snippet     _i_: UUID
+                                                                  ^^^^^^^^_T_: Markdown table of contents
                                                                   ^^^^^^^^_H_: Org-mode Heading
                                                                   ^^^^^^^^_h_: Org-mode Subheading
 "
@@ -7680,6 +7687,7 @@ Date         ^^Time         ^^Timestamp    ^^Block                    ^^Special
   ("C" aya-expand)
   ("l" cpped-org-insert-link-dwim)
   ("u" helm-ucs :exit nil)
+  ("e" emojify-insert-emoji)
   ("i" cpped-insert-uuid)
   ("T" markdown-toc-generate-or-refresh-toc)
   ("H" org-insert-heading)
