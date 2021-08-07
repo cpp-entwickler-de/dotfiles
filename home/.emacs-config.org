@@ -7315,6 +7315,28 @@ Do not use scientific form so quickly
   (tramp-histfile-override nil))
 #+END_SRC
 
+** [[https://github.com/cjohansson/emacs-ssh-deploy][Automatic Deployment]]
+#+begin_SRC emacs-lisp
+(use-package ssh-deploy
+  :commands (ssh-deploy-upload-handler
+             ssh-deploy-upload-handler-forced
+             ssh-deploy-diff-handler
+             ssh-deploy-browse-remote-handler
+             ssh-deploy-remote-changes-handler)
+  :init (setq ssh-deploy-revision-folder (file-name-as-directory (expand-file-name "ssh-revisions" user-emacs-directory)))
+  :custom
+  (ssh-deploy-async 1)
+  (ssh-deploy-async-with-threads 1)
+  :config
+  (dolist (variable '((ssh-deploy-root-local . stringp)
+                      (ssh-deploy-root-remote . stringp)
+                      (ssh-deploy-script . functionp)
+                      (ssh-deploy-on-explicit-save . booleanp)
+                      (ssh-deploy-async . booleanp)
+                      (ssh-deploy-exclude-list . listp)))
+    (put (car variable) 'safe-local-variable (cdr variable))))
+#+end_SRC
+
 * [[https://github.com/abo-abo/hydra][ Keybindings]]
 ** Quit from any context
 #+BEGIN_SRC emacs-lisp
