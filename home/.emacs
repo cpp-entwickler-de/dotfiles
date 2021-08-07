@@ -31,7 +31,7 @@
 (setq file-name-handler-alist nil)
 
 ;; increase garbage collection threshold for initialization
-(let ((gc-cons-threshold (* 100 1024 1024))
+(let ((gc-cons-threshold most-positive-fixnum)
       (gc-cons-percentage 0.6))
   (use-package org)
   ;; Load actual configuration.
