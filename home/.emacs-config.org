@@ -851,8 +851,16 @@ Find path of current position in XML docuement
   (let ((current-function (substring-no-properties (pcase major-mode
                                                      ('nxml-mode (cpped-nxml-where))
                                                      ('eshell-mode eshell-last-command-name)
-                                                     (_ (when which-function-mode
-                                                          (which-function)))))))
+                                                     ('json-mode (if (fboundp 'jsons-get-path)
+                                                                     (mapconcat  (lambda (element)
+                                                                                   (if (numberp element)
+                                                                                       (format "[%d]" element)
+                                                                                     (replace-regexp-in-string "\"" "" element)))
+                                                                                 (reverse (jsons-get-path))
+                                                                                 "/")))
+                                                     (_ (if which-function-mode
+                                                            (which-function)
+                                                          ""))))))
     (unless (= 0 (length current-function))
       (concat " " current-function))))
 #+END_SRC
@@ -5231,14 +5239,21 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 #+BEGIN_SRC emacs-lisp
 (use-package json-mode
   :mode "\\.js\\(on\\|[hl]int\\(rc\\)?\\)\\'")
-
-(use-package json-snatcher)
 #+END_SRC
 
 **** Language Server
 #+begin_SRC emacs-lisp
 (add-hook 'json-mode-hook 'lsp)
 #+end_SRC
+
+**** Path handling
+#+BEGIN_SRC emacs-lisp
+(use-package json-snatcher
+  :straight (json-snatcher
+             :type git
+             :host github
+             :repo "Sterlingg/json-snatcher"))
+#+END_SRC
 
 **** Editing
 
