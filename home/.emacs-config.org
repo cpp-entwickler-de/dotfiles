@@ -29,9 +29,9 @@ Do not load outdated byte code
 
 ** [[https://gitlab.com/jabranham/system-packages][System packages]]
 Do not ask for confirmation for new shell buffers
-#+begin_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
 (setq async-shell-command-buffer 'new-buffer)
-#+end_SRC
+#+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 (use-package use-package-ensure-system-package)
@@ -253,14 +253,14 @@ Show below other windows
 #+END_SRC
 
 ** Disable bell
-#+begin_src emacs-lisp
+#+BEGIN_SRC emacs-lisp
 (setq ring-bell-function 'ignore)
-#+end_src
+#+END_SRC
 
 ** Disable messages
-#+begin_src emacs-lisp
+#+BEGIN_SRC emacs-lisp
 (setq inhibit-message t)
-#+end_src
+#+END_SRC
 
 ** Remove annoying ellipsis when printing SEXP in message buffer
 #+BEGIN_SRC emacs-lisp
@@ -317,7 +317,7 @@ Show below other windows
 #+END_SRC
 
 *** [[https://github.com/mickeynp/ligature.el][Support Ligatures]]
-#+begin_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
 (use-package ligature
   :straight (ligature
              :type git
@@ -341,7 +341,7 @@ Show below other windows
                                        "\\\\" "://"))
   (ligature-set-ligatures '(html-mode nxml-mode web-mode) '("<!--" "-->" "</>" "</" "/>" "://"))
   (global-ligature-mode t))
-#+end_SRC
+#+END_SRC
 
 *** Show pretty symbols
 Do not disable prettification if cursor is at edge of expression
@@ -2898,7 +2898,7 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 #+END_SRC
 
 *** [[https://github.com/Overdr0ne/gumshoe][Jump to one of the last locations]]
-#+begin_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
 (use-package gumshoe
   :straight (gumshoe :type git
                      :host github
@@ -2910,7 +2910,7 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
     (interactive)
     (let ((global-mark-ring (ring-elements gumshoe--log)))
       (helm-global-mark-ring))))
-#+end_SRC
+#+END_SRC
 
 *** URIs
 **** Allow clicking on URIs
@@ -3397,7 +3397,7 @@ Open binary files in hexl-mode
 #+END_SRC
 
 ** Support cpio
-#+begin_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
 (use-package cpio-mode
   :bind (:map cpio-mode-map ("q" . kill-this-buffer))
   :config
@@ -3405,7 +3405,7 @@ Open binary files in hexl-mode
   (push '("070707" . cpio-mode) magic-mode-alist)
   (push '("0123456789abcdef" . cpio-mode) magic-mode-alist)
   (push '("0123456789abcdefCPIO archive" . cpio-mode) magic-mode-alist))
-#+end_SRC
+#+END_SRC
 
 *  Images
 ** Disable hex edit mode for images
@@ -4039,10 +4039,10 @@ Handler to close buffer after quitting ccmake.
 
 Set bug-reference-url-format to open in browser.
 
-#+begin_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
 (add-hook 'text-mode-hook 'bug-reference-mode)
 (add-hook 'prog-mode-hook 'bug-reference-prog-mode)
-#+end_SRC
+#+END_SRC
 
 **** Editing
 ***** [[https://github.com/lassik/emacs-format-all-the-code][Formatting]]
@@ -4683,7 +4683,7 @@ Show API info via [[https://devdocs.io][devdocs.io]]
 #+END_SRC
 
 ***** Flip words
-#+begin_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
 (with-eval-after-load "bool-flip"
   (progn
     (defun cpped-setup-c++-flip ()
@@ -4694,7 +4694,7 @@ Show API info via [[https://devdocs.io][devdocs.io]]
       (push '("protected" . "private") bool-flip-alist)
       (push '("private" . "public") bool-flip-alist))
     (add-hook 'c++-mode-hook 'cpped-setup-c++-flip)))
-#+end_SRC
+#+END_SRC
 
 ***** Abbreviations
 #+BEGIN_SRC emacs-lisp
@@ -4930,10 +4930,10 @@ https://github.com/google/googletest
 #+END_SRC
 
 *** [[https://github.com/schspa/dtb-mode][DTB]]
-#+begin_src emacs-lisp
+#+BEGIN_SRC emacs-lisp
 (use-package dtb-mode
   :ensure-system-package dtc)
-#+end_src
+#+END_SRC
 
 *** Docker
 #+BEGIN_SRC emacs-lisp
@@ -5242,9 +5242,9 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 #+END_SRC
 
 **** Language Server
-#+begin_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
 (add-hook 'json-mode-hook 'lsp)
-#+end_SRC
+#+END_SRC
 
 **** Path handling
 #+BEGIN_SRC emacs-lisp
@@ -5309,7 +5309,7 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 #+END_SRC
 
 **** Flip words
-#+begin_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
 (with-eval-after-load "bool-flip"
   (progn
     (defun cpped-setup-elisp-flip ()
@@ -5326,7 +5326,7 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
       (push '("remove-hook" . "add-hook") bool-flip-alist))
     (add-hook 'lisp-mode-hook 'cpped-setup-elisp-flip)
     (add-hook 'emacs-lisp-mode-hook 'cpped-setup-elisp-flip)))
-#+end_SRC
+#+END_SRC
 
 **** [[https://github.com/Malabarba/comment-or-uncomment-sexp][Un-/Comment SEXPs]]
 #+BEGIN_SRC emacs-lisp
@@ -5827,9 +5827,9 @@ forcing it by running
 #+END_SRC
 
 ***** Highlight Bug References
-#+begin_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
 (add-hook 'magit-mode-hook 'bug-reference-mode)
-#+end_SRC
+#+END_SRC
 
 ***** [[https://github.com/magit/forge][Git forge integration]]
 #+BEGIN_SRC emacs-lisp
@@ -6033,10 +6033,10 @@ forcing it by running
 #+END_SRC
 
 **** [[https://github.com/sei40kr/gitignore-snippets][Snippets]]
-#+begin_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
 (use-package gitignore-snippets
   :config (gitignore-snippets-init))
-#+end_SRC
+#+END_SRC
 
 **** Show contributors
 #+BEGIN_SRC emacs-lisp
@@ -7378,7 +7378,7 @@ Do not use scientific form so quickly
 #+END_SRC
 
 ** [[https://github.com/cjohansson/emacs-ssh-deploy][Automatic Deployment]]
-#+begin_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
 (use-package ssh-deploy
   :commands (ssh-deploy-upload-handler
              ssh-deploy-upload-handler-forced
@@ -7398,7 +7398,7 @@ Do not use scientific form so quickly
                       (ssh-deploy-exclude-list . listp)))
     (put (car variable) 'safe-local-variable (cdr variable)))
   (advice-add 'ssh-deploy-rename-handler :around 'cpped-post-rename))
-#+end_SRC
+#+END_SRC
 
 * [[https://github.com/abo-abo/hydra][ Keybindings]]
 ** Quit from any context
