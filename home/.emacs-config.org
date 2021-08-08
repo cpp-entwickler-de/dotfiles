@@ -6196,6 +6196,12 @@ Hide info buffer in buffer list
                                        (nlinum-mode -1))))
 #+END_SRC
 
+[[https://github.com/nicolaisingh/saveplace-pdf-view][Save last position]]
+#+BEGIN_SRC emacs-lisp
+(use-package saveplace-pdf-view
+  :after pdf-tools doc-view)
+#+END_SRC
+
 ** Doc-View
 #+BEGIN_SRC emacs-lisp
 (require 'doc-view)
