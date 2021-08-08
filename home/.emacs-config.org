@@ -721,8 +721,8 @@ Helper function to figure out version control root directory
                       ""
                     "")
                 "")
-            "𓄃"))
-    (`"%" "𓄗")
+            ""))
+    (`"%" "")
     (_ "")))
 #+END_SRC
 
