@@ -7452,11 +7452,10 @@ Do not use scientific form so quickly
 #+BEGIN_SRC emacs-lisp
 (defhydra cpped-hydra-projects (:exit t :hint nil)
   "
-☰ Project  %s(or (ignore-errors (projectile-project-root))
-                   default-directory)%s(let ((build-dir (cpped-build-dir)))
-                                          (if build-dir
+☰ Project %s(cpped-powerline-project-id)%s(let ((build-dir (cpped-build-dir)))
+                                            (if build-dir
                                               (concat \"  \" build-dir)
-                                            \"\"))
+                                             \"\"))
 
   _x_: Close           _v_: Clone
                      ^^_V_: Clone from GitHub
@@ -7535,7 +7534,7 @@ CMake                           ^^Git                           ^^Directories   
 #+BEGIN_SRC emacs-lisp
 (defhydra cpped-hydra-files (:exit t :hint nil)
   "
-☰ File %s(concat (cpped-powerline-mode-icon 'default) \" \" (cpped-powerline-buffer-id 'default) \" \" (cpped-buffersize) \" \"  (cpped-file-encoding))
+☰ File %s(concat (cpped-powerline-project-id) \"/\" (cpped-powerline-mode-icon 'default) \" \" (cpped-powerline-buffer-id 'default) \" \" (cpped-buffersize) \" \"  (cpped-file-encoding))
 
 Open                             ^^Save                      ^^Close                  ^^Switch             ^^Version                    ^^Display                       ^^File                           ^^^^^^Encoding
       _o_: Open                      _s_: Save                   _x_: File                _l_: Last file       _v_: Show old version        _V_: Filter                 _<DEL>_: Delete                      ^^^^_C-d_: DOS
