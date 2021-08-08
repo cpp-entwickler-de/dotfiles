@@ -5859,11 +5859,11 @@ forcing it by running
 ***** Find other projects
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load "projectile"
-  (setq magit-repository-directories (mapcar #'directory-file-name
+  (setq magit-repository-directories (mapcar (lambda (element)
+                                               (cons (directory-file-name element) 10))
                                              (cl-remove-if-not (lambda (project)
-                                                                 (file-directory-p (concat project "/.git/")))
-                                                               (projectile-relevant-known-projects)))
-        magit-repository-directories-depth 1))
+                                                                 (magit-git-repo-p project))
+                                                               (projectile-relevant-known-projects)))))
 #+END_SRC
 
 ***** Icons for changes
