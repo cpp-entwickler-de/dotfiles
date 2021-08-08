@@ -98,6 +98,14 @@ if [ "$PACKAGES" = TRUE ]; then
         cmake --build Release --target install
     )
     rm -Rf /tmp/ccls
+    # cppinclude
+    git_install https://github.com/cppinclude/cppinclude /tmp/cppinclude
+    (
+        cd /tmp/cppinclude/build || exit
+        cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=~/.local ..
+        cmake --build . --target install
+    )
+    rm -Rf /tmp/cppinclude
 fi
 
 if [ "$LINKS" = TRUE ]; then
