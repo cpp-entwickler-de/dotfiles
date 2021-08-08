@@ -375,6 +375,14 @@ Prettify common symbols
 (global-prettify-symbols-mode)
 #+END_SRC
 
+Prettify escaped newline
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'font-lock-extra-managed-props 'display)
+
+(font-lock-add-keywords nil
+                        `((,(rx (group "\\") eol) 1 '(face nil display "﬌"))))
+#+END_SRC
+
 ** Faces
 *** Info
 #+BEGIN_SRC emacs-lisp
