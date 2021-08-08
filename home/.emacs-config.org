@@ -2046,7 +2046,8 @@ https://github.com/purcell/exec-path-from-shell
 ** Utilites
 *** [[https://github.com/bbatsov/crux][A Collection of Ridiculously Useful eXtensions]]
 #+BEGIN_SRC emacs-lisp
-(use-package crux)
+(use-package crux
+  :config (advice-add 'crux-rename-file-and-buffer :around 'cpped-post-rename))
 #+END_SRC
 
 *** Date/time formatting
@@ -2245,6 +2246,19 @@ https://github.com/purcell/exec-path-from-shell
 ** Allow editing compressed files
 #+BEGIN_SRC emacs-lisp
 (auto-compression-mode 1)
+#+END_SRC
+
+** Handle renames
+#+BEGIN_SRC emacs-lisp
+(defun cpped-post-rename (function)
+  "Update recent files and projectile after rename."
+  (let ((old buffer-file-name))
+    (funcall function)
+    (when (fboundp 'recentf-add-file)
+      (recentf-add-file buffer-file-name)
+      (recentf-remove-if-non-kept old))
+    (when (ignore-errors (projectile-project-p))
+      (call-interactively #'projectile-invalidate-cache))))
 #+END_SRC
 
 ** File Management
@@ -7360,7 +7374,8 @@ Do not use scientific form so quickly
                       (ssh-deploy-on-explicit-save . booleanp)
                       (ssh-deploy-async . booleanp)
                       (ssh-deploy-exclude-list . listp)))
-    (put (car variable) 'safe-local-variable (cdr variable))))
+    (put (car variable) 'safe-local-variable (cdr variable)))
+  (advice-add 'ssh-deploy-rename-handler :around 'cpped-post-rename))
 #+end_SRC
 
 * [[https://github.com/abo-abo/hydra][ Keybindings]]
