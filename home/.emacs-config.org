@@ -537,6 +537,9 @@ Prettify escaped newline
 
 *** Base Location
 #+BEGIN_SRC emacs-lisp
+(defvar-local cpped-project-dir-checked nil)
+(defvar-local cpped-project-dir nil)
+
 (defun cpped-tramp-file-remote-p (file)
   "Checks if a tramp file is actually remote."
   (and (tramp-tramp-file-p file)
@@ -545,41 +548,36 @@ Prettify escaped newline
 (with-eval-after-load "projectile"
   (defun cpped-project-dir ()
     (interactive)
-    (or (when (and (ignore-errors (projectile-project-p))
-                   (fboundp 'projectile-project-root))
-          (projectile-project-root))
-        (when vc-mode
-          (let ((backend (vc-deduce-backend)))
-            (when backend
-              (ignore-errors (vc-call-backend backend 'root default-directory)))))))
+    (unless cpped-project-dir-checked
+      (setq cpped-project-dir (or (when (and (ignore-errors (projectile-project-p))
+					     (fboundp 'projectile-project-root))
+				    (projectile-project-root))
+				  (when vc-mode
+				    (let ((backend (vc-deduce-backend)))
+				      (when backend
+					(ignore-errors (vc-call-backend backend 'root default-directory)))))))
+      (setq cpped-project-dir-checked t))
+    cpped-project-dir)
 
-(defun cpped-powerline-project-id ()
-  (let ((buffer-location (cpped-buffer-name)))
-  (when buffer-location
-      (let ((project-name (if (and (ignore-errors (projectile-project-p))
-                                   (fboundp 'projectile-project-name)
-                                   (projectile-project-name))
-                              (projectile-project-name)
-                            (when vc-mode
-                              (let ((backend (vc-deduce-backend)))
-                                (when backend
-                                  (file-name-nondirectory (directory-file-name (file-name-directory (ignore-errors (vc-call-backend backend 'root default-directory)))))))))))
-        (concat
-         (cond ((cpped-tramp-file-remote-p buffer-location) "")
-               ((not (= 0 (length project-name))) "")
-               ((and (not (cpped-tramp-file-remote-p buffer-location))
-                     (string-prefix-p (getenv "HOME")
-                                      (if (tramp-tramp-file-p buffer-location)
-                                          (tramp-file-name-localname (tramp-dissect-file-name buffer-location))
-                                        buffer-location))) "")
-               (t ""))
-         (let ((location (if (cpped-tramp-file-remote-p buffer-location)
-                             (tramp-file-name-host (tramp-dissect-file-name buffer-location))
-                           (when (not (= 0 (length project-name)))
-                             (propertize project-name
-                                         'help-echo (cpped-project-dir))))))
-           (unless (= 0 (length location))
-               (concat " " location)))))))))
+  (defun cpped-powerline-project-id ()
+    (let ((buffer-location (cpped-buffer-name)))
+      (when buffer-location
+	(let* ((project-root (cpped-project-dir))
+	       (project-name (projectile-project-name project-root))
+	       (remote (if (cpped-tramp-file-remote-p buffer-location)
+			   (tramp-file-name-host (tramp-dissect-file-name buffer-location))))
+	       (localname (if (tramp-tramp-file-p buffer-location)
+			      (tramp-file-local-name buffer-location)
+			    buffer-location)))
+	  (concat
+	   (when remote (format " %s " remote))
+	   (if (string-prefix-p (getenv "HOME") localname)
+	       (concat "/" (file-name-directory (directory-file-name (file-relative-name (file-name-directory (or project-root
+                                                                                                                   (file-name-directory localname)))
+											  (getenv "HOME")))))
+	     (concat "" (file-name-directory (directory-file-name (file-name-directory (tramp-file-local-name (or project-root
+										                                   localname)))))))
+	   (when (not (= 0 (length project-name))) (concat " " project-name))))))))
 #+END_SRC
 
 *** Major mode icon
@@ -603,40 +601,39 @@ Helper function to figure out version control root directory
 (with-eval-after-load "projectile"
   (defun cpped-powerline-buffer-id (icon-face)
     (let* ((home-dir (getenv "HOME"))
-           (buffer-virtual-name (cpped-buffer-name))
-           (buffer-name (let ((name (if buffer-virtual-name
-                                        (if (tramp-tramp-file-p buffer-virtual-name)
-                                            (tramp-file-name-localname (tramp-dissect-file-name buffer-virtual-name))
-                                          buffer-virtual-name)
-                                      (format-mode-line "%b"))))
-                          (or (cdr (assoc name cpped-special-buffer-names-alist))
-                              name)))
-           (filename (if buffer-virtual-name
-                       (file-truename buffer-name)))
-           (project-root (or (cpped-project-dir)
-                             (when (and filename
-                                        home-dir
-                                        (string-equal (substring filename 0 (length home-dir)) home-dir))
-                               home-dir)))
-           (relative-path (when filename
-                            (file-name-directory (if project-root
-                                                     (file-relative-name filename project-root)
-                                                   filename))))
-
-           (special-buffer (string-match "^\\*.*\\*?$" buffer-name)))
+	   (buffer-virtual-name (cpped-buffer-name))
+	   (buffer-name (let ((name (if buffer-virtual-name
+					(if (tramp-tramp-file-p buffer-virtual-name)
+					    (tramp-file-local-name buffer-virtual-name)
+					  buffer-virtual-name)
+				      (format-mode-line "%b"))))
+			  (or (cdr (assoc name cpped-special-buffer-names-alist))
+			      name)))
+	   (filename (if buffer-virtual-name
+			 (file-truename buffer-name)))
+	   (project-root (or (cpped-project-dir)
+			     (when (and filename
+					home-dir
+					(string-equal (substring filename 0 (length home-dir)) home-dir))
+			       home-dir)))
+	   (relative-path (when filename
+			    (file-name-directory (if project-root
+						     (file-relative-name filename project-root)
+						   filename))))
+	   (special-buffer (string-match "^\\*.*\\*?$" buffer-name)))
       (if special-buffer
-          (propertize (replace-regexp-in-string "^\\*\\([^\*]*\\)\\*?$" "\\1" buffer-name)
-                      'face `(:background ,(face-attribute icon-face :background)
-                              :weight normal
-                              :slant italic))
-        (concat
-         (when relative-path
-           (propertize relative-path
-                       'face `(:background ,(face-attribute icon-face :background)
-                               :weight light)))
-         (propertize (file-name-nondirectory buffer-name)
-                     'face `(:background ,(face-attribute icon-face :background)
-                             :weight black)))))))
+	  (propertize (replace-regexp-in-string "^\\*\\([^\*]*\\)\\*?$" "\\1" buffer-name)
+		      'face `(:background ,(face-attribute icon-face :background)
+				          :weight normal
+				          :slant italic))
+	(concat
+	 (when relative-path
+	   (propertize relative-path
+		       'face `(:background ,(face-attribute icon-face :background)
+				           :weight light)))
+	 (propertize (file-name-nondirectory buffer-name)
+		     'face `(:background ,(face-attribute icon-face :background)
+			                 :weight black)))))))
 #+END_SRC
 
 *** Docker project
@@ -694,13 +691,6 @@ Helper function to figure out version control root directory
 (defun cpped-powerline-eshell-process-running ()
   (when cpped-eshell-process-running
     (concat "  " (cpped-format-run-time (cpped-get-run-time)))))
-#+END_SRC
-
-*** Show if file is remote
-#+BEGIN_SRC emacs-lisp
-(defun cpped-powerline-remote ()
-  (when (cpped-tramp-file-remote-p default-directory)
-    ""))
 #+END_SRC
 
 *** Show if file is opened in su-mode
@@ -897,7 +887,7 @@ Find path of current position in XML docuement
 #+BEGIN_SRC emacs-lisp
 (use-package powerline
   :custom
-  (powerline-default-separator 'slant)
+  (powerline-default-separator nil)
   (powerline-display-hud nil)
   (powerline-height 20))
 
@@ -923,32 +913,19 @@ Find path of current position in XML docuement
                           (separator-right (intern (format "powerline-%s-%s"
                                                            (powerline-current-separator)
                                                            (car powerline-default-separator-dir))))
-                          (project-id (cpped-powerline-project-id))
-                          (show-project (not (= 0 (length project-id))))
-                          (version (when (fboundp 'cpped-powerline-version-control)
-                                     (cpped-powerline-version-control)))
-                          (current-function (cpped-powerline-which-function))
-                          (show-function (not (= 0 (length current-function))))
-                          (check-status (cpped-powerline-check-status (symbol-value 'face2)))
-                          (show-check-status (and check-status
-                                                  (not (= (length check-status) 0))))
                           (lhs (list
-                                (when show-project
-                                  (powerline-raw project-id mode-line 'l)
-                                  (powerline-raw (cpped-powerline-docker-project) mode-line 'l)
-                                  (funcall separator-left mode-line face1))
-                                (powerline-raw (cpped-powerline-mode-icon face1) face1)
-                                (powerline-raw (cpped-powerline-buffer-id face1) face1 'l)
+                                (powerline-raw (cpped-powerline-project-id) mode-line 'r)
+                                (funcall separator-left mode-line face1)
+                                (powerline-raw (cpped-powerline-mode-icon face1) face1 'l)
+                                (powerline-raw (concat (cpped-powerline-buffer-id face1) " ") face1 'l)
+                                (funcall separator-left face1 mode-line)
                                 (powerline-raw (cpped-powerline-eshell-process-running) face1 'l)
-                                (if version
-                                    (progn
-                                      (funcall separator-left face1 mode-line)
-                                      (powerline-raw version mode-line)
-                                      (funcall separator-left mode-line face2))
-                                  (funcall separator-left face1 face2))
-                                (powerline-raw (cpped-powerline-remote) face2 'r)
-                                (powerline-raw (cpped-powerline-su) face2 'r)
-                                (powerline-raw (cpped-powerline-modified) face2)
+                                (funcall separator-left face1 mode-line)
+                                (powerline-raw (when (fboundp 'cpped-powerline-version-control)
+                                                 (concat (cpped-powerline-version-control) " ")) mode-line 'l)
+                                (funcall separator-left mode-line face2)
+                                (powerline-raw (cpped-powerline-su) face2 'l)
+                                (powerline-raw (cpped-powerline-modified) face2 'l)
                                 (powerline-raw (cpped-powerline-overwrite-mode) face2 'l)
                                 (powerline-raw (cpped-powerline-auto-format) face2 'l)
                                 (powerline-raw (cpped-powerline-typo-mode) face2 'l)
@@ -960,11 +937,10 @@ Find path of current position in XML docuement
                                 (powerline-raw (cpped-powerline-position-info) face2 'l)
                                 (powerline-raw (cpped-powerline-region-info) face2 'l)
                                 (powerline-raw (cpped-powerline-iedit-info) face2 'l)
-                                (when show-check-status
-                                  (powerline-raw check-status face2 'l))
+                                (powerline-raw (cpped-powerline-check-status (symbol-value 'face2)) face2 'l)
+                                (powerline-raw " " face2)
                                 (funcall separator-left face2 mode-line)
-                                (when show-function
-                                  (powerline-raw current-function mode-line))
+                                (powerline-raw (cpped-powerline-which-function) mode-line 'l)
                                 (powerline-raw (format-mode-line 'global-mode-string) mode-line))))
                      (concat (powerline-render lhs)))))))
 
