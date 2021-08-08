@@ -2162,6 +2162,7 @@ https://github.com/purcell/exec-path-from-shell
 ** Save backup files to .emacs.d/backups
 #+BEGIN_SRC emacs-lisp
 (setq backup-directory-alist `((".*" . ,(expand-file-name "backups" user-emacs-directory)))
+      tramp-backup-directory-alist backup-directory-alist
       backup-by-copying t
       version-control t
       delete-old-versions t
