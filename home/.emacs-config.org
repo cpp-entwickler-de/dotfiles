@@ -815,42 +815,11 @@ Helper function to figure out version control root directory
 #+END_SRC
 
 *** Current function
-Find path of current position in XML docuement
-#+BEGIN_SRC emacs-lisp
-(defun cpped-nxml-where ()
-  "Display the hierarchy of XML elements the point is on as a path."
-  (interactive)
-  (let ((path nil))
-    (save-excursion
-      (save-restriction
-        (widen)
-        (while (and (< (point-min) (point))
-                    (condition-case nil
-                        (progn
-                          (nxml-backward-up-element)
-                          t)
-                      (error nil)))
-          (setq path (cons (xmltok-start-tag-local-name) path)))
-        (if (called-interactively-p t)
-            (message "/%s" (mapconcat 'identity path "/"))
-          (format "/%s" (mapconcat 'identity path "/")))))))
-#+END_SRC
-
 #+BEGIN_SRC emacs-lisp
 (defun cpped-powerline-which-function ()
-  (let ((current-function (substring-no-properties (pcase major-mode
-                                                     ('nxml-mode (cpped-nxml-where))
-                                                     ('eshell-mode eshell-last-command-name)
-                                                     ('json-mode (if (fboundp 'jsons-get-path)
-                                                                     (mapconcat  (lambda (element)
-                                                                                   (if (numberp element)
-                                                                                       (format "[%d]" element)
-                                                                                     (replace-regexp-in-string "\"" "" element)))
-                                                                                 (reverse (jsons-get-path))
-                                                                                 "/")))
-                                                     (_ (if which-function-mode
-                                                            (which-function)
-                                                          ""))))))
+  (let ((current-function (substring-no-properties (if which-function-mode
+                                                       (which-function)
+                                                     ""))))
     (unless (= 0 (length current-function))
       (concat " " current-function))))
 #+END_SRC
@@ -1579,7 +1548,14 @@ Indicate recursive minibuffer
   (setq eshell-where-to-jump 'begin
         eshell-review-quick-commands nil
         eshell-smart-space-goes-to-end t)
-  (add-hook 'eshell-mode-hook 'eshell-smart-initialize))
+  (add-hook 'eshell-mode-hook 'eshell-smart-initialize)
+  (defun cpped-eshell-last-command ()
+    "Return the last command."
+    (interactive)
+    (when (derived-mode-p 'eshell-mode)
+      (format "%s %s" eshell-last-command-name (mapconcat 'identity eshell-last-arguments " "))))
+  (with-eval-after-load "which-func"
+    (add-to-list 'which-func-functions 'cpped-eshell-last-command)))
 #+END_SRC
 
 *** Environment
@@ -5252,7 +5228,21 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
   :straight (json-snatcher
              :type git
              :host github
-             :repo "Sterlingg/json-snatcher"))
+             :repo "Sterlingg/json-snatcher")
+  :config
+  (defun  cpped-json-path ()
+    "Return the JSON element hierarchy as a path."
+    (interactive)
+    (when (and (derived-mode-p 'json-mode)
+               (fboundp 'jsons-get-path))
+      (mapconcat  (lambda (element)
+                    (if (numberp element)
+                        (format "[%d]" element)
+                      (replace-regexp-in-string "\"" "" element)))
+                  (reverse (jsons-get-path))
+                  "/")))
+  (with-eval-after-load "which-func"
+    (add-to-list 'which-func-functions 'cpped-json-path)))
 #+END_SRC
 
 **** Editing
@@ -5551,6 +5541,28 @@ Set correct major mode
 *** XML
 #+BEGIN_SRC emacs-lisp
 (push '("<\\?xml" . nxml-mode) magic-mode-alist)
+#+END_SRC
+
+Show current XML path as current function
+#+BEGIN_SRC emacs-lisp
+(defun cpped-xml-path ()
+  "Return the XML element hierarchy as a path."
+  (interactive)
+  (when (derived-mode-p 'nxml-mode)
+    (let ((path nil))
+      (save-excursion
+        (save-restriction
+          (widen)
+          (while (and (< (point-min) (point))
+                      (condition-case nil
+                          (progn
+                            (nxml-backward-up-element)
+                            t)
+                        (error nil)))
+            (setq path (cons (xmltok-start-tag-local-name) path)))
+          (format "/%s" (mapconcat 'identity path "/")))))))
+
+(add-to-list 'which-func-functions 'cpped-xml-path)
 #+END_SRC
 
 **** Navigation
