@@ -4349,7 +4349,7 @@ TODO
                                               (force-mode-line-update)))
 
 (defun cpped-powerline-compilation-status ()
-  "Fomrat the mode line compilation information."
+  "Format the mode line compilation information."
   (when compilation-run-p
     (mapconcat 'identity
                (remove nil (list (propertize (all-the-icons-faicon5 "hammer")
