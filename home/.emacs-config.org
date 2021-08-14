@@ -4560,11 +4560,11 @@ Show API info via [[https://devdocs.io][devdocs.io]]
 #+BEGIN_SRC emacs-lisp
 (add-hook 'c++-mode-hook (lambda ()
                            (push '("void" . ?∅) prettify-symbols-alist)
-                           (push '("const" . ?𓄗) prettify-symbols-alist)
+                           (push '("const" . ?) prettify-symbols-alist)
                            (push '("mutable" . ?) prettify-symbols-alist)
                            (push '("default" . ?) prettify-symbols-alist)
                            (push '("delete" . ?) prettify-symbols-alist)
-                           (push '("final" . ?𓄗) prettify-symbols-alist)
+                           (push '("final" . ?) prettify-symbols-alist)
                            (push '("virtual" . ?) prettify-symbols-alist)
                            (push '("override" . ?) prettify-symbols-alist)
                            (push '("[]" . ?λ) prettify-symbols-alist)
