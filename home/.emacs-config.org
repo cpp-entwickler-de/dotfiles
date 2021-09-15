@@ -7306,7 +7306,11 @@ Do not use scientific form so quickly
 ** Calendar
 #+BEGIN_SRC emacs-lisp
 (use-package german-holidays
-  :config (setq calendar-holidays holiday-german-HH-holidays))
+  :straight (german-holidays
+             :type git
+             :host github
+             :repo  "rudolfochrist/german-holidays")
+  :custom (calendar-holidays holiday-german-HH-holidays))
 
 (setq calendar-date-style 'european
       calendar-week-start-day 1
