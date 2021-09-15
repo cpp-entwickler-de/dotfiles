@@ -449,15 +449,15 @@ Prettify escaped newline
 #+END_SRC
 
 ** Theme
+ Always load themes without confirmation
+#+BEGIN_SRC emacs-lisp
+(setq custom-safe-themes t)
+#+END_SRC
+
 #+BEGIN_SRC emacs-lisp
 (defvar cpped-theme 'cpp-entwickler.de "The default theme")
 
 (load-theme cpped-theme t)
-#+END_SRC
-
-*** Always load themes without confirmation
-#+BEGIN_SRC emacs-lisp
-(setq custom-safe-themes t)
 #+END_SRC
 
 ** [[https://github.com/rakanalh/emacs-dashboard][Dashboard]]
