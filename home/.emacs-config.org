@@ -8249,10 +8249,11 @@ Cut                   ^^Delete                               ^^Other
 (global-set-key (kbd "C-y") #'cpped-hydra-yank/yank)
 (global-set-key (kbd "M-y") #'helm-show-kill-ring)
 
-(define-key term-raw-map (kbd "C-c C-y") 'term-paste)
-(define-key term-raw-map (kbd "C-c C-s") (lambda ()
-                                           (interactive)
-                                           (term-send-raw-string (substring-no-properties (helm-show-kill-ring)))))
+(with-eval-after-load "term"
+  (define-key term-raw-map (kbd "C-c C-y") 'term-paste)
+  (define-key term-raw-map (kbd "C-c M-y") (lambda ()
+                                             (interactive)
+                                             (term-send-raw-string (substring-no-properties (helm-show-kill-ring))))))
 #+END_SRC
 
 ** Org-Mode
