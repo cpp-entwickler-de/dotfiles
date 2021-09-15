@@ -486,10 +486,11 @@ Prettify escaped newline
    (dashboard-set-footer nil)
    (dashboard-footer-icon "")
    (dashboard-footer-messages (let ((file (expand-file-name "~/.dashboard-messages")))
-                                (when (file-exists-p file)
+                                (if (file-exists-p file)
                                   (with-temp-buffer
                                     (insert-file-contents file)
-                                    (split-string (buffer-string) "\n" t)))))
+                                    (split-string (buffer-string) "\n" t))
+                                  '(""))))
    :config
    (setq cpped-dashboard-footer (dashboard-random-footer))
    (advice-add 'dashboard-insert-banner :after #'(lambda ()
