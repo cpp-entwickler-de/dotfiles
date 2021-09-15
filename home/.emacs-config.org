@@ -5608,6 +5608,7 @@ Show current XML path as current function
     (:executable "xmllint")
     (:install)
     (:languages "XML")
+    (:features)
     (:format (format-all--buffer-easy executable
                                       "--format"
                                       "--nowarning"
