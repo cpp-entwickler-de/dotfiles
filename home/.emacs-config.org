@@ -6803,16 +6803,16 @@ Archive when done, remove flag if reset to todo.
                                             (org-capture-put-target-region-and-position)
                                             (widen)))
                                         t)))))
-    (or (helm :sources (list (helm-source-org-headings-for-files (if (listp files)
-                                                                     files
-                                                                   (list files)))
-                             (helm-build-dummy-source
-                                 "Create top-level entry"
-                               :action helm-org-headings-actions))
-              :candidate-number-limit 99999
-              :preselect name
-              :truncate-lines helm-org-truncate-lines
+    (or (helm :sources (append (helm-org-build-sources (if (listp files)
+                                                           files
+                                                         (list files)))
+                               (list (helm-build-dummy-source
+                                         "Create top-level entry"
+                                       :action helm-org-headings-actions)))
               :input name
+              :preselect name
+              :candidate-number-limit 99999
+              :truncate-lines helm-org-truncate-lines
               :prompt "Topic: "
               :buffer "*helm org headings*")
         (error "Aborted"))))
