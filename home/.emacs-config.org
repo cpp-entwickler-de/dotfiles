@@ -8561,9 +8561,9 @@ Focus                  ^^^^Close                ^^Split               ^^Align   
   "
 ☰ Settings
 
-Settings                       ^^Snippets            ^^Abbreviations
-  _c_: Open config file            _Y_: New snippet      _A_: New abbreviation
-  _m_: Open customization file     _y_: Edit snippet     _a_: Edit abbreviations
+Settings                       ^^Projects                      ^^Snippets            ^^Abbreviations
+  _c_: Open config file            _t_: Edit Treemacs projects     _Y_: New snippet      _A_: New abbreviation
+  _m_: Open customization file                                   ^^_y_: Edit snippet     _a_: Edit abbreviations
   _t_: Edit theme
   _v_: Customize variable
   _g_: Customize group
@@ -8588,7 +8588,9 @@ Settings                       ^^Snippets            ^^Abbreviations
   ("s" set-variable)
   ("d" (setq debug-on-error (not debug-on-error)
              eval-expression-debug-on-error (not eval-expression-debug-on-error)))
-  ("#" esup))
+  ("#" esup)
+
+  ("t" treemacs-edit-workspaces))
 
 (global-set-key (kbd "C-S-s") #'cpped-hydra-settings/body)
 #+END_SRC
