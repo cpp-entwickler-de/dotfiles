@@ -6765,9 +6765,9 @@ Archive when done, remove flag if reset to todo.
 (defface org-priority-medium '((t :inherit default)) "Face used for medium priority." :group 'org)
 (defface org-priority-low '((t :inherit default)) "Face used for low priority." :group 'org)
 
-(setq org-priority-faces '(("A" . org-priority-high)
-                           ("B" . org-priority-medium)
-                           ("C" . org-priority-low)))
+(setq org-priority-faces '((?A . org-priority-high)
+                           (?B . org-priority-medium)
+                           (?C . org-priority-low)))
 
 (use-package org-fancy-priorities
   :hook ((org-mode org-agenda-mode) . org-fancy-priorities-mode)
