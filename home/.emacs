@@ -1,5 +1,3 @@
-(setq debug-on-error t)
-
 ;; Break when showing message
 ;; (setq debug-on-message "")
 

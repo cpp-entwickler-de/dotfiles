@@ -181,6 +181,12 @@ Do not ask for confirmation for new shell buffers
   :config (explain-pause-mode))
 #+END_SRC
 
+** Debug on error
+#+BEGIN_SRC emacs-lisp
+(setq debug-on-error nil
+      eval-expression-debug-on-error debug-on-error)
+#+END_SRC
+
 *  User Interface
 ** Startup
 *** Disable startup screen
