@@ -6771,9 +6771,9 @@ Archive when done, remove flag if reset to todo.
 
 (use-package org-fancy-priorities
   :hook ((org-mode org-agenda-mode) . org-fancy-priorities-mode)
-  :custom (org-fancy-priorities-list '((?A . ?)
-                                       (?B . ?)
-                                       (?C . ?⏾))))
+  :custom (org-fancy-priorities-list '((?A . "")
+                                       (?B . "")
+                                       (?C . "⏾"))))
 #+END_SRC
 
 ** Prettify symbols
