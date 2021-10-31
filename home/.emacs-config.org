@@ -5593,7 +5593,8 @@ Show current XML path as current function
             (setq path (cons (xmltok-start-tag-local-name) path)))
           (format "/%s" (mapconcat 'identity path "/")))))))
 
-(add-to-list 'which-func-functions 'cpped-xml-path)
+(with-eval-after-load "which-func"
+  (add-to-list 'which-func-functions 'cpped-xml-path))
 #+END_SRC
 
 **** Navigation
