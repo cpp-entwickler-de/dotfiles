@@ -6692,7 +6692,7 @@ Note: For this to work, Org must be version 8.3 or higher. Org is bundled with e
       cpped-org-todo-keyword-correction "Correction"
       cpped-org-todo-keyword-fixed "Fixed"
       cpped-org-todo-keyword-fixme "Fixme"
-      cpped-org-todo-keyword-in-progress "In Progress"
+      cpped-org-todo-keyword-in-progress "InProgress"
       cpped-org-todo-keyword-waiting "Waiting"
       cpped-org-todo-keyword-suspended "Suspended"
       cpped-org-todo-keyword-review "Review"
