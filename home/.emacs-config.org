@@ -3033,6 +3033,7 @@ Set prefered clipboard formats
 *** [[https://github.com/nflath/hungry-delete][Delete adjoining whitespaces in all major modes]]
 #+BEGIN_SRC emacs-lisp
 (use-package hungry-delete
+  :custom (hungry-delete-join-reluctantly t)
   :config (global-hungry-delete-mode))
 #+END_SRC
 
