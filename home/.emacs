@@ -4,6 +4,7 @@
 ;; (setq debug-on-message "")
 
 (defvar bootstrap-version)
+(setq package-enable-at-startup nil)
 (setq straight-use-package-by-default t)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
