@@ -5871,7 +5871,7 @@ forcing it by running
   (magit-todos-auto-group-items 'always)
   (magit-todos-group-by '(magit-todos-item-keyword magit-todos-item-filename))
   (magit-todos-ignore-case t)
-  (magit-todos-ignored-keywords '("NOTE" "INFO"))
+  (magit-todos-ignored-keywords ("NOTE" "INFO"))
   (magit-todos-insert-at 'untracked)
   (magit-todos-keyword-suffix ".?")
   (magit-todos-nice nil)
