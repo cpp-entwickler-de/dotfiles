@@ -3823,10 +3823,17 @@ Handler to close buffer after quitting ccmake.
   :hook prog-mode
   :custom
   (lsp-auto-configure t)
+  (lsp-log-io nil)
   (lsp-log-max 100)
   (lsp-restart 'auto-restart)
   (lsp-signature-function 'lsp-signature-posframe)
   (lsp-headerline-breadcrumb-enable nil)
+  (lsp-idle-delay 0.5)
+  (lsp-lens-enable t)
+  (lsp-semantic-tokens-enable t)
+  (lsp-modeline-code-actions-enable nil)
+  (lsp-modeline-diagnostics-enable nil)
+  (lsp-modeline-workspace-status-enable nil)
   :config (push "^\\*lsp-.+" helm-boring-buffer-regexp-list))
 
 (use-package lsp-ui
