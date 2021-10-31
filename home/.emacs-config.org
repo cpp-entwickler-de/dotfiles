@@ -6805,8 +6805,13 @@ Archive when done, remove flag if reset to todo.
                            (push '("#+END_VERBATIM" . ?) prettify-symbols-alist)
                            (push '("#+end_verbatim" . ?) prettify-symbols-alist)
                            (push '(":LOGBOOK:" . ?) prettify-symbols-alist)
+                           (push '("#+BEGIN:" . ?⌜) prettify-symbols-alist)
+                           (push '("#+END:" . ?⌞) prettify-symbols-alist)
+                           (push '("#+CAPTION:" . ?🗩) prettify-symbols-alist)
                            (push '(":END:" . ?⌞) prettify-symbols-alist)
                            (push '("CLOCK:" . ?) prettify-symbols-alist)
+                           (push '("clocktable" . ?) prettify-symbols-alist)
+                           (push '("\\_" . ?⮩) prettify-symbols-alist)
                            (prettify-symbols-mode)))
 #+END_SRC
 
