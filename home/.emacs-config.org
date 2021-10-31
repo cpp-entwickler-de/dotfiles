@@ -2485,6 +2485,9 @@ https://github.com/purcell/exec-path-from-shell
 (use-package lsp-treemacs
   :after (treemacs lsp-mode)
   :custom (lsp-treemacs-sync-mode 1))
+
+(use-package treemacs-magit
+  :after (treemacs magit))
 #+END_SRC
 
 *  Text
