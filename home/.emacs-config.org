@@ -10,6 +10,18 @@
 #+END_SRC
 
 *  Package Management
+** Automatically update
+#+BEGIN_SRC emacs-lisp
+(use-package auto-package-update
+  :custom
+  (auto-package-update-interval 7)
+  (auto-package-update-prompt-before-update t)
+  (auto-package-update-hide-results t)
+  :config
+  (auto-package-update-maybe)
+  (auto-package-update-at-time "12:00"))
+#+END_SRC
+
 ** [[https://github.com/tarsius/auto-compile][Automatically compile packages]]
 Do not load outdated byte code
 #+BEGIN_SRC emacs-lisp
