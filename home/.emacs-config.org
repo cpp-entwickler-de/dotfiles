@@ -8556,7 +8556,8 @@ Settings                       ^^Snippets            ^^Abbreviations
   ("v" customize-variable)
   ("g" customize-group)
   ("s" set-variable)
-  ("d" (setq debug-on-error (not debug-on-error)))
+  ("d" (setq debug-on-error (not debug-on-error)
+             eval-expression-debug-on-error (not eval-expression-debug-on-error)))
   ("#" esup))
 
 (global-set-key (kbd "C-S-s") #'cpped-hydra-settings/body)
