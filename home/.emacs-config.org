@@ -4597,7 +4597,7 @@ Show API info via [[https://devdocs.io][devdocs.io]]
                            (push '("delete" . ?) prettify-symbols-alist)
                            (push '("final" . ?) prettify-symbols-alist)
                            (push '("virtual" . ?) prettify-symbols-alist)
-                           (push '("override" . ?) prettify-symbols-alist)
+                           (push '("override" . ?) prettify-symbols-alist)
                            (push '("[]" . ?λ) prettify-symbols-alist)
                            (push '("#include" . ?ﱐ) prettify-symbols-alist)
                            (push '("#pragma once" . ?❶) prettify-symbols-alist)))
