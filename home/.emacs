@@ -37,7 +37,7 @@
   ;; Load actual configuration.
   (org-babel-load-file "~/.emacs-config.org"))
 
-(setq gc-cons-threshold (* 800 1024)
+(setq gc-cons-threshold (* 100 1024 1024)
       gc-cons-percentage 0.2)
 
 (setq file-name-handler-alist (append default-file-name-handler-alist file-name-handler-alist))
