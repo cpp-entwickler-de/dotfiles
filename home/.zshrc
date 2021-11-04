@@ -116,7 +116,7 @@ fi
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(adb autojump bd colorize command-not-found dirhistory docker docker-compose emacs extract git gnu-utils safe-paste setenv sudo systemd up wd web-search zsh-256color zsh-autopair zsh-autosuggestions zsh-dwim zsh-reentry-hook zsh-syntax-highlighting)
+plugins=(adb autojump colorize command-not-found dirhistory docker docker-compose emacs extract git gnu-utils safe-paste setenv sudo systemd wd web-search zsh-256color zsh-autopair zsh-autosuggestions zsh-dwim zsh-reentry-hook zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
 
