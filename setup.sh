@@ -114,6 +114,7 @@ if [ "$LINKS" = TRUE ]; then
         LINK="$(realpath ~)/$(basename "$FILE")"
         make_link "$FILE" "$LINK"
     done
+    ln -s "$DOTFILES_DIRECTORY/home/.emacs-config.el" "$(realpath ~)/.emacs-config.el"
 
     make_link "$DOTFILES_DIRECTORY/home/cpp-entwickler.de-theme.el" "$(realpath ~)/.emacs.d/cpp-entwickler.de-theme.el"
     make_link "$DOTFILES_DIRECTORY/home/glances" "$(realpath ~)/.config/glances"
