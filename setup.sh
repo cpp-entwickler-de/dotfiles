@@ -83,7 +83,7 @@ function git_install
 
 if [ "$PACKAGES" = TRUE ]; then
     # install packages
-    sudo dnf install PackageKit-command-not-found adobe-source-code-pro-fonts adobe-source-sans-pro-fonts adobe-source-serif-pro-fonts autojump-zsh clang clang-analyzer clang11-devel clang-tools-extra cmake-gui colorgcc emacs-lucid fd-find fzf gcc gdb gdouros-symbola-fonts git git-delta git-lfs htop ImageMagick inxi iotop kcachegrind links llvm-devel llvm11 llvm11-devel lnav ncdu progress pv python-devel recode ripgrep rubygems sushi the_silver_searcher util-linux-user valgrind wireless-tools yank zsh
+    sudo dnf install PackageKit-command-not-found adobe-source-code-pro-fonts adobe-source-sans-pro-fonts adobe-source-serif-pro-fonts autojump-zsh clang clang-analyzer clang11-devel clang-tools-extra cmake-gui colorgcc emacs-lucid fd-find fzf gcc gdb gdouros-symbola-fonts git git-delta git-filter-repo git-lfs htop ImageMagick inxi iotop kcachegrind links llvm-devel llvm11 llvm11-devel lnav ncdu progress pv python-devel recode ripgrep rubygems sushi the_silver_searcher util-linux-user valgrind wireless-tools yank zsh
 
     # glances and modules
     sudo pip install glances psutil
