@@ -1850,7 +1850,9 @@ https://github.com/purcell/exec-path-from-shell
     "Select autojump directory via helm."
     (let ((j-arguments (list (or arguments
                            (helm :sources (helm-build-sync-source "Common Directories"
-                                            :candidates (eshell-autojump-candidates))
+                                            :candidates (-union (eshell-autojump-candidates)
+                                                                (delete-dups (mapcar 'abbreviate-file-name
+                                                                                     (ring-elements eshell-last-dir-ring)))))
                                  :prompt "Directory: "
                                  :buffer "*helm eshell-autojump*")))))
       (apply wrapped-function j-arguments)))
