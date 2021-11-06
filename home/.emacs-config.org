@@ -219,12 +219,11 @@ Show normal for single monitor, fullscreen for non-4k monitor
 
 (add-hook 'before-make-frame-hook '(lambda ()
                                      (setq default-frame-alist `((title . "IDE")
-                                                                 (name . "IDE")))
-                                     (if (<= (x-display-pixel-width) 1920)
-                                         (progn
-                                           (setq cpped-is-4k-monitor nil)
-                                           (push '(fullscreen . fullboth) default-frame-alist))
-                                       (setq cpped-is-4k-monitor t))))
+                                                                 (name . "IDE"))
+
+                                           cpped-is-4k-monitor (>= (x-display-pixel-width) 3840))
+                                     (unless cpped-is-4k-monitor
+                                       (push '(fullscreen . fullboth) default-frame-alist))))
 #+END_SRC
 
 Show below other windows
