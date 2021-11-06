@@ -1,6 +1,3 @@
-;; Break when showing message
-;; (setq debug-on-message "")
-
 (defvar bootstrap-version)
 (setq package-enable-at-startup nil)
 (setq straight-use-package-by-default t)

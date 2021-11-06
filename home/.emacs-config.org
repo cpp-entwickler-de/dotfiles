@@ -208,6 +208,11 @@ Do not ask for confirmation for new shell buffers
       eval-expression-debug-on-error debug-on-error)
 #+END_SRC
 
+** Debug on message
+#+BEGIN_SRC emacs-lisp
+;; (setq debug-on-message "")
+#+END_SRC
+
 *  User Interface
 ** Startup
 *** Disable startup screen
