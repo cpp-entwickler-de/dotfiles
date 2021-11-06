@@ -7305,7 +7305,9 @@ Archive when done, remove flag if reset to todo.
 *** [[https://github.com/unhammer/org-mru-clock][Switch to last used clock]]
 #+BEGIN_SRC emacs-lisp
 (use-package org-mru-clock
-  :custom (org-mru-clock-how-many 100))
+  :custom
+  (org-mru-clock-how-many 100)
+  (org-mru-clock-predicate #'org-mru-clock-exclude-done-and-archived))
 #+END_SRC
 
 *  Utilities
