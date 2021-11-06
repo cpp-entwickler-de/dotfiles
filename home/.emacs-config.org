@@ -4382,6 +4382,16 @@ TODO
   :config (bury-successful-compilation 1))
 #+END_SRC
 
+***** Support ANSI escape codes
+#+BEGIN_SRC emacs-lisp
+(defun cpped-colorize-compilation ()
+  "Colorize compilation output."
+  (let ((inhibit-read-only t))
+    (ansi-color-apply-on-region compilation-filter-start (point))))
+
+(add-hook 'compilation-filter-hook #'cpped-colorize-compilation)
+#+END_SRC
+
 ***** Show status in mode line
 #+BEGIN_SRC emacs-lisp
 (defvar-local compilation-run-p nil "Flag to indicate if a compilation was run for the current buffer.")
