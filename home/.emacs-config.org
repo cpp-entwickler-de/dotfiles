@@ -7262,6 +7262,31 @@ Archive when done, remove flag if reset to todo.
 (add-hook 'kill-emacs-hook #'cpped-punch-out)
 #+END_SRC
 
+*** Automatically stop clocking when entering system suspend/lock and restart on resume/unlock
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load "org-mru-clock"
+  (defun cpped-org-clock-in-out (stop-clocking)
+    (if stop-clocking
+        (progn
+          (org-clock-save)
+          (cpped-punch-out))
+      (progn
+        (cpped-punch-in)
+        (org-mru-clock-in))))
+  (dbus-register-signal :session
+                        "org.freedesktop.ScreenSaver"
+                        "/org/freedesktop/ScreenSaver"
+                        "org.freedesktop.ScreenSaver"
+                        "ActiveChanged"
+                        #'cpped-org-clock-in-out)
+  (dbus-register-signal :system
+                        "org.freedesktop.login1"
+                        "/org/freedesktop/login1"
+                        "org.freedesktop.login1.Manager"
+                        "PrepareForSleep"
+                        #'cpped-org-clock-in-out))
+#+END_SRC
+
 *** Clock in/out of task when starting/stopping
 #+BEGIN_SRC emacs-lisp
 (defun cpped-org-clock-in-if-starting ()
@@ -8782,10 +8807,7 @@ Open                ^^Create       ^^Work         ^^Task                        
 
   ("c" helm-org-capture-templates)
 
-  ("b" (if (not (org-clocking-p))
-           (org-mru-clock-in)
-         (cpped-punch-out)
-         (cpped-lock-screen)))
+  ("b" (cpped-lock-screen))
 
   ("r" org-mru-clock-in)
   ("i" org-clock-in)
