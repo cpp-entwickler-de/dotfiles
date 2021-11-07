@@ -6455,7 +6455,14 @@ Hide info buffer in buffer list
   (push '("*Org Agenda*" :position bottom :height 30) popwin:special-display-config)
   (push '("*Org Select*" :height 0.2 :position bottom :noselect nil :stick t) popwin:special-display-config)
   (push '("^CAPTURE-.+\*.org$" :position left :regexp t) popwin:special-display-config)
-  (font-lock-add-keywords 'org-mode `(("^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\|\\([0-9]+\\)/\\2\\)\\][^\n]*\n\\)" 1 'org-headline-done prepend)) 'append))
+  (font-lock-add-keywords 'org-mode `(("^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\|\\([0-9]+\\)/\\2\\)\\][^\n]*\n\\)" 1 'org-headline-done prepend)) 'append)
+  (add-hook 'org-mode-hook #'org-update-all-dblocks)
+  (defun cpped-org-update-all-dblocks ()
+    "Update all dynamic blocks in org-mode."
+    (when (equal major-mode 'org-mode)
+      (org-update-all-dblocks)))
+  (add-hook 'after-save-hook #'cpped-org-update-all-dblocks)
+  (add-hook 'window-state-change-hook #'cpped-org-update-all-dblocks) )
 
 (use-package helm-org
   :after (helm org))
