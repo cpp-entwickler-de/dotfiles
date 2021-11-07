@@ -4632,14 +4632,49 @@ Show API info via [[https://devdocs.io][devdocs.io]]
 #+END_SRC
 
 **** Navigation
-***** Show includes/namespaces in imenu
+***** Show includes/namespaces/preprocessor directives in imenu
 #+BEGIN_SRC emacs-lisp
 (require 'cc-menus)
 
-(add-to-list 'cc-imenu-c-generic-expression '("Include" "^[[:space:]]*#include[[:space:]]+[<\"]\\([^>\"]+\\)" 1))
+(defvar cpped-imenu-c-generic-expression nil)
+(defvar cpped-imenu-c++-generic-expression nil)
 
-(add-to-list 'cc-imenu-c++-generic-expression '("Include" "^[[:space:]]*#include[[:space:]]+[<\"]\\([^>\"]+\\)" 1))
-(add-to-list 'cc-imenu-c++-generic-expression '("Namespace" "^[[:space:]]*namespace[[:space:]]+\\([^/{]+\\)[[:space:]]*$" 1))
+(defconst cpped-cc-imenu-include '("Include" "^[[:space:]]*#include[[:space:]]+[<\"]\\([^>\"]+\\)" 1) "A C/C++ include pattern for imenu")
+(add-to-list 'cpped-imenu-c-generic-expression cpped-cc-imenu-include)
+(add-to-list 'cpped-imenu-c++-generic-expression cpped-cc-imenu-include)
+
+(defconst cpped-cc-imenu-pragma '("Preprocessor Pragma" "^[[:space:]]*#pragma \\(.+\\)$" 1) "A C/C++ preprocessor pragma pattern for imenu")
+(add-to-list 'cpped-imenu-c-generic-expression cpped-cc-imenu-pragma)
+(add-to-list 'cpped-imenu-c++-generic-expression cpped-cc-imenu-pragma)
+
+(defconst cpped-cc-imenu-define '("Preprocessor Define" "^[[:space:]]*#define \\(.+\\)$" 1) "A C/C++ preprocessor define pattern for imenu")
+(add-to-list 'cpped-imenu-c-generic-expression cpped-cc-imenu-define)
+(add-to-list 'cpped-imenu-c++-generic-expression cpped-cc-imenu-define)
+
+(defconst cpped-cc-imenu-undefine '("Preprocessor Undefine" "^[[:space:]]*#undef \\(.+\\)$" 1) "A C/C++ preprocessor undefine pattern for imenu")
+(add-to-list 'cpped-imenu-c-generic-expression cpped-cc-imenu-undefine)
+(add-to-list 'cpped-imenu-c++-generic-expression cpped-cc-imenu-undefine)
+
+(defconst cpped-cc-imenu-condition '("Preprocessor Condition" "^[[:space:]]*#\\(ifn?\\(def\\)?.+\\)$" 1) "A C/C++ preprocessor condition pattern for imenu")
+(add-to-list 'cpped-imenu-c-generic-expression cpped-cc-imenu-condition)
+(add-to-list 'cpped-imenu-c++-generic-expression cpped-cc-imenu-condition)
+
+(defconst cpped-cc-imenu-namespace '("Namespace" "^[[:space:]]*namespace[[:space:]]+\\([^/{]+\\)[[:space:]]*$" 1) "A C++ namespace pattern for imenu")
+(add-to-list 'cpped-imenu-c++-generic-expression cpped-cc-imenu-namespace)
+
+(nconc cc-imenu-c-generic-expression cpped-imenu-c-generic-expression)
+(nconc cc-imenu-c++-generic-expression cpped-imenu-c++-generic-expression)
+
+(defun cpped-custom-c-imenu-index (function)
+  "Add additional entries to C/C++ imenu. "
+  (nconc (funcall function)
+         (imenu--generic-function (cond ((equal major-mode 'c-mode)
+                                         cpped-imenu-c-generic-expression)
+                                        ((equal major-mode 'c++-mode)
+                                         cpped-imenu-c++-generic-expression)))))
+
+(with-eval-after-load "lsp-mode"
+  (advice-add 'lsp--imenu-create-index :around #'cpped-custom-c-imenu-index))
 #+END_SRC
 
 **** Editing
