@@ -7196,48 +7196,71 @@ Archive when done, remove flag if reset to todo.
 
 *** Remaining work time
 #+BEGIN_SRC emacs-lisp
-(defvar cpped-show-work-time nil "Whether to show work time in the mode line.")
-(defvar cpped-clocked-time-today 0 "The work time clocked today.")
-(defconst cpped-daily-work-minutes (* 8 60) "The number of hours of work per day.")
+(defvar cpped-show-work-time t "Whether to show work time in the mode line.")
+(defvar cpped-daily-work-hours 8 "The number of hours of work per day.")
 
-(defun cpped-init-clocked-time-today ()
-  "(Re-)Initialize the value of 'cpped-clocked-time-today'."
+(defun cpped-daily-work-minutes ()
+  "The number of minutes of work per day."
+  (* cpped-daily-work-hours 60))
+
+(defun cpped-weekly-work-minutes ()
+  "The number of minutes of work per week."
+  (* 5 (cpped-daily-work-minutes)))
+
+(defun cpped-monthly-work-minutes ()
+  "The number of minutes of work per month."
+  (* 4 (cpped-weekly-work-minutes)))
+
+(defun cpped-clocked-time (range)
+  "Return the clocked time for range."
   (interactive)
-  (setq cpped-clocked-time-today 0)
-  (let ((files (org-agenda-files)))
+  (let ((cpped-clocked-time 0)
+        (org-range (org-clock-special-range range))
+        (files (org-agenda-files)))
     (org-agenda-prepare-buffers files)
     (dolist (file files)
       (with-current-buffer (find-buffer-visiting file)
-        (setq cpped-clocked-time-today (+ cpped-clocked-time-today (org-clock-sum-today)))))))
+        (setq cpped-clocked-time (+ cpped-clocked-time (org-clock-sum (car org-range) (cadr org-range))))))
+    cpped-clocked-time))
 
-(cpped-init-clocked-time-today)
-
-(defun cpped-remaining-work-minutes ()
-  "Return the remaining minutes between clocked time today and `cpped-daily-work-minutes`. "
+(defun cpped-remaining-work-minutes (range &optional clocked-time)
+  "Return the remaining minutes between clocked time and work time."
   (interactive)
-  (- (+ cpped-clocked-time-today (if (org-clock-is-active)
-                                     (floor (- (float-time)
-                                               (float-time org-clock-start-time)) 60)
-                                   0))
-     cpped-daily-work-minutes))
+  (- (or clocked-time
+         (cpped-clocked-time range))
+     (pcase range
+       ('today (cpped-daily-work-minutes))
+       ('thisweek (cpped-weekly-work-minutes))
+       ('thismonth (cpped-monthly-work-minutes)))))
+
+(defun cpped-format-remaining-minutes (minutes)
+  "Format the remaining minutes."
+  (propertize (concat (if (< minutes 0)
+                          ""
+                        "+")
+                      (org-duration-from-minutes minutes))
+              'face
+              (list ':foreground (if (< minutes 0)
+                                     (face-attribute 'error :foreground)
+                                   (face-attribute 'info :foreground)))))
 
 (defun cpped-print-remaining-work-time ()
-  "Return the remaining time between clocked time today and `cpped-daily-work-minutes`. "
+  "Return the remaining time to work today/this week/this month."
   (interactive)
-  (if (and cpped-show-work-time
-           (org-clock-is-active))
-      (let* ((difference (cpped-remaining-work-minutes))
-             (display-text (format " %s%d:%02d"
-                                   (if (< difference 0)
-                                       "-"
-                                     "+")
-                                   (abs (/ difference 60))
-                                   (abs (% difference 60)))))
-        (add-face-text-property 0 (length display-text) (list ':foreground (if (< difference 0)
-                                                                               (face-attribute 'error :foreground)
-                                                                             (face-attribute 'info :foreground))) nil display-text)
-        display-text)
-    ""))
+  (when cpped-show-work-time
+    (let ((clocked-time-today (cpped-clocked-time 'today))
+          (clocked-time-this-week (cpped-clocked-time 'thisweek))
+          (clocked-time-this-month (cpped-clocked-time 'thismonth)))
+      (format " %s (%s/%s) 📅 %s (%s/%s) %s (%s/%s)"
+              (cpped-format-remaining-minutes (cpped-remaining-work-minutes 'today clocked-time-today))
+              (org-duration-from-minutes clocked-time-today)
+              (org-duration-from-minutes (cpped-daily-work-minutes))
+              (cpped-format-remaining-minutes (cpped-remaining-work-minutes 'thisweek clocked-time-this-week))
+              (org-duration-from-minutes clocked-time-this-week)
+              (org-duration-from-minutes (cpped-weekly-work-minutes))
+              (cpped-format-remaining-minutes (cpped-remaining-work-minutes 'thismonth clocked-time-this-month))
+              (org-duration-from-minutes clocked-time-this-month)
+              (org-duration-from-minutes (cpped-monthly-work-minutes))))))
 #+END_SRC
 
 *** Current task
@@ -7358,17 +7381,6 @@ Archive when done, remove flag if reset to todo.
     (org-clock-out)))
 
 (add-hook 'org-after-todo-state-change-hook #'cpped-org-clock-out-if-inactive)
-#+END_SRC
-
-*** Discover total time clocked today
-#+BEGIN_SRC emacs-lisp
-#+END_SRC
-
-*** Update cached clock time when clocking out
-#+BEGIN_SRC emacs-lisp
-(add-hook 'org-clock-out-hook (lambda ()
-                                (setq cpped-clocked-time-today (+ cpped-clocked-time-today (floor (- (float-time)
-                                                                                                     (float-time org-clock-start-time)) 60)))))
 #+END_SRC
 
 *** [[https://github.com/unhammer/org-mru-clock][Switch to last used clock]]
