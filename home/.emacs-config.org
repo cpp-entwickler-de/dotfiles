@@ -7240,6 +7240,20 @@ Archive when done, remove flag if reset to todo.
     ""))
 #+END_SRC
 
+*** Current task
+#+BEGIN_SRC emacs-lisp
+(defun cpped-print-current-task ()
+  "Return the currently clocked-in task and clocked time."
+  (interactive)
+  (when (org-clock-is-active)
+    (format "⏱ %s%s %s"
+            (org-duration-from-minutes (org-clock-get-clocked-time))
+            (if org-clock-effort
+                (concat "/" (org-duration-from-minutes (org-clock-effort)))
+              "")
+            org-clock-heading)))
+#+END_SRC
+
 *** Do not show default clocking information in mode line
 #+BEGIN_SRC emacs-lisp
 (advice-add 'org-clock-update-mode-line :override #'force-mode-line-update)
@@ -8817,7 +8831,7 @@ Run            ^^Info
 #+BEGIN_SRC emacs-lisp
 (defhydra cpped-hydra-planning (:exit t :hint nil)
   "
-☰ Planning %s(format \"%s %s\" (cpped-print-time) (cpped-print-remaining-work-time))
+☰ Planning %s(s-join \" \" (list (cpped-print-time) (cpped-print-remaining-work-time) (cpped-print-current-task)))
 
 Open                ^^Create       ^^Work         ^^Task                        ^^Timesheet
   _a_: Agenda           _c_: Entry     _b_: Break     _r_: Clock in recent task     _d_: Daily Scrum
