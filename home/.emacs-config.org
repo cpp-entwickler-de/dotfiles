@@ -2485,7 +2485,6 @@ https://github.com/purcell/exec-path-from-shell
   (treemacs-is-never-other-window t)
   (treemacs-silent-filewatch t)
   (treemacs-silent-refresh t)
-  (treemacs-git-mode 'deferred)
   (treemacs-goto-tag-strategy 'refetch-index)
   (treemacs-ignored-file-predicates '(treemacs--std-ignore-file-predicate))
   (treemacs-space-between-root-nodes nil)
@@ -2493,6 +2492,7 @@ https://github.com/purcell/exec-path-from-shell
   :config
   (push "\\*Treemacs\\*" helm-boring-buffer-regexp-list)
   (push "\\*Desktop Treemacs Helper\\*" helm-boring-buffer-regexp-list))
+  (treemacs-git-mode 'deferred))
 
 (use-package treemacs-projectile
   :after (treemacs projectile))
