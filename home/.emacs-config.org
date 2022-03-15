@@ -957,17 +957,7 @@ Helper function to figure out version control root directory
 #+BEGIN_SRC emacs-lisp
 (defvar cpped-project-directories (list "~/Projects" "~/projects") "A list of directories to check for projects.")
 
-(use-package ag
-  :ensure-system-package (ag . the_silver_searcher)
-  :custom
-  (ag-arguments '("--smart-case"))
-  (ag-context-lines 3)
-  (ag-highlight-search t)
-  (ag-project-root-function nil)
-  (ag-reuse-window t))
-
 (use-package projectile
-  :after ag
   :custom
   (projectile-completion-system 'helm)
   (projectile-create-missing-test-files t)
@@ -1094,17 +1084,6 @@ Helper function to figure out version control root directory
   :config (helm-projectile-on))
 #+END_SRC
 
-*** Grep
-#+BEGIN_SRC emacs-lisp
-(use-package helm-ag
-  :after (helm ag)
-  :custom
-  (helm-ag-base-command "ag --smart-case --nocolor --nogroup")
-  (helm-ag-use-grep-ignore-list t)
-  (helm-ag-use-agignore t)
-  (helm-ag-fuzzy-match t)
-  (helm-ag-insert-at-point 'symbol))
-#+END_SRC
 
 *** Popwin Fix
 #+BEGIN_SRC emacs-lisp
@@ -3260,11 +3239,8 @@ Some useful abbreviations
 **** [[https://github.com/mhayashi1120/Emacs-wgrep][Edit grep buffers]]
 #+BEGIN_SRC emacs-lisp
 (use-package wgrep
+  :hook (rg-mode . wgrep-rg-setup)
   :custom (wgrep-enable-key "e"))
-
-(use-package wgrep-ag
-  :after (wgrep ag)
-  :hook (ag-mode . wgrep-ag-setup))
 
 (use-package wgrep-helm
   :after (wgrep helm))
@@ -7675,8 +7651,6 @@ CMake                           ^^Git                           ^^Directories   
          (when build-dir
            (let ((default-directory (cpped-cmake-build-dir)))
              (helm-switch-shell)))))
-  ("f" (helm-ag (or (helm-ag--project-root)
-                    default-directory)))
   ("t" magit-todos-list)
   ("L" add-change-log-entry)
   ("C" cpped-cloc-project)
@@ -7756,7 +7730,6 @@ Open                             ^^Save                      ^^Close            
   ("a" cpped-close-editor)
 
   ("l" cpped-previous-buffer :exit nil)
-  ("f" helm-ag-buffers)
 
   ("v" git-timemachine)
   ("d" magit-diff-buffer-file)
@@ -7989,8 +7962,6 @@ _C-<right>_: Next word                 _y_: Down block                 _C-t_: Ne
 ** Finding
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-s") 'helm-occur)
-(global-set-key (kbd "M-s") 'helm-ag-buffers)
-(global-set-key (kbd "M-S-s") 'helm-projectile-ag)
 #+END_SRC
 
 ** Mark

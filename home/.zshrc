@@ -377,12 +377,6 @@ alias dnf="sudo dnf"
 alias log="sudo lnav"
 alias sysinfo="glances -1 --tree --fs-free-space --process-short-name -C ~/.config/glances"
 
-if command -v ag > /dev/null; then
-    alias ag='ag --smart-case --pager="less -MIRFX"'
-else
-    alias ag="grep"
-fi
-
 alias find="fd --glob"
 alias r=$LESS_COMMAND
 alias l="ls -AFhl1v --color --group-directories-first $*"
