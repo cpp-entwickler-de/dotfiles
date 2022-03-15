@@ -1,6 +1,7 @@
 (defvar bootstrap-version)
 (setq package-enable-at-startup nil)
 (setq straight-use-package-by-default t)
+(setq straight-check-for-modifications nil)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
       (bootstrap-version 5))
