@@ -90,7 +90,7 @@ Do not ask for confirmation for new shell buffers
                       (list-dependencies-of . "rpm -qR"))))
   (add-to-list 'system-packages-supported-package-managers
                '(pip .
-                     ((default-sudo . t)
+                     ((default-sudo . nil)
                       (install . "pip3 install")
                       (search . "pip3 search")
                       (uninstall . "pip3 uninstall")
