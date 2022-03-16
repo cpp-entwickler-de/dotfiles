@@ -4868,7 +4868,7 @@ https://github.com/google/googletest
 ***** Language Server
 #+BEGIN_SRC emacs-lisp
 (cpped-install-system-package "cmake-language-server" :package-manager 'pip)
-(add-hook 'cmake-mode-hook 'lsp)
+(add-hook 'cmake-mode-hook 'lsp-deferred)
 #+END_SRC
 
 ***** Formatting
@@ -4942,7 +4942,7 @@ https://github.com/google/googletest
 ***** Language server
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load "lsp-mode"
-  (add-hook 'dockerfile-mode-hook 'lsp))
+  (add-hook 'dockerfile-mode-hook 'lsp-deferred))
 #+END_SRC
 
 ***** [[https://github.com/redcoolbeans/dockerlint][Syntax checker]]
@@ -5092,7 +5092,7 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load "system-packages"
   (cpped-install-system-package "vscode-html-languageserver-bin" :package-manager 'npm)
-  (add-hook 'html-mode 'lsp))
+  (add-hook 'html-mode 'lsp-deferred))
 #+END_SRC
 
 ***** [[https://github.com/thedaviddias/HTMLHint][Syntax checker]]
@@ -5241,6 +5241,10 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 (push '("\\.tex\\'" . latex-mode) auto-mode-alist)
 (push '("\\.txi\\'" . texinfo-mode) auto-mode-alist)
 (push '("\\.bib\\'" . bibtex-mode) auto-mode-alist)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'latex-mode-hook 'lsp-deferred)
 #+END_SRC
 
 **** Documentation
