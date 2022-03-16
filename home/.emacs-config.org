@@ -1880,13 +1880,6 @@ https://github.com/purcell/exec-path-from-shell
                                 (add-hook 'eshell-pre-command-hook #'cpped-eshell-reenter nil t)))
 #+END_SRC
 
-*** Auto-completion
-**** Company (commands)
-#+BEGIN_SRC emacs-lisp
-(add-hook 'eshell-mode-hook (lambda()
-                              (set (make-local-variable 'company-backends) '((company-yasnippet company-shell company-keywords company-files company-capf company-dabbrev-code)))))
-#+END_SRC
-
 **** Helm (files/folders)
 #+BEGIN_SRC emacs-lisp
 (add-hook 'eshell-mode-hook (lambda ()
@@ -3228,13 +3221,6 @@ Some useful abbreviations
 (use-package change-inner)
 #+END_SRC
 
-*** Autocompletion
-#+BEGIN_SRC emacs-lisp
-(with-eval-after-load "company"
-  (add-hook 'text-mode-hook (lambda()
-                              (set (make-local-variable 'company-backends) '((company-files company-capf company-dabbrev company-ispell))))))
-#+END_SRC
-
 *** Utilities
 **** [[https://github.com/mhayashi1120/Emacs-wgrep][Edit grep buffers]]
 #+BEGIN_SRC emacs-lisp
@@ -4103,90 +4089,49 @@ Use [[https://editorconfig.org/][EditorConfig]] via [[https://github.com/editorc
 (use-package kurecolor)
 #+END_SRC
 
-***** Auto-completion
+***** [[https://github.com/minad/corfu][Autocompletion]]
 #+BEGIN_SRC emacs-lisp
-(use-package company
-  :hook (after-init . global-company-mode)
-  :custom
-  (company-auto-commit t)
-  (company-auto-commit-chars ".<>($!~")
-  (company-frontends '(company-preview-if-just-one-frontend company-pseudo-tooltip-unless-just-one-frontend))
-  (company-backends '((company-keywords company-yasnippet company-files company-capf company-dabbrev)))
-  (company-idle-delay 0)
-  (company-selection-wrap-around t)
-  (company-show-numbers nil)
-  (company-tooltip-align-annotations nil)
-  (company-tooltip-flip-when-above nil)
-  (company-transformers '(company-sort-by-backend-importance))
-  (company-tooltip-limit 30)
-  (company-tooltip-minimum-width 50)
-  (company-tooltip-offset-display 'scrollbar))
-
-(use-package company-statistics
-  :after company
-  :config (company-statistics-mode))
-
-
-  (use-package company-quickhelp
-    :after company
-    :config (company-quickhelp-mode 1))
-
-  (use-package company-box
-    :after company
-    :hook (company-mode . company-box-mode)
-    :custom (company-box-icons-alist 'company-box-icons-all-the-icons)
-    :config (setq company-box-icons-all-the-icons '((Unknown . "")
-                                                    (Text . "")
-                                                    (Method . "")
-                                                    (Function . "")
-                                                    (Constructor . "")
-                                                    (Field . "")
-                                                    (Variable . "")
-                                                    (Class . "")
-                                                    (Interface . "")
-                                                    (Module . "")
-                                                    (Property . "")
-                                                    (Unit . "")
-                                                    (Value . "")
-                                                    (Enum . "")
-                                                    (Keyword . "")
-                                                    (Snippet . "")
-                                                    (Color . "")
-                                                    (File . "")
-                                                    (Reference . "")
-                                                    (Folder . "")
-                                                    (EnumMember . "")
-                                                    (Constant . "")
-                                                    (Struct . "")
-                                                    (Event . "")
-                                                    (Operator . "")
-                                                    (TypeParameter . "")
-                                                    (Template . ""))))
+(use-package corfu
+    :custom
+    (corfu-cycle nil)
+    (corfu-auto t)
+    (corfu-separator ?\s)
+    (corfu-quit-at-boundary nil)
+    (corfu-quit-no-match nil)
+    ;(corfu-quit-no-match 'separator)
+    (corfu-preview-current nil)
+    (corfu-preselect-first nil)
+    (corfu-on-exact-match nil)
+    (corfu-echo-documentation nil)
+    (corfu-scroll-margin 5)
+    :init
+    (corfu-global-mode))
 #+END_SRC
 
-****** Line completion backend
+****** [[https://github.com/jdtsmith/kind-icon][Completion icons]]
 #+BEGIN_SRC emacs-lisp
-(defun cpped-company-line-backend (command &optional arg &rest ignored)
-  "Completes full lines."
-  (interactive (list 'interactive))
-  (cl-case command
-    (interactive (company-begin-backend 'cpped-company-line-backend))
-    (prefix (company-grab-line "^[\t\s]*\\(.+\\)" 1))
-    (candidates (save-excursion
-                  (save-restriction
-                    (widen)
-                    (all-completions arg
-                                     (delete-dups (split-string
-                                                   (replace-regexp-in-string (rx bol (+ whitespace))
-                                                                             ""
-                                                                             (concat (buffer-substring-no-properties (point-min)
-                                                                                                                     (line-beginning-position))
-                                                                                     (buffer-substring-no-properties (line-end-position)
-                                                                                                                     (point-max))))
-                                                   (rx (or "\r\n" (any "\r\n")))
-                                                   t))))))))
+(use-package kind-icon
+  :after corfu
+  :custom
+  (kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly
+  :config
+  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+#+END_SRC
 
-(add-to-list 'company-backends 'cpped-company-line-backend)
+****** [[https://github.com/minad/cape][Add more CAPF]]
+#+BEGIN_SRC emacs-lisp
+(use-package cape
+  :after yasnippet
+  :custom
+  (cape-dabbrev-check-other-buffers nil)
+  :config
+  ;;(add-to-list 'completion-at-point-functions #'cape-tex)
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-abbrev)
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-keyword)
+  (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-silent)
+  (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-purify))
 #+END_SRC
 
 ***** [[https://github.com/davidshepherd7/electric-operator][Automatic spacing]]
@@ -4722,16 +4667,6 @@ Show API info via [[https://devdocs.io][devdocs.io]]
    '(("{" "}" nil (c-mode c++-mode)))))
 #+END_SRC
 
-***** Auto-completion
-#+BEGIN_SRC emacs-lisp
-(use-package company-c-headers
-  :after company
-  :custom (company-c-headers-path-user '("." "../Includes/")))
-
-(add-hook 'c-mode-common-hook (lambda()
-                                (set (make-local-variable 'company-backends) '((company-yasnippet company-files company-capf company-dabbrev-code company-ispell cpped-company-line-backend)))))
-#+END_SRC
-
 ***** Flip words
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load "bool-flip"
@@ -4934,12 +4869,6 @@ https://github.com/google/googletest
 (add-hook 'cmake-mode-hook 'lsp)
 #+END_SRC
 
-***** Autocompletion
-#+BEGIN_SRC emacs-lisp
-(add-hook 'cmake-mode-hook (lambda()
-                             (set (make-local-variable 'company-backends) '((company-yasnippet company-lsp company-files company-capf company-dabbrev-code company-ispell cpped-company-line-backend)))))
-#+END_SRC
-
 ***** Formatting
 #+BEGIN_SRC emacs-lisp
 (cpped-install-system-package "cmake-format" :package-manager 'pip)
@@ -5012,12 +4941,6 @@ https://github.com/google/googletest
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load "lsp-mode"
   (add-hook 'dockerfile-mode-hook 'lsp))
-#+END_SRC
-
-***** Autocompletion
-#+BEGIN_SRC emacs-lisp
-(add-hook 'dockerfile-mode-hook (lambda()
-                                  (set (make-local-variable 'company-backends) '((company-yasnippet company-files company-capf company-dabbrev-code company-ispell cpped-company-line-backend)))))
 #+END_SRC
 
 ***** [[https://github.com/redcoolbeans/dockerlint][Syntax checker]]
@@ -5168,12 +5091,6 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 (with-eval-after-load "system-packages"
   (cpped-install-system-package "vscode-html-languageserver-bin" :package-manager 'npm)
   (add-hook 'html-mode 'lsp))
-#+END_SRC
-
-***** Auto-completion
-#+BEGIN_SRC emacs-lisp
-(add-hook 'c-mode-common-hook (lambda()
-                                (set (make-local-variable 'company-backends) '((company-yasnippet company-files company-capf company-dabbrev-code company-ispell cpped-company-line-backend)))))
 #+END_SRC
 
 ***** [[https://github.com/thedaviddias/HTMLHint][Syntax checker]]
@@ -5397,10 +5314,6 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
              :repo "Malabarba/comment-or-uncomment-sexp"))
 #+END_SRC
 
-**** Auto-completion
-#+BEGIN_SRC emacs-lisp
-(add-hook 'elisp-mode-hook (lambda()
-                             (set (make-local-variable 'company-backends) '((company-yasnippet company-elisp company-keywords company-files company-capf company-dabbrev-code company-ispell cpped-company-line-backend)))))
 #+END_SRC
 
 **** Documentation
@@ -5454,13 +5367,6 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
                             (setq-local imenu-generic-expression '(("Items" "^[[:space:]]*\\([a-zA-Z0-9]+\\)[[:space:]\n]*{" 1))))))
 #+END_SRC
 
-**** Auto-completion
-#+BEGIN_SRC emacs-lisp
-(use-package company-qml
-  :hook (qml-mode-hook . (lambda()
-                           (set (make-local-variable 'company-backends '((company-yasnippet company-qml company-keywords company-files company-capf company-dabbrev-code company-ispell cpped-company-line-backend)))))))
-#+END_SRC
-
 **** Documentation
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load "devdocs-browser"
@@ -5481,13 +5387,6 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 #+END_SRC
 
 **** Editing
-***** Autocompletion
-#+BEGIN_SRC emacs-lisp
-(use-package company-shell
-  :hook (sh-mode . (lambda()
-                     (set (make-local-variable 'company-backends) '((company-yasnippet company-shell company-keywords company-files company-capf company-dabbrev-code company-ispell cpped-company-line-backend))))))
-#+END_SRC
-
 ***** Syntax checkers
 #+BEGIN_SRC emacs-lisp
 (use-package flycheck-checkbashisms
@@ -5646,12 +5545,6 @@ Show current XML path as current function
 ***** Always add XML declaration
 #+BEGIN_SRC emacs-lisp
 (defvar nxml-auto-insert-xml-declaration-flag t)
-#+END_SRC
-
-***** Autocompletion
-#+BEGIN_SRC emacs-lisp
-(add-hook 'nxml-mode-hook (lambda()
-                            (set (make-local-variable 'company-backends) '((company-yasnippet company-nxml company-files company-capf company-dabbrev-code company-ispell cpped-company-line-backend)))))
 #+END_SRC
 
 ***** Language Server
@@ -8145,7 +8038,6 @@ Identifier    ^^Namespace
   ("i" cpped-hydra-edit-insert/body)
   ("'" quoted-insert)
   ("R" cpped-remove-duplicate-lines)
-  ("<" helm-company)
   ("g" (if (equal major-mode 'org-mode)
            (org-edit-special)
          (narrow-to-defun)))
