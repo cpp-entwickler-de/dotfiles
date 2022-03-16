@@ -691,12 +691,12 @@ Helper function to figure out version control root directory
 
 *** Running process
 #+BEGIN_SRC emacs-lisp
-(defvar-local cpped-eshell-process-running nil "Flag to indicate if a process is running for the current buffer.")
-(defvar-local cpped-eshell-current-command-start-time nil)
+(defvar-local cpped-process-running nil "Flag to indicate if a process is running for the current buffer.")
+(defvar-local cpped-current-process-start-time nil)
 
 (defun cpped-get-run-time ()
   (time-subtract (current-time)
-                 cpped-eshell-current-command-start-time))
+                 cpped-current-process-start-time))
 
 (defun cpped-format-run-time (time)
   (let* ((run-time (truncate (float-time time)))
@@ -720,8 +720,8 @@ Helper function to figure out version control root directory
                 (format "%02ds" seconds)
               (format "%ds" seconds)))))
 
-(defun cpped-powerline-eshell-process-running ()
-  (when cpped-eshell-process-running
+(defun cpped-powerline-process-running ()
+  (when cpped-process-running
     (concat "  " (cpped-format-run-time (cpped-get-run-time)))))
 #+END_SRC
 
@@ -920,7 +920,7 @@ Helper function to figure out version control root directory
                                 (powerline-raw (cpped-powerline-mode-icon face1) face1 'l)
                                 (powerline-raw (concat (cpped-powerline-buffer-id face1) " ") face1 'l)
                                 (funcall separator-left face1 mode-line)
-                                (powerline-raw (cpped-powerline-eshell-process-running) face1 'l)
+                                (powerline-raw (cpped-powerline-process-running) face1 'l)
                                 (funcall separator-left face1 mode-line)
                                 (powerline-raw (when (fboundp 'cpped-powerline-version-control)
                                                  (concat (cpped-powerline-version-control) " ")) mode-line 'l)
@@ -1936,11 +1936,11 @@ https://github.com/purcell/exec-path-from-shell
 *** Show running command status in mode line
 #+BEGIN_SRC emacs-lisp
 (advice-add 'eshell-command-started :before (lambda ()
-                                              (setq cpped-eshell-process-running t)
+                                              (setq cpped-process-running t)
                                               (force-mode-line-update t)))
 
 (advice-add 'eshell-command-finished :before (lambda ()
-                                               (setq cpped-eshell-process-running nil)
+                                               (setq cpped-process-running nil)
                                                (force-mode-line-update t)))
 #+END_SRC
 
@@ -1963,11 +1963,11 @@ https://github.com/purcell/exec-path-from-shell
 
 (defun cpped-eshell-current-command-start ()
   "Save timestamp on command start."
-  (setq cpped-eshell-current-command-start-time (current-time)))
+  (setq cpped-eshell-current-process-start-time (current-time)))
 
 (defun cpped-eshell-current-command-stop ()
   "Show notification when command stops."
-  (when cpped-eshell-current-command-start-time
+  (when cpped-eshell-current-process-start-time
     (let ((run-time (truncate (float-time (cpped-get-run-time)))))
       (unless (< run-time cpped-eshell-minimum-interesting-run-time)
         (let ((time-string (cpped-format-run-time (cpped-get-run-time)))
@@ -1991,7 +1991,7 @@ https://github.com/purcell/exec-path-from-shell
                                 :timeout (if (= 0 eshell-last-command-status)
                                              7200
                                            0)))))
-    (setq cpped-eshell-current-command-start-time nil)))
+    (setq cpped-eshell-current-process-start-time nil)))
 
 (add-hook 'eshell-mode-hook #'(lambda ()
                                 (add-hook 'eshell-pre-command-hook #'cpped-eshell-current-command-start nil t)
