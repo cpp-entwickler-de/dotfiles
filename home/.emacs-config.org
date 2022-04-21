@@ -592,7 +592,7 @@ Prettify escaped newline
       (setq cpped-project-dir-checked t))
     cpped-project-dir)
 
-  (defun cpped-powerline-project-id ()
+  (defun cpped-modeline-project-id ()
     (let ((buffer-location (cpped-buffer-name)))
       (when buffer-location
 	(let* ((project-root (cpped-project-dir))
@@ -615,7 +615,7 @@ Prettify escaped newline
 
 *** Major mode icon
 #+BEGIN_SRC emacs-lisp
-(defun cpped-powerline-mode-icon (icon-face)
+(defun cpped-modeline-mode-icon (icon-face)
   (let ((icon (all-the-icons-icon-for-buffer)))
     (unless (symbolp icon)
       (propertize icon
@@ -632,7 +632,7 @@ Helper function to figure out version control root directory
 (defvar cpped-special-buffer-names-alist nil "A list of buffer name transformations.")
 
 (with-eval-after-load "projectile"
-  (defun cpped-powerline-buffer-id (icon-face)
+  (defun cpped-modeline-buffer-id (icon-face)
     (let* ((home-dir (getenv "HOME"))
 	   (buffer-virtual-name (cpped-buffer-name))
 	   (buffer-name (let ((name (if buffer-virtual-name
@@ -671,7 +671,7 @@ Helper function to figure out version control root directory
 
 *** Docker project
 #+BEGIN_SRC emacs-lisp
-(defun cpped-powerline-docker-project ()
+(defun cpped-modeline-docker-project ()
   (when (cpped-is-docker-project-p)
     ""))
 #+END_SRC
@@ -679,7 +679,7 @@ Helper function to figure out version control root directory
 *** Git Info
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load "magit"
-  (defun cpped-powerline-version-control ()
+  (defun cpped-modeline-version-control ()
     (when (magit-inside-worktree-p t)
       (let* ((branch (magit-get-current-branch))
              (branch-head (magit-rev-parse "--short" branch))
@@ -721,21 +721,21 @@ Helper function to figure out version control root directory
                 (format "%02ds" seconds)
               (format "%ds" seconds)))))
 
-(defun cpped-powerline-process-running ()
+(defun cpped-modeline-process-running ()
   (when cpped-process-running
     (concat "  " (cpped-format-run-time (cpped-get-run-time)))))
 #+END_SRC
 
 *** Show if file is opened in su-mode
 #+BEGIN_SRC emacs-lisp
-(defun cpped-powerline-su ()
+(defun cpped-modeline-su ()
   (when (string-match "^/su\\(do\\)?:" default-directory)
     ""))
 #+END_SRC
 
 *** Modification
 #+BEGIN_SRC emacs-lisp
-(defun cpped-powerline-modified ()
+(defun cpped-modeline-modified ()
   (pcase (format-mode-line "%*")
     (`"*" "")
     (`"-" (if buffer-file-name
@@ -751,20 +751,20 @@ Helper function to figure out version control root directory
 
 *** Auto-format
 #+BEGIN_SRC emacs-lisp
-(defun cpped-powerline-auto-format ()
+(defun cpped-modeline-auto-format ()
   (when (bound-and-true-p format-all-mode)
     ""))
 #+END_SRC
 
 *** Cursor position
 #+BEGIN_SRC emacs-lisp
-(defun cpped-powerline-position-info ()
+(defun cpped-modeline-position-info ()
   (format "%s %s" (format-mode-line "%4l ") (format-mode-line "%3c")))
 #+END_SRC
 
 *** Selected region
 #+BEGIN_SRC emacs-lisp
-(defun cpped-powerline-region-info ()
+(defun cpped-modeline-region-info ()
   (when mark-active
     (format " %s/%s/%s"
             (count-lines (region-beginning) (region-end))
@@ -774,7 +774,7 @@ Helper function to figure out version control root directory
 
 *** IEdit Info
 #+BEGIN_SRC emacs-lisp
-(defun cpped-powerline-iedit-info ()
+(defun cpped-modeline-iedit-info ()
   (when iedit-mode
     (format " %s/%s"
             iedit-occurrence-index
@@ -783,7 +783,7 @@ Helper function to figure out version control root directory
 
 *** Show if overwrite mode is active
 #+BEGIN_SRC emacs-lisp
-(defun cpped-powerline-overwrite-mode ()
+(defun cpped-modeline-overwrite-mode ()
   (when overwrite-mode
     "סּ"))
 #+END_SRC
@@ -791,21 +791,21 @@ Helper function to figure out version control root directory
 *** Show if typo mode is active
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load "typo"
-  (defun cpped-powerline-typo-mode ()
+  (defun cpped-modeline-typo-mode ()
     (when typo-mode
       "")))
 #+END_SRC
 
 *** Show if buffer is narrowed
 #+BEGIN_SRC emacs-lisp
-(defun cpped-powerline-narrowed ()
+(defun cpped-modeline-narrowed ()
     (when (buffer-narrowed-p)
       ""))
 #+END_SRC
 
 *** Show if buffer is filtered
 #+BEGIN_SRC emacs-lisp
-(defun cpped-powerline-filtered ()
+(defun cpped-modeline-filtered ()
     (when loccur-mode
       ""))
 #+END_SRC
@@ -826,7 +826,7 @@ Helper function to figure out version control root directory
                                                           (setq cpped-caps-lock-active (eq (logand led-mask 1) 1)
                                                                 cpped-num-lock-active (eq (logand led-mask 2) 2))))))))
 
-(defun cpped-powerline-key-lock (lock icon)
+(defun cpped-modeline-key-lock (lock icon)
    (when lock
      icon))
 #+END_SRC
@@ -841,7 +841,7 @@ Helper function to figure out version control root directory
 (advice-add 'term-line-mode :after (lambda ()
                                      (setq cpped-term-char-mode nil)))
 
-(defun cpped-powerline-term-input-mode ()
+(defun cpped-modeline-term-input-mode ()
   (when (and (equal major-mode 'term-mode)
              cpped-term-char-mode)
     ""))
@@ -849,103 +849,94 @@ Helper function to figure out version control root directory
 
 *** Current function
 #+BEGIN_SRC emacs-lisp
-(defun cpped-powerline-which-function ()
-  (let ((current-function (substring-no-properties (if which-function-mode
-                                                       (which-function)
-                                                     ""))))
+(defun cpped-modeline-which-function ()
+  (let ((current-function (substring-no-properties (or (when which-function-mode
+                                                         (which-function))
+                                                         ""))))
     (unless (= 0 (length current-function))
-      (concat " " current-function))))
+      (concat " " (truncate-string-to-width current-function 40 nil nil "…")))))
 #+END_SRC
 
 *** Check Status
 #+BEGIN_SRC emacs-lisp
-(defvar cpped-powerline-check-status-functions nil "A list of functions that format mode line status data.")
+(defvar cpped-modeline-check-status-functions nil "A list of functions that format mode line status data.")
 
 (defface cpped-check-status-info `((t :inherit info
                                       :weight ultra-bold))
   "Face used for modeline check info status."
-  :group 'cpped-powerline-check-status)
+  :group 'cpped-modeline-check-status)
 
 (defface cpped-check-status-warning `((t :inherit warning
                                          :weight ultra-bold))
   "Face used for modeline check warning status."
-  :group 'cpped-powerline-check-status)
+  :group 'cpped-modeline-check-status)
 
 (defface cpped-check-status-error `((t :inherit error
                                        :weight ultra-bold))
   "Face used for modeline check error status."
-  :group 'cpped-powerline-check-status)
+  :group 'cpped-modeline-check-status)
 
-(defun cpped-powerline-check-status (face)
+(defun cpped-modeline-check-status (face)
   "Collect check status information."
   (let ((status (mapconcat 'identity
-                           (remove nil (mapcar 'funcall cpped-powerline-check-status-functions))
+                           (remove nil (mapcar 'funcall cpped-modeline-check-status-functions))
                            " ")))
     (add-face-text-property 0 (length status) (list ':background (face-attribute face :background)) nil status)
     status))
 #+END_SRC
 
-*** Powerline
+*** Display on top
 #+BEGIN_SRC emacs-lisp
-(use-package powerline
-  :custom
-  (powerline-default-separator nil)
-  (powerline-display-hud nil)
-  (powerline-height 20))
+(defface shark-bytes-mode-line-emphasis '((t :inherit mode-line :weight bold)) "")
+(defface shark-bytes-mode-line-de-emphasis '((t :inherit mode-line :height 0.7 :weight extra-light)) "")
 
-(defun cpped-powerline-theme ()
-  "Setup the default mode-line."
-  (interactive)
-  (setq-default mode-line-format
-                '("%e"
-                  (:eval
-                   (let* ((active (powerline-selected-window-active))
-                          (mode-line (if active
-                                         'mode-line
-                                       'mode-line-inactive))
-                          (face1 (if active
-                                     'powerline-active1
-                                   'powerline-inactive1))
-                          (face2 (if active
-                                     'powerline-active2
-                                   'powerline-inactive2))
-                          (separator-left (intern (format "powerline-%s-%s"
-                                                          (powerline-current-separator)
-                                                          (cdr powerline-default-separator-dir))))
-                          (separator-right (intern (format "powerline-%s-%s"
-                                                           (powerline-current-separator)
-                                                           (car powerline-default-separator-dir))))
-                          (lhs (list
-                                (powerline-raw (cpped-powerline-project-id) mode-line 'r)
-                                (funcall separator-left mode-line face1)
-                                (powerline-raw (cpped-powerline-mode-icon face1) face1 'l)
-                                (powerline-raw (concat (cpped-powerline-buffer-id face1) " ") face1 'l)
-                                (funcall separator-left face1 mode-line)
-                                (powerline-raw (cpped-powerline-process-running) face1 'l)
-                                (funcall separator-left face1 mode-line)
-                                (powerline-raw (when (fboundp 'cpped-powerline-version-control)
-                                                 (concat (cpped-powerline-version-control) " ")) mode-line 'l)
-                                (funcall separator-left mode-line face2)
-                                (powerline-raw (cpped-powerline-su) face2 'l)
-                                (powerline-raw (cpped-powerline-modified) face2 'l)
-                                (powerline-raw (cpped-powerline-overwrite-mode) face2 'l)
-                                (powerline-raw (cpped-powerline-auto-format) face2 'l)
-                                (powerline-raw (cpped-powerline-typo-mode) face2 'l)
-                                (powerline-raw (cpped-powerline-narrowed) face2 'l)
-                                (powerline-raw (cpped-powerline-filtered) face2 'l)
-                                (powerline-raw (cpped-powerline-key-lock (symbol-value 'cpped-caps-lock-active) "") face2 'l)
-                                (powerline-raw (cpped-powerline-key-lock (symbol-value 'cpped-num-lock-active) "") face2 'l)
-                                (powerline-raw (cpped-powerline-term-input-mode) face2 'l)
-                                (powerline-raw (cpped-powerline-position-info) face2 'l)
-                                (powerline-raw (cpped-powerline-region-info) face2 'l)
-                                (powerline-raw (cpped-powerline-iedit-info) face2 'l)
-                                (powerline-raw (cpped-powerline-check-status (symbol-value 'face2)) face2 'l)
-                                (powerline-raw " " face2)
-                                (funcall separator-left face2 mode-line)
-                                (powerline-raw (cpped-powerline-which-function) mode-line 'l))))
-                     (concat (powerline-render lhs)))))))
+(defvar cpped-selected-window nil)
+(add-function :before pre-redisplay-function (lambda (_wins) (setq cpped-selected-window (selected-window))))
 
-(cpped-powerline-theme)
+(setq-default mode-line-format nil)
+(setq-default header-line-format
+              '((:eval
+                 (let* ((mode-line-face (if (eq (frame-selected-window) cpped-selected-window)
+                                       'mode-line
+                                     'mode-line-inactive))
+                        (left-side (mapconcat #'identity
+                                              (-non-nil (list (cpped-modeline-mode-icon mode-line-face)
+                                                              (cpped-modeline-project-id)
+                                                              (propertize (or (when (fboundp 'cpped-modeline-version-control)
+                                                                                (cpped-modeline-version-control))
+                                                                              "")
+                                                                          'face 'shark-bytes-mode-line-de-emphasis)
+                                                              (propertize (or (cpped-modeline-buffer-id mode-line-face)
+                                                                              "")
+                                                                          'face 'shark-bytes-mode-line-emphasis)
+                                                              (propertize (or (cpped-modeline-which-function)
+                                                                              "")
+                                                                          'face 'shark-bytes-mode-line-de-emphasis
+                                                                          'display '(raise 0.0))))
+                                              "  "))
+                        (right-side (mapconcat #'identity
+                                          (-non-nil (list (cpped-modeline-process-running)
+                                                          (cpped-modeline-su)
+                                                          (cpped-modeline-modified)
+                                                          (cpped-modeline-overwrite-mode)
+                                                          (cpped-modeline-auto-format)
+                                                          (cpped-modeline-typo-mode)
+                                                          (cpped-modeline-narrowed)
+                                                          (cpped-modeline-filtered)
+                                                          (cpped-modeline-key-lock (symbol-value 'cpped-caps-lock-active) "")
+                                                          (cpped-modeline-key-lock (symbol-value 'cpped-num-lock-active) "")
+                                                          (cpped-modeline-term-input-mode)
+                                                          (cpped-modeline-position-info)
+                                                          (cpped-modeline-region-info)
+                                                          (cpped-modeline-iedit-info)
+                                                          (cpped-modeline-check-status (symbol-value 'mode-line-face))
+                                                          ))
+                                          "  ")))
+                    (concat (propertize "  " 'display `(raise +0.4))
+                                       left-side
+                                       (propertize " " 'display `(space :align-to (- right ,(* 1.1 (length right-side)))))
+                                       (propertize " " 'display `(raise -0.4))
+                                       right-side)))))
 #+END_SRC
 
 *** Update every second
@@ -1763,14 +1754,14 @@ https://github.com/purcell/exec-path-from-shell
                                           'face `(:weight 'ultra-bold))))
 
 (setq eshell-prompt-function (lambda ()
-                               (concat (cpped-eshell-prompt-section 'powerline-active1
-                                                                    'powerline-active2
+                               (concat (cpped-eshell-prompt-section 'modeline-active1
+                                                                    'modeline-active2
                                                                     (cpped-eshell-prompt-result)
                                                                     (cpped-eshell-prompt-user)
                                                                     (cpped-eshell-prompt-host)
                                                                     (cpped-eshell-prompt-docker)
-                                                                    (cpped-powerline-version-control))
-                                       (cpped-eshell-prompt-section 'powerline-active2
+                                                                    (cpped-modeline-version-control))
+                                       (cpped-eshell-prompt-section 'modeline-active2
                                                                     'mode-line
                                                                     (cpped-eshell-prompt-path))
                                        "\n▶ "))
@@ -1942,7 +1933,7 @@ https://github.com/purcell/exec-path-from-shell
 
 *** Show last command status in mode line
 #+BEGIN_SRC emacs-lisp
-(defun cpped-powerline-eshell-status ()
+(defun cpped-modeline-eshell-status ()
   "Format the mode line eshell status information."
   (when (and (equal major-mode 'eshell-mode)
              (> eshell-last-command-status 0))
@@ -1950,7 +1941,7 @@ https://github.com/purcell/exec-path-from-shell
                             'face `(:foreground, (face-attribute 'error :foreground)
                                                  :weight 'bold)))))
 
-(add-to-list 'cpped-powerline-check-status-functions 'cpped-powerline-eshell-status)
+(add-to-list 'cpped-modeline-check-status-functions 'cpped-modeline-eshell-status)
 #+END_SRC
 
 *** Notify when long-running command finishes
@@ -3266,17 +3257,17 @@ Some useful abbreviations
                                                          (when (flyspell-overlay-p buffer-overlay)
                                                              (setq cpped-flyspell-errors (1+ cpped-flyspell-errors))))
                                                        (force-mode-line-update)))
-  (defun cpped-powerline-flyspell-status()
+  (defun cpped-modeline-flyspell-status()
     "Format the modeline flyspell information."
     (when (and flyspell-mode
                (> cpped-flyspell-errors 0))
       (propertize (format " %d" cpped-flyspell-errors)
                           'face 'cpped-check-status-error)))
-  (add-to-list 'cpped-powerline-check-status-functions 'cpped-powerline-flyspell-status))
 
 (use-package helm-flyspell
   :after (helm flyspell)
   :config (advice-add #'flyspell-auto-correct-word :override #'helm-flyspell-correct))
+  (add-to-list 'cpped-modeline-check-status-functions 'cpped-modeline-flyspell-status))
 #+END_SRC
 
 *** [[https://github.com/nschum/auto-dictionary-mode][Automatic dictionary selection]]
@@ -3955,13 +3946,13 @@ Handler to close buffer after quitting ccmake.
     (cond ((> cpped-cov-percentage-covered 90) 'cpped-check-status-info)
           ((> cpped-cov-percentage-covered 30) 'cpped-check-status-warning)
           (t 'cpped-check-status-error)))
-  (defun cpped-powerline-coverage()
+  (defun cpped-modeline-coverage()
     "Format the modeline coverage information."
     (when cov-coverage-file
       (let ((face (cpped-coverage-status-face)))
         (propertize (format " %d%%" cpped-cov-percentage-covered)
                     'face face))))
-  (add-to-list 'cpped-powerline-check-status-functions 'cpped-powerline-coverage))
+  (add-to-list 'cpped-modeline-check-status-functions 'cpped-modeline-coverage))
 #+END_SRC
 
 **** Navigation
@@ -4170,7 +4161,7 @@ Use [[https://editorconfig.org/][EditorConfig]] via [[https://github.com/editorc
   :config
   (push "^\\*Flycheck.+\\*$" helm-boring-buffer-regexp-list)
   (push '("^\\*Flycheck.+\\*$" :regexp t :dedicated t :position bottom) popwin:special-display-config)
-  (defun cpped-powerline-flycheck-status-face ()
+  (defun cpped-modeline-flycheck-status-face ()
     (pcase flycheck-last-status-change
       (`errored 'cpped-check-status-error)
       (`finished
@@ -4181,15 +4172,15 @@ Use [[https://editorconfig.org/][EditorConfig]] via [[https://github.com/editorc
                    (.info 'cpped-check-status-info)))
          'cpped-check-status-info))
       (_ 'cpped-check-status-warning)))
-  (defun cpped-powerline-flycheck-status ()
+  (defun cpped-modeline-flycheck-status ()
     (when (and (boundp 'flycheck-last-status-change)
                (equal flycheck-last-status-change 'finished))
       (let ((issues (let-alist (flycheck-count-errors flycheck-current-errors)
                       (+ (or .warning 0) (or .error 0) (or .info 0))))
-            (face (cpped-powerline-flycheck-status-face)))
+            (face (cpped-modeline-flycheck-status-face)))
         (propertize (format " %d" issues)
                      'face face))))
-  (add-to-list 'cpped-powerline-check-status-functions 'cpped-powerline-flycheck-status))
+  (add-to-list 'cpped-modeline-check-status-functions 'cpped-modeline-flycheck-status))
 #+END_SRC
 
 Custom error highlighting (colored line under location)
@@ -4331,7 +4322,7 @@ TODO
                                                     compilation-finished-successfully-p (string-match "^finished" message))
                                               (force-mode-line-update)))
 
-(defun cpped-powerline-compilation-status ()
+(defun cpped-modeline-compilation-status ()
   "Format the mode line compilation information."
   (when compilation-run-p
     (mapconcat 'identity
@@ -4357,7 +4348,7 @@ TODO
                                             " / ")))
                " ")))
 
-  (add-to-list 'cpped-powerline-check-status-functions 'cpped-powerline-compilation-status)
+(add-to-list 'cpped-modeline-check-status-functions 'cpped-modeline-compilation-status)
 #+END_SRC
 
 ***** Show notification
