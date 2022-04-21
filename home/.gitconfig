@@ -263,6 +263,12 @@ lastmonth = !git log --all --no-merges --since='31 days ago' --abbrev-commit
 worklog = !git log --all --no-merges --since='7 days ago' --format='%<(28,trunc)%Cgreen%cr %C(auto)%d %s' --author=$(git config user.email)
 worklog-month = !git log --all --no-merges --since='31 days ago' --format='%<(28,trunc)%Cgreen%cr %C(auto)%d %s' --author=$(git config user.email)
 
+# show tags by date
+tag-dates = log --tags --simplify-by-decoration --pretty='format:%ai %d'
+
+# show latest tag
+latest-tag = describe --abbrev=0 --tags
+
 # switch branch with selection
 switch-branch = !git checkout $(git branch -a | sed -r 's/^[\\* \\(]*([^ ]+).*$/\\1/' | peco --select-1 --prompt 'Branch:')
 
@@ -294,6 +300,9 @@ fixup = commit --fixup
 
 # create zip archive
 zip = archive --format zip
+
+# unstage
+unstage = reset HEAD --
 
 # undo last commit
 uncommit = reset soft HEAD~1
