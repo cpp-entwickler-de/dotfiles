@@ -233,7 +233,8 @@ Show normal for single monitor, fullscreen for non-4k monitor
 
 (add-hook 'before-make-frame-hook '(lambda ()
                                      (setq default-frame-alist `((title . "IDE")
-                                                                 (name . "IDE"))
+                                                                 (name . "IDE")
+                                                                 (internal-border-width . 8))
 
                                            cpped-is-4k-monitor (>= (x-display-pixel-width) 3840))
                                      (unless cpped-is-4k-monitor
