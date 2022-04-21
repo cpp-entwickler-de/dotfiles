@@ -13,7 +13,11 @@
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
-(setq use-package-enable-imenu-support t)
+(setq use-package-enable-imenu-support t
+      use-package-verbose init-file-debug
+      use-package-expand-minimally (not init-file-debug)
+      use-package-compute-statistics init-file-debug)
+
 (straight-use-package 'use-package)
 
 ;; Save customizations to different file

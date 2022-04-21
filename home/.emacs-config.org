@@ -204,8 +204,8 @@ Do not ask for confirmation for new shell buffers
 
 ** Debug on error
 #+BEGIN_SRC emacs-lisp
-(setq debug-on-error nil
-      eval-expression-debug-on-error debug-on-error)
+(setq debug-on-error init-file-debug
+      eval-expression-debug-on-error init-file-debug)
 #+END_SRC
 
 ** Debug on message
