@@ -7189,28 +7189,28 @@ Archive when done, remove flag if reset to todo.
 #+BEGIN_SRC emacs-lisp
 (defvar cpped-was-clocking nil "Indicates whether it was clocked-in before screensaver ran.")
 
-(with-eval-after-load "org-mru-clock"
-  (defun cpped-org-clock-in-out (stop-clocking)
-    (if stop-clocking
-        (progn
-          (setq cpped-was-clocking (org-clock-is-active))
-          (org-clock-save)
-          (cpped-punch-out))
+(defun cpped-org-clock-in-out (stop-clocking)
+  (if stop-clocking
       (progn
-        (when cpped-was-clocking)
-          (org-clock-in-last))))
-  (dbus-register-signal :session
-                        "org.freedesktop.ScreenSaver"
-                        "/org/freedesktop/ScreenSaver"
-                        "org.freedesktop.ScreenSaver"
-                        "ActiveChanged"
-                        #'cpped-org-clock-in-out)
-  (dbus-register-signal :system
-                        "org.freedesktop.login1"
-                        "/org/freedesktop/login1"
-                        "org.freedesktop.login1.Manager"
-                        "PrepareForSleep"
-                        #'cpped-org-clock-in-out))
+        (setq cpped-was-clocking (org-clock-is-active))
+        (org-clock-save)
+        (let ((cpped-keep-clock-running nil))
+          (org-clock-out)))
+    (when cpped-was-clocking
+      (org-clock-in-last))))
+
+(dbus-register-signal :session
+                      "org.freedesktop.ScreenSaver"
+                      "/org/freedesktop/ScreenSaver"
+                      "org.freedesktop.ScreenSaver"
+                      "ActiveChanged"
+                      #'cpped-org-clock-in-out)
+(dbus-register-signal :system
+                      "org.freedesktop.login1"
+                      "/org/freedesktop/login1"
+                      "org.freedesktop.login1.Manager"
+                      "PrepareForSleep"
+                      #'cpped-org-clock-in-out)
 #+END_SRC
 
 *** Clock in/out of task when starting/stopping
