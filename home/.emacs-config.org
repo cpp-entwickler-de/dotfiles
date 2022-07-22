@@ -7321,13 +7321,6 @@ Do not use scientific form so quickly
 (with-eval-after-load "devdocs-browser"
   (cpped-add-apidocs 'gnuplot-mode '("gnuplot")))
 #+END_SRC
-
-** Weather
-#+BEGIN_SRC emacs-lisp
-(use-package wttrin
-  :custom (wttrin-default-cities `(,calendar-location-name)))
-#+END_SRC
-
 ** [[https://github.com/Zacalot/helm-convert][Unit conversion]]
 #+BEGIN_SRC emacs-lisp
 (use-package helm-convert
