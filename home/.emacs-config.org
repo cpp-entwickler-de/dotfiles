@@ -6370,16 +6370,12 @@ Hide info buffer in buffer list
 ** Default files
 *** Create agenda files if necessary
 #+BEGIN_SRC emacs-lisp
-(defvar cpped-org-default-todo-id "eb155a82-92b2-4f25-a3c6-0304591af2f9" "The ID of the default todo item.")
-
 (defun cpped-create-default-file (file &optional content)
   "Create a file with given default content."
   (when (not (file-exists-p file))
     (with-temp-buffer
       (when content
         (insert content))
-      (when (string-equal file org-default-todos-file)
-        (insert (concat "* Misc\n:PROPERTIES:\n:CLOCK_MODELINE_TOTAL: today\n:ID: " cpped-org-default-todo-id "\n:END:\n")))
       (write-file file)
       (cpped-kill-default-buffer))))
 
@@ -7184,51 +7180,9 @@ Archive when done, remove flag if reset to todo.
 (advice-add 'org-clock-update-mode-line :override #'force-mode-line-update)
 #+END_SRC
 
-*** Punch in/out
-#+BEGIN_SRC emacs-lisp
-(defun cpped-clock-in-default-task ()
-  "Clock in default task."
-  (save-excursion
-    (org-with-point-at (org-id-find cpped-org-default-todo-id 'marker)
-      (org-clock-mark-default-task)
-      (org-clock-in))))
-
-(defun cpped-punch-in ()
-  "Start continuous clocking."
-  (interactive)
-  (cpped-clock-in-default-task))
-
-(defun cpped-punch-out ()
-  "Stop clocking tasks."
-  (interactive)
-  (let ((cpped-keep-clock-running nil))
-    (when (org-clock-is-active)
-      (org-clock-out)
-      (save-some-buffers t nil))))
-#+END_SRC
-
-*** Maybe switch to default task when clocking out.
-#+BEGIN_SRC emacs-lisp
-(defvar cpped-keep-clock-running t "Flag to decide whether to keep the clock always running.")
-
-(defun cpped-clock-out-maybe-activate-default-task ()
-  "Clock in default task in certain circumstances when clocking out."
-  (when (and cpped-keep-clock-running
-             (not org-clock-clocking-in)
-             (not org-clock-resolving-clocks-due-to-idleness))
-    (cpped-clock-in-default-task)))
-
-(add-hook 'org-clock-out-hook #'cpped-clock-out-maybe-activate-default-task)
-#+END_SRC
-
-*** Automatically start clocking when starting emacs.
-#+BEGIN_SRC emacs-lisp
-(cpped-punch-in)
-#+END_SRC
-
 *** Automatically stop clocking when exiting emacs.
 #+BEGIN_SRC emacs-lisp
-(add-hook 'kill-emacs-hook #'cpped-punch-out)
+(add-hook 'kill-emacs-hook #'org-clock-out)
 #+END_SRC
 
 *** Automatically stop clocking when entering system suspend/lock and restart on resume/unlock
