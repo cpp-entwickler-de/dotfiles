@@ -45,3 +45,9 @@
 (require 'cl-seq)
 (cl-delete-duplicates file-name-handler-alist :test 'equal)
 (put 'narrow-to-region 'disabled nil)
+
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (message "Emacs loaded in %s seconds with %d garbage collections."
+                     (emacs-init-time)
+                     gcs-done)))
