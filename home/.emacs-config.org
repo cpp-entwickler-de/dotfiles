@@ -176,6 +176,11 @@ Do not ask for confirmation for new shell buffers
 (use-package cl-lib)
 #+END_SRC
 
+** Silence native compilation warnings
+#+BEGIN_SRC emacs-lisp
+(setq native-comp-async-report-warnings-errors nil)
+#+END_SRC
+
 ** Utilities
 #+BEGIN_SRC emacs-lisp
 (defun cpped-word-or-region-bounds()
