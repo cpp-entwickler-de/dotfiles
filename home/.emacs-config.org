@@ -1241,11 +1241,6 @@ Switch to previous buffer
 #+END_SRC
 
 *** Scratch Buffer
-**** Always use text mode
-#+BEGIN_SRC emacs-lisp
-(setq initial-major-mode 'text-mode)
-#+END_SRC
-
 **** Start with empty scratch buffer (no message)
 #+BEGIN_SRC emacs-lisp
 (setq initial-scratch-message nil)
