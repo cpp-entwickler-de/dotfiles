@@ -15,6 +15,13 @@
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 #+END_SRC
 
+** Set priorities
+#+begin_src emacs-lisp
+(setq package-archive-priorities '(("melpa"  . 100)
+                                   ("gnu"    .  50)
+                                   ("nongnu" .  25)))
+#+end_src
+
 ** Automatically update
 #+BEGIN_SRC emacs-lisp
 (use-package auto-package-update
