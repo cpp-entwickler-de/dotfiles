@@ -326,7 +326,9 @@ Show below other windows
 ** Disable mouse
 #+BEGIN_SRC emacs-lisp
 (use-package disable-mouse
-  :config (global-disable-mouse-mode))
+  :config
+  (mouse-wheel-mode -1)
+  (global-disable-mouse-mode))
 #+END_SRC
 
 *** Hide mouse pointer
