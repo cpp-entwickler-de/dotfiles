@@ -312,6 +312,11 @@ Show below other windows
 (setq inhibit-message t)
 #+END_SRC
 
+** Keep more lines in message buffer
+#+BEGIN_SRC emacs-lisp
+(setq message-log-max 16384)
+#+END_SRC
+
 ** Remove annoying ellipsis when printing SEXP in message buffer
 #+BEGIN_SRC emacs-lisp
 (setq eval-expression-print-length nil
