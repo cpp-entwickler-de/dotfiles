@@ -10,6 +10,11 @@
 #+END_SRC
 
 *  Package Management
+** Add MELPA
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+#+END_SRC
+
 ** Automatically update
 #+BEGIN_SRC emacs-lisp
 (use-package auto-package-update
