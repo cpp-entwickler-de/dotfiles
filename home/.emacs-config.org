@@ -320,7 +320,11 @@ Show below other windows
 ** Remove annoying ellipsis when printing SEXP in message buffer
 #+BEGIN_SRC emacs-lisp
 (setq eval-expression-print-length nil
-      eval-expression-print-level nil)
+      eval-expression-print-level nil
+      edebug-print-length nil
+      edebug-print-level nil
+      print-length nil
+      print-level nil)
 #+END_SRC
 
 ** Disable mouse
