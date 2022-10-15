@@ -6043,6 +6043,11 @@ forcing it by running
 **** [[https://github.com/pidu/git-timemachine][Switch to previous version]]
 #+BEGIN_SRC emacs-lisp
 (use-package git-timemachine
+  :straight (git-timemachine
+             :type git
+             :host nil
+             :repo "https://codeberg.org/pidu/git-timemachine"
+             :build t)
   :custom (git-timemachine-abbreviation-length 8))
 #+END_SRC
 
