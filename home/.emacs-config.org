@@ -3817,9 +3817,13 @@ Handler to close buffer after quitting ccmake.
   :hook prog-mode
   :custom
   (lsp-auto-configure t)
+  (lsp-use-plists t)
+  (lsp-completion-show-detail nil)
+  (lsp-completion-show-kind nil)
   (lsp-log-io nil)
   (lsp-log-max 100)
   (lsp-restart 'auto-restart)
+  (lsp-signature-mode t)
   (lsp-signature-function 'lsp-signature-posframe)
   (lsp-headerline-breadcrumb-enable nil)
   (lsp-idle-delay 0.5)
@@ -3834,10 +3838,14 @@ Handler to close buffer after quitting ccmake.
   :bind (([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
          ([remap xref-find-references] . lsp-ui-peek-find-references))
   :custom
-  (lsp-ui-sideline-show-diagnostics nil)
-  (lsp-ui-sideline-show-hover t)
-  (lsp-ui-sideline-show-code-actions t)
   (lsp-ui-doc-include-signature t)
+  (lsp-ui-doc-enable t)
+  (lsp-ui-doc-show-with-cursor t)
+  (lsp-ui-doc-show-with-mouse nil)
+  (lsp-ui-doc-border "#303030")
+  (lsp-ui-sideline-show-diagnostics nil)
+  (lsp-ui-sideline-show-hover nil)
+  (lsp-ui-sideline-show-code-actions t)
   (lsp-ui-sideline-show-symbol nil))
 
 (use-package helm-lsp
