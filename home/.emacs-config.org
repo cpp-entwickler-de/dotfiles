@@ -235,12 +235,6 @@ Do not ask for confirmation for new shell buffers
   (setq inhibit-startup-echo-area-message username))
 #+END_SRC
 
-***  Notify when loading is finished
-#+BEGIN_SRC emacs-lisp
-(add-hook 'after-init-hook (lambda ()
-                             (notifications-notify :title "IDE ready")))
-#+END_SRC
-
 ** Frame Setup
 Show normal for single monitor, fullscreen for non-4k monitor
 #+BEGIN_SRC emacs-lisp
