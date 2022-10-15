@@ -1366,15 +1366,10 @@ Indicate recursive minibuffer
 (use-package hl-line
   :hook ((after-init . global-hl-line-mode)
          (find-file . hl-line-mode))
-  :config
-  (advice-add 'hl-line-highlight :after (lambda ()
-                                          (unless (window-minibuffer-p)
-	                                    (when hl-line-overlay
-                                              (overlay-put hl-line-overlay 'priority 1000)))))
-  (advice-add 'global-hl-line-highlight :after (lambda ()
-                                                 (unless (window-minibuffer-p)
-                                                   (when hl-line-overlay
-                                                     (overlay-put hl-line-overlay 'priority 1000))))))
+  :config (advice-add 'hl-line-make-overlay :after (lambda ()
+                                                     (unless (window-minibuffer-p)
+                                                       (when hl-line-overlay
+                                                         (overlay-put hl-line-overlay 'priority 1000))))))
 #+END_SRC
 
 **** Break long lines
