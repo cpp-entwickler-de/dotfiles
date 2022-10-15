@@ -4733,8 +4733,6 @@ Show API info via [[https://devdocs.io][devdocs.io]]
                                               ("QSrting" "QString")
                                               ("qstr" "QString")
                                               ("si" "signals:")
-                                              ("st" "std::")
-                                              ("std" "std::")
                                               ("vd" "void")
                                               ))
 #+END_SRC
