@@ -895,3 +895,10 @@ compile_commands.json
 
 # ag ignore
 .ignore
+
+# direnv
+.env
+.envrc
+
+# org mode
+*.org
