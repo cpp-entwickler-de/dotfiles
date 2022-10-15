@@ -3149,7 +3149,8 @@ Some useful abbreviations
 #+BEGIN_SRC emacs-lisp
 (define-abbrev-table 'global-abbrev-table '(("cpsign" "©")
                                             ("tmsign" "™")
-                                            ("infsign" "∞")))
+                                            ("infsign" "∞")
+                                            ("ifomration" "information")))
 #+END_SRC
 
 **** [[https://github.com/joaotavora/yasnippet][Templates]]
