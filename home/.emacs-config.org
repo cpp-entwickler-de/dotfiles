@@ -3315,6 +3315,7 @@ Some useful abbreviations
 #+BEGIN_SRC emacs-lisp
 (use-package string-inflection)
 #+END_SRC
+
 *** [[https://github.com/abo-abo/define-word][Define word]]
 #+BEGIN_SRC emacs-lisp
 (use-package define-word)
@@ -3354,14 +3355,11 @@ Open binary files in hexl-mode
 (defvar cpped-no-hexedit-extensions nil "File extensions for which automatic hex editing is disabled")
 
 (add-hook 'find-file-hook (lambda ()
-                            (message(buffer-file-name))
                             (when (and (eq buffer-file-coding-system 'no-conversion)
                                        (not (catch 'found
                                               (mapc (lambda (pattern)
-                                                      (message pattern)
                                                       (when (and (stringp buffer-file-name)
                                                                  (string-match pattern buffer-file-name))
-                                                        (message "found")
                                                         (throw 'found pattern)))
                                                     cpped-no-hexedit-extensions)
                                               nil)))
