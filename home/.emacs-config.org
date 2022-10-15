@@ -939,8 +939,8 @@ Helper function to figure out version control root directory
 (defun cpped-modeline-which-function ()
   "Print current function in hte mode line."
   (when-let ((current-function (when (bound-and-true-p which-function-mode)
-                                 (substring-no-properties (which-function)))))
-      (concat " " (shark-bytes/truncate current-function 30))))
+                                 (which-function))))
+    (concat " " (shark-bytes/truncate (substring-no-properties current-function) 30))))
 #+END_SRC
 
 *** Check Status
