@@ -691,9 +691,10 @@ The saturation for non-saturated colors is 60.
 	  (concat
 	   (when remote (format " %s " remote))
 	   (if (string-prefix-p (getenv "HOME") localname)
-	       (concat "/" (file-name-directory (directory-file-name (file-relative-name (file-name-directory (or project-root
-                                                                                                                   (file-name-directory localname)))
-											  (getenv "HOME")))))
+	       (replace-regexp-in-string "/Projects/" "🗐 " (concat "/"
+                                                                    (file-name-directory (directory-file-name (file-relative-name (file-name-directory (or project-root
+                                                                                                                                                           (file-name-directory localname)))
+											  (getenv "HOME"))))))
 	     (concat "" (file-name-directory (directory-file-name (file-name-directory (tramp-file-local-name (or project-root
 										                                   localname)))))))
 	   (when (not (= 0 (length project-name))) (concat " " project-name))))))))
