@@ -2819,6 +2819,15 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 #+END_SRC
 
 ** Navigation
+*** [[https://github.com/ahungry/fast-scroll][Fast scrolling]]
+
+#+begin_src emacs-lisp
+(use-package fast-scroll
+  :config
+  (fast-scroll-config)
+  (fast-scroll-mode 1))
+#+end_src
+
 *** Smart begin/end
 #+BEGIN_SRC emacs-lisp
 (use-package beginend
