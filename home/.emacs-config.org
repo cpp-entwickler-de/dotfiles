@@ -503,16 +503,88 @@ Prettify escaped newline
   (define-icon material-icon material-icon-alist "Material Icons" "MaterialIcons-Regular"))
 #+END_SRC
 
-** Theme
- Always load themes without confirmation
+** SVG Tag support
 #+BEGIN_SRC emacs-lisp
-(setq custom-safe-themes t)
+(use-package svg-tag-mode
+  :demand t
+  :custom (svg-tag-action-at-point 'edit)
+  ;:config (global-svg-tag-mode)
+  )
+#+END_SRC
+
+** Theme
+*** Colors
+Taken from SharkBytes background image.
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(defvar cpped-theme 'cpp-entwickler.de "The default theme")
+(defvar shark-bytes-ok-saturated           "#35E356" "")
+(defvar shark-bytes-info-saturated         "#E3D835" "")
+(defvar shark-bytes-warning-saturated      "#E38635" "")
+(defvar shark-bytes-error-saturated        "#E3353C" "Background color for windows.")
+(defvar shark-bytes-burning-saturated      "#E335A6" ".")
+(defvar shark-bytes-hot-saturated          "#CA36BB" ".")
+(defvar shark-bytes-warm-saturated         "#B137CF" ".")
+(defvar shark-bytes-cozy-saturated         "#9939E2" ".")
+(defvar shark-bytes-mild-saturated         "#8139F4" ".")
+(defvar shark-bytes-bleak-saturated        "#6F3BFD" ".")
+(defvar shark-bytes-chilly-saturated       "#563DF9" ".")
+(defvar shark-bytes-cold-saturated         "#3D3FF3" ".")
+(defvar shark-bytes-icy-saturated          "#2442ED" ".")
+(defvar shark-bytes-freezing-saturated     "#0C43E8" ".")
+#+END_SRC
 
-(load-theme cpped-theme t)
+The saturation for non-saturated colors is 60.
+#+BEGIN_SRC emacs-lisp
+(defvar shark-bytes-ok                     "#5BE375" "")
+(defvar shark-bytes-info                   "#E3DA5B" "")
+(defvar shark-bytes-warning                "#E39A5B" "")
+(defvar shark-bytes-error                  "#E35B60" "Background color for windows.")
+(defvar shark-bytes-burning                "#E35BB3" ".")
+(defvar shark-bytes-hot                    "#CA51BE" ".")
+(defvar shark-bytes-warm                   "#B653CF" ".")
+(defvar shark-bytes-cozy                   "#A75AE2" ".")
+(defvar shark-bytes-mild                   "#9A62F4" ".")
+(defvar shark-bytes-bleak                  "#8E65FD" ".")
+(defvar shark-bytes-chilly                 "#7764F9" ".")
+(defvar shark-bytes-cold                   "#6163F3" ".")
+(defvar shark-bytes-icy                    "#5F74ED" ".")
+(defvar shark-bytes-freezing               "#5D80E8" ".")
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defvar shark-bytes-window-background      "#121212" "Background color for windows.")
+(defvar shark-bytes-block-background       "#212121" "Background for blocks.")
+(defvar shark-bytes-menu-window-background "#303030" "Background color for menu windows.")
+(defvar shark-bytes-current-line           "#424242" "Background color for the current line.")
+(defvar shark-bytes-highlight              "#757575" "Color for normal text.")
+
+(defvar shark-bytes-irrelevant             "#212121" "Color for shadow text.")
+(defvar shark-bytes-insignificant          "#303030" "Color for shadow text.")
+(defvar shark-bytes-minor                  "#424242" "Color for shadow text.")
+(defvar shark-bytes-detail                 "#757575" "Color for shadow text.")
+
+(defvar shark-bytes-shadow                 "#303030" "Color for shadow text.")
+(defvar shark-bytes-text                   "#F1F1F1" "Color for normal text.")
+#+END_SRC
+
+***  Faces
+#+BEGIN_SRC emacs-lisp
+(defface shark-bytes-ui '((t :inherit default)) "" :group 'user-interface)
+(defface shark-bytes-ui-title '((t :inherit shark-bytes-ui :height 1.7 :weight bold)) "" :group 'user-interface)
+(defface shark-bytes-ui-section '((t :inherit shark-bytes-ui :height 1.2 :weight bold)) "" :group 'user-interface)
+(defface shark-bytes-ui-subsection '((t :inherit shark-bytes-ui :height 1.1 :weight bold)) "" :group 'user-interface)
+(defface shark-bytes-ui-entry '((t :inherit shark-bytes-ui)) "" :group 'user-interface)
+(defface shark-bytes-ui-info '((t :inherit shark-bytes-ui :weight light)) "" :group 'user-interface)
+#+END_SRC
+
+*** Load default theme
+#+BEGIN_SRC emacs-lisp
+(defvar shark-bytes-theme 'shark-bytes "The default theme")
+
+(setq custom-safe-themes shark-bytes-theme)
+
+(load-theme shark-bytes-theme t)
 #+END_SRC
 
 ** [[https://github.com/rakanalh/emacs-dashboard][Dashboard]]
@@ -1294,13 +1366,13 @@ Indicate recursive minibuffer
 
 *** Highlight minibuffer when in use
 #+BEGIN_SRC emacs-lisp
-(defface cpped-minibuffer-active '((t :inherit default))
+(defface shark-bytes-minibuffer-active '((t :inherit default))
   "Face used for active minibuffer."
   :group 'basic-faces)
 
 (add-hook 'minibuffer-setup-hook (lambda ()
                                    (make-local-variable 'face-remapping-alist)
-                                   (add-to-list 'face-remapping-alist '(default cpped-minibuffer-active))))
+                                   (add-to-list 'face-remapping-alist '(default shark-bytes-minibuffer-active))))
 #+END_SRC
 
 *** Kill current buffer by default
