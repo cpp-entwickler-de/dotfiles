@@ -6175,9 +6175,9 @@ forcing it by running
           (end (if (region-active-p)
                    (region-end)
                  (save-excursion
-                     (save-restriction
-                       (funcall cpped-end-of-function)
-                       (point))))))
+                   (save-restriction
+                     (funcall cpped-end-of-function)
+                     (point))))))
       (cpped-show-contributor-info `(,buffer-file-name)
                                    (save-excursion
                                      (save-restriction
