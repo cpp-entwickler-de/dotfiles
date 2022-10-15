@@ -519,6 +519,7 @@ Prettify escaped newline
 (use-package dashboard
   :after helm-buffers
   :custom
+  (initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
   (dashboard-startup-banner (let ((logo (expand-file-name "~/.logo.svg")))
                               (if (file-exists-p logo)
                                   logo
