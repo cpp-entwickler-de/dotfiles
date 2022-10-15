@@ -4180,7 +4180,7 @@ Use [[https://editorconfig.org/][EditorConfig]] via [[https://github.com/editorc
   :after (helm-buffers popwin)
   :hook (after-init . global-flycheck-mode)
   :custom
-  (flycheck-idle-change-delay 0.3)
+  (flycheck-idle-change-delay 2.0)
   (flycheck-display-errors-delay 0.2)
   (flycheck-checker-error-threshold nil)
   (flycheck-indication-mode nil)
@@ -4188,7 +4188,7 @@ Use [[https://editorconfig.org/][EditorConfig]] via [[https://github.com/editorc
   (flycheck-display-errors-function nil)
   (flycheck-help-echo-function nil)
   (flycheck-process-error-functions nil)
-  (flycheck-check-syntax-automatically '(mode-enabled save idle-change))
+  (flycheck-check-syntax-automatically '(mode-enabled save))
   :config
   (push "^\\*Flycheck.+\\*$" helm-boring-buffer-regexp-list)
   (push '("^\\*Flycheck.+\\*$" :regexp t :dedicated t :position bottom) popwin:special-display-config)
