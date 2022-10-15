@@ -796,7 +796,7 @@ Helper function to figure out version control root directory
 *** IEdit Info
 #+BEGIN_SRC emacs-lisp
 (defun cpped-modeline-iedit-info ()
-  (when iedit-mode
+  (when (bound-and-true-p iedit-mode)
     (format " %s/%s"
             iedit-occurrence-index
             (iedit-counter))))
