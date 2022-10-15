@@ -5745,17 +5745,47 @@ Auto-highlight details
 (setq vc-follow-symlinks t)
 #+END_SRC
 
-**** [[https://github.com/dgutov/diff-hl][Show uncommitted lines in the fringe]]
+**** [[https://github.com/emacsorphanage/git-gutter-fringe][Show uncommitted lines in the fringe]]
 #+BEGIN_SRC emacs-lisp
-(use-package diff-hl
+(use-package git-gutter
+  :custom
+  (git-gutter:hide-gutter t)
+  (git-gutter:update-interval 0.2)
+  (git-gutter:visual-line t)
+  :config (global-git-gutter-mode))
+
+(use-package git-gutter-fringe
+  :after git-gutter
   :config
-  (global-diff-hl-mode))
+  (fringe-helper-define 'git-gutter-fr:added nil
+    "...XX..."
+    "...XX..."
+    "...XX..."
+    "XXXXXXXX"
+    "XXXXXXXX"
+    "...XX..."
+    "...XX..."
+    "...XX...")
+  (fringe-helper-define 'git-gutter-fr:deleted nil
+    "........"
+    "........"
+    "........"
+    "XXXXXXXX"
+    "XXXXXXXX"
+    "........"
+    "........"
+    "........")
+  (fringe-helper-define 'git-gutter-fr:modified nil
+    ".XX....X"
+    "XXXXX.X."
+    "XXXX.X.."
+    ".XX.X..."
+    "...X...."
+    "..X.XXXX"
+    ".X..XXXX"
+    "X......."))
 #+END_SRC
 
-When using Magit >= 2.4.0
-#+BEGIN_SRC emacs-lisp
-(add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
-#+END_SRC
 
 *** Git
 **** [[https://github.com/magit/magit][Magit]]
