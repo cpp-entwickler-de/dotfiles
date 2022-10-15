@@ -185,6 +185,15 @@ Do not ask for confirmation for new shell buffers
     (bounds-of-thing-at-point 'word)))
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+(defun shark-bytes/truncate (string max-length)
+  "Truncate STRING to MAX-LENGTH charcaters by replacing characters in the middle with an ellipsis."
+  (if (< (length string) max-length)
+      string
+    (let ((len (min (/ (length string) 2) (/ (- max-length 1) 2))))
+      (concat (substring string 0 len) "…" (substring string (- 0 (+ len (- max-length 1 (* len 2)))) nil)))))
+#+END_SRC
+
 ** Increase subprocess read chunk size
 #+BEGIN_SRC emacs-lisp
 (setq read-process-output-max (* 16 1024 1024))
@@ -671,9 +680,9 @@ Helper function to figure out version control root directory
 					(string-equal (substring filename 0 (length home-dir)) home-dir))
 			       home-dir)))
 	   (relative-path (when filename
-			    (file-name-directory (if project-root
-						     (file-relative-name filename project-root)
-						   filename))))
+			    (shark-bytes/truncate (file-name-directory (if project-root
+						                           (file-relative-name filename project-root)
+						                         filename)) 20)))
 	   (special-buffer (string-match "^\\*.*\\*?$" buffer-name)))
       (if special-buffer
 	  (propertize (replace-regexp-in-string "^\\*\\([^\*]*\\)\\*?$" "\\1" buffer-name)
@@ -702,7 +711,7 @@ Helper function to figure out version control root directory
 (with-eval-after-load "magit"
   (defun cpped-modeline-version-control ()
     (when (magit-inside-worktree-p t)
-      (let* ((branch (magit-get-current-branch))
+      (let* ((branch (shark-bytes/truncate (magit-get-current-branch) 10))
              (branch-head (magit-rev-parse "--short" branch))
              (revision (magit-rev-parse "--short" "HEAD")))
         (concat " " branch (unless (string= revision branch-head)
@@ -871,11 +880,10 @@ Helper function to figure out version control root directory
 *** Current function
 #+BEGIN_SRC emacs-lisp
 (defun cpped-modeline-which-function ()
-  (let ((current-function (substring-no-properties (or (when which-function-mode
-                                                         (which-function))
-                                                         ""))))
-    (unless (= 0 (length current-function))
-      (concat " " (truncate-string-to-width current-function 40 nil nil "…")))))
+  "Print current function in hte mode line."
+  (when-let ((current-function (when (bound-and-true-p which-function-mode)
+                                 (substring-no-properties (which-function)))))
+      (concat " " (shark-bytes/truncate current-function 30))))
 #+END_SRC
 
 *** Check Status
@@ -922,7 +930,7 @@ Helper function to figure out version control root directory
                                      'mode-line-inactive))
                         (left-side (mapconcat #'identity
                                               (-non-nil (list (cpped-modeline-mode-icon mode-line-face)
-                                                              (cpped-modeline-project-id)
+                                                              (shark-bytes/truncate (cpped-modeline-project-id) 20)
                                                               (propertize (or (when (fboundp 'cpped-modeline-version-control)
                                                                                 (cpped-modeline-version-control))
                                                                               "")
@@ -7188,7 +7196,7 @@ Archive when done, remove flag if reset to todo.
             (if org-clock-effort
                 (concat "/" (org-duration-from-minutes (org-clock-effort)))
               "")
-            org-clock-heading)))
+            (shark-bytes/truncate org-clock-heading 15))))
 #+END_SRC
 
 *** Do not show default clocking information in mode line
