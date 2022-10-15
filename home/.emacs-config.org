@@ -5224,7 +5224,8 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 *** JSON
 #+BEGIN_SRC emacs-lisp
 (use-package json-mode
-  :mode "\\.js\\(on\\|[hl]int\\(rc\\)?\\)\\'")
+  :mode "\\.js\\(on\\|[hl]int\\(rc\\)?\\)\\'"
+  :config (push '("{" . json-mode) magic-mode-alist))
 #+END_SRC
 
 **** Language Server
