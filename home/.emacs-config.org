@@ -155,16 +155,6 @@ Do not ask for confirmation for new shell buffers
                t))
 #+END_SRC
 
-*** Helm support
-#+BEGIN_SRC emacs-lisp
-(use-package helm-system-packages
-  :after helm
-  :straight (helm-system-packages
-             :type git
-             :host github
-             :repo "emacs-helm/helm-system-packages"))
-#+END_SRC
-
 *  Internals
 ** Include cl package
 #+BEGIN_SRC emacs-lisp
@@ -592,7 +582,7 @@ The saturation for non-saturated colors is 60.
 (defvar cpped-dashboard-footer nil "The dashboard footer text")
 
 (use-package dashboard
-  :after helm-buffers
+  :after consult
   :custom
   (initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
   (dashboard-startup-banner (let ((logo (expand-file-name "~/.logo.svg")))
@@ -648,7 +638,7 @@ The saturation for non-saturated colors is 60.
      (insert (propertize heading 'face 'dashboard-heading))
      (when shortcut (insert (format " (%s)" shortcut))))
    (advice-add 'dashboard-insert-heading :override 'cpped-dashboard-insert-heading)
-   (push (regexp-quote dashboard-buffer-name) helm-boring-buffer-regexp-list)
+   (push (regexp-quote dashboard-buffer-name) consult-buffer-filter)
    (dashboard-setup-startup-hook))
 #+END_SRC
 
@@ -1046,7 +1036,6 @@ Helper function to figure out version control root directory
 
 (use-package projectile
   :custom
-  (projectile-completion-system 'helm)
   (projectile-create-missing-test-files t)
   (projectile-dynamic-mode-line nil)
   (projectile-enable-caching nil)
@@ -1060,155 +1049,149 @@ Helper function to figure out version control root directory
                                          (not (or (string-match (concat (file-truename user-emacs-directory) ".*") project)
                                                   (string-match (concat user-emacs-directory ".*") project)))))
   (projectile-sort-order 'recently-active)
-  (projectile-switch-project-action 'helm-projectile)
   (projectile-verbose nil)
   :config
   (projectile-global-mode))
 #+END_SRC
 
-** [[https://github.com/emacs-helm/helm][Helm UI]]
+** [[https://github.com/minad/vertico][Minibuffer completion]]
 #+BEGIN_SRC emacs-lisp
-(use-package helm-icons
-  :after all-the-icons
-  :init (setq helm-icons-provider 'all-the-icons)
-  :config (helm-icons-enable))
-
-(use-package helm
-  :after (popwin system-packages helm-icons)
-  :ensure-system-package curl
-  :bind (:map helm-map (("M-SPC" . helm-toggle-all-marks)
-                        ("C-M-y" . helm-copy-to-buffer)))
+(use-package vertico
+  :init (vertico-mode)
+  :hook ((rfn-eshadow-update-overlay . vertico-directory-tidy))
+  :bind (:map vertico-map
+              ("<pos1>" . vertico-first)
+              ("<end>" . vertico-last)
+              ("<left>" . vertico-previous-group)
+              ("<right>" . vertico-next-group))
   :custom
-  (helm-adaptive-mode t)
-  (helm-display-header-line nil)
-  (helm-apropos-fuzzy-match t)
-  (helm-bookmark-show-location t)
-  (helm-buffer-max-length nil)
-  (helm-buffers-fuzzy-matching t)
-  (helm-candidate-number-limit 1000)
-  (helm-candidate-separator "────────────────────────────────────────────────────────────────────────────────────────────────────────────────")
-  (helm-case-fold-search t)
-  (helm-comp-read-case-fold-search 'Ignore\ case)
-  (helm-completion-in-region-fuzzy-match t)
-  (helm-default-external-file-browser "dolphin")
-  (helm-ff-delete-files-function 'helm-delete-marked-files-async)
-  (helm-ff-file-name-history-use-recentf t)
-  (helm-ff-fuzzy-matching t)
-  (helm-ff-history-max-length 1000)
-  (helm-ff-initial-sort-method 'newest)
-  (helm-ff-search-library-in-sexp t)
-  (helm-ff-transformer-show-only-basename nil)
-  (helm-ff-auto-update-initial-value nil)
-  (helm-file-cache-fuzzy-match t)
-  (helm-find-files-ignore-thing-at-point t)
-  (helm-find-files-doc-header nil)
-  (helm-follow-mode-persistent nil)
-  (helm-locate-fuzzy-match t)
-  (helm-google-suggest-use-curl-p t)
-  (helm-google-suggest-actions '(("DuckDuckGo" . (lambda (candidate)
-                                                   (helm-search-suggest-perform-additional-action
-                                                    "https://duckduckgo.com/?q=%s"
-                                                    candidate)))
-                                 ("C++ Reference" . (lambda (candidate)
-                                                      (helm-search-suggest-perform-additional-action
-                                                       "https://en.cppreference.com/mwiki/index.php?title=Special:Search&search=%s"
-                                                       candidate)))
-                                 ("Qt Documentation" . (lambda (candidate)
-                                                         (helm-search-suggest-perform-additional-action
-                                                          "https://doc.qt.io/qt-5/search-results.html?q=%s"
-                                                          candidate)))
-                                 ("GitHub" . (lambda (candidate)
-                                               (helm-search-suggest-perform-additional-action
-                                                "https://github.com/search?type=Code&q=%s&ref=opensearch"
-                                                candidate)))
-                                 ("Stack Overflow" . (lambda (candidate)
-                                                       (helm-search-suggest-perform-additional-action
-                                                        "http://stackoverflow.com/search?q=%s"
-                                                        candidate)))
-                                 ("Stack Snippet" . (lambda (candidate)
-                                                      (helm-search-suggest-perform-additional-action
-                                                       "http://www.stacksnippet.com/#gsc.tab=0&gsc.q=%s"
-                                                       candidate)))
-                                 ("Bropages" . (lambda (candidate)
-                                                      (helm-search-suggest-perform-additional-action
-                                                       "http://bropages.org/search/%s"
-                                                       candidate)))
-                                 ("Unicode Character" . (lambda (candidate)
-                                                          (helm-search-suggest-perform-additional-action
-                                                           "https://unicode-table.com/en/search/?q=%s&p"
-                                                           candidate)))))
-  (helm-grep-ignored-directories '("SCCS" "RCS" "CVS" "MCVS" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" ".gvfs" "branches" "tags"))
-  (helm-imenu-fuzzy-match t)
-  (helm-input-idle-delay 0.01)
-  (helm-lisp-fuzzy-completion t)
-  (helm-M-x-always-save-history t)
-  (helm-M-x-fuzzy-match t)
-  (helm-mode-fuzzy-match t)
-  (helm-move-to-line-cycle-in-source t)
-  (helm-occur-auto-update-on-resume 'noask)
-  (helm-recentf-fuzzy-match t)
-  (helm-scroll-amount 8)
-  (helm-session-fuzzy-match t)
-  (helm-split-window-in-side-p t)
+  (vertico-resize nil)
+  (vertico-count 20)
+  (vertico-cycle t)
+  (read-buffer-completion-ignore-case t)
+  (completion-ignore-case t))
+
+(use-package vertico-directory
+  :after vertico
+  :straight nil
+  :load-path "straight/repos/vertico/extensions/"
+  :bind (:map vertico-map
+              ("RET" . vertico-directory-enter)
+              ("DEL" . vertico-directory-delete-char)
+              ("M-DEL" . vertico-directory-delete-word)))
+
+(use-package vertico-repeat
+  :after vertico
+  :straight nil
+  :load-path "straight/repos/vertico/extensions/"
+  :hook (minibuffer-setup . vertico-repeat-save))
+#+END_SRC
+
+*** [[https://github.com/oantolin/orderless][Advanced filtering]]
+#+BEGIN_SRC emacs-lisp
+(use-package orderless
+  :custom
+  (completion-styles '(orderless partial-completion))
+  (completion-category-defaults nil)
+  (completion-category-overrides nil)
+  (orderless-component-separator "[ &+]"))
+#+END_SRC
   :config
-  (advice-add 'helm-ff-filter-candidate-one-by-one
-              :around (lambda (fcn file &optional reverse skip-boring-check)
-                        (unless (string-match "\\(?:/\\|\\`\\)\\.\\{1,2\\}\\'" file)
-                          (funcall fcn file reverse skip-boring-check)))) ;; hide current directory/parent directory in file list
-  (with-eval-after-load "popwin"
-    (progn
-      (push '("*helm kill ring*" :dedicated t :position bottom :height 40) popwin:special-display-config)
-      (push '("*helm calcul*" :dedicated t :position bottom :height 10) popwin:special-display-config)))
-  (helm-mode 1)
-  (require 'helm-config))
+
+*** [[https://github.com/minad/marginalia][Show more information]]
+#+BEGIN_SRC emacs-lisp
+(use-package marginalia
+  :config
+  (add-to-list 'marginalia-command-categories '(flycheck-error-list-set-filter . builtin))
+  (add-to-list 'marginalia-command-categories '(projectile-find-file . project-file))
+  (add-to-list 'marginalia-command-categories '(projectile-recentf . project-file))
+  (add-to-list 'marginalia-command-categories '(projectile-switch-to-buffer . buffer))
+  (add-to-list 'marginalia-command-categories '(projectile-switch-project . project-file))
+  :custom (truncate-string-ellipsis "…")
+  :init (marginalia-mode))
 #+END_SRC
 
-*** Projectile Integration
 #+BEGIN_SRC emacs-lisp
-(use-package helm-projectile
-  :after (helm projectile)
-  :custom (helm-projectile-fuzzy-match t)
-  :config (helm-projectile-on))
+(use-package all-the-icons-completion
+  :after (all-the-icons marginalia)
+  :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
+  :init (all-the-icons-completion-mode))
 #+END_SRC
 
-
-*** Popwin Fix
+*** [[https://github.com/minad/consult][Additional completion functions]]
 #+BEGIN_SRC emacs-lisp
-(defun cpped-popwin-help-mode-off ()
-       "Turn `popwin-mode' off for *Help* buffers."
-       (when (boundp 'popwin:special-display-config)
-             (customize-set-variable 'popwin:special-display-config
-                                     (delq 'help-mode popwin:special-display-config))))
-
-(defun cpped-popwin-help-mode-on ()
-       "Turn `popwin-mode' on for *Help* buffers."
-       (when (boundp 'popwin:special-display-config)
-             (customize-set-variable 'popwin:special-display-config
-                                     (add-to-list 'popwin:special-display-config 'help-mode nil #'eq))))
-
-(with-eval-after-load "popwin"
-  (progn
-    (add-hook 'helm-minibuffer-set-up-hook #'cpped-popwin-help-mode-off)
-    (add-hook 'helm-cleanup-hook #'cpped-popwin-help-mode-on)))
-#+END_SRC
-
-*** Multiple Cursors Fix
-When running helm-M-x with multiple-cursors-mode, the command will only run on one cursor.
-
-#+BEGIN_SRC emacs-lisp
-(defun cpped-helm-M-x ()
+(use-package consult
+  :demand t
+  :hook (completion-list-mode . consult-preview-at-point-mode)
+  :bind (
+;([remap find-file] . consult-find)
+         ([remap apropos] . consult-apropos)
+         ([remap bookmark-jump] . consult-bookmark)
+         ([remap goto-line] . consult-goto-line)
+         ([remap imenu] . consult-imenu)
+         ([remap locate] . consult-locate)
+         ([remap load-theme] . consult-theme)
+         ([remap man] . consult-man)
+         ([remap recentf-open-files] . consult-recent-file)
+         ([remap switch-to-buffer] . consult-buffer)
+         ("C-x C-b" . shark-bytes/switch-to-buffer-show-all)
+         ([remap switch-to-buffer-other-window] . consult-buffer-other-window)
+         ([remap switch-to-buffer-other-frame] . consult-buffer-other-frame)
+         ([remap yank-pop] . consult-yank-pop))
+  :custom
+  (consult-ripgrep-args "rg --null --line-buffered --color=never --max-columns=1000 --path-separator /   --smart-case --no-heading --line-number .")
+  (consult-line-point-placement 'match-beginning)
+  (consult-line-start-from-top t)
+  (consult-preview-key (list :debounce 0.75 'any))
+  (consult-async-min-input 2)
+  (consult-async-refresh-delay 0.15)
+  (consult-async-input-throttle 0.2)
+  (consult-async-input-debounce 0.1)
+  (consult-async-split-style 'comma)
+  (xref-show-xrefs-function #'consult-xref)
+  (consult-narrow-key "<")
+  (consult-line-numbers-widen t)
+  (xref-show-definitions-function #'consult-xref)
+  :config
+  (setenv "RIPGREP_CONFIG_PATH" (expand-file-name "~/.ripgreprc"))
+  (defun shark-bytes/switch-to-buffer-show-all ()
+    "Select a buffer without filter."
     (interactive)
-    (if (call-interactively 'helm-M-x)
-        (let ((command (intern (car extended-command-history))))
-          (if multiple-cursors-mode
-              (if (and command
-                       (not (memq command mc--default-cmds-to-run-once))
-                       (not (memq command mc/cmds-to-run-once))
-                       (or mc/always-run-for-all
-                           (memq command mc--default-cmds-to-run-for-all)
-                           (memq command mc/cmds-to-run-for-all)
-                           (mc/prompt-for-inclusion-in-whitelist command)))
-                  (mc/execute-command-for-all-fake-cursors command))))))
+    (let ((consult-buffer-filter))
+      (consult-buffer)))
+  (defun cpped-consult-line-symbol-at-point ()
+    ""
+    (interactive)
+    (consult-line (thing-at-point 'symbol)))
+  (defun cpped-consult-ripgrep (original-function &optional dir initial-argument)
+     ""
+     (interactive)
+     (let ((initial (list (or initial-argument
+                              (if (use-region-p)
+			          (buffer-substring (region-beginning) (region-end))
+                                (thing-at-point 'symbol))))))
+	 (apply original-function (or dir
+                                      (cpped-project-dir)
+                                      default-directory) initial)))
+  (advice-add 'consult-ripgrep :around #'cpped-consult-ripgrep)
+  (advice-add #'completing-read-multiple :override #'consult-completing-read-multiple)
+  (push "\\*emacs\\*" consult-buffer-filter)
+  (push "\\*Backtrace\\*" consult-buffer-filter)
+  (push "\\*Buffer List\\*" consult-buffer-filter)
+  (push "\\*Async-native-compile-log\\*" consult-buffer-filter)
+  (push "\\*straight-process\\*" consult-buffer-filter)
+  (push "\\*straight-byte-compilation\\*" consult-buffer-filter)
+  (push "\\*Messages\\*" consult-buffer-filter)
+  (push "\\*Warnings\\*" consult-buffer-filter)
+  (push "\\*Completions\\*" consult-buffer-filter)
+  (push "\\*Help\\*" consult-buffer-filter)
+  (push "\\*compilation\\*" consult-buffer-filter)
+  (push "\\*compile.*\\*" consult-buffer-filter)
+  (push "\\*Compilation Log\\*" consult-buffer-filter))
+#+END_SRC
+
+
+#+BEGIN_SRC emacs-lisp
 #+END_SRC
 
 ** Imenu
@@ -1284,19 +1267,6 @@ This optimizes line-scrolling.
 *** Go to last position when opening buffer
 #+BEGIN_SRC emacs-lisp
 (save-place-mode 1)
-#+END_SRC
-
-*** Buffer switching
-#+BEGIN_SRC emacs-lisp
-(with-eval-after-load "helm"
-  (require 'helm-buffers)
-  (push "\\*Messages\\*" helm-boring-buffer-regexp-list)
-  (push "\\*Warnings\\*" helm-boring-buffer-regexp-list)
-  (push "\\*Completions\\*" helm-boring-buffer-regexp-list)
-  (push "\\*Help\\*" helm-boring-buffer-regexp-list)
-  (push "\\*compilation\\*" helm-boring-buffer-regexp-list)
-  (push "\\*compile.*\\*" helm-boring-buffer-regexp-list)
-  (push "\\*Compilation Log\\*" helm-boring-buffer-regexp-list))
 #+END_SRC
 
 Switch to previous buffer
@@ -1707,12 +1677,8 @@ https://github.com/purcell/exec-path-from-shell
   (eshell/cd directory))
 
 (defun eshell/top ()
-  "Use helm-top instead of top."
-  (helm-top))
-
-(defun eshell/kill ()
-  "Use helm-top to kill processes."
-  (helm-top))
+  "Use proced instead of top."
+  (proced))
 
 (defun eshell/cat (arguments)
   "Like `cat' but output with Emacs syntax highlighting."
@@ -1915,19 +1881,7 @@ https://github.com/purcell/exec-path-from-shell
 
 **** [[https://github.com/coldnew/eshell-autojump][Jump to directories]]
 #+BEGIN_SRC emacs-lisp
-(use-package eshell-autojump
-  :config
-  (defun cpped-helm-eshell-autojump (wrapped-function &rest arguments)
-    "Select autojump directory via helm."
-    (let ((j-arguments (list (or arguments
-                           (helm :sources (helm-build-sync-source "Common Directories"
-                                            :candidates (-union (eshell-autojump-candidates)
-                                                                (delete-dups (mapcar 'abbreviate-file-name
-                                                                                     (ring-elements eshell-last-dir-ring)))))
-                                 :prompt "Directory: "
-                                 :buffer "*helm eshell-autojump*")))))
-      (apply wrapped-function j-arguments)))
-  (advice-add 'eshell/j :around #'cpped-helm-eshell-autojump))
+(use-package eshell-autojump)
 #+END_SRC
 
 **** Jump over directories without files and one subdirectory
@@ -1959,12 +1913,6 @@ https://github.com/purcell/exec-path-from-shell
                                 (add-hook 'eshell-pre-command-hook #'cpped-eshell-reenter nil t)))
 #+END_SRC
 
-**** Helm (files/folders)
-#+BEGIN_SRC emacs-lisp
-(add-hook 'eshell-mode-hook (lambda ()
-                              (eshell-cmpl-initialize)
-                              (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)))
-#+END_SRC
 
 *** Add sudo to command line
 #+BEGIN_SRC emacs-lisp
@@ -1987,7 +1935,7 @@ https://github.com/purcell/exec-path-from-shell
 *** History
 #+BEGIN_SRC emacs-lisp
 (add-hook 'eshell-mode-hook (lambda ()
-                              (define-key eshell-mode-map (kbd "M-r") 'helm-eshell-history)))
+                              (define-key eshell-mode-map (kbd "M-r") 'eshell-list-history)))
 #+END_SRC
 
 *** [[https://github.com/magit/with-editor][Use emacs as editor]]
@@ -2070,20 +2018,15 @@ https://github.com/purcell/exec-path-from-shell
                                 (add-hook 'eshell-post-command-hook #'cpped-eshell-current-command-stop nil t)))
 #+END_SRC
 
-*** Helm support
-#+BEGIN_SRC emacs-lisp
-(use-package helm-switch-shell
-  :after helm)
-#+END_SRC
 
 ** Help
 *** [[https://github.com/Wilfred/helpful][Better Help Buffer]]
 #+BEGIN_SRC emacs-lisp
 (use-package helpful
-  :after helm-buffers
+  :after consult
   :custom (helpful-max-buffers 3)
   :config
-  (push "\\*helpful.*\\*" helm-boring-buffer-regexp-list)
+  (push "\\`\\*helpful.*\\*\\'" consult-buffer-filter)
   (advice-add 'describe-function :override #'helpful-function)
   (advice-add 'describe-variable :override #'helpful-variable)
   (advice-add 'describe-key :override #'helpful-key)
@@ -2153,7 +2096,10 @@ https://github.com/purcell/exec-path-from-shell
                                                                     :buffer (format "*%s*" (car selection))
                                                                     :command selection))))
         :prompt "Run: "
-        :buffer "*helm applications*"))
+        :buffer "*Applications*"))
+
+(with-eval-after-load "consult"
+  (push "\\*Applications\\*" consult-buffer-filter))
 #+END_SRC
 
 ** Windows
@@ -2191,8 +2137,7 @@ https://github.com/purcell/exec-path-from-shell
 
 ** Do not ask if file should be created
 #+BEGIN_SRC emacs-lisp
-(setq confirm-nonexistent-file-or-buffer nil
-      helm-ff-newfile-prompt-p nil)
+(setq confirm-nonexistent-file-or-buffer nil)
 #+END_SRC
 
 ** [[https://gitlab.com/kisaragi-hiu/didyoumean.el/][Prefer existing files]]
@@ -2263,10 +2208,7 @@ https://github.com/purcell/exec-path-from-shell
 ** [[https://github.com/nflath/sudo-edit][Allow editing via sudo]]
 #+BEGIN_SRC emacs-lisp
 (use-package su
-  :after helm-files
-  :config
-  (su-mode +1)
-  (su-helm-integration-mode +1))
+  :config (su-mode +1))
 #+END_SRC
 
 ** [[https://github.com/m00natic/vlfi][Allow opening large files]]
@@ -2318,40 +2260,47 @@ https://github.com/purcell/exec-path-from-shell
   :config (recentf-mode))
 #+END_SRC
 
-*** Helm integration
+*** Show multiple sources for open command
 #+BEGIN_SRC emacs-lisp
-(with-eval-after-load "helm"
-  (require 'helm-files)
-  (define-key helm-find-files-map (kbd "C-d") 'helm-ff-persistent-delete)
-  (define-key helm-find-files-map (kbd "C-M-y") 'helm-copy-to-buffer)
 
-  (require 'helm-for-files)
-  (require 'helm-locate)
-  (with-eval-after-load "recentf"
-    (defvar cpped-helm-source-recentf
-      (helm-make-source "Recent files" ' helm-recentf-source
-        :candidate-number-limit 15)
-      "`helm-source-recentf' with candidate limit.")
+(defvar cpped-consult-source-projectile
+  `(:name     "Project files"
+    :narrow   ?p
+    :category file
+    :face     consult-file
+    :history  file-name-history
+    :state    ,#'consult--file-state
+    :enabled  ,(lambda () (ignore-errors (projectile-project-p)))
+    :items    ,(lambda () (mapcar (lambda (file)
+                                    (expand-file-name file (cpped-project-dir)))
+                                  (projectile-project-files (cpped-project-dir)))))
+  "Project file candidate source for `consult'.")
 
-    (require 'helm-buffers)
-    (setq helm-buffers-end-truncated-string "…")
-    (unless helm-source-buffers-list
-      (setq helm-source-buffers-list
-            (helm-make-source "Buffers" 'helm-source-buffers)))
+(defvar cpped-consult-source-directory
+  `(:name     "Directory files"
+    :narrow   ?d
+    :category file
+    :face     consult-file
+    :history  file-name-history
+    :state    ,#'consult--file-state
+    :enabled  ,(lambda () (file-accessible-directory-p default-directory))
+    :items    ,(lambda () (directory-files default-directory t)))
+  "Directory file candidate source for `consult'.")
 
-    (defun cpped-helm-find-files ()
-      (interactive)
-      (let ((helm-ag--default-directory (or (when (ignore-errors (projectile-project-p))
-                                              projectile-project-root)
-                                            default-directory)))
-        (helm :sources `(helm-source-buffers-list
-                         cpped-helm-source-recentf
-                         ,(if (ignore-errors (projectile-project-p))
-                              helm-source-projectile-files-list
-                            helm-source-files-in-current-dir)
-                         helm-source-locate
-                         helm-source-do-ag
-                         helm-source-buffer-not-found))))))
+(defun cpped-consult-find-file ()
+  ""
+  (interactive)
+  (when-let (buffer (consult--multi '(
+                                      ;consult--source-buffer
+                                      consult--source-recent-file
+                                      cpped-consult-source-directory
+                                      cpped-consult-source-projectile)
+                                    :require-match (confirm-nonexistent-file-or-buffer)
+                                    :prompt "Open: "
+                                    :history 'consult--buffer-history
+                                    :sort nil))
+    (unless (cdr buffer)
+      (consult--buffer-action (car buffer)))))
 #+END_SRC
 
 *** Dired
@@ -2517,7 +2466,7 @@ https://github.com/purcell/exec-path-from-shell
 *** [[https://github.com/Alexander-Miller/treemacs][Treemacs]]
 #+BEGIN_SRC emacs-lisp
 (use-package treemacs
-  :after helm-buffers
+  :after consult
   :bind ("<f1>" . treemacs)
   :custom
   (treemacs-collapse-dirs 3)
@@ -2536,9 +2485,9 @@ https://github.com/purcell/exec-path-from-shell
   (treemacs-space-between-root-nodes nil)
   (treemacs-width 50)
   :config
-  (push "\\*Treemacs\\*" helm-boring-buffer-regexp-list)
-  (push "\\*Desktop Treemacs Helper\\*" helm-boring-buffer-regexp-list))
   (treemacs-git-mode 'deferred))
+  (push "\\`\\*Treemacs\\*\\'" consult-buffer-filter)
+  (push "\\`\\*Desktop Treemacs Helper\\*\\'" consult-buffer-filter)
 
 (use-package treemacs-projectile
   :after (treemacs projectile))
@@ -2954,11 +2903,6 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
                      :repo "Overdr0ne/gumshoe")
   :config
   (global-gumshoe-mode 1)
-  (defun cpped-gumshow-list ()
-    "Show a list of "
-    (interactive)
-    (let ((global-mark-ring (ring-elements gumshoe--log)))
-      (helm-global-mark-ring))))
 #+END_SRC
 
 *** URIs
@@ -3235,6 +3179,12 @@ Some useful abbreviations
 
 [[https://joaotavora.github.io/yasnippet/snippet-development.html][Snippet Development Documentation]]
 
+***** Consult integration
+#+BEGIN_SRC emacs-lisp
+(use-package consult-yasnippet
+  :after (consult yasnippet))
+#+END_SRC
+
 ***** Licenses
 #+BEGIN_SRC emacs-lisp
 (use-package license-snippets
@@ -3312,15 +3262,12 @@ Some useful abbreviations
 (use-package wgrep
   :hook (rg-mode . wgrep-rg-setup)
   :custom (wgrep-enable-key "e"))
-
-(use-package wgrep-helm
-  :after (wgrep helm))
 #+END_SRC
 
 ** [[http://www-sop.inria.fr/members/Manuel.Serrano/flyspell/flyspell.html][Spell checking]]
 #+BEGIN_SRC emacs-lisp
 (use-package flyspell
-  :after (helm-buffers system-packages)
+  :after (consult system-packages)
   :ensure-system-package (aspell aspell-en aspell-de)
   :custom
   (flyspell-issue-welcome-flag nil)
@@ -3340,7 +3287,7 @@ Some useful abbreviations
   (when (string-match-p "--camel-case"
                         (shell-command-to-string (concat ispell-program-name " --help")))
     (push "--camel-case" ispell-extra-args))
-  (push "\\*flypell.*\\*" helm-boring-buffer-regexp-list)
+  (push "\\`\\*flypell.*\\*\\'" consult-buffer-filter)
   (defvar-local cpped-flyspell-errors 0 "The number of spelling errors in the document.")
   (advice-add 'flyspell-after-change-function :after (lambda (&rest arguments)
                                                        (setq cpped-flyspell-errors 0)
@@ -3354,21 +3301,26 @@ Some useful abbreviations
                (> cpped-flyspell-errors 0))
       (propertize (format " %d" cpped-flyspell-errors)
                           'face 'cpped-check-status-error)))
-
-(use-package helm-flyspell
-  :after (helm flyspell)
-  :config (advice-add #'flyspell-auto-correct-word :override #'helm-flyspell-correct))
   (add-to-list 'cpped-modeline-check-status-functions 'cpped-modeline-flyspell-status))
 #+END_SRC
 
-*** [[https://github.com/nschum/auto-dictionary-mode][Automatic dictionary selection]]
+https://github.com/d12frosted/flyspell-correct
 #+BEGIN_SRC emacs-lisp
-(use-package guess-language
-  :after flyspell
-  :hook flyspell-mode
+(use-package flyspell-correct
+  :after flyspell)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package consult-flyspell
+  :straight (consult-flyspell
+             :type git
+             :host gitlab
+             :repo "OlMon/consult-flyspell")
+  :after (consult flyspell-correct)
   :custom
-  (guess-language-languages '(en de))
-  (guess-language-min-paragraph-length 35))
+  (consult-flyspell-select-function (lambda () (flyspell-correct-at-point) (consult-flyspell)))
+  (consult-flyspell-set-point-after-word t)
+  (consult-flyspell-always-check-buffer t))
 #+END_SRC
 
 ** Utilities
@@ -3627,19 +3579,6 @@ Handler to close buffer after quitting ccmake.
 #+BEGIN_SRC emacs-lisp
 (setq cpped-build-directories '(("/home/player/.dotfiles/" . "/home/player/test") ("/home/player" . "/home/player/bla")))
 
-(defun cpped-select-project-config (source-dir)
-  "Select a project configuration for the current source directory."
-  (interactive (list (read-directory-name "Source Directory: "
-                                          (cpped-project-dir))))
-  (let ((build-dir (helm :sources (helm-build-sync-source "Configurations"
-                                         :candidates
-                                         (mapc (lambda (dir)
-                                                 ((file-name-nondirectory (directory-file-name dir)) . dir))
-                                               (cdr (assoc source-dir cpped-build-directories))))
-                         :prompt "Configuration: "
-                         :buffer "*helm project*")))
-    (cpped-load-project build-dir)
-    build-dir))
 #+END_SRC
 
 **** Delete configuration
@@ -3691,22 +3630,6 @@ Handler to close buffer after quitting ccmake.
               (push target targets))))
         targets))))
 
-(defun cpped-select-target (build-dir)
-  "Select a build target for the current build directory."
-  (interactive (list (or (cpped-build-dir)
-                         (read-directory-name "Build-directory: "
-                                              (file-name-as-directory cpped-build-base-directory)))))
-  (let ((current-target (helm :sources (helm-build-sync-source "Targets"
-                                         :candidates
-                                         (remove-duplicates (sort (if (cpped-cmake-build-directory-p build-dir)
-                                                                      (cpped-get-cmake-targets build-dir)
-                                                                    (cpped-get-make-targets build-dir)) #'string-lessp) :test 'string=))
-                              :prompt "Target: "
-                              :preselect (or (cdr (assoc build-dir cpped-current-targets))
-                                             "all")
-                              :buffer "*helm target*")))
-    (push '(build-dir . current-target) cpped-current-targets)
-    current-target))
 
 (defun cpped-build-target ()
   "Get the selected build target for the curent build directory."
@@ -3714,7 +3637,6 @@ Handler to close buffer after quitting ccmake.
 #+END_SRC
 
 **** Show target dependencies
-#+BEGIN_SRC emacs-lisp
 (defun cpped-show-target-dependencies (build-dir)
   "Show the target dependencies."
   (interactive (list (or (cpped-build-dir)
@@ -3747,7 +3669,6 @@ Handler to close buffer after quitting ccmake.
                                                          :buffer "*helm target dependencies*"))))
           (image-mode))
       (error "The dot tool is not installed."))))
-#+END_SRC
 
 **** Utilities
 ***** Find source directory
@@ -3879,7 +3800,7 @@ Handler to close buffer after quitting ccmake.
 *** Common
 #+BEGIN_SRC emacs-lisp
 (use-package lsp-mode
-  :after helm-buffers
+  :after consult
   :hook prog-mode
   :custom
   (lsp-auto-configure t)
@@ -3898,7 +3819,7 @@ Handler to close buffer after quitting ccmake.
   (lsp-modeline-code-actions-enable nil)
   (lsp-modeline-diagnostics-enable nil)
   (lsp-modeline-workspace-status-enable nil)
-  :config (push "^\\*lsp-.+" helm-boring-buffer-regexp-list))
+  :config (push "\\`\\*lsp-.+" consult-buffer-filter))
 
 (use-package lsp-ui
   :bind (([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
@@ -3913,9 +3834,13 @@ Handler to close buffer after quitting ccmake.
   (lsp-ui-sideline-show-hover nil)
   (lsp-ui-sideline-show-code-actions t)
   (lsp-ui-sideline-show-symbol nil))
+#+END_SRC
 
-(use-package helm-lsp
-  :after (helm lsp-mode))
+[[https://github.com/gagbo/consult-lsp][Consult support]]
+#+BEGIN_SRC emacs-lisp
+(use-package consult-lsp
+  :after (consult lsp-mode marginalia)
+)
 #+END_SRC
 
 **** Highlighting
@@ -4000,15 +3925,15 @@ Handler to close buffer after quitting ccmake.
 
 ***** Find ToDos in file or project
 #+BEGIN_SRC emacs-lisp
-(with-eval-after-load "helm-imenu"
+(with-eval-after-load "consult"
   (defun cpped-find-todos-in-file ()
-    "Show all ToDo items in the file and allow jumping to specific item."
+    "Show all ToDo items in thqe file and allow jumping to specific item."
     (interactive)
     (let ((imenu-generic-expression (mapcar (lambda (element)
                                               (let ((type (car element)))
                                                 (list type (rx (literal type) (one-or-more space) (group (one-or-more any)) eol) 1)))
                                             hl-todo-keyword-faces)))
-      (call-interactively 'helm-imenu))))
+      (call-interactively 'consult-imenu))))
 #+END_SRC
 
 ***** Show current function in mode-line
@@ -4053,12 +3978,6 @@ Handler to close buffer after quitting ccmake.
 #+END_SRC
 
 **** Navigation
-***** [[https://github.com/brotzeit/helm-xref][Helm interface for xref]]
-#+BEGIN_SRC emacs-lisp
-(use-package helm-xref
-  :custom (xref-show-xrefs-function 'helm-xref-show-xrefs))
-#+END_SRC
-
 ***** [[https://github.com/gregsexton/origami.el][Folding]]
 #+BEGIN_SRC emacs-lisp
 (use-package origami
@@ -4161,11 +4080,8 @@ Use [[https://editorconfig.org/][EditorConfig]] via [[https://github.com/editorc
 (use-package 0xc
   :config
   (defun cpped-convert-number (base)
-    (interactive (list (string-to-number (helm :sources (helm-build-sync-source "Bases"
-                                                          :candidates '("2" "8" "10" "16"))
-                                               :prompt "Base: "
-                                               :buffer "*helm number base*"))))
-            (0xc-convert-point base))
+    (interactive (list (string-to-number (completing-read "Base" '("2" "8" "10" "16")))))
+    (0xc-convert-point base))
   (defun cpped-show-number-info ()
     (interactive)
     (let ((number (0xc-string-to-number (apply 'buffer-substring-no-properties (0xc--bounds-of-number-at-point)))))
@@ -4243,7 +4159,7 @@ Use [[https://editorconfig.org/][EditorConfig]] via [[https://github.com/editorc
 ***** [[http://www.flycheck.org/en/latest/][Syntax checking]]
 #+BEGIN_SRC emacs-lisp
 (use-package flycheck
-  :after (helm-buffers popwin)
+  :after consult; popwin)
   :hook (after-init . global-flycheck-mode)
   :custom
   (flycheck-idle-change-delay 2.0)
@@ -4256,8 +4172,7 @@ Use [[https://editorconfig.org/][EditorConfig]] via [[https://github.com/editorc
   (flycheck-process-error-functions nil)
   (flycheck-check-syntax-automatically '(mode-enabled save))
   :config
-  (push "^\\*Flycheck.+\\*$" helm-boring-buffer-regexp-list)
-  (push '("^\\*Flycheck.+\\*$" :regexp t :dedicated t :position bottom) popwin:special-display-config)
+  (push "\\`\\*Flycheck.+\\*\\'" consult-buffer-filter)
   (defun cpped-modeline-flycheck-status-face ()
     (pcase flycheck-last-status-change
       (`errored 'cpped-check-status-error)
@@ -4323,6 +4238,12 @@ Custom error highlighting (colored line under location)
 (add-hook 'flycheck-status-changed-functions #'cpped-flycheck-clear)
 #+END_SRC
 
+***** Consult integration
+#+BEGIN_SRC emacs-lisp
+(use-package consult-flycheck
+    :after (consult flycheck))
+#+END_SRC
+
 ***** [[https://github.com/michaeljb/bool-flip][Flip booleans]]
 #+BEGIN_SRC emacs-lisp
 (use-package bool-flip
@@ -4364,11 +4285,6 @@ Custom error highlighting (colored line under location)
 TODO
 
 #+BEGIN_SRC emacs-lisp
-(use-package helm-make
-  :after helm
-  :custom
-  (helm-make-fuzzy-matching t)
-  (helm-make-list-target-method 'default))
 #+END_SRC
 
 ***** Always kill running compilation when starting another
@@ -4459,17 +4375,20 @@ TODO
 Show API info via [[https://devdocs.io][devdocs.io]]
 #+BEGIN_SRC emacs-lisp
 (use-package devdocs-browser
+  :after consult
   :straight (devdocs-browser
              :type git
              :host github
              :repo "blahgeek/emacs-devdocs-browser")
   :hook (eww-mode . devdocs-browser-eww-mode)
-  :config (defun cpped-add-apidocs (mode doclist)
-            "Install API documentation and enable for mode."
-            (mapcar (lambda (doc)
-                      (devdocs-browser-install-doc doc))
-                    doclist)
-            (push `(,mode . ,doclist) devdocs-browser-major-mode-docs-alist)))
+  :config
+  (defun cpped-add-apidocs (mode doclist)
+    "Install API documentation and enable for mode."
+    (mapcar (lambda (doc)
+              (devdocs-browser-install-doc doc))
+            doclist)
+    (push `(,mode . ,doclist) devdocs-browser-major-mode-docs-alist))
+  (push "\`\\*devdocs-" consult-buffer-filter))
 #+END_SRC
 
 ***** Change Log
@@ -4583,8 +4502,9 @@ Show API info via [[https://devdocs.io][devdocs.io]]
     (switch-to-buffer "*Cloc*")
     (delete-file cloc-input)))
 
-(push "\\*Cloc\\*" helm-boring-buffer-regexp-list)
-(push "*Cloc*" cpped-bury-buffers-list)
+(with-eval-after-load "consult"
+  (push "\\`\\*Cloc\\*\\'" consult-buffer-filter)
+  (push "*Cloc*" cpped-bury-buffers-list))
 #+END_SRC
 
 *** Assembler
@@ -4617,7 +4537,7 @@ Show API info via [[https://devdocs.io][devdocs.io]]
 
 #+BEGIN_SRC emacs-lisp
 (use-package ccls
-  :after (helm-buffers lsp)
+  :after lsp
   :custom
   (ccls-executable (expand-file-name "~/.local/bin/ccls"))
   (ccls-sem-highlight-method 'font-lock)
@@ -4818,7 +4738,6 @@ Show API info via [[https://devdocs.io][devdocs.io]]
                                   (flycheck-select-checker 'c/c++-clang)))
   (add-hook 'c++-mode-hook (lambda ()
                              (setq flycheck-clang-language-standard "c++17")))
-  (push "\\*clang-.*\\*" helm-boring-buffer-regexp-list)
 
   (setq flycheck-gcc-pedantic t
         flycheck-gcc-pedantic-errors nil
@@ -4843,6 +4762,9 @@ Show API info via [[https://devdocs.io][devdocs.io]]
     :hook (cpped-after-project-load-update-project-file-hook . (lambda ()
                                                                  (setq-local flycheck-clang-tidy-build-path (cpped-build-dir))))
     :config (flycheck-add-next-checker 'c/c++-cppcheck '(t . c/c++-clang-tidy))))
+
+(with-eval-after-load "consult"
+  (push "\\`\\*clang-.*\\*'" consult-buffer-filter))
 #+END_SRC
 
 
@@ -5856,13 +5778,12 @@ Auto-highlight details
 **** [[https://github.com/magit/magit][Magit]]
 #+BEGIN_SRC emacs-lisp
 (use-package magit
-  :after (helm helm-buffers)
+  :after (consult projectile super-save)
   :custom
   (magit-clone-set-remote.pushDefault t)
   (git-commit-style-convention-checks nil)
   (git-commit-summary-max-length 80)
   (magit-auto-revert-mode t)
-  (magit-completing-read-function 'helm--completing-read-default)
   (magit-diff-expansion-threshold 3)
   (magit-diff-highlight-hunk-region-functions '(magit-diff-highlight-hunk-region-dim-outside magit-diff-highlight-hunk-region-using-underline))
   (magit-diff-highlight-indentation '((".*" . tabs)))
@@ -5889,7 +5810,6 @@ Auto-highlight details
                          "-n200"))
   (magit-diff-arguments '("--function-context" "--stat" "-M" "-C"))
   :config
-  (push "^\\*?magit.*" helm-boring-buffer-regexp-list))
 
 (use-package magit-popup)
 #+END_SRC
@@ -6126,13 +6046,6 @@ forcing it by running
              :repo "jwiegley/git-undo-el"))
 #+END_SRC
 
-**** [[https://github.com/emacs-helm/helm-ls-git][Browse other git projects with helm]]
-#+BEGIN_SRC emacs-lisp
-(use-package helm-ls-git
-  :after helm
-  :custom (helm-ls-git-fuzzy-match t))
-#+END_SRC
-
 **** [[https://github.com/defunkt/gist.el][Gist support]]
 #+BEGIN_SRC emacs-lisp
 (use-package gist
@@ -6293,7 +6206,8 @@ forcing it by running
 ** Info Pages
 Hide info buffer in buffer list
 #+BEGIN_SRC emacs-lisp
-(push "\\*info\\*" helm-boring-buffer-regexp-list)
+(with-eval-after-load "consult"
+  (push "\\`\\*info\\*\\'" consult-buffer-filter))
 #+END_SRC
 
 *** [[https://github.com/ubolonton/info-colors][Add extra coloring]]
@@ -6426,7 +6340,7 @@ Hide info buffer in buffer list
 *  Org-Mode
 #+BEGIN_SRC emacs-lisp
 (use-package org
-  :after (helm helm-buffers popwin)
+  :after (consult rainbow-mode); popwin)
   :mode ("\\.org\\'" . org-mode)
   :bind (("C-c l" . org-store-link))
   :custom
@@ -6474,19 +6388,13 @@ Hide info buffer in buffer list
   (org-use-sub-superscripts '{})
   (org-use-speed-commands t)
   (org-yank-adjusted-subtrees t)
-  (helm-org-headings-fontify nil)
-  (helm-org-format-outline-path t)
   :config
   (defvar org-default-todos-file (file-truename "~/.todos.org") "The default file for todo tasks.")
   (defvar org-default-bugs-file (file-truename "~/.bugs.org") "The default file for bug tasks.")
   (defvar org-default-events-file (file-truename "~/.events.org") "The default file for events.")
-  (push "\\*Org Agenda\\*" helm-boring-buffer-regexp-list)
-  (push '("*Agenda Commands*" :dedicated t :position bottom :height 20) popwin:special-display-config)
-  (push '("*Org Agenda*" :position bottom :height 30) popwin:special-display-config)
-  (push '("*Org Select*" :height 0.2 :position bottom :noselect nil :stick t) popwin:special-display-config)
-  (push '("^CAPTURE-.+\*.org$" :position left :regexp t) popwin:special-display-config)
   (font-lock-add-keywords 'org-mode `(("^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\|\\([0-9]+\\)/\\2\\)\\][^\n]*\n\\)" 1 'org-headline-done prepend)) 'append)
   (add-hook 'org-mode-hook #'org-update-all-dblocks)
+  (push "\\`\\*Org Agenda\\*\\'" consult-buffer-filter)
   (defun cpped-org-update-all-dblocks ()
     "Update all dynamic blocks in org-mode."
     (when (equal major-mode 'org-mode)
@@ -6494,8 +6402,6 @@ Hide info buffer in buffer list
   (add-hook 'after-save-hook #'cpped-org-update-all-dblocks)
   (add-hook 'window-state-change-hook #'cpped-org-update-all-dblocks) )
 
-(use-package helm-org
-  :after (helm org))
 #+END_SRC
 
 ** Default files
@@ -6518,10 +6424,6 @@ Hide info buffer in buffer list
 
 *** Hide default org files in buffer list
 #+BEGIN_SRC emacs-lisp
-(push (regexp-quote (file-name-nondirectory org-default-bugs-file)) helm-boring-buffer-regexp-list)
-(push (regexp-quote (file-name-nondirectory org-default-todos-file)) helm-boring-buffer-regexp-list)
-(push (regexp-quote (file-name-nondirectory org-default-events-file)) helm-boring-buffer-regexp-list)
-(push (regexp-quote (file-name-nondirectory org-default-notes-file)) helm-boring-buffer-regexp-list)
 #+END_SRC
 
 *** Show special name for default buffers in mode line
@@ -6879,64 +6781,30 @@ Archive when done, remove flag if reset to todo.
 
 ** Capture Templates
 #+BEGIN_SRC emacs-lisp
-(defun cpped-select-topic (name files)
-  "Select an agenda topic."
-  (let ((helm-org-headings-fontify nil)
-        (helm-org-headings-actions (helm-make-actions
-                                    "Select topic"
-                                    (lexical-let ((_files files))
-                                      (lambda (candidate)
-                                        (if (markerp candidate)
-                                            (progn (set-buffer (marker-buffer candidate))
-                                                   (org-capture-put-target-region-and-position)
-	                                           (widen)
-	                                           (goto-char candidate)
-	                                           (set-marker candidate nil))
-                                          (progn
-                                            (set-buffer (org-capture-target-buffer (if (listp _files)
-                                                                                       (car _files)
-                                                                                     _files)))
-                                            (goto-char (point-max))
-                                            (org-capture-put-target-region-and-position)
-                                            (widen)))
-                                        t)))))
-    (or (helm :sources (append (helm-org-build-sources (if (listp files)
-                                                           files
-                                                         (list files)))
-                               (list (helm-build-dummy-source
-                                         "Create top-level entry"
-                                       :action helm-org-headings-actions)))
-              :input name
-              :preselect name
-              :candidate-number-limit 99999
-              :truncate-lines helm-org-truncate-lines
-              :prompt "Topic: "
-              :buffer "*helm org headings*")
-        (error "Aborted"))))
+(with-eval-after-load "org"
+  (defun shark-bytes/select-agenda-file (name)
+  "Select a customer agenda file."
+  (if-let ((file (shark-bytes/agenda-file (cpped-project-dir) name)))
+      (progn (find-file file)
+             (goto-char (point-max))
+             (org-capture-put-target-region-and-position)
+             (widen))
+    (error "No file found")))
 
-(defun cpped-select-agenda-topic ()
-  "Select an agenda topic."
-  (cpped-select-topic "" org-agenda-files))
+(defun shark-bytes/select-tasks-file ()
+  "Select the customer tasks file."
+  (interactive)
+  (shark-bytes/select-agenda-file "tasks.org"))
 
-(defun cpped-select-todo-topic ()
-  "Select a todo topic."
-  (cpped-select-topic "" org-default-todos-file))
+(defun shark-bytes/select-events-file ()
+  "Select the customer events file."
+  (interactive)
+  (shark-bytes/select-agenda-file "events.org"))
 
-(defun cpped-select-support-topic ()
-  "Select a support topic."
-  (cpped-select-topic "Support" org-agenda-files))
-
-(defun cpped-select-bug-topic ()
-  "Select a bug topic."
-  (cpped-select-topic "" org-default-bugs-file))
-
-(defun cpped-select-note-topic ()
-  "Select a note topic."
-  (cpped-select-topic "" org-default-notes-file))
-
-(defun cpped-select-event-topic ()
-  "Select a event topic."
-  (cpped-select-topic "" org-default-events-file))
+(defun shark-bytes/select-notes-file ()
+  "Select the customer notes file."
+  (interactive)
+  (shark-bytes/select-agenda-file "notes.org"))
 
 (defun org-src-language-from-major-mode (local-major-mode)
   "Infer an 'org-mode' source block type from the major mode LOCAL-MAJOR-MODE."
@@ -6947,15 +6815,16 @@ Archive when done, remove flag if reset to todo.
               org-src-lang-modes)))
 
 (setq org-capture-templates
-      `(("t" "To Do" entry (function cpped-select-todo-topic) ,(concat "* " cpped-org-todo-keyword-todo " [#B] %?\n%U\n%i\n") :empty-lines 1 :kill-buffer t)
-        ("p" "Priority To Do" entry (function cpped-select-todo-topic) ,(concat "* " cpped-org-todo-keyword-todo " [#A] %?\n%T\nDEADLINE: %t\n%i\n") :empty-lines 1 :kill-buffer t)
-        ("b" "Bug" entry (function cpped-select-bug-topic) ,(concat "* " cpped-org-todo-keyword-bug " [#B] %?\n%U\n%i\n") :empty-lines 1 :kill-buffer t)
-        ("f" "Fixme" entry (function cpped-select-bug-topic) ,(concat "* " cpped-org-todo-keyword-fixme " [#A] %?\n%U\nSCHEDULED: %t\nIn function *[[file:%F::%(with-current-buffer (org-capture-get :original-buffer) (number-to-string (line-number-at-pos)))][%(with-current-buffer (org-capture-get :original-buffer) (which-function))()]]*\n#+BEGIN_SRC %(with-current-buffer (org-capture-get :original-buffer) (org-src-language-from-major-mode major-mode))\n%i\n#+END_SRC\n") :empty-lines 1 :kill-buffer t)
-        ("s" "Support" entry (function cpped-select-support-topic) ,(concat "* " cpped-org-todo-keyword-in-progress " [#B] %?\n%U\n%i\n") :empty-lines 1 :kill-buffer t :clock-in t :clock-keep t)
-        ("n" "Note" entry (function cpped-select-note-topic) "* %?\n%U\n%i\n" :empty-lines 1 :kill-buffer t)
-        ("m" "Meeting" entry (function cpped-select-event-topic) ,(concat "* " cpped-org-todo-keyword-todo " [#A] %?\n%T\n%i\n") :empty-lines 1 :kill-buffer t)
-        ("i" "Instant Meeting" entry (function cpped-select-event-topic) ,(concat "* " cpped-org-todo-keyword-in-progress " [#A] %?\ns%T\n%i\n") :empty-lines 1 :kill-buffer t :clock-in t :clock-keep t)
-        ("c" "Source Code" entry (function cpped-select-note-topic) ,(concat "* %?\n%U\n\nIn function *[[file:%F::%(with-current-buffer (org-capture-get :original-buffer) (number-to-string (line-number-at-pos)))][%(with-current-buffer (org-capture-get :original-buffer) (which-function))()]]*\n#+BEGIN_SRC %(with-current-buffer (org-capture-get :original-buffer) (org-src-language-from-major-mode major-mode))\n%i\n#+END_SRC\n") :empty-lines 1 :kill-buffer t)))
+      `(("t" "To Do" entry (function shark-bytes/select-tasks-file) ,(concat "* " cpped-org-todo-keyword-todo " [#B] %?\n%U\n%i\n") :empty-lines 1 :kill-buffer t)
+        ("p" "Priority To Do" entry (function shark-bytes/select-tasks-file) ,(concat "* " cpped-org-todo-keyword-todo " [#A] %?\n%T\nDEADLINE: %t\n%i\n") :empty-lines 1 :kill-buffer t)
+        ("b" "Bug" entry (function shark-bytes/select-tasks-file) ,(concat "* " cpped-org-todo-keyword-bug " [#B] %?\n%U\n%i\n") :empty-lines 1 :kill-buffer t)
+        ("f" "Fixme" entry (function shark-bytes/select-tasks-file) ,(concat "* " cpped-org-todo-keyword-fixme " [#A] %?\n%U\nSCHEDULED: %t\nIn function *[[file:%F::%(with-current-buffer (org-capture-get :original-buffer) (number-to-string (line-number-at-pos)))][%(with-current-buffer (org-capture-get :original-buffer) (which-function))()]]*\n#+BEGIN_SRC %(with-current-buffer (org-capture-get :original-buffer) (org-src-language-from-major-mode major-mode))\n%i\n#+END_SRC\n") :empty-lines 1 :kill-buffer t)
+        ("s" "Support" entry (function shark-bytes/select-tasks-file) ,(concat "* " cpped-org-todo-keyword-in-progress " [#B] %?\n%U\n%i\n") :empty-lines 1 :kill-buffer t :clock-in t :clock-keep t)
+        ("n" "Note" entry (function shark-bytes/select-notes-file) "* %?\n%U\n%i\n" :empty-lines 1 :kill-buffer t)
+        ("m" "Meeting" entry (function shark-bytes/select-events-file) ,(concat "* " cpped-org-todo-keyword-todo " [#A] %?\n%T\n%i\n") :empty-lines 1 :kill-buffer t)
+        ("i" "Instant Meeting" entry (function shark-bytes/select-events-file) ,(concat "* " cpped-org-todo-keyword-in-progress " [#A] %?\ns%T\n%i\n") :empty-lines 1 :kill-buffer t :clock-in t :clock-keep t)
+        ("c" "Source Code" entry (function shark-bytes/select-notes-file) ,(concat "* %?\n%U\n\nIn function *[[file:%F::%(with-current-buffer (org-capture-get :original-buffer) (number-to-string (line-number-at-pos)))][%(with-current-buffer (org-capture-get :original-buffer) (which-function))()]]*\n#+BEGIN_SRC %(with-current-buffer (org-capture-get :original-buffer) (org-src-language-from-major-mode major-mode))\n%i\n#+END_SRC\n") :empty-lines 1 :kill-buffer t)))
+)
 #+END_SRC
 
 ** Agenda
@@ -7396,16 +7265,19 @@ emacsclient --eval "(emacs-everywhere)"
 (use-package emacs-everywhere)
 #+END_SRC
 
-*** Processes
+*** Process Management
 #+BEGIN_SRC emacs-lisp
-(with-eval-after-load "helm"
-  (require 'helm-sys))
+(setq proced-auto-update-flag t)
+(setq proced-auto-update-interval 5)
+(setq proced-descend t)
+(setq proced-filter 'user)
+(setq proced-tree-flag t)
+
+(with-eval-after-load "consult"
+  (push "\\*Proced\\*" consult-buffer-filter))
 #+END_SRC
 
 *** Services
-#+BEGIN_SRC emacs-lisp
-(use-package helm-systemd)
-#+END_SRC
 
 ** Use rx syntax for regular expression builder
 #+BEGIN_SRC emacs-lisp
@@ -7455,51 +7327,33 @@ Do not use scientific form so quickly
 (with-eval-after-load "devdocs-browser"
   (cpped-add-apidocs 'gnuplot-mode '("gnuplot")))
 #+END_SRC
-** [[https://github.com/Zacalot/helm-convert][Unit conversion]]
-#+BEGIN_SRC emacs-lisp
-(use-package helm-convert
-  :after (helm-source calc-units)
-  :straight (helm-convert
-             :type git
-             :host github
-             :repo "Zacalot/helm-convert"))
-#+END_SRC
 
 * ﯱ Remote
 ** Serial Devices
 #+BEGIN_SRC emacs-lisp
-(defcustom cpped-serial-port nil "The last used serial port.")
-(defcustom cpped-serial-port-baudrate 115200 "The last used serial port baud rate.")
+(defcustom shark-bytes/serial-port nil "The last used serial port.")
+(defcustom shark-bytes/serial-port-baudrate 115200 "The last used serial port baud rate.")
 
-(defun cpped-serial-terminal (port baudrate)
+(defun shark-bytes/serial-terminal (port baudrate)
   (interactive (let ((ports (directory-files "/dev/" nil "ttyUSB[0-9]+" t)))
                  (list (cond ((= (length ports) 0) nil)
                              ((= (length ports) 1) (car ports))
-                             (t (helm :sources (helm-build-sync-source "Serial Port"
-                                                 :candidates (directory-files "/dev/" nil "ttyUSB[0-9]+" t))
-                                      :prompt "Serial Port: "
-                                      :preselect cpped-serial-port
-                                      :buffer "*helm serial port*")))
+                             (t (completing-read "Serial Port: " (directory-files "/dev/" nil "ttyUSB[0-9]+" t) nil t shark-bytes/serial-port)))
                        (when (> (length ports) 0)
-                         (string-to-number (helm :sources (helm-build-sync-source "Baudrate"
-                                                            :candidates '("300" "600" "1200" "2400" "4800" "9600" "19200" "38400" "57600" "115200" "230400" "460800" "576000" "921600"))
-                                                 :prompt "Baudrate: "
-                                                 :preselect (number-to-string cpped-serial-port-baudrate)
-                                                 :buffer "*helm serial port*"))))))
+                         (completing-read "Baudrate: " '(300 600 1200 2400 4800 9600 19200 38400 57600 115200 230400 460800 576000 921600) nil nil shark-bytes/serial-port-baudrate)))))
   (if port
       (progn
         (serial-term (expand-file-name port "/dev") baudrate)
         (rename-buffer (format "*Serial Terminal %s*" port))
         (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix)
-        (customize-save-variable 'cpped-serial-port port)
-        (customize-save-variable 'cpped-serial-port-baudrate baudrate))
+        (customize-save-variable 'shark-bytes/serial-port port)
+        (customize-save-variable 'shark-bytes/serial-port-baudrate baudrate))
     (message "No serial port found.")))
 #+END_SRC
 
 ** [[https://www.emacswiki.org/emacs/TrampMode][Network Devices]]
 #+BEGIN_SRC emacs-lisp
-(use-package helm-tramp
-  :after (helm tramp)
+(use-package tramp
   :custom
   (tramp-adb-connect-if-not-connected t)
   (tramp-connection-properties nil)
@@ -7571,12 +7425,6 @@ Do not use scientific form so quickly
                  1)
       (kill-emacs)
     (delete-frame)))
-#+END_SRC
-
-** Helm
-#+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "M-x") 'cpped-helm-M-x)
-(global-set-key (kbd "<menu>") 'cpped-helm-M-x)
 #+END_SRC
 
 ** Hydra
