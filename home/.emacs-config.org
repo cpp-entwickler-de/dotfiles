@@ -3853,14 +3853,14 @@ Handler to close buffer after quitting ccmake.
 #+END_SRC
 
 **** Highlighting
-***** [[https://github.com/DarthFennec/highlight-indent-guides][Show Indentation]]
-#+BEGIN_SRC emacs-lisp
-(use-package highlight-indent-guides
-  :hook (prog-mode . highlight-indent-guides-mode)
+***** [[https://codeberg.org/ideasman42/emacs-hl-indent-scope][Show Indentation]]
+#+BEGIN_SRC emacs-lisp :tangle no
+(use-package hl-indent-scope
+  :hook (prog-mode . hl-indent-scope-mode)
   :custom
-  (highlight-indent-guides-method 'bitmap)
-  (highlight-indent-guides-bitmap-function 'highlight-indent-guides--bitmap-line)
-  (highlight-indent-guides-responsive 'stack))
+  (hl-indent-scope-fixed-width t)
+  (hl-indent-scope-fill-empty-lines t)
+  (hl-indent-scope-fill-over-text t))
 #+END_SRC
 
 ***** [[https://github.com/ankurdave/color-identifiers-mode][Unique colors for identifiers]]
