@@ -2860,6 +2860,7 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 (use-package avy
   :custom
   (avy-all-windows t)
+  (avy-background t)
   (avy-style 'words)
   (avy-dispatch-alist '((?k . avy-action-kill-move)
                         (?r . avy-action-kill-stay)
