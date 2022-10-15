@@ -7155,6 +7155,9 @@ Archive when done, remove flag if reset to todo.
       org-clock-report-include-clocking-task t)
 
 (org-clock-persistence-insinuate)
+
+(add-hook 'org-clock-in-hook 'org-save-all-org-buffers)
+(add-hook 'org-clock-out-hook 'org-save-all-org-buffers)
 #+END_SRC
 
 *** Remaining work time
