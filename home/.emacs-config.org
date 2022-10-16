@@ -198,6 +198,10 @@ Do not ask for confirmation for new shell buffers
 ** [[https://github.com/lastquestion/explain-pause-mode][Waiting time information]]
 #+BEGIN_SRC emacs-lisp
 (use-package explain-pause-mode
+  :straight (explain-pause-mode
+             :type git
+             :host github
+             :repo "lastquestion/explain-pause-mode")
   :init (explain-pause-mode))
 #+END_SRC
 
