@@ -6294,9 +6294,9 @@ forcing it by running
              (not (string-equal (vc-state buffer-file-name) 'unregistered)))
     (cpped-show-contributor-info `(,buffer-file-name)
                                  (save-excursion
-                                     (save-restriction
-                                       (point-min)))
-                                 'cpped-file-contributor-info)))
+                                   (save-restriction
+                                     (point-min)))
+                                   'cpped-show-file-contributor-info)))
 
 (defun cpped-show-region-contributor-info ()
   "Show contributor information for current region. If no region is selected, defaults to current function"
