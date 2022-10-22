@@ -445,19 +445,6 @@ Prettify escaped newline
   :group 'basic-faces)
 #+END_SRC
 
-*** Increase/decrease font size
-#+BEGIN_SRC emacs-lisp
-(defun cpped-zoom-in ()
-  "Increase the font size by 10 points"
-  (interactive)
-  (set-face-attribute 'default nil :height (+ (face-attribute 'default :height) 10)))
-
-(defun cpped-zoom-out ()
-  "Decrease the font size by 10 points"
-  (interactive)
-  (set-face-attribute 'default nil :height (- (face-attribute 'default :height) 10)))
-#+END_SRC
-
 ** Icons
 *** [[https://github.com/domtronn/all-the-icons.el][Show icons]]
 #+BEGIN_SRC emacs-lisp
@@ -8390,6 +8377,30 @@ Navigation                      ^^Levels                       ^^Filter
   ("s" helm-tramp "Remote Shell"))
 
 (global-set-key (kbd "C-r") 'cpped-hydra-remote/body)
+
+(defun shark-bytes/zoom-in ()
+  "Increase the font size by 10 points."
+  (interactive)
+  (cond ((and (boundp 'doc-view-mode)
+              (derived-mode-p 'doc-view-mode))
+         (doc-view-enlarge))
+        ((and (boundp 'pdf-view-mode)
+              (derived-mode-p 'pdf-view-mode))
+         (pdf-view-enlarge))
+        (t
+         (set-face-attribute 'default nil :height (+ (face-attribute 'default :height) 10)))))
+
+(defun shark-bytes/zoom-out ()
+  "Decrease the font size by 10 points."
+  (interactive)
+  (cond ((and (boundp 'doc-view-mode)
+           (derived-mode-p 'doc-view-mode))
+         (doc-view-shrink))
+        ((and (boundp 'pdf-view-mode)
+              (derived-mode-p 'pdf-view-mode))
+         (pdf-view-shrink))
+        (t
+         (set-face-attribute 'default nil :height (- (face-attribute 'default :height) 10)))))
 #+END_SRC
 
 ** Windows
@@ -8433,8 +8444,6 @@ Focus                  ^^^^Close                ^^Split               ^^Align   
            (setq display-line-numbers t)
          (setq display-line-numbers 'relative)))
   ("w" widen)
-  ("C-+" cpped-zoom-in)
-  ("C--" cpped-zoom-out)
   ("f" toggle-frame-fullscreen :exit t)
   ("l" cpped-lock-screen :exit t))
 
