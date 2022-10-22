@@ -2859,12 +2859,6 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 (setq sentence-end-double-space nil)
 #+END_SRC
 
-*** Jump to other instances of symbol
-#+BEGIN_SRC emacs-lisp
-(use-package smartscan
-  :config (global-smartscan-mode 1))
-#+END_SRC
-
 *** [[https://github.com/jcs090218/goto-line-preview][Go to line with preview]]
 #+BEGIN_SRC emacs-lisp
 (use-package goto-line-preview)
@@ -7738,8 +7732,6 @@ _C-<right>_: Next word                 _y_: Down block                 _C-t_: Ne
   ("C-n" outre-goto-namespace-next)
   ("M-n" outrespace-jump-to-ns)
 
-  ("C-S-i" smartscan-symbol-go-backward)
-  ("C-i" smartscan-symbol-go-forward)
   ("C-S-t" hl-todo-previous)
   ("C-t" hl-todo-next)
   ("t" cpped-find-todos-in-file)
