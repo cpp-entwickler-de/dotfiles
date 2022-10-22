@@ -6222,12 +6222,20 @@ forcing it by running
   (magit-wip-after-save-mode))
 #+END_SRC
 
-**** [[https://github.com/syohex/emacs-git-messenger][Show commit message of line on request]]
+**** [[https://github.com/Artawower/blamer.el][Show git commit information inline]]
 #+BEGIN_SRC emacs-lisp
-(use-package git-messenger
+(use-package blamer
   :custom
-  (git-messenger:handled-backends 'git)
-  (git-messenger:use-magit-popup t))
+  (blamer--overlay-popup-position 'smart)
+  (blamer-idle-time 0.3)
+  (blamer-max-commit-message-length 30)
+  (blamer-max-lines 100)
+  :config
+  (defun shark-bytes/blamer-set-foreground-color (_ _ _ date _ &optional _ _)
+    "Set foreground color according to commit age."
+    (set-face-attribute 'blamer-face nil :foreground (shark-bytes/get-commit-age-color date)))
+  (advice-add 'blamer--format-commit-info :before #'shark-bytes/blamer-set-foreground-color)
+  (global-blamer-mode 1))
 #+END_SRC
 
 **** [[https://github.com/pidu/git-timemachine][Switch to previous version]]
