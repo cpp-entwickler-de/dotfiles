@@ -2735,6 +2735,13 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
                                    "\\.\\([0-9]+\\)")))
 #+END_SRC
 
+*** Highlight colors
+#+BEGIN_SRC emacs-lisp
+(use-package rainbow-mode
+  :hook find-file
+  :config (add-to-list 'rainbow-html-colors-major-mode-list 'emacs-lisp-mode))
+#+END_SRC
+
 *** Highlight matching parens
 #+BEGIN_SRC emacs-lisp
 (setq show-paren-style 'mixed
@@ -5408,10 +5415,89 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 (push '("\\.py\\'" . python-mode) auto-mode-alist)
 #+END_SRC
 
+
+   python-shell-switch-to-shell
+   python-shell-send-buffer
+   python-shell-send-region
+   python-shell-send-defun
+
+
+(defun projectile-pyenv-mode-set ()
+  "Set pyenv version matching project name."
+  (let ((project (projectile-project-name)))
+    (if (member project (pyenv-mode-versions))
+        (pyenv-mode-set project)
+      (pyenv-mode-unset))))
+
+(add-hook 'projectile-after-switch-project-hook 'projectile-pyenv-mode-set)
+
+
+  (setq pyvenv-post-deactivate-hooks
+        (list (lambda ()
+                (setq python-shell-interpreter "python3")))))
+
+(with-eval-after-load "devdocs-browser"
+  (cpped-add-apidocs 'python-mode . '(python~3.9))
+
+
+https://github.com/wbolster/emacs-python-pytest
+https://github.com/pwalsh/pipenv.el
+https://github.com/marcwebbie/auto-virtualenv
+
+
+
+
+
+(defun +python/optimize-imports ()
+  "organize imports"
+  (interactive)
+  (pyimport-remove-unused)
+  (py-isort-buffer))
+
+
+(defun +python/open-repl ()
+  "Open the Python REPL."
+  (interactive)
+  (require 'python)
+  (unless python-shell-interpreter
+    (user-error "`python-shell-interpreter' isn't set"))
+  (pop-to-buffer
+   (process-buffer
+    (if-let* ((pipenv (+python-executable-find "pipenv"))
+              (pipenv-project (pipenv-project-p)))
+        (let ((default-directory pipenv-project)
+              (python-shell-interpreter-args
+               (format "run %s %s"
+                       python-shell-interpreter
+                       python-shell-interpreter-args))
+              (python-shell-interpreter pipenv))
+          (run-python nil nil t))
+      (run-python nil nil t)))))
+
+
+(use-package! pyimport
+  :defer t
+  :init
+  (map! :after python
+        :map python-mode-map
+        :localleader
+        (:prefix ("i" . "imports")
+          :desc "Insert missing imports" "i" #'pyimport-insert-missing
+          :desc "Remove unused imports"  "r" #'pyimport-remove-unused
+          :desc "Optimize imports"       "o" #'+python/optimize-imports)))
+
+
+          ;; Package `pip-requirements' provides a major mode for
+;; requirements.txt files used by Pip.
+(use-package pip-requirements
+
+
 *** QML
 #+BEGIN_SRC emacs-lisp
 (use-package qml-mode
-  :mode "\\.qml\\'")
+  :after rainbow-mode
+  :mode "\\.qml\\'"
+  :config (add-to-list 'rainbow-html-colors-major-mode-list 'qml-mode))
 #+END_SRC
 
 **** Imenu integration
