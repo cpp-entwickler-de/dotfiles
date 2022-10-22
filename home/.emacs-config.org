@@ -4125,11 +4125,16 @@ Use [[https://editorconfig.org/][EditorConfig]] via [[https://github.com/editorc
     (0xc-convert-point base))
   (defun cpped-show-number-info ()
     (interactive)
-    (let ((number (0xc-string-to-number (apply 'buffer-substring-no-properties (0xc--bounds-of-number-at-point)))))
-      (message "%s 0x%s 0b%s"
-               (0xc-number-to-string number 10)
-               (0xc-number-to-string number 16)
-               (0xc-number-to-string number 2)))))
+    (when-let* ((bounds (0xc--bounds-of-number-at-point))
+                (begin (car bounds))
+                (end (cadr bounds))
+                (at-point (buffer-substring-no-properties begin end))
+                (number (ignore-errors (0xc-string-to-number at-point (or (0xc--base-prefix at-point) 10)))))
+      (format "%s 0x%s 0%s 0b%s"
+              (0xc-number-to-string number 10)
+              (0xc-number-to-string number 16)
+              (0xc-number-to-string number 8)
+              (0xc-number-to-string number 2)))))
 #+END_SRC
 
 ***** [[https://github.com/emacsfodder/kurecolor][Modify colors]]
