@@ -2676,8 +2676,7 @@ https://github.com/purcell/exec-path-from-shell
   (markdown-toc-header-toc-end nil))
 #+END_SRC
 
-***** Syntax checker
-https://github.com/mivok/markdownlint
+***** [[github:mivok/markdownlint][Syntax checker]]
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load "system-packages"
   (cpped-install-system-package "mdl" :package-manager 'gem))
