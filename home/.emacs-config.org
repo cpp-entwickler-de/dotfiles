@@ -5974,6 +5974,7 @@ Auto-highlight details
                          "-n200"))
   (magit-diff-arguments '("--function-context" "--stat" "-M" "-C"))
   :config
+  (add-to-list 'super-save-triggers 'magit-status)
 
 (use-package magit-popup)
 #+END_SRC
