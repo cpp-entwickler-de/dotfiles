@@ -4142,6 +4142,8 @@ Use [[https://editorconfig.org/][EditorConfig]] via [[https://github.com/editorc
     :custom
     (corfu-cycle nil)
     (corfu-auto t)
+    (corfu-auto-prefix 2)
+    (corfu-auto-delay 0.2)
     (corfu-separator ?\s)
     (corfu-quit-at-boundary nil)
     (corfu-quit-no-match nil)
