@@ -7723,6 +7723,12 @@ Do not use scientific form so quickly
   (advice-add 'ssh-deploy-rename-handler :around 'cpped-post-rename))
 #+END_SRC
 
+** [[https://kubernetes-el.github.io/kubernetes-el/][Kubernetes]]
+#+begin_src emacs-lisp
+(use-package kubernetes
+  :commands (kubernetes-overview))
+#+end_src
+
 * [[https://github.com/abo-abo/hydra][ Keybindings]]
 ** Quit from any context
 #+BEGIN_SRC emacs-lisp
