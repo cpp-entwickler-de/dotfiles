@@ -3130,11 +3130,6 @@ Set prefered clipboard formats
   :config (whole-line-or-region-global-mode t))
 #+END_SRC
 
-*** [[https://github.com/ongaeshi/duplicate-thing][Duplicate lines/regions]]
-#+BEGIN_SRC emacs-lisp
-(use-package duplicate-thing)
-#+END_SRC
-
 *** Case-insensitive line sorting
 #+BEGIN_SRC emacs-lisp
 (defun cpped-sort-lines-case-insensitive ()
