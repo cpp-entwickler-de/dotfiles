@@ -4990,7 +4990,13 @@ https://github.com/google/googletest
 *** [[http://elpa.gnu.org/packages/csv-mode.html][CSV]]
 #+BEGIN_SRC emacs-lisp
 (use-package csv-mode
-  :mode ("\\.[Cc][Ss][Vv]\\'" . csv-mode))
+  :mode ("\\.[Cc][Ss][Vv]\\'" . csv-mode)
+  :hook ((find-file . shark-bytes/csv-visual-align))
+  :config (defun shark-bytes/csv-visual-align ()
+            "Align CSV fields."
+            (when (equal major-mode 'csv-mode)
+              (csv-unalign-fields t (point-min) (point-max))
+              (csv-align-fields t (point-min) (point-max)))))
 #+END_SRC
 
 *** [[https://github.com/schspa/dtb-mode][DTB]]
