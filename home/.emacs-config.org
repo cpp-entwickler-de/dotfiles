@@ -338,6 +338,11 @@ Show below other windows
 (fset 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
 
+** Do not show unusable commands
+#+begin_src emacs-lisp
+(setq read-extended-command-predicate #'command-completion-default-include-p)
+#+end_src
+
 ** Show keystrokes earlier
 #+BEGIN_SRC emacs-lisp
 (setq echo-keystrokes 0.1)
