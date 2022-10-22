@@ -657,7 +657,6 @@ The saturation for non-saturated colors is 60.
 (defun cpped-buffer-name ()
   "Returns a (virtual) buffer name, for non-file modes."
   (pcase major-mode
-    ('eshell-mode (eshell/pwd))
     ('shell-mode default-directory)
     ('term-mode default-directory)
     ('dired-mode default-directory)
