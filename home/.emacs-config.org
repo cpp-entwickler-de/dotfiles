@@ -2910,11 +2910,6 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 (setq sentence-end-double-space nil)
 #+END_SRC
 
-*** [[https://github.com/jcs090218/goto-line-preview][Go to line with preview]]
-#+BEGIN_SRC emacs-lisp
-(use-package goto-line-preview)
-#+END_SRC
-
 *** [[https://github.com/elpa-host/goto-char-preview][Go to character with preview]]
 #+BEGIN_SRC emacs-lisp
 (use-package goto-char-preview)
@@ -7844,7 +7839,6 @@ _C-<right>_: Next word                 _y_: Down block                 _C-t_: Ne
   ("C-S-l" backward-up-list)
   ("C-l" down-list)
   ("C-j" avy-goto-char-timer :exit t)
-  ("C-l" goto-line-preview :exit t)
   ("C-S-c" goto-char-preview :exit t)
 
   ("C-S-s" backward-sexp)
