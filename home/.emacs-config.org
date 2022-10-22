@@ -5937,6 +5937,26 @@ Auto-highlight details
     "X......."))
 #+END_SRC
 
+**** Colorize commit age
+#+begin_SRC emacs-lisp
+(setq shark-bytes/commit-age-colors `((7 . ,shark-bytes-burning)
+                                      (14 . ,shark-bytes-hot)
+                                      (31 . ,shark-bytes-cozy)
+                                      (93 . ,shark-bytes-bleak)
+                                      (183 . ,shark-bytes-cold)
+                                      (365 . ,shark-bytes-freezing)))
+
+(defun shark-bytes/get-commit-age-color(commit-date)
+  "Determine forground color from COMMIT-DATE."
+  (let* ((commit-age (floor (/ (float-time (time-since (encode-time (decoded-time-set-defaults (parse-time-string commit-date))))) 60 60 24)))
+         (age-colors-sorted (-sort  (lambda (first second)
+                                      (< (car first) (car second)))
+                                    shark-bytes/commit-age-colors))
+         (color (cdr (or (--first (< commit-age (car it))
+                                  age-colors-sorted)
+                         (car (last age-colors-sorted))))))
+    color))
+#+end_SRC
 
 *** Git
 **** [[https://github.com/magit/magit][Magit]]
@@ -6275,25 +6295,27 @@ forcing it by running
 
 (defun cpped-get-change-info (files &optional start end)
   "Get last change date for file(s) or region."
-  (cadar (sort (mapcar (lambda (file)
-                        (split-string (shell-command-to-string (concat "git log -1 "
-                                                                       (if (and start end)
-                                                                           (format "-L %d,%d" (line-number-at-pos start t) (line-number-at-pos end t))
-                                                                         "")
-                                                                       " --format=\"%aI; %ar by %an (commit %h %s)\" -- "
-                                                                       file))
-                                      ";"))
-                      files)
-              (lambda (first second) (> (iso8601-parse (car first) (iso8601-parse (car second))))))))
+  (let ((changes (sort (mapcar (lambda (file)
+                                 (split-string (shell-command-to-string (concat "git log -1 "
+                                                                                (if (and start end)
+                                                                                    (format "-L %d,%d" (line-number-at-pos start t) (line-number-at-pos end t))
+                                                                                  "")
+                                                                                " --format=\"%aI; %an, %ar ◉ %s\" -- "
+                                                                                file))
+                                               ";"))
+                               files)
+                       (lambda (first second) (> (iso8601-parse (car first) (iso8601-parse (car second))))))))
+    (propertize (cadar changes) 'face `(:foreground ,(shark-bytes/get-commit-age-color (caar changes))))))
 
 (defun cpped-show-contributor-info (files position type &optional start end)
   "Show contributor information."
   (remove-overlays nil nil type t)
-  (let* ((overlay (make-overlay position position)))
-    (overlay-put overlay 'before-string (concat (cpped-get-contributor-info files start end)
-                                                (cpped-get-change-info files start end)))
+  (let ((overlay (make-overlay position position))
+        (text (concat (cpped-get-contributor-info files start end)
+                      (cpped-get-change-info files start end))))
+    (add-face-text-property 0 (length text) `(:family ,(face-attribute 'shark-bytes-ui :family) :background ,shark-bytes-menu-window-background :extend t) nil text)
+    (overlay-put overlay 'before-string text)
     (overlay-put overlay type t)))
-
 
 (defun cpped-show-project-contributor-info ()
   "Show contributor information for current project."
