@@ -6282,8 +6282,8 @@ forcing it by running
                                              (expand-file-name file project-root))
                                            (split-string (shell-command-to-string (concat "git ls-files --full-name")) "\n" t))
                                    (save-excursion
-                                       (save-restriction
-                                         (point-min)))
+                                     (save-restriction
+                                       (point-min)))
                                    'cpped-project-contributor-info))))
 
 (defun cpped-show-file-contributor-info ()
