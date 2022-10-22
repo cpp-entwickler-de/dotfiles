@@ -1499,6 +1499,7 @@ Indicate recursive minibuffer
     :custom
     (undo-tree-visualizer-timestamps t)
     (undo-tree-visualizer-diff t)
+    (undo-tree-enable-undo-in-region t)
     (undo-tree-auto-save-history t)
     (undo-tree-history-directory-alist `(("." . ,(expand-file-name "~/.cache/emacs-undo"))))
     :config
