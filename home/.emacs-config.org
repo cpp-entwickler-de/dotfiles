@@ -2157,6 +2157,26 @@ https://github.com/purcell/exec-path-from-shell
 (setq confirm-nonexistent-file-or-buffer nil)
 #+END_SRC
 
+** Automatically create parent directories on save
+#+BEGIN_SRC emacs-lisp
+(defun shark-bytes/create-parent-directories(&optional file)
+  "Create parent directories for FILE."
+  (when-let* ((file-path (or file
+                             buffer-file-name
+                             (buffer-name)))
+              (parent-directory (file-name-directory file-path))
+              (is-absolute (file-name-absolute-p file-path)))
+    (unless (file-exists-p parent-directory)
+      (make-directory parent-directory t)
+      (set-visited-file-name file-path))))
+
+(defun shark-bytes/enable-create-parent-directories()
+  "Add shark-bytes/create-parent-directories to before-save-hook."
+  (add-hook 'before-save-hook 'shark-bytes/create-parent-directories))
+
+(add-hook 'find-file-hook 'shark-bytes/enable-create-parent-directories)
+#+END_SRC
+
 ** [[https://gitlab.com/kisaragi-hiu/didyoumean.el/][Prefer existing files]]
 #+BEGIN_SRC emacs-lisp
 (use-package didyoumean
