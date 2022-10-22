@@ -4723,6 +4723,27 @@ Show API info via [[https://devdocs.io][devdocs.io]]
                                  (c-toggle-electric-state 1)))
 #+END_SRC
 
+***** Auto-convert .. to ->
+#+BEGIN_SRC emacs-lisp
+(defun shark-bytes/smart-arrow-insert ()
+  "Auto-convert .. to ->"
+  (interactive)
+  (if (looking-back "\\.")
+      (progn (backward-delete-char 1)
+             (insert "->"))
+    (insert ".")))
+
+(define-minor-mode shark-bytes/smart-arrow-mode
+  "Auto-convert .. to ->"
+  :keymap
+  (let ((map (make-sparse-keymap)))
+    (define-key map "." #'shark-bytes/smart-arrow-insert)
+    map))
+
+(add-hook 'c-mode-hook #'shark-bytes/smart-arrow-mode)
+(add-hook 'c++-mode-hook #'shark-bytes/smart-arrow-mode)
+#+END_SRC
+
 ***** Wrap Region
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load "wrap-region"
