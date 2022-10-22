@@ -956,6 +956,12 @@ Helper function to figure out version control root directory
 #+BEGIN_SRC emacs-lisp
 (defvar cpped-modeline-check-status-functions nil "A list of functions that format mode line status data.")
 
+(defun shark-bytes/check-process-status()
+  "Format generic mode line status information."
+  (format-mode-line mode-line-process))
+
+(add-to-list 'cpped-modeline-check-status-functions 'shark-bytes/check-process-status)
+
 (defface cpped-check-status-info `((t :inherit info
                                       :weight ultra-bold))
   "Face used for modeline check info status."
