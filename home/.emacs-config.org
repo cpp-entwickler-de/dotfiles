@@ -4604,8 +4604,15 @@ Show API info via [[https://devdocs.io][devdocs.io]]
                            (push '("virtual" . ?) prettify-symbols-alist)
                            (push '("override" . ?) prettify-symbols-alist)
                            (push '("[]" . ?λ) prettify-symbols-alist)
-                           (push '("#pragma once" . ?❶) prettify-symbols-alist)))
                            (push '("#include" . ?+) prettify-symbols-alist)
+                           (push '("#pragma once" . ?❶) prettify-symbols-alist)
+                           (push '("[[deprecated]]". ?⚠) prettify-symbols-alist)
+                           (push '("[[fallthrough]]". ?⇟) prettify-symbols-alist)
+                           (push '("[[likely]]". ?⯅) prettify-symbols-alist)
+                           (push '("[[maybe_unused]]". (?⚙ (cc . cl) ??)) prettify-symbols-alist)
+                           (push '("[[nodiscard]]". (? (cc . cl) ?)) prettify-symbols-alist)
+                           (push '("[[noreturn]]". (? (cc . cl) ?)) prettify-symbols-alist)
+                           (push '("[[unlikely]]". ?⯆) prettify-symbols-alist)))
 #+END_SRC
 
 **** Navigation
