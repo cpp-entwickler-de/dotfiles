@@ -645,6 +645,10 @@ The saturation for non-saturated colors is 60.
      (when shortcut (insert (format " (%s)" shortcut))))
    (advice-add 'dashboard-insert-heading :override 'cpped-dashboard-insert-heading)
    (push (regexp-quote dashboard-buffer-name) consult-buffer-filter)
+   (defun shark-bytes/show-dashboard ()
+     "Show the dashboard."
+     (interactive)
+     (switch-to-buffer "*dashboard*"))
    (dashboard-setup-startup-hook))
 #+END_SRC
 
