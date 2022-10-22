@@ -445,6 +445,16 @@ Prettify escaped newline
   :group 'basic-faces)
 #+END_SRC
 
+*** [[github:Fuco1/fontify-face][Fontify symbols representing faces]]
+#+BEGIN_SRC emacs-lisp
+(use-package fontify-face
+  :hook (emacs-lisp-mode . fontify-face-mode)
+  :straight (fontify-face
+             :type git
+             :host github
+             :repo "Fuco1/fontify-face"))
+#+END_SRC
+
 ** Icons
 *** [[https://github.com/domtronn/all-the-icons.el][Show icons]]
 #+BEGIN_SRC emacs-lisp
