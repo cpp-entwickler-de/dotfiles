@@ -3856,6 +3856,7 @@ Handler to close buffer after quitting ccmake.
   :custom
   (lsp-auto-configure t)
   (lsp-use-plists t)
+  (lsp-completion-provider :none)
   (lsp-completion-show-detail nil)
   (lsp-completion-show-kind nil)
   (lsp-log-io nil)
