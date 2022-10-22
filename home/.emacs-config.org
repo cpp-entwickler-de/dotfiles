@@ -2207,7 +2207,8 @@ https://github.com/purcell/exec-path-from-shell
 ** Automatically silently reload unmodified buffers when file has changed on disk
 #+BEGIN_SRC emacs-lisp
 (setq global-auto-revert-non-file-buffers t
-      auto-revert-verbose nil)
+      auto-revert-verbose nil
+      revert-without-query '(".*"))
 (global-auto-revert-mode t)
 #+END_SRC
 
