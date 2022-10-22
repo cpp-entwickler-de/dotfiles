@@ -6386,11 +6386,31 @@ forcing it by running
 (add-hook 'magit-post-refresh-hook 'cpped-show-file-contributor-info)
 #+END_SRC
 
+*  Viewer
+** Web pages
+*** Imenu integration
 #+BEGIN_SRC emacs-lisp
+(defun shark-bytes/imenu-eww-headings ()
+    "Add HTML headings to imenu."
+    (let ((faces '(shr-h1 shr-h2 shr-h3 shr-h4 shr-h5 shr-h6 shr-heading)))
+      (save-excursion
+        (save-restriction
+          (widen)
+          (goto-char (point-min))
+          (cl-loop for next-pos = (next-single-property-change (point) 'face)
+                   while next-pos
+                   do (goto-char next-pos)
+                   for face = (get-text-property (point) 'face)
+                   when (cl-typecase face
+                          (list (cl-intersection face faces))
+                          (symbol (member face faces)))
+                   collect (cons (buffer-substring (point-at-bol) (point-at-eol)) (point))
+                   and do (forward-line 1))))))
 
+(add-hook 'eww-mode-hook (lambda ()
+                           (setq-local imenu-create-index-function #'shark-bytes/imenu-eww-headings)))
 #+END_SRC
 
-*  Viewer
 ** Man Pages
 #+BEGIN_SRC emacs-lisp
 (setq woman-fill-frame t
