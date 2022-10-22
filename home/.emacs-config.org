@@ -711,12 +711,12 @@ The saturation for non-saturated colors is 60.
 
 *** Major mode icon
 #+BEGIN_SRC emacs-lisp
-(defun cpped-modeline-mode-icon (icon-face)
+(defun cpped-modeline-mode-icon ()
   (let ((icon (all-the-icons-icon-for-buffer)))
     (unless (symbolp icon)
       (propertize icon
                   'face `(:family ,(all-the-icons-icon-family-for-buffer)
-                          :background ,(face-attribute icon-face :background)
+                          :background ,(face-attribute 'header-line :background)
                           :height 1.2)
                   'display '(raise 0.0)
                   'help-echo (format "%s" major-mode)))))
@@ -728,7 +728,7 @@ Helper function to figure out version control root directory
 (defvar cpped-special-buffer-names-alist nil "A list of buffer name transformations.")
 
 (with-eval-after-load "projectile"
-  (defun cpped-modeline-buffer-id (icon-face)
+  (defun cpped-modeline-buffer-id ()
     (let* ((home-dir (getenv "HOME"))
 	   (buffer-virtual-name (cpped-buffer-name))
 	   (buffer-name (let ((name (if buffer-virtual-name
@@ -752,16 +752,16 @@ Helper function to figure out version control root directory
 	   (special-buffer (string-match "^\\*.*\\*?$" buffer-name)))
       (if special-buffer
 	  (propertize (replace-regexp-in-string "^\\*\\([^\*]*\\)\\*?$" "\\1" buffer-name)
-		      'face `(:background ,(face-attribute icon-face :background)
+		      'face `(:background ,(face-attribute 'header-line :background)
 				          :weight normal
 				          :slant italic))
 	(concat
 	 (when relative-path
 	   (propertize relative-path
-		       'face `(:background ,(face-attribute icon-face :background)
+		       'face `(:background ,(face-attribute 'header-line :background)
 				           :weight light)))
 	 (propertize (file-name-nondirectory buffer-name)
-		     'face `(:background ,(face-attribute icon-face :background)
+		     'face `(:background ,(face-attribute 'header-line :background)
 			                 :weight black)))))))
 #+END_SRC
 
@@ -971,12 +971,12 @@ Helper function to figure out version control root directory
   "Face used for modeline check error status."
   :group 'cpped-modeline-check-status)
 
-(defun cpped-modeline-check-status (face)
+(defun cpped-modeline-check-status ()
   "Collect check status information."
   (let ((status (mapconcat 'identity
                            (remove nil (mapcar 'funcall cpped-modeline-check-status-functions))
                            " ")))
-    (add-face-text-property 0 (length status) (list ':background (face-attribute face :background)) nil status)
+    (add-face-text-property 0 (length status) (list ':background (face-attribute 'header-line :background)) nil status)
     status))
 #+END_SRC
 
@@ -995,13 +995,13 @@ Helper function to figure out version control root directory
                                        'mode-line
                                      'mode-line-inactive))
                         (left-side (mapconcat #'identity
-                                              (-non-nil (list (cpped-modeline-mode-icon mode-line-face)
+                                              (-non-nil (list (cpped-modeline-mode-icon)
                                                               (shark-bytes/truncate (cpped-modeline-project-id) 20)
                                                               (propertize (or (when (fboundp 'cpped-modeline-version-control)
                                                                                 (cpped-modeline-version-control))
                                                                               "")
                                                                           'face 'shark-bytes-mode-line-de-emphasis)
-                                                              (propertize (or (cpped-modeline-buffer-id mode-line-face)
+                                                              (propertize (or (cpped-modeline-buffer-id)
                                                                               "")
                                                                           'face 'shark-bytes-mode-line-emphasis)
                                                               (propertize (or (cpped-modeline-which-function)
@@ -1024,7 +1024,7 @@ Helper function to figure out version control root directory
                                                           (cpped-modeline-position-info)
                                                           (cpped-modeline-region-info)
                                                           (cpped-modeline-iedit-info)
-                                                          (cpped-modeline-check-status (symbol-value 'mode-line-face))
+                                                          (cpped-modeline-check-status)
                                                           ))
                                           "  ")))
                     (concat (propertize "  " 'display `(raise +0.4))
