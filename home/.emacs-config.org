@@ -3892,7 +3892,7 @@ Handler to close buffer after quitting ccmake.
 #+BEGIN_SRC emacs-lisp
 (use-package consult-lsp
   :after (consult lsp-mode marginalia)
-)
+  :hook (lsp-mode . consult-lsp-marginalia-mode))
 #+END_SRC
 
 **** Highlighting
