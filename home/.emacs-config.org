@@ -4592,6 +4592,9 @@ Show API info via [[https://devdocs.io][devdocs.io]]
 **** Highlighting
 #+BEGIN_SRC emacs-lisp
 (add-hook 'c++-mode-hook (lambda ()
+                           (push '("//" . ?🗩) prettify-symbols-alist)
+                           (push '("/*" . ?🗩) prettify-symbols-alist)
+                           (push '("*/" . ?​) prettify-symbols-alist)
                            (push '("void" . ?∅) prettify-symbols-alist)
                            (push '("const" . ?) prettify-symbols-alist)
                            (push '("mutable" . ?) prettify-symbols-alist)
