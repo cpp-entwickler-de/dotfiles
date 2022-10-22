@@ -2939,11 +2939,26 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 *** [[https://github.com/Overdr0ne/gumshoe][Jump to one of the last locations]]
 #+BEGIN_SRC emacs-lisp
 (use-package gumshoe
+  :after consult
   :straight (gumshoe :type git
                      :host github
                      :repo "Overdr0ne/gumshoe")
   :config
-  (global-gumshoe-mode 1)
+  (defun shark-bytes/gumshoe--peruse (recs slot-spec &optional entry-filter)
+    "Override for gumshoe--peruse to use 'consult--line'."
+    (consult--line (mapcar (lambda (entry)
+                             (let ((marker (make-marker)))
+                               (set-marker marker (slot-value entry 'position) (slot-value entry 'buffer))
+                               (when (and (marker-position marker) (marker-buffer marker))
+                                 (consult--location-candidate (slot-value entry 'line)
+                                                              marker
+                                                              (slot-value entry 'position)))))
+                           (if entry-filter
+                               (seq-filter entry-filter recs)
+                             recs))
+                   :prompt "Go to line: "))
+  (advice-add #'gumshoe--peruse :override #'shark-bytes/gumshoe--peruse)
+  (global-gumshoe-mode 1))
 #+END_SRC
 
 *** URIs
