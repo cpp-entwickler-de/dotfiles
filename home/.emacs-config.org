@@ -5993,6 +5993,7 @@ If the region is active, act on all lines touched by the region."
     (?s . "squash")
     (?t . "reset")
     (?x . "exec")))
+  (transient-append-suffix 'magit-dispatch "X" '("x" "Clean" magit-clean)))
 
 (use-package magit-popup)
 #+END_SRC
