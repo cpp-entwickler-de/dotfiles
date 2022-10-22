@@ -2520,12 +2520,7 @@ https://github.com/purcell/exec-path-from-shell
   :custom
   (treemacs-collapse-dirs 3)
   (treemacs-file-event-delay 2000)
-  (treemacs-filewatch-mode t)
   (treemacs-follow-after-init t)
-  (treemacs-follow-mode t)
-  (treemacs-project-follow-mode t)
-  (treemacs-tag-follow-mode t)
-  (treemacs-fringe-indicator-mode nil)
   (treemacs-is-never-other-window t)
   (treemacs-silent-filewatch t)
   (treemacs-silent-refresh t)
@@ -2534,9 +2529,14 @@ https://github.com/purcell/exec-path-from-shell
   (treemacs-space-between-root-nodes nil)
   (treemacs-width 50)
   :config
-  (treemacs-git-mode 'deferred))
   (push "\\`\\*Treemacs\\*\\'" consult-buffer-filter)
   (push "\\`\\*Desktop Treemacs Helper\\*\\'" consult-buffer-filter)
+  (treemacs-git-mode 'deferred)
+  (treemacs-filewatch-mode)
+  (treemacs-follow-mode)
+  (treemacs-project-follow-mode)
+  (treemacs-tag-follow-mode)
+  (treemacs-fringe-indicator-mode nil))
 
 (use-package treemacs-projectile
   :after (treemacs projectile))
