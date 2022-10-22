@@ -3686,7 +3686,7 @@ Handler to close buffer after quitting ccmake.
         (inhibit-read-only t))
     (if dot
         (progn
-          (switch-to-buffer (get-buffer-create "*Target Dependencies*"))
+          (pop-to-buffer (get-buffer-create "*Target Dependencies*"))
           (erase-buffer)
           (insert (shell-command-to-string (format "%s -Tsvg %s"
                                                    dot
@@ -4533,7 +4533,7 @@ Show API info via [[https://devdocs.io][devdocs.io]]
   (let ((project-root (cpped-project-dir)))
     (when project-root
       (shell-command (concat  "cloc --quiet " project-root " &") "*Cloc*")
-      (switch-to-buffer "*Cloc*"))))
+      (pop-to-buffer "*Cloc*"))))
 
 (defun cpped-cloc-file ()
   "Count lines of code in file."
@@ -4541,7 +4541,7 @@ Show API info via [[https://devdocs.io][devdocs.io]]
   (let ((cloc-input (make-temp-file "cloc-" nil (replace-regexp-in-string "[\\\\']" "" (car (rassq major-mode auto-mode-alist))))))
     (write-region (point-min) (point-max) cloc-input)
     (shell-command (concat  "cloc --quiet --skip-uniqueness " cloc-input) "*Cloc*")
-    (switch-to-buffer "*Cloc*")
+    (pop-to-buffer "*Cloc*")
     (delete-file cloc-input)))
 
 (with-eval-after-load "consult"
