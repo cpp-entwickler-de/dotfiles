@@ -4055,6 +4055,7 @@ Set bug-reference-url-format to open in browser.
 ***** [[https://github.com/lassik/emacs-format-all-the-code][Formatting]]
 #+BEGIN_SRC emacs-lisp
 (use-package format-all
+  :ensure-system-package (prettier . "npm install -g prettier")
   :hook ((prog-mode . format-all-mode)
          (format-all-mode . format-all-ensure-formatter)))
 #+END_SRC
