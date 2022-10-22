@@ -6735,6 +6735,15 @@ Remove check on buffer close
                  (search-backward "<"))))
       (buffer-substring-no-properties begin end))))
 
+(defun shark-bytes/shorten-url (url)
+  "Shorten URL if in 'org-link-abbrev-alist'."
+  (mapc #'(lambda (entry)
+            (let ((prefix (format (cdr entry) "")))
+              (when (string-match (concat (regexp-quote prefix) ".*") url)
+                (setq url (concat (car entry) ":" (replace-regexp-in-string (regexp-quote prefix) "" url))))))
+        org-link-abbrev-alist)
+  url)
+
 (defun cpped-org-insert-link-dwim (url)
   "Insert an org link with the target page title as description. The URL is taken from either argument, region, thing-at-point or user input."
   (interactive (list (let (url begin end)
@@ -6760,7 +6769,7 @@ Remove check on buffer close
                        url)))
   (when (not (string-match-p (rx line-start "http" (zero-or-one "s") "://") url))
       (setq url (concat "https://" url)))
-  (org-insert-link nil url (cpped-url-to-title url)))
+  (org-insert-link nil (shark-bytes/shorten-url url) (cpped-url-to-title url)))
 
 (defun cpped-org-convert-to-link-dwim (url title)
   "Convert the region or thing-at-point to a link with thing-at-point as the description."
