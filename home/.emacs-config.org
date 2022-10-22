@@ -968,6 +968,7 @@ Helper function to figure out version control root directory
   :group 'cpped-modeline-check-status)
 
 (defface cpped-check-status-warning `((t :inherit warning
+                                         :foreground ,shark-bytes-warning-saturated
                                          :weight ultra-bold))
   "Face used for modeline check warning status."
   :group 'cpped-modeline-check-status)
