@@ -6356,26 +6356,8 @@ forcing it by running
 (add-hook 'magit-post-refresh-hook 'cpped-show-file-contributor-info)
 #+END_SRC
 
-**** [[https://github.com/syohex/emacs-smeargle][Highlight file change age]]
 #+BEGIN_SRC emacs-lisp
-(defun cpped-maybe-enable-smeargle ()
-    "Enable smeargle for version-controlled files."
-    (if (and buffer-file-name
-             (vc-state buffer-file-name)
-             (not (string-equal (vc-state buffer-file-name) 'unregistered)))
-        (ignore-errors (smeargle))
-      (smeargle-clear)))
 
-(use-package smeargle
-  :hook ((find-file after-save magit-post-commmit magit-post-refresh) . cpped-maybe-enable-smeargle)
-  :custom (smeargle-colors '((older-than-1day   . "#1e0000")
-                             (older-than-3day   . "#1e1500")
-                             (older-than-1week  . "#1e1e00")
-                             (older-than-2week  . "#021e00")
-                             (older-than-1month . "#1e0000")
-                             (older-than-3month . "#001e16")
-                             (older-than-6month . "#00171e")
-                             (older-than-1year  . "#00001e"))))
 #+END_SRC
 
 *  Viewer
