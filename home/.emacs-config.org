@@ -2412,6 +2412,17 @@ https://github.com/purcell/exec-path-from-shell
   :custom (dired-du-size-format t))
 #+END_SRC
 
+**** [[github:amno1/dired-git-log][Show git information]]
+#+begin_src emacs-lisp
+(use-package dired-git-log
+  :straight (dired-git-log
+             :type git
+             :host github
+             :repo "amno1/dired-git-log")
+  :hook dired-after-readin
+  :custom (dired-git-log-auto-hide-details-p nil))
+#+end_src
+
 **** [[https://github.com/Fuco1/dired-hacks#dired-subtree][Show subtrees inline]]
 #+BEGIN_SRC emacs-lisp
 (use-package dired-subtree
