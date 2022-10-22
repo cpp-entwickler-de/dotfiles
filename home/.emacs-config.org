@@ -5975,6 +5975,24 @@ Auto-highlight details
   (magit-diff-arguments '("--function-context" "--stat" "-M" "-C"))
   :config
   (add-to-list 'super-save-triggers 'magit-status)
+  (defun shark-bytes/git-rebase-kill-line ()
+    "Kill the current action line.
+If the region is active, act on all lines touched by the region."
+    (interactive)
+    (git-rebase-set-action "drop"))
+  (advice-add 'git-rebase-kill-line :override #'shark-bytes/git-rebase-kill-line)
+  (setq git-rebase-short-options
+  '((?b . "break")
+    (?d . "drop")
+    (?e . "edit")
+    (?f . "fixup")
+    (?l . "label")
+    (?m . "merge")
+    (?p . "pick")
+    (?r . "reword")
+    (?s . "squash")
+    (?t . "reset")
+    (?x . "exec")))
 
 (use-package magit-popup)
 #+END_SRC
