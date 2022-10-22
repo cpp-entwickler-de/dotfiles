@@ -776,7 +776,7 @@ Helper function to figure out version control root directory
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load "magit"
   (defun cpped-modeline-version-control ()
-    (when (magit-inside-worktree-p t)
+    (when (and buffer-file-name (magit-inside-worktree-p t))
       (let* ((branch (shark-bytes/truncate (magit-get-current-branch) 10))
              (branch-head (magit-rev-parse "--short" branch))
              (revision (magit-rev-parse "--short" "HEAD")))
