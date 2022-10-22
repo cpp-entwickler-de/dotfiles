@@ -980,7 +980,7 @@ Helper function to figure out version control root directory
 (defun cpped-modeline-check-status ()
   "Collect check status information."
   (let ((status (mapconcat 'identity
-                           (remove nil (mapcar 'funcall cpped-modeline-check-status-functions))
+                           (-non-nil (mapcar 'funcall cpped-modeline-check-status-functions))
                            " ")))
     (add-face-text-property 0 (length status) (list ':background (face-attribute 'header-line :background)) nil status)
     status))
