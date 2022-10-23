@@ -1047,29 +1047,7 @@ Helper function to figure out version control root directory
                        (force-mode-line-update t)))
 #+END_SRC
 
-** [[https://github.com/bbatsov/projectile][Projectile]]
-#+BEGIN_SRC emacs-lisp
-(defvar cpped-project-directories (list "~/Projects" "~/projects") "A list of directories to check for projects.")
 
-(use-package projectile
-  :custom
-  (projectile-create-missing-test-files t)
-  (projectile-dynamic-mode-line nil)
-  (projectile-enable-caching nil)
-  (projectile-find-dir-includes-top-level t)
-  (projectile-git-submodule-command nil)
-  (projectile-idle-timer-hook nil)
-  (projectile-project-search-path (cl-remove-if (lambda (directory)
-                                                  (not (file-directory-p directory)))
-                                                (mapcar #'expand-file-name cpped-project-directories)))
-  (projectile-ignored-project-function (lambda (project)
-                                         (not (or (string-match (concat (file-truename user-emacs-directory) ".*") project)
-                                                  (string-match (concat user-emacs-directory ".*") project)))))
-  (projectile-sort-order 'recently-active)
-  (projectile-verbose nil)
-  :config
-  (projectile-global-mode))
-#+END_SRC
 
 ** [[https://github.com/minad/vertico][Minibuffer completion]]
 #+BEGIN_SRC emacs-lisp
@@ -3458,7 +3436,26 @@ Open binary files in hexl-mode
 
 *  Programming
 ** Projects
-*** Find file in project
+*** [[https://github.com/bbatsov/projectile][Projectile]]
+#+begin_src emacs-lisp
+(use-package projectile
+  :custom
+  (projectile-create-missing-test-files t)
+  (projectile-dynamic-mode-line nil)
+  (projectile-enable-caching nil)
+  (projectile-find-dir-includes-top-level t)
+  (projectile-git-submodule-command nil)
+  (projectile-idle-timer-hook nil)
+  (projectile-ignored-project-function (lambda (project)
+                                         (string-match (file-truename (expand-file-name ".*" user-emacs-directory)) project)))
+  (projectile-sort-order 'recently-active)
+  (projectile-verbose nil)
+  :config
+  (projectile-global-mode))
+#+end_src
+
+*** Utilities
+**** Find file in project
 #+BEGIN_SRC emacs-lisp
 (defun cpped-find-project-file (file)
   "Find a file in source or build directory."
