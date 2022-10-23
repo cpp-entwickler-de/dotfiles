@@ -2937,6 +2937,18 @@ https://github.com/purcell/exec-path-from-shell
   (flymd-output-directory temporary-file-directory))
 #+end_src
 
+*** Highlight whitespace
+#+begin_src emacs-lisp
+(use-package whitespace
+  :custom
+  (whitespace-action nil)
+  (whitespace-global-modes t)
+  (whitespace-line-column 120)
+  (whitespace-style '(face lines-tail missing-newline-at-eof trailing))
+  :init
+  (whitespace-mode))
+#+end_src
+
 *** [[https://github.com/minad/goggles][Highlight edited areas shortly]]
 #+begin_src emacs-lisp
 (use-package goggles
@@ -3248,11 +3260,7 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 (defvar cpped-default-indentation 4 "The default number of spaces to indent.")
 (defvar autopair-skip-whitespace t)
 (defvar electric-spacing-double-space-docs nil)
-(defvar whitespace-action '(cleanup))
-(defvar whitespace-global-modes t)
-(defvar whitespace-line-column nil)
-(defvar whitespace-style '(face))
-#+END_SRC
+#+end_src
 
 *** [[https://gitlab.com/emacs-stuff/indent-tools][Indent tools]]
 #+begin_src emacs-lisp
