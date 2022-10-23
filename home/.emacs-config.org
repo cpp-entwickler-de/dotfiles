@@ -5,9 +5,9 @@
 #+auto_tangle: t
 
 *  Custom configuration
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (load "~/.emacs.user" t t)
-#+END_SRC
+#+end_src
 
 *  Package Management
 ** Set priorities
@@ -18,7 +18,7 @@
 #+end_src
 
 ** Automatically update
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package auto-package-update
   :custom
   (auto-package-update-interval 7)
@@ -28,15 +28,15 @@
   :config
   (auto-package-update-maybe)
   (auto-package-update-at-time "12:00"))
-#+END_SRC
+#+end_src
 
 ** [[https://github.com/tarsius/auto-compile][Automatically compile packages]]
 Do not load outdated byte code
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq load-prefer-newer t)
-#+END_SRC
+#+end_src
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package auto-compile
   :custom
   (auto-compile-ding nil)
@@ -45,15 +45,15 @@ Do not load outdated byte code
   :config
   (auto-compile-on-load-mode)
   (auto-compile-on-save-mode))
-#+END_SRC
+#+end_src
 
 ** [[https://gitlab.com/jabranham/system-packages][System packages]]
 Do not ask for confirmation for new shell buffers
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq async-shell-command-buffer 'new-buffer)
-#+END_SRC
+#+end_src
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package use-package-ensure-system-package)
 
 (use-package system-packages
@@ -153,85 +153,85 @@ Do not ask for confirmation for new shell buffers
                       (list-installed-packages-all . nil)
                       (list-dependencies-of . "gem dependency")))
                t))
-#+END_SRC
+#+end_src
 
 *  Internals
 ** Include cl package
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package cl-lib)
-#+END_SRC
+#+end_src
 
 ** Silence native compilation warnings
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq native-comp-async-report-warnings-errors nil)
-#+END_SRC
+#+end_src
 
 ** Utilities
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-word-or-region-bounds()
   "Get the bounds of the current region or word under point."
   (if (use-region-p)
       (cons (region-beginning) (region-end))
     (bounds-of-thing-at-point 'word)))
-#+END_SRC
+#+end_src
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun shark-bytes/truncate (string max-length)
   "Truncate STRING to MAX-LENGTH charcaters by replacing characters in the middle with an ellipsis."
   (if (< (length string) max-length)
       string
     (let ((len (min (/ (length string) 2) (/ (- max-length 1) 2))))
       (concat (substring string 0 len) "…" (substring string (- 0 (+ len (- max-length 1 (* len 2)))) nil)))))
-#+END_SRC
+#+end_src
 
 ** Increase subprocess read chunk size
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq read-process-output-max (* 16 1024 1024))
-#+END_SRC
+#+end_src
 
 ** [[https://github.com/jschaf/esup][Startup Profiler]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package esup
   :commands (esup))
-#+END_SRC
+#+end_src
 
 ** [[https://github.com/lastquestion/explain-pause-mode][Waiting time information]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package explain-pause-mode
   :straight (explain-pause-mode
              :type git
              :host github
              :repo "lastquestion/explain-pause-mode")
   :init (explain-pause-mode))
-#+END_SRC
+#+end_src
 
 ** Debug on error
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq debug-on-error init-file-debug
       eval-expression-debug-on-error init-file-debug)
-#+END_SRC
+#+end_src
 
 ** Debug on message
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 ;; (setq debug-on-message "")
-#+END_SRC
+#+end_src
 
 *  User Interface
 ** Startup
 *** Disable startup screen
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq inhibit-startup-screen t)
-#+END_SRC
+#+end_src
 
 *** Disable startup message
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (when (boundp 'username)
   (setq inhibit-startup-echo-area-message username))
-#+END_SRC
+#+end_src
 
 ** Frame Setup
 Show normal for single monitor, fullscreen for non-4k monitor
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defvar cpped-is-4k-monitor nil "Indicates if a 4k monitor is available.")
 
 (set-frame-name "IDE")
@@ -245,10 +245,10 @@ Show normal for single monitor, fullscreen for non-4k monitor
                                            cpped-is-4k-monitor (>= (x-display-pixel-width) 3840))
                                      (unless cpped-is-4k-monitor
                                        (push '(fullscreen . fullboth) default-frame-alist))))
-#+END_SRC
+#+end_src
 
 Show below other windows
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-move-frame-below-others (&optional frame)
   "Move frame below others in window system."
   (interactive)
@@ -258,85 +258,85 @@ Show below other windows
       (x-send-client-message nil 0 nil "_NET_WM_STATE" 32 '(1 "_NET_WM_STATE_BELOW" 0)))))
 
 (add-hook 'after-make-frame-functions #'cpped-move-frame-below-others t)
-#+END_SRC
+#+end_src
 
 ** Do not auto-raise minibuffer
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq minibuffer-auto-raise nil)
-#+END_SRC
+#+end_src
 
 ** Do not allow cursor in minibuffer
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq minibuffer-prompt-properties '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt))
-#+END_SRC
+#+end_src
 
 ** GTK+ interface
 *** Disable Menus, Toolbars, Scrollbars and Dialogs
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 (setq use-file-dialog nil
       use-dialog-box nil)
-#+END_SRC
+#+end_src
 
 *** Use GTK+ Tooltips
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq x-gtk-use-system-tooltips t)
-#+END_SRC
+#+end_src
 
 ** Notifications
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package notifications)
-#+END_SRC
+#+end_src
 
 ** Disable bell
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq ring-bell-function 'ignore)
-#+END_SRC
+#+end_src
 
 ** Disable messages
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq inhibit-message t)
-#+END_SRC
+#+end_src
 
 ** Keep more lines in message buffer
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq message-log-max 16384)
-#+END_SRC
+#+end_src
 
 ** Remove annoying ellipsis when printing SEXP in message buffer
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq eval-expression-print-length nil
       eval-expression-print-level nil
       edebug-print-length nil
       edebug-print-level nil
       print-length nil
       print-level nil)
-#+END_SRC
+#+end_src
 
 ** Disable mouse
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package disable-mouse
   :config
   (mouse-wheel-mode -1)
   (global-disable-mouse-mode))
-#+END_SRC
+#+end_src
 
 *** Hide mouse pointer
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq make-pointer-invisible t)
-#+END_SRC
+#+end_src
 
 *** Do not copy highlighted text to the kill ring
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq mouse-drag-copy-region nil)
-#+END_SRC
+#+end_src
 
 ** Use y/n instead of yes/no
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (fset 'yes-or-no-p 'y-or-n-p)
-#+END_SRC
+#+end_src
 
 ** Do not show unusable commands
 #+begin_src emacs-lisp
@@ -344,12 +344,12 @@ Show below other windows
 #+end_src
 
 ** Show keystrokes earlier
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq echo-keystrokes 0.1)
-#+END_SRC
+#+end_src
 
 ** History
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package savehist
   :custom
   (history-length 10000)
@@ -362,16 +362,16 @@ Show below other windows
   (savehist-autosave-interval 180)
   :config
   (savehist-mode t))
-#+END_SRC
+#+end_src
 
 ** Fonts
 *** Disable font cache compacting
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq inhibit-compacting-font-caches t)
-#+END_SRC
+#+end_src
 
 *** [[https://github.com/mickeynp/ligature.el][Support Ligatures]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package ligature
   :straight (ligature
              :type git
@@ -395,16 +395,16 @@ Show below other windows
                                        "\\\\" "\\\\\\" "://" "[]" "{-" "-}" "<<<" ">>>" ">>-" ">>=" "<<-" "<<="  "<~"))
   (ligature-set-ligatures '(html-mode nxml-mode web-mode) '("<!--" "-->" "</>" "</" "/>" "://"))
   (global-ligature-mode t))
-#+END_SRC
+#+end_src
 
 *** Show pretty symbols
 Do not disable prettification if cursor is at edge of expression
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq prettify-symbols-unprettify-at-point nil)
-#+END_SRC
+#+end_src
 
 Allow prettification in comments
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-prettify-symbols-default-compose-p (start end _match)
   "Same as `prettify-symbols-default-compose-p', except compose symbols in comments as well."
   (let* ((syntaxes-beg (if (memq (char-syntax (char-after start)) '(?w ?_))
@@ -417,47 +417,47 @@ Allow prettification in comments
 
 (add-hook 'prog-mode-hook '(lambda ()
                              (setq prettify-symbols-compose-predicate 'cpped-prettify-symbols-default-compose-p)))
-#+END_SRC
+#+end_src
 
 Prettify common symbols
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (add-hook 'find-file-hook (lambda ()
                             (push '("\t" . ?) prettify-symbols-alist)
                             (push '("lambda" . ?λ) prettify-symbols-alist)
                             (push '("\r" . ?) prettify-symbols-alist)))
 
 (global-prettify-symbols-mode)
-#+END_SRC
+#+end_src
 
 Prettify escaped newline
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (add-to-list 'font-lock-extra-managed-props 'display)
 
 (font-lock-add-keywords nil
                         `((,(rx (group "\\") eol) 1 '(face nil display "﬌"))))
-#+END_SRC
+#+end_src
 
 ** Faces
 *** Info
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defface info '((t :inherit default))
   "Face used for info text."
   :group 'basic-faces)
-#+END_SRC
+#+end_src
 
 *** [[github:Fuco1/fontify-face][Fontify symbols representing faces]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package fontify-face
   :hook (emacs-lisp-mode . fontify-face-mode)
   :straight (fontify-face
              :type git
              :host github
              :repo "Fuco1/fontify-face"))
-#+END_SRC
+#+end_src
 
 ** Icons
 *** [[https://github.com/domtronn/all-the-icons.el][Show icons]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defconst cpped-faicon5-data-file (expand-file-name "data-faicon5.el" user-emacs-directory) "The data file for FontAwesome 5 icon names.")
 
 (defun cpped-update-faicon5-data ()
@@ -497,23 +497,23 @@ Prettify escaped newline
     (cpped-update-material-icon-data))
   (require 'data-material-icon cpped-material-icon-data-file)
   (define-icon material-icon material-icon-alist "Material Icons" "MaterialIcons-Regular"))
-#+END_SRC
+#+end_src
 
 ** SVG Tag support
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package svg-tag-mode
   :demand t
   :custom (svg-tag-action-at-point 'edit)
   ;:config (global-svg-tag-mode)
   )
-#+END_SRC
+#+end_src
 
 ** Theme
 *** Colors
 Taken from SharkBytes background image.
-#+END_SRC
+#+begin_src emacs-lisp
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defvar shark-bytes-ok-saturated           "#35E356" "")
 (defvar shark-bytes-info-saturated         "#E3D835" "")
 (defvar shark-bytes-warning-saturated      "#E38635" "")
@@ -528,10 +528,10 @@ Taken from SharkBytes background image.
 (defvar shark-bytes-cold-saturated         "#3D3FF3" ".")
 (defvar shark-bytes-icy-saturated          "#2442ED" ".")
 (defvar shark-bytes-freezing-saturated     "#0C43E8" ".")
-#+END_SRC
+#+end_src
 
 The saturation for non-saturated colors is 60.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defvar shark-bytes-ok                     "#5BE375" "")
 (defvar shark-bytes-info                   "#E3DA5B" "")
 (defvar shark-bytes-warning                "#E39A5B" "")
@@ -546,9 +546,9 @@ The saturation for non-saturated colors is 60.
 (defvar shark-bytes-cold                   "#6163F3" ".")
 (defvar shark-bytes-icy                    "#5F74ED" ".")
 (defvar shark-bytes-freezing               "#5D80E8" ".")
-#+END_SRC
+#+end_src
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defvar shark-bytes-window-background      "#121212" "Background color for windows.")
 (defvar shark-bytes-block-background       "#212121" "Background for blocks.")
 (defvar shark-bytes-menu-window-background "#303030" "Background color for menu windows.")
@@ -562,29 +562,29 @@ The saturation for non-saturated colors is 60.
 
 (defvar shark-bytes-shadow                 "#303030" "Color for shadow text.")
 (defvar shark-bytes-text                   "#F1F1F1" "Color for normal text.")
-#+END_SRC
+#+end_src
 
 ***  Faces
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defface shark-bytes-ui '((t :inherit default)) "" :group 'user-interface)
 (defface shark-bytes-ui-title '((t :inherit shark-bytes-ui :height 1.7 :weight bold)) "" :group 'user-interface)
 (defface shark-bytes-ui-section '((t :inherit shark-bytes-ui :height 1.2 :weight bold)) "" :group 'user-interface)
 (defface shark-bytes-ui-subsection '((t :inherit shark-bytes-ui :height 1.1 :weight bold)) "" :group 'user-interface)
 (defface shark-bytes-ui-entry '((t :inherit shark-bytes-ui)) "" :group 'user-interface)
 (defface shark-bytes-ui-info '((t :inherit shark-bytes-ui :weight light)) "" :group 'user-interface)
-#+END_SRC
+#+end_src
 
 *** Load default theme
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defvar shark-bytes-theme 'shark-bytes "The default theme")
 
 (setq custom-safe-themes shark-bytes-theme)
 
 (load-theme shark-bytes-theme t)
-#+END_SRC
+#+end_src
 
 ** [[https://github.com/rakanalh/emacs-dashboard][Dashboard]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defvar cpped-dashboard-footer nil "The dashboard footer text")
 
 (use-package dashboard
@@ -650,10 +650,10 @@ The saturation for non-saturated colors is 60.
      (interactive)
      (switch-to-buffer "*dashboard*"))
    (dashboard-setup-startup-hook))
-#+END_SRC
+#+end_src
 
 ** Mode Line
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-buffer-name ()
   "Returns a (virtual) buffer name, for non-file modes."
   (pcase major-mode
@@ -661,10 +661,10 @@ The saturation for non-saturated colors is 60.
     ('term-mode default-directory)
     ('dired-mode default-directory)
     (_ buffer-file-name)))
-#+END_SRC
+#+end_src
 
 *** Base Location
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defvar-local cpped-project-dir-checked nil)
 (defvar-local cpped-project-dir nil)
 
@@ -707,10 +707,10 @@ The saturation for non-saturated colors is 60.
 	     (concat "" (file-name-directory (directory-file-name (file-name-directory (tramp-file-local-name (or project-root
 										                                   localname)))))))
 	   (when (not (= 0 (length project-name))) (concat " " project-name))))))))
-#+END_SRC
+#+end_src
 
 *** Major mode icon
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-modeline-mode-icon ()
   (let ((icon (all-the-icons-icon-for-buffer)))
     (unless (symbolp icon)
@@ -720,11 +720,11 @@ The saturation for non-saturated colors is 60.
                           :height 1.2)
                   'display '(raise 0.0)
                   'help-echo (format "%s" major-mode)))))
-#+END_SRC
+#+end_src
 
 *** Buffer name
 Helper function to figure out version control root directory
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defvar cpped-special-buffer-names-alist nil "A list of buffer name transformations.")
 
 (with-eval-after-load "projectile"
@@ -763,17 +763,17 @@ Helper function to figure out version control root directory
 	 (propertize (file-name-nondirectory buffer-name)
 		     'face `(:background ,(face-attribute 'header-line :background)
 			                 :weight black)))))))
-#+END_SRC
+#+end_src
 
 *** Docker project
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-modeline-docker-project ()
   (when (cpped-is-docker-project-p)
     ""))
-#+END_SRC
+#+end_src
 
 *** Git Info
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "magit"
   (defun cpped-modeline-version-control ()
     (when (and buffer-file-name (magit-inside-worktree-p t))
@@ -784,10 +784,10 @@ Helper function to figure out version control root directory
                               (format " · %s (%s)" revision (magit-git-string "rev-list"
                                                                               "--count"
                                                                               (concat revision ".." branch-head)))))))))
-#+END_SRC
+#+end_src
 
 *** Running process
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defvar-local cpped-process-running nil "Flag to indicate if a process is running for the current buffer.")
 (defvar-local cpped-current-process-start-time nil)
 
@@ -820,17 +820,17 @@ Helper function to figure out version control root directory
 (defun cpped-modeline-process-running ()
   (when cpped-process-running
     (concat "  " (cpped-format-run-time (cpped-get-run-time)))))
-#+END_SRC
+#+end_src
 
 *** Show if file is opened in su-mode
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-modeline-su ()
   (when (string-match "^/su\\(do\\)?:" default-directory)
     ""))
-#+END_SRC
+#+end_src
 
 *** Modification
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-modeline-modified ()
   (pcase (format-mode-line "%*")
     (`"*" "")
@@ -843,71 +843,71 @@ Helper function to figure out version control root directory
             ""))
     (`"%" "")
     (_ "")))
-#+END_SRC
+#+end_src
 
 *** Auto-format
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-modeline-auto-format ()
   (when (bound-and-true-p format-all-mode)
     ""))
-#+END_SRC
+#+end_src
 
 *** Cursor position
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-modeline-position-info ()
   (format "%s %s" (format-mode-line "%4l ") (format-mode-line "%3c")))
-#+END_SRC
+#+end_src
 
 *** Selected region
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-modeline-region-info ()
   (when mark-active
     (format " %s/%s/%s"
             (count-lines (region-beginning) (region-end))
             (count-words (region-end) (region-beginning))
             (- (region-end) (region-beginning)))))
-#+END_SRC
+#+end_src
 
 *** IEdit Info
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-modeline-iedit-info ()
   (when (bound-and-true-p iedit-mode)
     (format " %s/%s"
             iedit-occurrence-index
             (iedit-counter))))
-#+END_SRC
+#+end_src
 
 *** Show if overwrite mode is active
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-modeline-overwrite-mode ()
   (when overwrite-mode
     "סּ"))
-#+END_SRC
+#+end_src
 
 *** Show if typo mode is active
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "typo"
   (defun cpped-modeline-typo-mode ()
     (when typo-mode
       "")))
-#+END_SRC
+#+end_src
 
 *** Show if buffer is narrowed
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-modeline-narrowed ()
     (when (buffer-narrowed-p)
       ""))
-#+END_SRC
+#+end_src
 
 *** Show if buffer is filtered
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-modeline-filtered ()
     (when loccur-mode
       ""))
-#+END_SRC
+#+end_src
 
 *** Key Lock
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defvar cpped-caps-lock-active nil "Indicates if caps lock is enabled.")
 (defvar cpped-num-lock-active nil "Indicates if num lock is enabled.")
 
@@ -925,10 +925,10 @@ Helper function to figure out version control root directory
 (defun cpped-modeline-key-lock (lock icon)
    (when lock
      icon))
-#+END_SRC
+#+end_src
 
 *** Line/Character Mode
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (make-local-variable 'cpped-term-char-mode)
 
 (advice-add 'term-char-mode :after (lambda ()
@@ -941,19 +941,19 @@ Helper function to figure out version control root directory
   (when (and (equal major-mode 'term-mode)
              cpped-term-char-mode)
     ""))
-#+END_SRC
+#+end_src
 
 *** Current function
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-modeline-which-function ()
   "Print current function in hte mode line."
   (when-let ((current-function (when (bound-and-true-p which-function-mode)
                                  (which-function))))
     (concat " " (shark-bytes/truncate (substring-no-properties current-function) 30))))
-#+END_SRC
+#+end_src
 
 *** Check Status
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defvar cpped-modeline-check-status-functions nil "A list of functions that format mode line status data.")
 
 (defun shark-bytes/check-process-status()
@@ -985,10 +985,10 @@ Helper function to figure out version control root directory
                            " ")))
     (add-face-text-property 0 (length status) (list ':background (face-attribute 'header-line :background)) nil status)
     status))
-#+END_SRC
+#+end_src
 
 *** Display on top
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defface shark-bytes-mode-line-emphasis '((t :inherit mode-line :weight bold)) "")
 (defface shark-bytes-mode-line-de-emphasis '((t :inherit mode-line :height 0.7 :weight extra-light)) "")
 
@@ -1039,13 +1039,13 @@ Helper function to figure out version control root directory
                                        (propertize " " 'display `(space :align-to (- right ,(* 1.1 (length right-side)))))
                                        (propertize " " 'display `(raise -0.4))
                                        right-side)))))
-#+END_SRC
+#+end_src
 
 *** Update every second
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (run-with-timer 0 1 '(lambda()
                        (force-mode-line-update t)))
-#+END_SRC
+#+end_src
 
 ** Sidebar
 #+begin_src emacs-lisp
@@ -1212,7 +1212,7 @@ Helper function to figure out version control root directory
 #+end_src
 
 ** [[https://github.com/minad/vertico][Minibuffer completion]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package vertico
   :init (vertico-mode)
   :hook ((rfn-eshadow-update-overlay . vertico-directory-tidy))
@@ -1242,21 +1242,104 @@ Helper function to figure out version control root directory
   :straight nil
   :load-path "straight/repos/vertico/extensions/"
   :hook (minibuffer-setup . vertico-repeat-save))
-#+END_SRC
+#+end_src
 
 *** [[https://github.com/oantolin/orderless][Advanced filtering]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package orderless
   :custom
   (completion-styles '(orderless partial-completion))
   (completion-category-defaults nil)
   (completion-category-overrides nil)
   (orderless-component-separator "[ &+]"))
-#+END_SRC
+#+end_src
+
+
+@minad’s orderless configuration
+(use-package orderless
+  :demand t
   :config
+  (defvar +orderless-dispatch-alist
+    '((?% . char-fold-to-regexp)
+      (?! . orderless-without-literal)
+      (?`. orderless-initialism)
+      (?= . orderless-literal)
+      (?~ . orderless-flex)))
+
+  ;; Recognizes the following patterns:
+  ;; * ~flex flex~
+  ;; * =literal literal=
+  ;; * %char-fold char-fold%
+  ;; * `initialism initialism`
+  ;; * !without-literal without-literal!
+  ;; * .ext (file extension)
+  ;; * regexp$ (regexp matching at end)
+  (defun +orderless-dispatch (pattern index _total)
+    (cond
+     ;; Ensure that $ works with Consult commands, which add disambiguation suffixes
+     ((string-suffix-p "$" pattern)
+      `(orderless-regexp . ,(concat (substring pattexrn 0 -1) "[\x200000-\x300000]*$")))
+     ;; File extensions
+     ((and
+       ;; Completing filename or eshell
+       (or minibuffer-completing-file-name
+           (derived-mode-p 'eshell-mode))
+       ;; File extension
+       (string-match-p "\\`\\.." pattern))
+      `(orderless-regexp . ,(concat "\\." (substring pattern 1) "[\x200000-\x300000]*$")))
+     ;; Ignore single !
+     ((string= "!" pattern) `(orderless-literal . ""))
+     ;; Prefix and suffix
+     ((if-let (x (assq (aref pattern 0) +orderless-dispatch-alist))
+          (cons (cdr x) (substring pattern 1))
+        (when-let (x (assq (aref pattern (1- (length pattern))) +orderless-dispatch-alist))
+          (cons (cdr x) (substring pattern 0 -1)))))))
+
+  ;; Define orderless style with initialism by default
+  (orderless-define-completion-style +orderless-with-initialism
+    (orderless-matching-styles '(orderless-initialism orderless-literal orderless-regexp)))
+
+  ;; You may want to combine the `orderless` style with `substring` and/or `basic`.
+  ;; There are many details to consider, but the following configurations all work well.
+  ;; Personally I (@minad) use option 3 currently. Also note that you may want to configure
+  ;; special styles for special completion categories, e.g., partial-completion for files.
+  ;;
+  ;; 1. (setq completion-styles '(orderless))
+  ;; This configuration results in a very coherent completion experience,
+  ;; since orderless is used always and exclusively. But it may not work
+  ;; in all scenarios. Prefix expansion with TAB is not possible.
+  ;;
+  ;; 2. (setq completion-styles '(substring orderless))
+  ;; By trying substring before orderless, TAB expansion is possible.
+  ;; The downside is that you can observe the switch from substring to orderless
+  ;; during completion, less coherent.
+  ;;
+  ;; 3. (setq completion-styles '(orderless basic))
+  ;; Certain dynamic completion tables (completion-table-dynamic)
+  ;; do not work properly with orderless. One can add basic as a fallback.
+  ;; Basic will only be used when orderless fails, which happens only for
+  ;; these special tables.
+  ;;
+  ;; 4. (setq completion-styles '(substring orderless basic))
+  ;; Combine substring, orderless and basic.
+  ;;
+  (setq completion-styles '(orderless)
+        completion-category-defaults nil
+        ;;; Enable partial-completion for files.
+        ;;; Either give orderless precedence or partial-completion.
+        ;;; Note that completion-category-overrides is not really an override,
+        ;;; but rather prepended to the default completion-styles.
+        ;; completion-category-overrides '((file (styles orderless partial-completion))) ;; orderless is tried first
+        completion-category-overrides '((file (styles partial-completion)) ;; partial-completion is tried first
+                                        ;; enable initialism by default for symbols
+                                        (command (styles +orderless-with-initialism))
+                                        (variable (styles +orderless-with-initialism))
+                                        (symbol (styles +orderless-with-initialism)))
+        orderless-component-separator #'orderless-escapable-split-on-space ;; allow escaping space with backslash!
+        orderless-style-dispatchers '(+orderless-dispatch)))
 
 *** [[https://github.com/minad/marginalia][Show more information]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package marginalia
   :config
   (add-to-list 'marginalia-command-categories '(flycheck-error-list-set-filter . builtin))
@@ -1266,17 +1349,17 @@ Helper function to figure out version control root directory
   (add-to-list 'marginalia-command-categories '(projectile-switch-project . project-file))
   :custom (truncate-string-ellipsis "…")
   :init (marginalia-mode))
-#+END_SRC
+#+end_src
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package all-the-icons-completion
   :after (all-the-icons marginalia)
   :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
   :init (all-the-icons-completion-mode))
-#+END_SRC
+#+end_src
 
 *** [[https://github.com/minad/consult][Additional completion functions]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package consult
   :demand t
   :hook (completion-list-mode . consult-preview-at-point-mode)
@@ -1345,7 +1428,7 @@ Helper function to figure out version control root directory
   (push "\\*compilation\\*" consult-buffer-filter)
   (push "\\*compile.*\\*" consult-buffer-filter)
   (push "\\*Compilation Log\\*" consult-buffer-filter))
-#+END_SRC
+#+end_src
 
 
 #+BEGIN_SRC emacs-lisp
@@ -1353,44 +1436,44 @@ Helper function to figure out version control root directory
 
 ** Imenu
 *** Automatically rescan
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (set-default 'imenu-auto-rescan t)
-#+END_SRC
+#+end_src
 
 *** Show results from all buffers
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package imenu-anywhere
   :custom (imenu-anywhere-friendly-modes '((c-mode c++-mode cmake-mode qml-mode gtest-mode)
                                            (clojure-mode clojurex-mode clojurec-mode clojurescript-mode cider-repl-mode cider-clojure-interaction-mode)
                                            (emacs-lisp-mode inferior-emacs-lisp-mode lisp-interaction-mode)
                                            (ess-mode inferior-ess-mode)
                                            (python-mode inferior-python-mode))))
-#+END_SRC
+#+end_src
 
 ** Buffers
 *** Optimize scrolling
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq fast-but-imprecise-scrolling t
       redisplay-skip-fontification-on-input t)
 
 (pixel-scroll-mode 1)
-#+END_SRC
+#+end_src
 
 *** Do not adjust auto-window-vscroll
 This optimizes line-scrolling.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq auto-window-vscroll nil)
-#+END_SRC
+#+end_src
 
 *** Disable bidirectional support
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq-default bidi-display-reordering 'left-to-right
               bidi-paragraph-direction 'left-to-right)
 (setq bidi-inhibit-bpa t)
-#+END_SRC
+#+end_src
 
 *** Remember open buffers
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-yes (_)
   t)
 
@@ -1419,31 +1502,31 @@ This optimizes line-scrolling.
                                 (desktop-save user-emacs-directory)))
   (advice-add 'desktop-save :around #'cpped-always-yes)
   (advice-add 'desktop-read :around #'cpped-always-yes))
-#+END_SRC
+#+end_src
 
 *** Go to last position when opening buffer
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (save-place-mode 1)
-#+END_SRC
+#+end_src
 
 Switch to previous buffer
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-previous-buffer ()
   (interactive)
   (switch-to-buffer (other-buffer (current-buffer) 1)))
-#+END_SRC
+#+end_src
 
 *** Scratch Buffer
 **** Start with empty scratch buffer (no message)
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq initial-scratch-message nil)
-#+END_SRC
+#+end_src
 
 **** [[https://github.com/Fanael/persistent-scratch][Save scratch buffers between sessions]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package persistent-scratch
   :config (persistent-scratch-setup-default))
-#+END_SRC
+#+end_src
 
 *** Popup Windows
 #+BEGIN_SRC emacs-lisp
@@ -1453,46 +1536,46 @@ Switch to previous buffer
   (push '(compilation-mode :dedicated t :position bottom :height 30) popwin:special-display-config)
   (push '(help-mode :dedicated t :position bottom :height 40) popwin:special-display-config)
   (popwin-mode 1))
-#+END_SRC
+#+end_src
 
 *** Add path if required to make buffer name unique
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq uniquify-buffer-name-style 'forward
       uniquify-separator "/"
       uniquify-after-kill-buffer-p t
       uniquify-ignore-buffers-re "^\\*")
-#+END_SRC
+#+end_src
 
 *** [[https://github.com/dimitri/switch-window][Use smarter window switching (numbered windows)]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package switch-window
   :custom (switch-window-background t)
   :config (global-set-key [remap other-window] #'switch-window))
-#+END_SRC
+#+end_src
 
 *** Do not show buffer boundaries in fringe
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq-default indicate-buffer-boundaries nil)
-#+END_SRC
+#+end_src
 
 *** [[https://github.com/mina86/auto-dim-other-buffers.el][Dim inactive buffers]]
 #+BEGIN_SRC emacs-lisp
 (use-package auto-dim-other-buffers
   :hook (after-init . auto-dim-other-buffers-mode))
-#+END_SRC
+#+end_src
 
 *** Use recursive minibuffer
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq enable-recursive-minibuffers t)
-#+END_SRC
+#+end_src
 
 Indicate recursive minibuffer
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (minibuffer-depth-indicate-mode 1)
-#+END_SRC
+#+end_src
 
 *** Highlight minibuffer when in use
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defface shark-bytes-minibuffer-active '((t :inherit default))
   "Face used for active minibuffer."
   :group 'basic-faces)
@@ -1500,10 +1583,10 @@ Indicate recursive minibuffer
 (add-hook 'minibuffer-setup-hook (lambda ()
                                    (make-local-variable 'face-remapping-alist)
                                    (add-to-list 'face-remapping-alist '(default shark-bytes-minibuffer-active))))
-#+END_SRC
+#+end_src
 
 *** Kill current buffer by default
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defvar cpped-bury-buffers-list '("*scratch*" "*Messages*") "A list of buffer names to bury instead of kill.")
 
 (defun cpped-kill-default-buffer ()
@@ -1517,22 +1600,22 @@ Indicate recursive minibuffer
                (buffer-modified-p))
         (save-buffer))
       (kill-buffer))))
-#+END_SRC
+#+end_src
 
 *** Do not ask before killing buffer with running processes
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq kill-buffer-query-functions
       (remq 'process-kill-buffer-query-function
             kill-buffer-query-functions))
-#+END_SRC
+#+end_src
 
 *** Multi-buffer kill
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defvar clean-buffer-list-delay-general 1)
-#+END_SRC
+#+end_src
 
 *** Kill unused buffers automatically
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-clean-buffer-list-delay-1hour (name)
   "Wrapper around clean-buffer-list-delay to allow delays in hours instead of days"
   (or (assoc-default name clean-buffer-list-kill-buffer-names #'string=
@@ -1546,16 +1629,16 @@ Indicate recursive minibuffer
 
 (fset 'clean-buffer-list-delay 'cpped-clean-buffer-list-delay-1hour)
 (run-with-timer 0 (* 60 60) 'clean-buffer-list)
-#+END_SRC
+#+end_src
 
 *** Allow erasing
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (put 'erase-buffer 'disabled nil)
-#+END_SRC
+#+end_src
 
 *** Lines
 **** Highlight current line
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package hl-line
   :hook ((after-init . global-hl-line-mode)
          (find-file . hl-line-mode))
@@ -1563,23 +1646,23 @@ Indicate recursive minibuffer
                                                      (unless (window-minibuffer-p)
                                                        (when hl-line-overlay
                                                          (overlay-put hl-line-overlay 'priority 1000))))))
-#+END_SRC
+#+end_src
 
 **** Break long lines
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq visual-line-fringe-indicators '(nil nil))
 (global-visual-line-mode 1)
-#+END_SRC
+#+end_src
 
 **** [[https://github.com/purcell/page-break-lines][Show page breaks as line instead of '^L']]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package page-break-lines
   :config
   (global-page-break-lines-mode))
-#+END_SRC
+#+end_src
 
 **** Show line numbers
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq display-line-numbers nil
       display-line-numbers-grow-only t
       display-line-numbers-widen nil
@@ -1588,55 +1671,55 @@ Indicate recursive minibuffer
 (add-hook 'find-file-hook (lambda ()
                             (unless (equal major-mode 'org-mode)
                               (display-line-numbers-mode))))
-#+END_SRC
+#+end_src
 
 *** Utilities
 **** Copy buffer file name to clipboard
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-copy-file-name-to-clipboard ()
   "Copy the current buffer file name to the clipboard."
   (interactive)
   (kill-new (cpped-buffer-name)))
-#+END_SRC
+#+end_src
 
 ** Screen
 *** Lock screen
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (require 'dbus)
 
 (defun cpped-lock-screen ()
   "Lock the screen."
   (interactive)
   (dbus-call-method :session "org.freedesktop.ScreenSaver" "/org/freedesktop/ScreenSaver" "org.freedesktop.ScreenSaver" "Lock"))
-#+END_SRC
+#+end_src
 
 ** Cursor
 *** Stretch block cursor to cover glyph
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq-default x-stretch-cursor t)
-#+END_SRC
+#+end_src
 
 *** Center Cursor
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package centered-cursor-mode
   :config (global-centered-cursor-mode +1))
-#+END_SRC
+#+end_src
 
 *** Show cursor as bar in insert mode and block in overwrite mode
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package bar-cursor
   :config (bar-cursor-mode 1))
-#+END_SRC
+#+end_src
 
 *** Hide cursor in non-selected windows
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq-default cursor-in-non-selected-windows nil)
-#+END_SRC
+#+end_src
 
 ** [[https://www.emacswiki.org/emacs/UndoTree][Undo]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package undo-tree
-    :after popwin
+    ;:after popwin
     :custom
     (undo-tree-visualizer-timestamps t)
     (undo-tree-visualizer-diff t)
@@ -1646,10 +1729,10 @@ Indicate recursive minibuffer
     :config
     (global-undo-tree-mode)
     (push '(" *undo-tree*" :dedicated t :width 60 :position right) popwin:special-display-config))
-#+END_SRC
+#+end_src
 
 *** Keep selection when undoing
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defadvice undo-tree-undo (around keep-region activate)
   (if (use-region-p)
       (let ((mark-position (set-marker (make-marker) (mark)))
@@ -1660,10 +1743,10 @@ Indicate recursive minibuffer
         (set-marker point-position nil)
         (set-marker mark-position nil))
     ad-do-it))
-#+END_SRC
+#+end_src
 
 ** Shell
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq comint-terminfo-terminal "xterm-256color"
       comint-buffer-maximum-size 10000
       comint-scroll-show-maximum-output t
@@ -1773,20 +1856,20 @@ Indicate recursive minibuffer
       (format "%s %s" eshell-last-command-name (mapconcat 'identity eshell-last-arguments " "))))
   (with-eval-after-load "which-func"
     (add-to-list 'which-func-functions 'cpped-eshell-last-command)))
-#+END_SRC
+#+end_src
 
 *** Environment
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setenv "PAGER" "ccat")
 (setenv "BROWSER" "eww")
-#+END_SRC
+#+end_src
 
 https://github.com/purcell/exec-path-from-shell
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package exec-path-from-shell
   :custom (exec-path-from-shell-variables '("PATH" "MANPATH" "LANG" "LC_CTYPE" "LC_NUMERIC" "LC_TIME" "LC_MONETARY" "LC_PAPER" "LC_NAME" "LC_ADDRESS" "LC_TELEPHONE" "LC_MEASUREMENT" "NINJA_STATUS"))
   :config (exec-path-from-shell-initialize))
-#+END_SRC
+#+end_src
 
 *** Aliases
 #+BEGIN_SRC emacs-lisp
@@ -1869,7 +1952,7 @@ https://github.com/purcell/exec-path-from-shell
 #+END_SRC
 
 **** Git support
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "magit"
   (defun eshell/gitroot ()
     "chnage directory to current project root."
@@ -1891,10 +1974,10 @@ https://github.com/purcell/exec-path-from-shell
       (_ (shell-command-to-string (s-join " " (append (list "git"
                                                             command)
                                                       arguments)))))))
-#+END_SRC
+#+end_src
 
 *** Smart-open new eshell buffers
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-eshell-maybe-new-session (&optional argument)
   "Create a new interactive Eshell buffer if the current buffer is an Eshell buffer."
   (interactive "P")
@@ -1902,10 +1985,10 @@ https://github.com/purcell/exec-path-from-shell
       (eshell (or argument
                   t))
     (eshell argument)))
-#+END_SRC
+#+end_src
 
 *** Prompt
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-eshell-prompt-concat (&rest contents)
   (let ((items (-flatten (-non-nil contents))))
     (when items
@@ -1971,41 +2054,41 @@ https://github.com/purcell/exec-path-from-shell
                                        "\n▶ "))
       eshell-highlight-prompt nil
       eshell-prompt-regexp (rx bol "▶ "))
-#+END_SRC
+#+end_src
 
 *** [[https://github.com/akreisher/eshell-syntax-highlighting/][Syntax Highlighting]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package eshell-syntax-highlighting
   :after eshell
   :config (eshell-syntax-highlighting-global-mode +1))
-#+END_SRC
+#+end_src
 
 *** Clear buffer
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-clear-comint-buffer ()
   "Remove content of comint buffer."
   (interactive)
   (delete-region (point-min) (point-max))
   (comint-send-input))
-#+END_SRC
+#+end_src
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun eshell/clear ()
   "Clear the eshell buffer."
   (let ((inhibit-read-only t))
     (erase-buffer)
     (eshell-send-input)))
-#+END_SRC
+#+end_src
 
 *** Close buffer after process exits
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (advice-add 'term-sentinel :after (lambda (proc msg)
                                     (when (memq (process-status proc) '(signal exit))
                                       (kill-buffer (process-buffer proc)))))
-#+END_SRC
+#+end_src
 
 *** Visual commands
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "em-term"
   (add-to-list 'eshell-visual-commands "top")
   (add-to-list 'eshell-visual-commands "glances")
@@ -2013,32 +2096,32 @@ https://github.com/purcell/exec-path-from-shell
   (add-to-list 'eshell-visual-commands "ccmake")
 
   (add-to-list 'eshell-visual-options '("git" "--help")))
-#+END_SRC
+#+end_src
 
 *** Navigation
 **** [[https://github.com/Fuco1/eshell-bookmark][Bookmarks]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package eshell-bookmark
   :hook (eshell-mode . eshell-bookmark-setup))
-#+END_SRC
+#+end_src
 
 **** [[https://github.com/peterwvj/eshell-up][Go to parent directories]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package eshell-up
   :custom (eshell-up-ignore-case nil)
   :config
   (defun eshell/up (directory)
     "Alias for eshell-up."
     (eshell-up directory)))
-#+END_SRC
+#+end_src
 
 **** [[https://github.com/coldnew/eshell-autojump][Jump to directories]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package eshell-autojump)
-#+END_SRC
+#+end_src
 
 **** Jump over directories without files and one subdirectory
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (add-hook 'eshell-directory-change-hook #'(lambda ()
                                             (let* ((content (directory-files default-directory))
                                                    (directories (seq-remove '(lambda (directory)
@@ -2051,10 +2134,10 @@ https://github.com/purcell/exec-path-from-shell
                                                          (not (string-match "^cd +[\./]+$" (eshell-get-history 0))))
                                                 (let ((eshell-list-files-after-cd nil))
                                                   (eshell/cd (car directories)))))))
-#+END_SRC
+#+end_src
 
 **** Re-enter directory if necessary
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-eshell-reenter ()
   "Re-enter current directory if necessary."
   (unless (> (file-nlinks default-directory) 0)
@@ -2064,11 +2147,11 @@ https://github.com/purcell/exec-path-from-shell
 
 (add-hook 'eshell-mode-hook #'(lambda ()
                                 (add-hook 'eshell-pre-command-hook #'cpped-eshell-reenter nil t)))
-#+END_SRC
+#+end_src
 
 
 *** Add sudo to command line
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "eshell"
   (defun cpped-add-sudo ()
     "Add sudo to the curent command."
@@ -2083,31 +2166,31 @@ https://github.com/purcell/exec-path-from-shell
 
   (add-hook 'eshell-mode-hook (lambda ()
                                 (define-key eshell-mode-map (kbd "C-M-s") 'cpped-add-sudo))))
-#+END_SRC
+#+end_src
 
 *** History
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (add-hook 'eshell-mode-hook (lambda ()
                               (define-key eshell-mode-map (kbd "M-r") 'eshell-list-history)))
-#+END_SRC
+#+end_src
 
 *** [[https://github.com/magit/with-editor][Use emacs as editor]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package with-editor
   :hook ((shell-mode term-exec eshell-mode) . with-editor-export-editor)
   :config
   (define-key (current-global-map) [remap async-shell-command] 'with-editor-async-shell-command)
   (define-key (current-global-map) [remap shell-command] 'with-editor-shell-command))
-#+END_SRC
+#+end_src
 
 *** [[https://github.com/riscy/bifocal-mode][Split buffer on scroll to show both scrolled position and tail]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package bifocal
   :config (bifocal-global-mode 1))
-#+END_SRC
+#+end_src
 
 *** Show running command status in mode line
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (advice-add 'eshell-command-started :before (lambda ()
                                               (setq cpped-process-running t)
                                               (force-mode-line-update t)))
@@ -2115,10 +2198,10 @@ https://github.com/purcell/exec-path-from-shell
 (advice-add 'eshell-command-finished :before (lambda ()
                                                (setq cpped-process-running nil)
                                                (force-mode-line-update t)))
-#+END_SRC
+#+end_src
 
 *** Show last command status in mode line
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-modeline-eshell-status ()
   "Format the mode line eshell status information."
   (when (and (equal major-mode 'eshell-mode)
@@ -2128,10 +2211,10 @@ https://github.com/purcell/exec-path-from-shell
                                                  :weight 'bold)))))
 
 (add-to-list 'cpped-modeline-check-status-functions 'cpped-modeline-eshell-status)
-#+END_SRC
+#+end_src
 
 *** Notify when long-running command finishes
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defcustom cpped-eshell-minimum-interesting-run-time 30 "The minimum time a command has to take to be interesting.")
 
 (defun cpped-eshell-current-command-start ()
@@ -2169,12 +2252,12 @@ https://github.com/purcell/exec-path-from-shell
 (add-hook 'eshell-mode-hook #'(lambda ()
                                 (add-hook 'eshell-pre-command-hook #'cpped-eshell-current-command-start nil t)
                                 (add-hook 'eshell-post-command-hook #'cpped-eshell-current-command-stop nil t)))
-#+END_SRC
+#+end_src
 
 
 ** Help
 *** [[https://github.com/Wilfred/helpful][Better Help Buffer]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package helpful
   :after consult
   :custom (helpful-max-buffers 3)
@@ -2184,7 +2267,7 @@ https://github.com/purcell/exec-path-from-shell
   (advice-add 'describe-variable :override #'helpful-variable)
   (advice-add 'describe-key :override #'helpful-key)
   (advice-add 'describe-symbol :override #'helpful-symbol))
-#+END_SRC
+#+end_src
 
 ** Utilites
 *** Intelligent input
@@ -2197,13 +2280,13 @@ https://github.com/purcell/exec-path-from-shell
 #+end_src
 
 *** [[https://github.com/bbatsov/crux][A Collection of Ridiculously Useful eXtensions]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package crux
   :config (advice-add 'crux-rename-file-and-buffer :around 'cpped-post-rename))
-#+END_SRC
+#+end_src
 
 *** Date/time formatting
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "all-the-icons"
   (defun cpped-print-date ()
     (concat
@@ -2214,7 +2297,7 @@ https://github.com/purcell/exec-path-from-shell
 
   (defun cpped-print-time ()
     (format "%c %s" (+ #xe381 (% (string-to-number (format-time-string "%I")) 12)) (format-time-string " %H:%M"))))
-#+END_SRC
+#+end_src
 
 **** Run freedesktop applications
 #+BEGIN_SRC emacs-lisp
@@ -2262,18 +2345,18 @@ https://github.com/purcell/exec-path-from-shell
 
 (with-eval-after-load "consult"
   (push "\\*Applications\\*" consult-buffer-filter))
-#+END_SRC
+#+end_src
 
 ** Windows
 *** Re-use frames
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq display-buffer-reuse-frames t)
-#+END_SRC
+#+end_src
 
 *** Hide dividers between windows
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq window-divider-mode nil)
-#+END_SRC
+#+end_src
 
 *** [[https://github.com/cyrus-and/zoom][Automatically zoom current window]]
 #+BEGIN_SRC emacs-lisp
@@ -2284,26 +2367,26 @@ https://github.com/purcell/exec-path-from-shell
   (zoom-ignored-buffer-name-regexps '("^*calc"))
   :config
   (zoom-mode t))
-#+END_SRC
+#+end_src
 
 *  File Handling
 ** Config
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defvar cpped-config-file "~/.emacs-config.org")
-#+END_SRC
+#+end_src
 
 ** Ignore case for file names
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq read-file-name-completion-ignore-case t)
-#+END_SRC
+#+end_src
 
 ** Do not ask if file should be created
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq confirm-nonexistent-file-or-buffer nil)
-#+END_SRC
+#+end_src
 
 ** Automatically create parent directories on save
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun shark-bytes/create-parent-directories(&optional file)
   "Create parent directories for FILE."
   (when-let* ((file-path (or file
@@ -2320,16 +2403,16 @@ https://github.com/purcell/exec-path-from-shell
   (add-hook 'before-save-hook 'shark-bytes/create-parent-directories))
 
 (add-hook 'find-file-hook 'shark-bytes/enable-create-parent-directories)
-#+END_SRC
+#+end_src
 
 ** [[https://gitlab.com/kisaragi-hiu/didyoumean.el/][Prefer existing files]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package didyoumean
   :config (add-hook 'after-init #'(run-with-timer 60 nil didyoumean-mode)))
-#+END_SRC
+#+end_src
 
 ** Save backup files to .emacs.d/backups
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq backup-directory-alist `((".*" . ,(expand-file-name "backups" user-emacs-directory)))
       tramp-backup-directory-alist backup-directory-alist
       backup-by-copying t
@@ -2337,28 +2420,28 @@ https://github.com/purcell/exec-path-from-shell
       delete-old-versions t
       kept-new-versions 20
       kept-old-versions 5)
-#+END_SRC
+#+end_src
 
 ** [[https://github.com/shingo256/trashed][Use system trash]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq delete-by-moving-to-trash t)
 
 (use-package trashed
   :custom
   (trashed-action-confirmer 'y-or-n-p)
   (trashed-size-format 'human-readable))
-#+END_SRC
+#+end_src
 
 ** Automatically silently reload unmodified buffers when file has changed on disk
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq global-auto-revert-non-file-buffers t
       auto-revert-verbose nil
       revert-without-query '(".*"))
 (global-auto-revert-mode t)
-#+END_SRC
+#+end_src
 
 ** Save current region or buffer to different file
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-save-copy ()
   "Save the current buffer or region to a different file."
   (interactive)
@@ -2375,10 +2458,10 @@ https://github.com/purcell/exec-path-from-shell
                         'excl
                       t)))
     (write-region begin end copy nil nil nil mustbenew)))
-#+END_SRC
+#+end_src
 
 ** [[https://github.com/bbatsov/super-save][Auto-save buffers]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package super-save
   :custom
   (super-save-auto-save-when-idle t)
@@ -2387,38 +2470,38 @@ https://github.com/purcell/exec-path-from-shell
   :config
   (add-to-list 'super-save-triggers 'compile)
   (super-save-mode +1))
-#+END_SRC
+#+end_src
 
 ** [[https://github.com/nflath/sudo-edit][Allow editing via sudo]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package su
   :config (su-mode +1))
-#+END_SRC
+#+end_src
 
 ** [[https://github.com/m00natic/vlfi][Allow opening large files]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq large-file-warning-threshold (* 25 1024 1024))
 
 (use-package vlf
   :custom (vlf-application 'dont-ask)
   :config (require 'vlf-setup))
-#+END_SRC
+#+end_src
 
 ** Execute command on file
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-execute-command-on-buffer-file (command)
   (interactive "sCommand: ")
   (when buffer-file-name
     (shell-command (concat command " " buffer-file-name))))
-#+END_SRC
+#+end_src
 
 ** Allow editing compressed files
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (auto-compression-mode 1)
-#+END_SRC
+#+end_src
 
 ** Handle renames
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-post-rename (function)
   "Update recent files and projectile after rename."
   (let ((old buffer-file-name))
@@ -2428,11 +2511,11 @@ https://github.com/purcell/exec-path-from-shell
       (recentf-remove-if-non-kept old))
     (when (ignore-errors (projectile-project-p))
       (call-interactively #'projectile-invalidate-cache))))
-#+END_SRC
+#+end_src
 
 ** File Management
 *** [[https://www.emacswiki.org/emacs/RecentFiles][Recent files]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package recentf
   :custom
   (recentf-max-saved-items 200)
@@ -2442,10 +2525,10 @@ https://github.com/purcell/exec-path-from-shell
                                                    (let ((warning-minimum-level :error))
                                                      (ignore-errors (recentf-save-list))))))
   :config (recentf-mode))
-#+END_SRC
+#+end_src
 
 *** Show multiple sources for open command
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 
 (defvar cpped-consult-source-projectile
   `(:name     "Project files"
@@ -2485,78 +2568,78 @@ https://github.com/purcell/exec-path-from-shell
                                     :sort nil))
     (unless (cdr buffer)
       (consult--buffer-action (car buffer)))))
-#+END_SRC
+#+end_src
 
 *** Dired
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq dired-auto-revert-buffer t
       dired-recursive-copies 'always
       dired-recursive-deletes 'top
       dired-dwim-target t
       dired-create-destination-dirs 'ask)
-#+END_SRC
+#+end_src
 
 **** Re-use dired buffers
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (put 'dired-find-alternate-file 'disabled nil)
 
 (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
-#+END_SRC
+#+end_src
 
 **** [[https://github.com/DamienCassou/dired-imenu][imenu Integration]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package dired-imenu)
-#+END_SRC
+#+end_src
 
 **** [[https://www.emacswiki.org/emacs/wdired.el][Editing]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package wdired
   :bind (:map dired-mode-map ("r" . wdired-change-to-wdired-mode))
   :custom
   (wdired-allow-to-change-permissions t)
   (wdired-create-parent-directories t))
-#+END_SRC
+#+end_src
 
 **** Use standard ls parameters for listing
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq dired-listing-switches "-aFhl1v --group-directories-first")
-#+END_SRC
+#+end_src
 
 **** [[https://github.com/purcell/diredfl/][Coloring]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package diredfl
   :config
   (diredfl-global-mode))
-#+END_SRC
+#+end_src
 
 **** Show lines in alternating colors
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package stripe-buffer
   :hook (dired-mode . turn-on-stripe-buffer-mode))
-#+END_SRC
+#+end_src
 
 **** Show Icons
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package all-the-icons-dired
   :after all-the-icons
   :hook (dired-mode . all-the-icons-dired-mode))
-#+END_SRC
+#+end_src
 
 **** Collapse empty directories
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package dired-collapse
   :hook dired-mode)
-#+END_SRC
+#+end_src
 
 **** [[https://github.com/calancha/dired-du][Show directory sizes]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package dired-du
   :straight (dired-du
              :type git
              :host github
              :repo "calancha/dired-du")
   :custom (dired-du-size-format t))
-#+END_SRC
+#+end_src
 
 **** [[github:amno1/dired-git-log][Show git information]]
 #+begin_src emacs-lisp
@@ -2570,23 +2653,23 @@ https://github.com/purcell/exec-path-from-shell
 #+end_src
 
 **** [[https://github.com/Fuco1/dired-hacks#dired-subtree][Show subtrees inline]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package dired-subtree
   :bind (:map dired-mode-map
               ("<tab>" . dired-subtree-toggle)))
-#+END_SRC
+#+end_src
 
 **** Filtering
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package dired-narrow
   :bind (:map dired-mode-map ("f" . dired-narrow)))
-#+END_SRC
+#+end_src
 
 **** Preview
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package peep-dired
   :bind (:map dired-mode-map ("v" . peep-dired)))
-#+END_SRC
+#+end_src
 
 **** [[https://github.com/dalanicolai/mediator][Open in application]]
 #+BEGIN_SRC emacs-lisp
@@ -2605,7 +2688,7 @@ https://github.com/purcell/exec-path-from-shell
 #+END_SRC
 
 **** Diff files
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defvar cpped-dired-ediff-window-configuration nil)
 
 (defun cpped-dired-ediff-files ()
@@ -2626,21 +2709,21 @@ https://github.com/purcell/exec-path-from-shell
                                                                (set-window-configuration cpped-dired-ediff-window-configuration))))))))
 
 (define-key dired-mode-map "d" 'cpped-dired-ediff-files)
-#+END_SRC
+#+end_src
 
 **** Compress files
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (define-key dired-mode-map "c" 'dired-do-compress)
 (define-key dired-mode-map "C" 'dired-do-compress-to)
-#+END_SRC
+#+end_src
 
 **** Sync files
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package dired-rsync)
-#+END_SRC
+#+end_src
 
 **** OCR files
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (cpped-install-system-package "tesseract")
 (cpped-install-system-package "tesseract-langpack-eng")
 (cpped-install-system-package "tesseract-langpack-deu")
@@ -2656,10 +2739,10 @@ https://github.com/purcell/exec-path-from-shell
                        "")))
 
 (define-key dired-mode-map "o" 'cpped-dired-ocr)
-#+END_SRC
+#+end_src
 
 *** [[https://github.com/Alexander-Miller/treemacs][Treemacs]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package treemacs
   :after consult
   :bind ("<f1>" . treemacs)
@@ -2693,15 +2776,15 @@ https://github.com/purcell/exec-path-from-shell
 
 (use-package treemacs-magit
   :after (treemacs magit))
-#+END_SRC
+#+end_src
 
 *  Text
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (push '("\\.txt\\'" . text-mode) auto-mode-alist)
-#+END_SRC
+#+end_src
 
 ** Encoding
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (set-charset-priority 'unicode)
 (set-language-environment 'utf-8)
 (set-default-coding-systems 'utf-8)
@@ -2723,18 +2806,18 @@ https://github.com/purcell/exec-path-from-shell
 (defun cpped-unix2dos ()
   (interactive)
   (set-buffer-file-coding-system 'utf-8-dos nil))
-#+END_SRC
+#+end_src
 
 ** Highlighting
 *** Enable stealth fontification
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq jit-lock-stealth-time 1
       jit-lock-chunk-size 500
       jit-lock-defer-time 0)
-#+END_SRC
+#+end_src
 
 *** Pretty symbols
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (add-hook 'text-mode-hook (lambda()
                             (push '("<_->" . ?⇄) prettify-symbols-alist)
                             (push '("<-_>" . ?⇆) prettify-symbols-alist)
@@ -2774,23 +2857,23 @@ https://github.com/purcell/exec-path-from-shell
                             (push '("v||^" . ?⇵) prettify-symbols-alist)
 
                             (push '("\/v" . ?↯) prettify-symbols-alist)))
-#+END_SRC
+#+end_src
 
 [[https://github.com/iqbalansari/emacs-emojify][Emojis]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package emojify
   :hook (after-init-hook . global-emojify-mode))
-#+END_SRC
+#+end_src
 
 *** Syntax types
 **** [[https://github.com/sensorflo/adoc-mode][AsciiDoc]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package adoc-mode
   :mode ("\\.adoc\\'" . adoc-mode))
-#+END_SRC
+#+end_src
 
 **** Markdown
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package markdown-mode
   :mode
   (("README\\.md\\'" . gfm-mode)
@@ -2803,11 +2886,11 @@ https://github.com/purcell/exec-path-from-shell
   (markdown-enable-wiki-links t)
   (markdown-italic-underscore t)
   (markdown-make-gfm-checkboxes-buttons t))
-#+END_SRC
+#+end_src
 
 ***** Editing
 ****** Wrap Region
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "wrap-region"
   (wrap-region-add-wrappers
    '(("*" "*" "/" (gfm-mode markdown-mode))
@@ -2815,38 +2898,38 @@ https://github.com/purcell/exec-path-from-shell
      ("***" "***" "e" (gfm-mode markdown-mode))))
   (add-hook 'gfm-mode-hook 'wrap-region-mode)
   (add-hook 'markdown-mode-hook 'wrap-region-mode))
-#+END_SRC
+#+end_src
 
 ****** [[https://github.com/ardumont/markdown-toc][Table of contents]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package markdown-toc
   :custom
   (markdown-toc-header-toc-start nil)
   (markdown-toc-header-toc-end nil))
-#+END_SRC
+#+end_src
 
 ***** [[github:mivok/markdownlint][Syntax checker]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "system-packages"
   (cpped-install-system-package "mdl" :package-manager 'gem))
-#+END_SRC
+#+end_src
 
 ***** [[https://github.com/mola-T/flymd][Preview]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package flymd
   :custom
   (flymd-close-buffer-delete-temp-files t)
   (flymd-output-directory temporary-file-directory))
-#+END_SRC
+#+end_src
 
 *** [[https://github.com/minad/goggles][Highlight edited areas shortly]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package goggles
   :hook (find-file . goggles-mode))
-#+END_SRC
+#+end_src
 
 *** Highlight current symbol
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package auto-highlight-symbol
   :custom
   (ahs-case-fold-search nil)
@@ -2857,18 +2940,18 @@ https://github.com/purcell/exec-path-from-shell
   :config
   (push 'org-mode ahs-modes)
   (global-auto-highlight-symbol-mode t))
-#+END_SRC
+#+end_src
 
 *** [[https://github.com/alvarogonzalezsotillo/region-occurrences-highlighter][Highlight current region]]
-#+BEGIN_SRC emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle no
 (use-package region-occurrences-highlighter
   :functions region-occurrences-highlighter
   :hook (prog-mode . region-occurrences-highlighter-mode))
-#+END_SRC
+#+end_src
 
 *** Highlight number packs
 Use custom regex to ignore color definitions (numbers starting with a # sign)
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package num3-mode
   :hook find-file
   :custom (num3--number-re (concat "[^#]0[xX]\\([[:xdigit:]]+\\)"
@@ -2878,27 +2961,27 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
                                    "[^#]\\([0-9]+\\)"
                                    "\\|"
                                    "\\.\\([0-9]+\\)")))
-#+END_SRC
+#+end_src
 
 *** Highlight colors
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package rainbow-mode
   :hook find-file
   :config (add-to-list 'rainbow-html-colors-major-mode-list 'emacs-lisp-mode))
-#+END_SRC
+#+end_src
 
 *** Highlight matching parens
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq show-paren-style 'mixed
       show-paren-delay 0.1
       show-paren-highlight-openparen t
       show-paren-when-point-inside-paren nil
       show-paren-when-point-in-periphery t)
 (show-paren-mode)
-#+END_SRC
+#+end_src
 
 **** Highlight off-screen matching parens
-#+BEGIN_SRC emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle no
 (remove-hook 'post-self-insert-hook
              #'blink-paren-post-self-insert-function)
 
@@ -2935,10 +3018,10 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
       (blink-matching-open))))
 
 (advice-add #'show-paren-function :after #'cpped-highlight-paren)
-#+END_SRC
+#+end_src
 
 *** Highlight last screen content when navigating
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package on-screen
   :custom
   (on-screen-auto-update t)
@@ -2948,10 +3031,10 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
   (on-screen-remove-when-edit t)
   (on-screen-highlighting-to-background-delta 0.9)
   :config (on-screen-global-mode +1))
-#+END_SRC
+#+end_src
 
 *** Smart narrowing/widening
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-narrow-or-widen-dwim (prefix)
   "Widen if buffer is narrowed, narrow otherwise. If a prefix is given, always narrow regardless of narrowed state."
   (interactive "P")
@@ -2970,24 +3053,24 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
         ((derived-mode-p 'latex-mode)
          (LaTeX-narrow-to-environment))
         (t (narrow-to-defun))))
-#+END_SRC
+#+end_src
 
 ** Syntax checker
 *** [[https://github.com/tmalsburg/guess-language.el][Guess language]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package guess-language
   :hook text-mode-hook
   :custom (guess-language-languages '(en de)))
-#+END_SRC
+#+end_src
 
 *** [[https://github.com/bnbeckwith/writegood-mode][Mark common language issues]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package writegood-mode
   :hook fundamental-mode)
-#+END_SRC
+#+end_src
 
 *** [[https://github.com/amperser/proselint][Prose Linter]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "system-packages"
   (cpped-install-system-package "proselint" :package-manager 'pip)
   (with-eval-after-load "flycheck"
@@ -3002,14 +3085,14 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
                 line-end))
       :modes (text-mode org-mode markdown-mode gfm-mode))
     (add-to-list 'flycheck-checkers 'proselint)))
-#+END_SRC
+#+end_src
 
 *** Diction
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defvar-local cpped-diction-language "en" "The language used for diction checks.")
-#+END_SRC
+#+end_src
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "flycheck"
   (with-eval-after-load "guess-language"
     (defun cpped-guess-language-switch-diction-function (lang &optional beginning end)
@@ -3032,7 +3115,7 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
       :modes (text-mode org-mode markdown-mode gfm-mode))
 
     (add-to-list 'flycheck-checkers 'cpped-diction)))
-#+END_SRC
+#+end_src
 
 ** Navigation
 *** [[https://github.com/ahungry/fast-scroll][Fast scrolling]]
@@ -3045,23 +3128,23 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 #+end_src
 
 *** Smart begin/end
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package beginend
   :config (beginend-global-mode))
-#+END_SRC
+#+end_src
 
 *** End sentence with single space
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq sentence-end-double-space nil)
-#+END_SRC
+#+end_src
 
 *** [[https://github.com/elpa-host/goto-char-preview][Go to character with preview]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package goto-char-preview)
-#+END_SRC
+#+end_src
 
 *** [[https://github.com/tam17aki/ace-isearch][Jump to any symbol]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package avy
   :custom
   (avy-all-windows t)
@@ -3078,15 +3161,15 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
   (ace-isearch-function 'avy-goto-subword-1)
   (ace-isearch-input-length 2)
   :config (global-ace-isearch-mode +1))
-#+END_SRC
+#+end_src
 
 *** [[https://github.com/camdez/goto-last-change.el][Jump to last change]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package goto-last-change)
-#+END_SRC
+#+end_src
 
 *** [[https://github.com/Overdr0ne/gumshoe][Jump to one of the last locations]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package gumshoe
   :after consult
   :straight (gumshoe :type git
@@ -3108,16 +3191,16 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
                    :prompt "Go to line: "))
   (advice-add #'gumshoe--peruse :override #'shark-bytes/gumshoe--peruse)
   (global-gumshoe-mode 1))
-#+END_SRC
+#+end_src
 
 *** URIs
 **** Allow clicking on URIs
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (add-hook 'prog-mode-hook 'goto-address-prog-mode)
-#+END_SRC
+#+end_src
 
 **** [[https://github.com/abo-abo/ace-link][Jump to link address via keys]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package ace-link
   :config
   (ace-link-setup-default)
@@ -3128,11 +3211,11 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
       (if url
           (browse-url url)
         (ace-link-addr)))))
-#+END_SRC
+#+end_src
 
 ** Editing
 *** Indentation
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq-default indent-tabs-mode nil)
 (setq-default fill-column 120)
 (setq auto-fill-mode t
@@ -3157,30 +3240,30 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 #+END_SRC
 
 *** [[https://gitlab.com/emacs-stuff/indent-tools][Indent tools]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package indent-tools)
-#+END_SRC
+#+end_src
 
 *** Upper/lower case
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package fix-word)
-#+END_SRC
+#+end_src
 
 *** [[https://github.com/ainame/smart-newline.el][Smart Newline]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package smart-newline
   :commands smart-newline-mode
   :hook (prog-mode . smart-newline-mode))
-#+END_SRC
+#+end_src
 
 *** [[https://github.com/davidshepherd7/aggressive-fill-paragraph-mode][Auto-fill paragraphs]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package aggressive-fill-paragraph
   :custom (afp-fill-comments-only-mode-list '(prog-mode)))
-#+END_SRC
+#+end_src
 
 *** Join lines
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-join-lines ()
   "Join lines, optionally with a separator and quotes."
   (interactive)
@@ -3196,110 +3279,110 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
                                     lines)
                             quote-character)))))
     (crux-top-join-line)))
-#+END_SRC
+#+end_src
 
 *** Easier escaping
 #+BEGIN_SRC emacs-lisp
 (use-package string-edit)
-#+END_SRC
+#+end_src
 
 *** Expand selection
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package expand-region)
-#+END_SRC
+#+end_src
 
 *** Clipboard
 Keep up to 500 entries
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq kill-ring-max 500)
-#+END_SRC
+#+end_src
 
 Ignore duplicates
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq kill-do-not-save-duplicates t)
-#+END_SRC
+#+end_src
 
 Use system clipboard
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq select-enable-clipboard t)
-#+END_SRC
+#+end_src
 
 Save system clipboard contents to kill ring before killing
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq save-interprogram-paste-before-kill t)
-#+END_SRC
+#+end_src
 
 Set prefered clipboard formats
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
-#+END_SRC
+#+end_src
 
 *** Do not delete selected text when inserting characters
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (delete-selection-mode nil)
-#+END_SRC
+#+end_src
 
 *** Do not alert when killing read-only text
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq kill-read-only-ok t)
-#+END_SRC
+#+end_src
 
 *** Move text
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package smart-shift
   :config (global-smart-shift-mode 1))
-#+END_SRC
+#+end_src
 
 *** [[https://github.com/nflath/hungry-delete][Delete adjoining whitespaces in all major modes]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package hungry-delete
   :custom (hungry-delete-join-reluctantly t)
   :config (global-hungry-delete-mode))
-#+END_SRC
+#+end_src
 
 *** Smart backward delete
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-backward-kill-dwim ()
   (interactive "p")
   (if (region-active-p)
       (call-interactively #'kill-region)
     (kill-region (line-beginning-position) (point))))
-#+END_SRC
+#+end_src
 
 *** [[https://github.com/lewang/ws-butler][Remove trailing whitespace in changed lines]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package ws-butler
   :custom
   (ws-butler-global-mode t)
   (ws-butler-keep-whitespace-before-point nil)
   :config (ws-butler-global-mode))
-#+END_SRC
+#+end_src
 
 *** Allow adding a newline to the end of the current line, regardless of point position
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-newline-after-current-line ()
   "Moves to the end of the current line and inserts a newline."
   (interactive)
   (end-of-line)
   (newline-and-indent))
-#+END_SRC
+#+end_src
 
 *** Cut/copy whole line if no region is active
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package whole-line-or-region
   :config (whole-line-or-region-global-mode t))
-#+END_SRC
+#+end_src
 
 *** Case-insensitive line sorting
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-sort-lines-case-insensitive ()
   (interactive)
   (let ((sort-fold-case t))
     (call-interactively 'sort-lines)))
-#+END_SRC
+#+end_src
 
 *** Remove duplicate adjacent lines
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-remove-duplicate-lines ()
   "Remove duplicate adjacent lines in a region or buffer."
   (interactive)
@@ -3313,58 +3396,58 @@ Set prefered clipboard formats
       (goto-char begin)
       (while (re-search-forward "^\\(.*\n\\)\\1+" end t)
         (replace-match "\\1")))))
-#+END_SRC
+#+end_src
 
 *** Sort words
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package sort-words)
-#+END_SRC
+#+end_src
 
 *** [[https://github.com/mkcms/interactive-align][Regex alignment]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package ialign
   :custom (ialign-align-with-tabs indent-tabs-mode))
-#+END_SRC
+#+end_src
 
 *** [[https://github.com/benma/visual-regexp.el][Visual regular expressions]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package visual-regexp
   :custom (vr/engine 'emacs))
 
 (use-package visual-regexp-steroids
   :after visual-regexp)
-#+END_SRC
+#+end_src
 
 *** Automatic insert
 **** Typographic characters
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package typo
   :hook (text-mode . (lambda ()
                        (when (not (string-equal (buffer-name) (file-name-nondirectory cpped-config-file)))
                          (typo-mode)))))
-#+END_SRC
+#+end_src
 
 **** Abbreviations
 Enable Abbrev-Mode by default
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq-default abbrev-mode t)
-#+END_SRC
+#+end_src
 
 Always save abbreviations. Do not ask.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq save-abbrevs 'silently)
-#+END_SRC
+#+end_src
 
 Some useful abbreviations
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (define-abbrev-table 'global-abbrev-table '(("cpsign" "©")
                                             ("tmsign" "™")
                                             ("infsign" "∞")
                                             ("ifomration" "information")))
-#+END_SRC
+#+end_src
 
 **** [[https://github.com/joaotavora/yasnippet][Templates]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package yasnippet
   :bind (:map yas-keymap (("ESC" . yas-abort-snippet)
                           ("DEL" . yas-skip-and-clear-or-delete-char)))
@@ -3375,38 +3458,38 @@ Some useful abbreviations
   (yas-triggers-in-field t)
   (yas-also-indent-empty-lines t)
   :config (yas-global-mode 1))
-#+END_SRC
+#+end_src
 
 [[https://joaotavora.github.io/yasnippet/snippet-development.html][Snippet Development Documentation]]
 
 ***** Consult integration
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package consult-yasnippet
   :after (consult yasnippet))
-#+END_SRC
+#+end_src
 
 ***** Licenses
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package license-snippets
   :after yasnippet
   :config (license-snippets-init))
-#+END_SRC
+#+end_src
 
 ***** [[https://github.com/abo-abo/auto-yasnippet][Automatic snippets]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package auto-yasnippet
   :after yasnippet)
-#+END_SRC
+#+end_src
 
 *** [[https://github.com/rejeep/wrap-region.el][Wrap Region]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package wrap-region
   :hook ((wrap-region-before-wrap . (lambda () (electric-pair-mode 0)))
          (wrap-region-after-wrap . (lambda () (electric-pair-mode 1)))))
-#+END_SRC
+#+end_src
 
 *** Insert Date/Time
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-insert-timestamp ()
   "Insert date and time according to the locale's date and time format."
   (interactive)
@@ -3431,41 +3514,41 @@ Some useful abbreviations
   "Insert the date according to the ISO date format."
   (interactive)
   (insert (format-time-string "%FT%T%z" (current-time))))
-#+END_SRC
+#+end_src
 
 *** Insert UUID
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (cpped-install-system-package "util-linux")
 (defun cpped-insert-uuid ()
   "Insert a UUID at point."
   (interactive)
   (insert (replace-regexp-in-string "\n" "" (shell-command-to-string (executable-find "uuidgen")))))
-#+END_SRC
+#+end_src
 
 *** Thesaurus
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package synosaurus
   :ensure-system-package wordnet
   :hook (after-init . synosaurus-mode)
   :custom (synosaurus-choose-method 'default)
   :config (setq-default synosaurus-backend 'synosaurus-backend-wordnet))
-#+END_SRC
+#+end_src
 
 *** [[https://github.com/magnars/change-inner.el][Change inner]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package change-inner)
-#+END_SRC
+#+end_src
 
 *** Utilities
 **** [[https://github.com/mhayashi1120/Emacs-wgrep][Edit grep buffers]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package wgrep
   :hook (rg-mode . wgrep-rg-setup)
   :custom (wgrep-enable-key "e"))
-#+END_SRC
+#+end_src
 
 ** [[http://www-sop.inria.fr/members/Manuel.Serrano/flyspell/flyspell.html][Spell checking]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package flyspell
   :after (consult system-packages)
   :ensure-system-package (aspell aspell-en aspell-de)
@@ -3502,15 +3585,15 @@ Some useful abbreviations
       (propertize (format " %d" cpped-flyspell-errors)
                           'face 'cpped-check-status-error)))
   (add-to-list 'cpped-modeline-check-status-functions 'cpped-modeline-flyspell-status))
-#+END_SRC
+#+end_src
 
 https://github.com/d12frosted/flyspell-correct
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package flyspell-correct
   :after flyspell)
-#+END_SRC
+#+end_src
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package consult-flyspell
   :straight (consult-flyspell
              :type git
@@ -3521,26 +3604,26 @@ https://github.com/d12frosted/flyspell-correct
   (consult-flyspell-select-function (lambda () (flyspell-correct-at-point) (consult-flyspell)))
   (consult-flyspell-set-point-after-word t)
   (consult-flyspell-always-check-buffer t))
-#+END_SRC
+#+end_src
 
 ** Utilities
 *** [[https://github.com/fourier/loccur][Filter]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package loccur)
-#+END_SRC
+#+end_src
 
 *** [[https://github.com/akicho8/string-inflection][Change lower/upper case]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package string-inflection)
-#+END_SRC
+#+end_src
 
 *** [[https://github.com/abo-abo/define-word][Define word]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package define-word)
-#+END_SRC
+#+end_src
 
 *** [[https://github.com/atykhonov/google-translate][Translate text]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package google-translate
   :custom
   (google-translate-show-phonetic t)
@@ -3565,11 +3648,11 @@ https://github.com/d12frosted/flyspell-correct
       (when replace
         (delete-region begin end))
       (google-translate-translate "auto" target-language text))))
-#+END_SRC
+#+end_src
 
 *  Binaries
 Open binary files in hexl-mode
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defvar cpped-no-hexedit-extensions nil "File extensions for which automatic hex editing is disabled")
 
 (add-hook 'find-file-hook (lambda ()
@@ -3582,10 +3665,10 @@ Open binary files in hexl-mode
                                                     cpped-no-hexedit-extensions)
                                               nil)))
                               (hexl-mode))))
-#+END_SRC
+#+end_src
 
 ** Support cpio
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package cpio-mode
   :bind (:map cpio-mode-map ("q" . kill-this-buffer))
   :config
@@ -3593,17 +3676,17 @@ Open binary files in hexl-mode
   (push '("070707" . cpio-mode) magic-mode-alist)
   (push '("0123456789abcdef" . cpio-mode) magic-mode-alist)
   (push '("0123456789abcdefCPIO archive" . cpio-mode) magic-mode-alist))
-#+END_SRC
+#+end_src
 
 *  Images
 ** Disable hex edit mode for images
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (push "\\.jpg\\'" cpped-no-hexedit-extensions)
 (push "\\.jpeg\\'" cpped-no-hexedit-extensions)
 (push "\\.png\\'" cpped-no-hexedit-extensions)
 (push "\\.gif\\'" cpped-no-hexedit-extensions)
 (push "\\.svg\\'" cpped-no-hexedit-extensions)
-#+END_SRC
+#+end_src
 
 *  Programming
 ** Projects
@@ -3627,7 +3710,7 @@ Open binary files in hexl-mode
 
 *** Utilities
 **** Find file in project
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-find-project-file (file)
   "Find a file in source or build directory."
   (or
@@ -3643,10 +3726,10 @@ Open binary files in hexl-mode
      (when (and build-file
                 (file-exists-p build-file))
        source-file))))
-#+END_SRC
+#+end_src
 
 *** Use docker to run tools for docker-based projects
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (system-packages-ensure "docker")
 
 (defvar default-docker-compose-file "docker-compose.yml" "The default name for the docker-compose file.")
@@ -3677,7 +3760,7 @@ Open binary files in hexl-mode
 (with-eval-after-load "flycheck"
   (setq flycheck-command-wrapper-function #'(lambda (command)
                                               (cpped-maybe-run-in-docker command))))
-#+END_SRC
+#+end_src
 
 *** CMake
 #+BEGIN_SRC emacs-lisp
@@ -3984,17 +4067,17 @@ Handler to close buffer after quitting ccmake.
                                                   (cpped-maybe-run-docker
                                                    (cpped-cmake-source-dir build-dir)
                                                    `(make -C ,build-dir ,target)))))))))
-#+END_SRC
+#+end_src
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-clean-build-directory ()
   "Build the clean target in the current build directory."
   (interactive)
   (cpped-build-target "clean"))
-#+END_SRC
+#+end_src
 
 *** Run/Debug
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-run-target (target)
   "Build and run the current target in the current build directory. Ask for target if not set."
   (interactive (list (or (or (cpped-build-target)
@@ -4013,11 +4096,11 @@ Handler to close buffer after quitting ccmake.
   (let ((executable (locate-file target exec-path exec-suffixes 'executable)))
     (when executable
       (realgud:gdb (cpped-maybe-run-in-docker (concat "gdb -cd=" (file-name-directory executable) " " executable))))))
-#+END_SRC
+#+end_src
 
 ** Languages
 *** Common
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package lsp-mode
   :after consult
   :hook prog-mode
@@ -4054,46 +4137,46 @@ Handler to close buffer after quitting ccmake.
   (lsp-ui-sideline-show-hover nil)
   (lsp-ui-sideline-show-code-actions t)
   (lsp-ui-sideline-show-symbol nil))
-#+END_SRC
+#+end_src
 
 [[https://github.com/gagbo/consult-lsp][Consult support]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package consult-lsp
   :after (consult lsp-mode marginalia)
   :hook (lsp-mode . consult-lsp-marginalia-mode))
-#+END_SRC
+#+end_src
 
 **** Highlighting
 ***** [[https://codeberg.org/ideasman42/emacs-hl-indent-scope][Show Indentation]]
-#+BEGIN_SRC emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle no
 (use-package hl-indent-scope
   :hook (prog-mode . hl-indent-scope-mode)
   :custom
   (hl-indent-scope-fixed-width t)
   (hl-indent-scope-fill-empty-lines t)
   (hl-indent-scope-fill-over-text t))
-#+END_SRC
+#+end_src
 
 ***** [[https://github.com/ankurdave/color-identifiers-mode][Unique colors for identifiers]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package color-identifiers-mode
   :hook prog-mode)
-#+END_SRC
+#+end_src
 
 ***** [[https://github.com/Fanael/rainbow-delimiters][Unique colors for parentheses]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
-#+END_SRC
+#+end_src
 
 ***** [[https://github.com/dgutov/highlight-escape-sequences][Escape sequences]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package highlight-escape-sequences
   :hook (prog-mode . hes-mode))
-#+END_SRC
+#+end_src
 
 ***** Pretty symbols
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (add-hook 'prog-mode-hook
           (lambda ()
             (push '("return" . ?) prettify-symbols-alist)
@@ -4103,10 +4186,10 @@ Handler to close buffer after quitting ccmake.
             (push '("FALSE" . ?) prettify-symbols-alist)
             (push '("function" . ?) prettify-symbols-alist)
             (push '("macro" . ?) prettify-symbols-alist)))
-#+END_SRC
+#+end_src
 
 ***** [[https://github.com/tarsius/hl-todo][Highlight TODO/FIXME/…]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defface hl-todo-info '((t :inherit info))
   "Face used for info text."
   :group 'hl-todo)
@@ -4141,10 +4224,10 @@ Handler to close buffer after quitting ccmake.
                            ("TODO" . hl-todo-warning)
                            ("XXX" . hl-todo-warning)))
   :config (global-hl-todo-mode 1))
-#+END_SRC
+#+end_src
 
 ***** Find ToDos in file or project
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "consult"
   (defun cpped-find-todos-in-file ()
     "Show all ToDo items in thqe file and allow jumping to specific item."
@@ -4154,17 +4237,17 @@ Handler to close buffer after quitting ccmake.
                                                 (list type (rx (literal type) (one-or-more space) (group (one-or-more any)) eol) 1)))
                                             hl-todo-keyword-faces)))
       (call-interactively 'consult-imenu))))
-#+END_SRC
+#+end_src
 
 ***** Show current function in mode-line
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package which-func
   :custom (which-func-unknown "n/a")
   :config (which-function-mode 1))
-#+END_SRC
+#+end_src
 
 ***** [[https://github.com/AdamNiederer/cov][Code coverage]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package cov
   :after all-the-icons
   :hook ((prog-mode . cov-mode)
@@ -4195,72 +4278,72 @@ Handler to close buffer after quitting ccmake.
         (propertize (format " %d%%" cpped-cov-percentage-covered)
                     'face face))))
   (add-to-list 'cpped-modeline-check-status-functions 'cpped-modeline-coverage))
-#+END_SRC
+#+end_src
 
 **** Navigation
 ***** [[https://github.com/gregsexton/origami.el][Folding]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package origami
   :hook (prog-mode . origami-mode)
   :custom (origami-fold-replacement "…"))
 
 (use-package lsp-origami
   :hook (lsp-mode . lsp-origami-mode))
-#+END_SRC
+#+end_src
 
 ***** Subword-navigation in camelCase words
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (add-hook 'prog-mode-hook (lambda () (subword-mode 1)))
-#+END_SRC
+#+end_src
 
 ***** [[https://github.com/magnars/smart-forward.el][Smart forward/backward]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package smart-forward)
-#+END_SRC
+#+end_src
 
 ***** Limit view to function when navigating
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (add-hook 'imenu-after-jump-hook #'(lambda ()
                                      (when (derived-mode-p 'prog-mode)
                                        (narrow-to-defun))))
-#+END_SRC
+#+end_src
 
 ***** Bug references
 
 Set bug-reference-url-format to open in browser.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (add-hook 'text-mode-hook 'bug-reference-mode)
 (add-hook 'prog-mode-hook 'bug-reference-prog-mode)
-#+END_SRC
+#+end_src
 
 **** Editing
 ***** [[https://github.com/lassik/emacs-format-all-the-code][Formatting]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package format-all
   :ensure-system-package (prettier . "npm install -g prettier")
   :hook ((prog-mode . format-all-mode)
          (format-all-mode . format-all-ensure-formatter)))
-#+END_SRC
+#+end_src
 
 ****** Fill function calls
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package prog-fill
   :custom
   (prog-fill-break-method-immediate-p t)
   (prog-fill-floating-open-paren-p nil)
   (prog-fill-floating-close-paren-p nil)
   (prog-fill-auto-indent-p t))
-#+END_SRC
+#+end_src
 
 Use [[https://editorconfig.org/][EditorConfig]] via [[https://github.com/editorconfig/editorconfig-emacs]] if available
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package editorconfig
   :config (editorconfig-mode 1))
-#+END_SRC
+#+end_src
 
 ***** [[https://github.com/remyferre/comment-dwim-2][Smarter commenting]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package comment-dwim-2
   :config
   (defun cpped-comment-line ()
@@ -4271,10 +4354,10 @@ Use [[https://editorconfig.org/][EditorConfig]] via [[https://github.com/editorc
           (comment-or-uncomment-sexp)
         (comment-region (line-beginning-position) (line-end-position)))))
   (advice-add 'cd2/comment-line :override 'cpped-comment-line))
-#+END_SRC
+#+end_src
 
 ***** [[https://github.com/victorhge/iedit][Edit all occurences within function]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defvar-local cpped-mark-function 'mark-defun "The function to call to mark the current function.")
 (defvar-local cpped-beginning-of-function 'beginning-of-defun "The function to call to jump to the beginning of the current function.")
 (defvar-local cpped-end-of-function 'end-of-defun "The function to call to jump to the end of the current function.")
@@ -4289,15 +4372,15 @@ Use [[https://editorconfig.org/][EditorConfig]] via [[https://github.com/editorc
     ('(4) (funcall orig-fn))))
 
 (advice-add #'iedit-mode :around #'cpped-iedit-scoped)
-#+END_SRC
+#+end_src
 
 ***** Change numbers
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package shift-number)
-#+END_SRC
+#+end_src
 
 ***** [[https://github.com/AdamNiederer/0xc][Convert number formats]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package 0xc
   :config
   (defun cpped-convert-number (base)
@@ -4315,15 +4398,15 @@ Use [[https://editorconfig.org/][EditorConfig]] via [[https://github.com/editorc
               (0xc-number-to-string number 16)
               (0xc-number-to-string number 8)
               (0xc-number-to-string number 2)))))
-#+END_SRC
+#+end_src
 
 ***** [[https://github.com/emacsfodder/kurecolor][Modify colors]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package kurecolor)
-#+END_SRC
+#+end_src
 
 ***** [[https://github.com/minad/corfu][Autocompletion]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package corfu
   :custom
   (corfu-cycle nil)
@@ -4340,20 +4423,20 @@ Use [[https://editorconfig.org/][EditorConfig]] via [[https://github.com/editorc
   (corfu-scroll-margin 5)
   :config
   (global-corfu-mode))
-#+END_SRC
+#+end_src
 
 ****** [[https://github.com/jdtsmith/kind-icon][Completion icons]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package kind-icon
   :after corfu
   :custom
   (kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly
   :config
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
-#+END_SRC
+#+end_src
 
 ****** [[https://github.com/minad/cape][Add more CAPF]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package cape
   :after yasnippet
   :custom
@@ -4366,25 +4449,25 @@ Use [[https://editorconfig.org/][EditorConfig]] via [[https://github.com/editorc
   (add-to-list 'completion-at-point-functions #'cape-keyword)
   (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-silent)
   (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-purify))
-#+END_SRC
+#+end_src
 
 ***** [[https://github.com/davidshepherd7/electric-operator][Automatic spacing]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package electric-operator
   :hook ((text-mode . electric-operator-mode)
          (prog-mode . electric-operator-mode))
   :custom (electric-operator-enable-in-docs t))
-#+END_SRC
+#+end_src
 
 ***** [[https://github.com/snosov1/dummyparens][Automatic parens]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package dummyparens
   :config
   (global-dummyparens-mode))
-#+END_SRC
+#+end_src
 
 ***** [[http://www.flycheck.org/en/latest/][Syntax checking]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package flycheck
   :after consult; popwin)
   :hook (after-init . global-flycheck-mode)
@@ -4420,10 +4503,10 @@ Use [[https://editorconfig.org/][EditorConfig]] via [[https://github.com/editorc
         (propertize (format " %d" issues)
                      'face face))))
   (add-to-list 'cpped-modeline-check-status-functions 'cpped-modeline-flycheck-status))
-#+END_SRC
+#+end_src
 
 Custom error highlighting (colored line under location)
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-flycheck-clear (status)
   "Clear the highlights if appropriate."
   (let ((clear nil))
@@ -4463,16 +4546,16 @@ Custom error highlighting (colored line under location)
 
 (add-hook 'flycheck-after-syntax-check-hook #'cpped-flycheck-inline-error-messages)
 (add-hook 'flycheck-status-changed-functions #'cpped-flycheck-clear)
-#+END_SRC
+#+end_src
 
 ***** Consult integration
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package consult-flycheck
     :after (consult flycheck))
-#+END_SRC
+#+end_src
 
 ***** [[https://github.com/michaeljb/bool-flip][Flip booleans]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package bool-flip
   :custom
   (bool-flip-alist '(("T" . "F")
@@ -4499,12 +4582,12 @@ Custom error highlighting (colored line under location)
                      ("<=" . ">=")
                      (">=" . ">")
                      (">" . "<"))))
-#+END_SRC
+#+end_src
 
 ***** [[https://github.com/atykhonov/emacs-howdoi][Code suggestions]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package howdoi)
-#+END_SRC
+#+end_src
 
 **** Compilation
 ***** [[https://github.com/abo-abo/helm-make][Select make target with helm]]
@@ -4515,40 +4598,40 @@ TODO
 #+END_SRC
 
 ***** Always kill running compilation when starting another
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq compilation-always-kill t)
-#+END_SRC
+#+end_src
 
 ***** Do not ask to save unsaved buffers
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq compilation-ask-about-save nil)
-#+END_SRC
+#+end_src
 
 ***** Jump to first error/Move to errors
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq compilation-auto-jump-to-first-error t
       compilation-scroll-output 'first-error
       compilation-skip-threshold 2)
-#+END_SRC
+#+end_src
 
 ***** [[https://github.com/EricCrosson/bury-successful-compilation][Hide compilation buffer if successful]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package bury-successful-compilation
   :config (bury-successful-compilation 1))
-#+END_SRC
+#+end_src
 
 ***** Support ANSI escape codes
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-colorize-compilation ()
   "Colorize compilation output."
   (let ((inhibit-read-only t))
     (ansi-color-apply-on-region compilation-filter-start (point))))
 
 (add-hook 'compilation-filter-hook #'cpped-colorize-compilation)
-#+END_SRC
+#+end_src
 
 ***** Show status in mode line
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defvar-local compilation-run-p nil "Flag to indicate if a compilation was run for the current buffer.")
 (defvar-local compilation-finished-successfully-p nil "Flag to indicate if a compilation finished successfully.")
 
@@ -4589,18 +4672,18 @@ TODO
                " ")))
 
 (add-to-list 'cpped-modeline-check-status-functions 'cpped-modeline-compilation-status)
-#+END_SRC
+#+end_src
 
 ***** Show notification
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (add-to-list 'compilation-finish-functions '(lambda (buffer message)
                                               (notifications-notify :title "Compilation finished")))
-#+END_SRC
+#+end_src
 
 **** Documentation
 ***** [[https://github.com/blahgeek/emacs-devdocs-browser][API]]
 Show API info via [[https://devdocs.io][devdocs.io]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package devdocs-browser
   :after consult
   :straight (devdocs-browser
@@ -4616,28 +4699,28 @@ Show API info via [[https://devdocs.io][devdocs.io]]
             doclist)
     (push `(,mode . ,doclist) devdocs-browser-major-mode-docs-alist))
   (push "\`\\*devdocs-" consult-buffer-filter))
-#+END_SRC
+#+end_src
 
 ***** Change Log
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq change-log-default-name "CHANGELOG")
-#+END_SRC
+#+end_src
 
 **** Comments
 ***** Comment style
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defvar c-doc-comment-style '((c-mode . gtkdoc)
                               (c++-mode . javadoc)))
-#+END_SRC
+#+end_src
 
 ***** Insert comment characters in new line when pressing enter inside a comment
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (add-hook 'c-mode-common-hook (lambda()
                                 (local-set-key (kbd "RET") 'c-context-line-break)))
-#+END_SRC
+#+end_src
 
 ***** Insert license comment
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package legalese
   :hook (prog-mode . (lambda ()
                        (when (= (buffer-size (current-buffer)) 0)
@@ -4679,10 +4762,10 @@ Show API info via [[https://devdocs.io][devdocs.io]]
                                                       legalese-author "\n\n"
                                                       '(legalese-license)
                                                       @ "\n")))))
-#+END_SRC
+#+end_src
 
 **** Braces
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defvar c-hanging-braces-alist '((defun-open before after)
                                  (defun-close before after)
                                  (class-open before after)
@@ -4706,10 +4789,10 @@ Show API info via [[https://devdocs.io][devdocs.io]]
                                  (arglist-cont-nonempty)))
 (defvar c-hanging-colons-alist '((case-label after) (label after)))
 (defvar c-hanging-semi&comma-criteria '(c-semi&comma-inside-parenlist))
-#+END_SRC
+#+end_src
 
 **** LOC counting/Metrics
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (cpped-install-system-package "cloc")
 
 (defun cpped-cloc-project ()
@@ -4732,37 +4815,37 @@ Show API info via [[https://devdocs.io][devdocs.io]]
 (with-eval-after-load "consult"
   (push "\\`\\*Cloc\\*\\'" consult-buffer-filter)
   (push "*Cloc*" cpped-bury-buffers-list))
-#+END_SRC
+#+end_src
 
 *** Assembler
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package asm-mode)
-#+END_SRC
+#+end_src
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package nasm-mode
   :mode "\\.[n]*\\(asm\\|s\\)\\'")
-#+END_SRC
+#+end_src
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package x86-lookup
   :after pdf-tools
   :custom
   (x86-lookup-pdf (expand-file-name "~/.docsets/IntelASM.pdf"))
   (x86-lookup-browse-pdf-function 'x86-lookup-browse-pdf-pdf-tools))
-#+END_SRC
+#+end_src
 
 *** C/C++
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defconst cpped-c++-source-file-pattern "\\.[Cc]([Cc]|[Pp][Pp]|[Xx][Xx]|++)\\'")
 (defconst cpped-c++-header-file-pattern "\\.[Hh]([Hh]|[Pp][Pp]|[Xx][Xx]|++)\\'")
 
 (add-to-list 'auto-mode-alist '("\\.a\\'" . c-mode))
 (add-to-list 'auto-mode-alist `(,cpped-c++-source-file-pattern . c++-mode))
 (add-to-list 'auto-mode-alist `(,cpped-c++-header-file-pattern . c++-mode))
-#+END_SRC
+#+end_src
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package ccls
   :after lsp
   :custom
@@ -4772,10 +4855,10 @@ Show API info via [[https://devdocs.io][devdocs.io]]
   (ccls-use-default-rainbow-sem-highlight))
 
 (add-hook 'c-mode-common-hook 'lsp-deferred)
-#+END_SRC
+#+end_src
 
 **** Highlighting
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (add-hook 'c++-mode-hook (lambda ()
                            (push '("//" . ?🗩) prettify-symbols-alist)
                            (push '("/*" . ?🗩) prettify-symbols-alist)
@@ -4798,11 +4881,11 @@ Show API info via [[https://devdocs.io][devdocs.io]]
                            (push '("[[nodiscard]]". (? (cc . cl) ?)) prettify-symbols-alist)
                            (push '("[[noreturn]]". (? (cc . cl) ?)) prettify-symbols-alist)
                            (push '("[[unlikely]]". ?⯆) prettify-symbols-alist)))
-#+END_SRC
+#+end_src
 
 **** Navigation
 ***** Show includes/namespaces/preprocessor directives in imenu
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (require 'cc-menus)
 
 (defvar cpped-imenu-c-generic-expression nil)
@@ -4844,19 +4927,19 @@ Show API info via [[https://devdocs.io][devdocs.io]]
 
 (with-eval-after-load "lsp-mode"
   (advice-add 'lsp--imenu-create-index :around #'cpped-custom-c-imenu-index))
-#+END_SRC
+#+end_src
 
 **** Editing
 ***** Mark/navigation functions
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (add-hook 'c-mode-common-hook (lambda ()
                                 (setq cpped-mark-function 'c-mark-function)
                                 (setq cpped-beginning-of-function 'c-beginning-of-defun)
                                 (setq cpped-end-of-function 'c-end-of-defun)))
-#+END_SRC
+#+end_src
 
 ***** Clang include fixer
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (require 'clang-include-fixer)
 (add-hook 'after-save-hook #'(lambda()
                                (when (or (equal major-mode 'c-mode)
@@ -4865,21 +4948,21 @@ Show API info via [[https://devdocs.io][devdocs.io]]
                                    (when directory
                                      (call-process "find-all-symbols" nil nil nil (concat "-merge-dir=" directory) (concat "-output-dir=" directory) (concat "-p" directory) (file-truename buffer-file-name))
                                    (clang-include-fixer))))))
-#+END_SRC
+#+end_src
 
 ***** Auto-newline
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (add-hook 'c-mode-common-hook '(lambda ()
                                  (c-toggle-auto-newline 1)))
-#+END_SRC
+#+end_src
 
 ***** [[https://www.gnu.org/software/emacs/manual/html_node/ccmode/Clean_002dups.html][Auto-clean whitespace]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defvar c-cleanup-list '(scope-operator empty-defun-braces defun-close-semi list-close-comma comment-close-slash))
-#+END_SRC
+#+end_src
 
 ***** Indentation
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (c-add-style "cpped-style"
              `("bsd"
                (c-progress-interval . nil)                   ; do not echo progress when indenting)
@@ -4906,10 +4989,10 @@ Show API info via [[https://devdocs.io][devdocs.io]]
 (add-hook 'c-mode-common-hook '(lambda ()
                                  (c-toggle-syntactic-indentation 1)
                                  (c-toggle-electric-state 1)))
-#+END_SRC
+#+end_src
 
 ***** Auto-convert .. to ->
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun shark-bytes/smart-arrow-insert ()
   "Auto-convert .. to ->"
   (interactive)
@@ -4927,17 +5010,17 @@ Show API info via [[https://devdocs.io][devdocs.io]]
 
 (add-hook 'c-mode-hook #'shark-bytes/smart-arrow-mode)
 (add-hook 'c++-mode-hook #'shark-bytes/smart-arrow-mode)
-#+END_SRC
+#+end_src
 
 ***** Wrap Region
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "wrap-region"
   (wrap-region-add-wrappers
    '(("{" "}" nil (c-mode c++-mode)))))
-#+END_SRC
+#+end_src
 
 ***** Flip words
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "bool-flip"
   (progn
     (defun cpped-setup-c++-flip ()
@@ -4948,10 +5031,10 @@ Show API info via [[https://devdocs.io][devdocs.io]]
       (push '("protected" . "private") bool-flip-alist)
       (push '("private" . "public") bool-flip-alist))
     (add-hook 'c++-mode-hook 'cpped-setup-c++-flip)))
-#+END_SRC
+#+end_src
 
 ***** Abbreviations
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (define-abbrev-table 'c++-mode-abbrev-table '(
                                               ("breif" "brief")
                                               ("au" "auto")
@@ -4979,16 +5062,16 @@ Show API info via [[https://devdocs.io][devdocs.io]]
                                               ("si" "signals:")
                                               ("vd" "void")
                                               ))
-#+END_SRC
+#+end_src
 
 ***** Automatically change dash to underscore in identifiers
 #+BEGIN_SRC emacs-lisp
 (use-package smart-dash
   :hook (c-mode-common . smart-dash-mode))
-#+END_SRC
+#+end_src
 
 ***** Syntax checkers
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "flycheck"
   (setq flycheck-clang-pedantic t
         flycheck-clang-warnings '("all" "extra" "ctor-dtor-privacy" "effc++" "old-style-cast" "overloaded-virtual" "format=2" "null-dereference" "missing-include-dirs" "switch-default" "switch-enum" "unused-parameter" "uninitialized" "float-equal" "shadow" "cast-qual" "conversion" "extra-tokens" "ambiguous-member-template" "bind-to-temporary-copy"))
@@ -5023,37 +5106,37 @@ Show API info via [[https://devdocs.io][devdocs.io]]
 
 (with-eval-after-load "consult"
   (push "\\`\\*clang-.*\\*'" consult-buffer-filter))
-#+END_SRC
+#+end_src
 
 
 **** Documentation
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "devdocs-browser"
     (cpped-add-apidocs 'c-mode '("c"))
     (cpped-add-apidocs 'c++-mode '("cpp" "c" "qt~5.15")))
-#+END_SRC
+#+end_src
 
 **** Utilities
 ***** Namespaces
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package outrespace)
-#+END_SRC
+#+end_src
 
 ***** Qt Support
 Resource Files
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (push '("\\.qrc\\'" . nxml-mode) auto-mode-alist)
-#+END_SRC
+#+end_src
 
 Translation Files
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (push '("\\.ts\\'" . nxml-mode) auto-mode-alist)
-#+END_SRC
+#+end_src
 
 **** Google Test support
 https://github.com/google/googletest
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (define-derived-mode gtest-mode
   c++-mode
   "Google Test file"
@@ -5062,10 +5145,10 @@ https://github.com/google/googletest
 (provide 'gtest-mode)
 
 (push '("T[Ee][Ss][Tt]_?.*\\.c(c\\|pp\\|xx)\\'" . gtest-mode) auto-mode-alist)
-#+END_SRC
+#+end_src
 
 *** CMake
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package cmake-mode
   :custom (cmake-tab-width tab-width)
   :config
@@ -5077,26 +5160,26 @@ https://github.com/google/googletest
     (push '(cmake-mode all-the-icons-fileicon "cmake" :v-adjust 0.0) all-the-icons-mode-icon-alist)
     (push '("CMakeLists.txt$" all-the-icons-fileicon "cmake" :v-adjust 0.0) all-the-icons-icon-alist)
     (push '("\\.cmake$" all-the-icons-fileicon "cmake" :v-adjust 0.0) all-the-icons-icon-alist)))
-#+END_SRC
+#+end_src
 
 **** Imenu integration
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (add-hook 'cmake-mode-hook (lambda ()
                              (setq-local imenu-generic-expression '(("Function" "^ *function *( *\\([^) ]+\\).*$" 1)
                                                                     ("Macro"  "^ *macro *( *\\([^) ]+\\).*$" 1)))))
-#+END_SRC
+#+end_src
 
 **** [[https://github.com/Lindydancer/cmake-font-lock][Highlighting]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package cmake-font-lock
   :hook (cmake-mode . cmake-font-lock-activate)
   :config (font-lock-add-keywords 'cmake-mode
                                   `((,(rx (group "end" (or "function" "macro" "if" "foreach" "while") (0+ " ") "()")) 1 '(face nil display "")))))
-#+END_SRC
+#+end_src
 
 **** Editing
 ***** Abbreviations
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (define-abbrev-table 'cmake-mode-abbrev-table '(
                                                 ("cmkae" "cmake")
                                                 ("CMKAE" "CMAKE")
@@ -5119,10 +5202,10 @@ https://github.com/google/googletest
                                                 ("ccfi" "CMAKE_CXX_FLAGS_INIT")
                                                 ("ccfr" "CMAKE_CXX_FLAGS_RELEASE")
                                                 ("ccfri" "CMAKE_CXX_FLAGS_RELEASE_INIT")))
-#+END_SRC
+#+end_src
 
 ***** Wrap Region
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "wrap-region"
   (wrap-region-add-wrappers
    '(("{" "}" nil cmake-mode)
@@ -5130,49 +5213,49 @@ https://github.com/google/googletest
      ("\"${" "}\"" "\'" (cmake-mode))
      ("@" "@" nil (cmake-mode c-mode c++-mode))))
   (add-hook 'cmake-mode-hook 'wrap-region-mode))
-#+END_SRC
+#+end_src
 
 ***** Language Server
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (cpped-install-system-package "cmake-language-server" :package-manager 'pip)
 (add-hook 'cmake-mode-hook 'lsp-deferred)
-#+END_SRC
+#+end_src
 
 ***** Formatting
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (cpped-install-system-package "cmake-format" :package-manager 'pip)
-#+END_SRC
+#+end_src
 
 **** Documentation
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "devdocs-browser"
   (cpped-add-apidocs 'cmake-mode '("bash" "cmake~3.20" "gcc~11" "git")))
-#+END_SRC
+#+end_src
 
 *** CSS
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (push '("\\.css\\'". css-mode) auto-mode-alist)
-#+END_SRC
+#+end_src
 
 **** Editing
 ***** Syntax checkers
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "system-packages"
   (cpped-install-system-package "csslint")
   (cpped-install-system-package "stylelint" :package-manager 'npm)
   (add-hook 'css-mode-hook (lambda ()
                              (flycheck-select-checker 'css-csslint)
                              (flycheck-add-next-checker 'css-csslint '(t . css-stylelint)))))
-#+END_SRC
+#+end_src
 
 **** Documentation
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "devdocs-browser"
     (cpped-add-apidocs 'css-mode '("css")))
-#+END_SRC
+#+end_src
 
 *** [[http://elpa.gnu.org/packages/csv-mode.html][CSV]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package csv-mode
   :mode ("\\.[Cc][Ss][Vv]\\'" . csv-mode)
   :hook ((find-file . shark-bytes/csv-visual-align))
@@ -5181,47 +5264,47 @@ https://github.com/google/googletest
             (when (equal major-mode 'csv-mode)
               (csv-unalign-fields t (point-min) (point-max))
               (csv-align-fields t (point-min) (point-max)))))
-#+END_SRC
+#+end_src
 
 *** [[https://github.com/schspa/dtb-mode][DTB]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package dtb-mode
   :ensure-system-package dtc)
-#+END_SRC
+#+end_src
 
 *** Docker
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package dockerfile-mode)
-#+END_SRC
+#+end_src
 
 **** Documentation
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "devdocs-browser"
     (cpped-add-apidocs 'dockerfile-mode '("bash" "docker~19" "git")))
-#+END_SRC
+#+end_src
 
 **** [[https://github.com/Silex/docker.el][Control]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package docker)
-#+END_SRC
+#+end_src
 
 **** [[https://github.com/emacs-pe/docker-tramp.el][TRAMP support]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package docker-tramp
   :after tramp)
-#+END_SRC
+#+end_src
 
 **** Editing
 ***** Language server
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "lsp-mode"
   (add-hook 'dockerfile-mode-hook 'lsp-deferred))
-#+END_SRC
+#+end_src
 
 ***** [[https://github.com/redcoolbeans/dockerlint][Syntax checker]]
 
 TODO use [[https://github.com/hadolint/hadolint/][hadolint]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "system-packages"
   (cpped-install-system-package "dockerlint" :package-manager 'npm)
   (with-eval-after-load "flycheck"
@@ -5235,10 +5318,10 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
     (add-to-list 'flycheck-checkers 'cpped-dockerlint)
     (add-hook 'dockerfile-mode-hook (lambda ()
                                       (flycheck-select-checker 'cpped-dockerlint)))))
-#+END_SRC
+#+end_src
 
 *** Dot
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package graphviz-dot-mode
   :after (org system-packages)
   :custom
@@ -5248,10 +5331,10 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
   :config
   (cpped-install-system-package "graphviz")
   (add-to-list 'org-src-lang-modes '("dot" . graphviz-dot)))
-#+END_SRC
+#+end_src
 
 *** GCode
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defvar gcode-mode-font-lock-keywords
   '(("\\(([^)]+)\\)"
      (1 font-lock-string-face))
@@ -5297,26 +5380,26 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 (push '("\\.tap\\'" . gcode-mode) auto-mode-alist)
 
 (provide 'gcode-mode)
-#+END_SRC
+#+end_src
 
 *** GLSL
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package glsl-mode
   :mode (("\\.vert\\'" . glsl-mode)
          ("\\.frag\\'" . glsl-mode)
          ("\\.geom\\'" . glsl-mode)
          ("\\.glsl\\'" . glsl-mode)))
-#+END_SRC
+#+end_src
 
 *** Groovy
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package groovy-mode
   :mode "Jenkinsfile")
-#+END_SRC
+#+end_src
 
 **** Jenkinsfile
 ***** Imenu support
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (add-hook 'groovy-mode-hook (lambda()
                               (setq imenu-create-index-function #'imenu-default-create-index-function)
                               (setq-local imenu-generic-expression `(("Stages" ,(rx (0+ space)
@@ -5331,10 +5414,10 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
                                                                                     (? "{")
                                                                                     (0+ space))
                                                                       1)))))
-#+END_SRC
+#+end_src
 
 ***** Syntax check
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "flycheck"
   (defvar cpped-jenkins-url nil "The URL of the Jenkins installation.")
   (cpped-install-system-package "curl")
@@ -5347,29 +5430,29 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
     :error-patterns ((warning line-start (file-name) ":" (message) "@ line " line ", column " column))
     :modes (groovy-mode))
   (add-to-list 'flycheck-checkers 'jenkins))
-#+END_SRC
+#+end_src
 
 *** HTML
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (push '("\\.x?html?\\'" . html-mode) auto-mode-alist)
-#+END_SRC
+#+end_src
 
 **** Documentation
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "devdocs-browser"
   (cpped-add-apidocs 'html-mode '("css" "dom" "html" "http")))
-#+END_SRC
+#+end_src
 
 **** Editing
 ***** Language server
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "system-packages"
   (cpped-install-system-package "vscode-html-languageserver-bin" :package-manager 'npm)
   (add-hook 'html-mode 'lsp-deferred))
-#+END_SRC
+#+end_src
 
 ***** [[https://github.com/thedaviddias/HTMLHint][Syntax checker]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "system-packages"
   (cpped-install-system-package "htmlhint" :package-manager 'npm)
   (with-eval-after-load "flycheck"
@@ -5381,10 +5464,10 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 (info line-start (file-name) ": line " line ", col " column ", info - " (message) line-end))
       :modes (html-mode))
     (add-to-list 'flycheck-checkers 'cpped-htmlhint)))
-#+END_SRC
+#+end_src
 
 *** Ini
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defvar ini-mode-syntax-table
   (let ((table (make-syntax-table)))
     (modify-syntax-entry ?\; "< b" table)
@@ -5443,23 +5526,23 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 
 ;(add-to-list 'flycheck-checkers 'ini t)
 ;; (flycheck-add-next-checker 'ini 'ini-file t)
-#+END_SRC
+#+end_src
 
 *** Javascript
 **** Language Server
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (add-hook 'js-mode 'lsp-deferred)
-#+END_SRC
+#+end_src
 
 **** Documentation
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "devdocs-browser"
   (cpped-add-apidocs 'js-mode '("javascript")))
-#+END_SRC
+#+end_src
 
 **** Editing
 ***** Syntax checkers
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "system-packages"
   (cpped-install-system-package "standard" :package-manager 'npm)
   (cpped-install-system-package "jscs" :package-manager 'npm)
@@ -5471,22 +5554,22 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
                           (flycheck-add-next-checker 'javascript-standard '(t . javascript-jscs))
                           (flycheck-add-next-checker 'javascript-jscs '(t . javascript-eslint))
                           (flycheck-add-next-checker 'javascript-eslint '(t . javascript-jshint)))))
-#+END_SRC
+#+end_src
 
 *** JSON
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package json-mode
   :mode "\\.js\\(on\\|[hl]int\\(rc\\)?\\)\\'"
   :config (push '("{" . json-mode) magic-mode-alist))
-#+END_SRC
+#+end_src
 
 **** Language Server
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (add-hook 'json-mode-hook 'lsp-deferred)
-#+END_SRC
+#+end_src
 
 **** Path handling
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package json-snatcher
   :straight (json-snatcher
              :type git
@@ -5506,46 +5589,46 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
                   "/")))
   (with-eval-after-load "which-func"
     (add-to-list 'which-func-functions 'cpped-json-path)))
-#+END_SRC
+#+end_src
 
 **** Editing
 
 *** Latex
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (push '("\\.tex\\'" . latex-mode) auto-mode-alist)
 (push '("\\.txi\\'" . texinfo-mode) auto-mode-alist)
 (push '("\\.bib\\'" . bibtex-mode) auto-mode-alist)
-#+END_SRC
+#+end_src
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (add-hook 'latex-mode-hook 'lsp-deferred)
-#+END_SRC
+#+end_src
 
 **** Documentation
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "devdocs-browser"
   (cpped-add-apidocs 'latex-mode '("latex"))
   (cpped-add-apidocs 'texinfo-mode '("latex"))
   (cpped-add-apidocs 'bibtex-mode '("latex")))
-#+END_SRC
+#+end_src
 
 *** Lisp
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (push '("\\.emacs\\'" . emacs-lisp-mode) auto-mode-alist)
 (push '("\\.el\\'" . emacs-lisp-mode) auto-mode-alist)
 (push '("\\.lisp\\'" . lisp-mode) auto-mode-alist)
 (push '("\\.lsp\\'" . lisp-mode) auto-mode-alist)
-#+END_SRC
+#+end_src
 
 **** [[https://github.com/alphapapa/highlight-function-calls][Highlight function calls]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package highlight-function-calls
   :hook (emacs-lisp-mode . highlight-function-calls-mode)
   :custom (highlight-function-calls-not t))
-#+END_SRC
+#+end_src
 
 **** [[https://github.com/Fanael/highlight-defined][Highlight undefined symbols]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-highlight-defined--determine-face (symbol)
   "Return the face SYMBOL should be fontified with. If SYMBOL is not one of the recognized types, return nil."
   (if (not (or (fboundp symbol) (special-variable-p symbol) (facep symbol)))
@@ -5556,17 +5639,17 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
   :hook (emacs-lisp-mode . highlight-defined-mode)
   :config
   (advice-add 'highlight-defined--determine-face :override #'cpped-highlight-defined--determine-face))
-#+END_SRC
+#+end_src
 
 **** [[https://github.com/cpitclaudel/easy-escape][Simplify Regular Expressions]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package easy-escape
   :hook ((lisp-mode . easy-escape-minor-mode)
          (emacs-lisp-mode . easy-escape-minor-mode)))
-#+END_SRC
+#+end_src
 
 **** Flip words
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "bool-flip"
   (progn
     (defun cpped-setup-elisp-flip ()
@@ -5583,51 +5666,50 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
       (push '("remove-hook" . "add-hook") bool-flip-alist))
     (add-hook 'lisp-mode-hook 'cpped-setup-elisp-flip)
     (add-hook 'emacs-lisp-mode-hook 'cpped-setup-elisp-flip)))
-#+END_SRC
+#+end_src
 
 **** [[https://github.com/Malabarba/comment-or-uncomment-sexp][Un-/Comment SEXPs]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package comment-or-uncomment-sexp
   :straight (comment-or-uncomment-sexp
              :type git
              :host github
              :repo "Malabarba/comment-or-uncomment-sexp"))
-#+END_SRC
+#+end_src
 
-#+END_SRC
 
 **** Documentation
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "devdocs-browser"
     (cpped-add-apidocs 'emacs-lisp-mode '("elisp")))
-#+END_SRC
+#+end_src
 
 *** Make
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (push '("Makefile\\'" . makefile-mode) auto-mode-alist)
 (push '("\\.mak\\'" . makefile-mode) auto-mode-alist)
-#+END_SRC
+#+end_src
 
 **** Documentation
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "devdocs-browser"
   (cpped-add-apidocs 'makefile-mode '("gcc~11")))
-#+END_SRC
+#+end_src
 
 *** Perl
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (push '("#!/usr/bin/perl" . perl-mode) magic-mode-alist)
-#+END_SRC
+#+end_src
 
 *** Prolog
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (push '("\\.pl\\'" . prolog-mode) auto-mode-alist)
-#+END_SRC
+#+end_src
 
 *** Python
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (push '("\\.py\\'" . python-mode) auto-mode-alist)
-#+END_SRC
+#+end_src
 
 
    python-shell-switch-to-shell
@@ -5707,15 +5789,15 @@ https://github.com/marcwebbie/auto-virtualenv
 
 
 *** QML
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package qml-mode
   :after rainbow-mode
   :mode "\\.qml\\'"
   :config (add-to-list 'rainbow-html-colors-major-mode-list 'qml-mode))
-#+END_SRC
+#+end_src
 
 **** Imenu integration
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-qml-imenu-create-index()
   (append (imenu-default-create-index-function)
           (js--imenu-create-index)))
@@ -5724,30 +5806,30 @@ https://github.com/marcwebbie/auto-virtualenv
                           (when (derived-mode-p 'qml-mode)
                             (setq imenu-create-index-function #'cpped-qml-imenu-create-index)
                             (setq-local imenu-generic-expression '(("Items" "^[[:space:]]*\\([a-zA-Z0-9]+\\)[[:space:]\n]*{" 1))))))
-#+END_SRC
+#+end_src
 
 **** Documentation
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "devdocs-browser"
     (cpped-add-apidocs 'qml-mode '("qt~5.15")))
-#+END_SRC
+#+end_src
 
 *** Shell
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (push '("\\.sh\\'" . sh-mode) auto-mode-alist)
-#+END_SRC
+#+end_src
 
 **** Prettification
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq cpped-font-lock-shebang `((,(rx bol (group "#!/" (? "usr/") (? "s") "bin/")) 1 '(face nil display " "))))
 
 (font-lock-add-keywords 'sh-mode cpped-font-lock-shebang)
 (font-lock-add-keywords 'shell-mode cpped-font-lock-shebang)
-#+END_SRC
+#+end_src
 
 **** Editing
 ***** Syntax checkers
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package flycheck-checkbashisms
   :after flycheck
   :ensure-system-package ((checkbashisms . devscripts-checkbashisms) (shellcheck . ShellCheck))
@@ -5758,40 +5840,40 @@ https://github.com/marcwebbie/auto-virtualenv
                      (flycheck-add-next-checker 'sh-checkbashisms '(t . sh-shellcheck))))
   :config
   (add-to-list 'flycheck-checkers 'sh-checkbashisms t))
-#+END_SRC
+#+end_src
 
 ***** Formatting
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (system-packages-ensure "shfmt")
-#+END_SRC
+#+end_src
 
 ***** Automatically set shell scripts to executable
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
-#+END_SRC
+#+end_src
 
 **** BASH
 Set correct major mode
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (push '("#!/bin/bash" . bash-mode) magic-mode-alist)
 (push '("#!/bin/busybox" . bash-mode) magic-mode-alist)
 (push '("\\.bash\\'" . bash-mode) auto-mode-alist)
-#+END_SRC
+#+end_src
 
 ***** Prettification
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (font-lock-add-keywords 'bash-mode cpped-font-lock-shebang)
-#+END_SRC
+#+end_src
 
 ***** Language server
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (cpped-install-system-package "bash-language-server" :package-manager 'npm)
 (add-hook 'bash-mode-hook 'lsp-deferred)
-#+END_SRC
+#+end_src
 
 **** ZSH
 Set correct major mode
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (push '("#!/usr/bin/zsh" . sh-mode) magic-mode-alist)
 (push '("\\.zsh\\'" . sh-mode) auto-mode-alist)
 (push '("zlogin\\'" . sh-mode) auto-mode-alist)
@@ -5802,43 +5884,43 @@ Set correct major mode
 
 (add-to-list 'interpreter-mode-alist
              '("zsh" . sh-mode))
-#+END_SRC
+#+end_src
 
 ***** Prettification
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (font-lock-add-keywords 'zsh-mode cpped-font-lock-shebang)
-#+END_SRC
+#+end_src
 
 **** DOS-Batch
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (push '("\\.bat\\'" . bat-mode) auto-mode-alist)
-#+END_SRC
+#+end_src
 
 **** Documentation
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "devdocs-browser"
   (cpped-add-apidocs 'sh-mode '("bash" "elisp" "gcc~11" "git"))
   (cpped-add-apidocs 'bash-mode '("bash" "elisp" "gcc~11" "git")))
-#+END_SRC
+#+end_src
 
 
 *** SSH Config
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package ssh-config-mode)
-#+END_SRC
+#+end_src
 
 *** Systemd
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package systemd)
-#+END_SRC
+#+end_src
 
 [[https://github.com/SebastianMeisel/journalctl-mode][Journalctl-Mode]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package journalctl-mode)
-#+END_SRC
+#+end_src
 
 *** [[https://github.com/skuro/plantuml-mode][UML]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package plantuml-mode
   :after (org popwin)
   :ensure-system-package (plantuml graphviz)
@@ -5857,22 +5939,22 @@ Set correct major mode
 
 (add-hook 'find-file-hook 'cpped-preview-plantuml-file)
 (add-hook 'after-save-hook 'cpped-preview-plantuml-file)
-#+END_SRC
+#+end_src
 
 **** [[https://github.com/alexmurray/flycheck-plantuml][Syntax checker]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package flycheck-plantuml
   :after plantuml-mode
   :config (flycheck-plantuml-setup))
-#+END_SRC
+#+end_src
 
 *** XML
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (push '("<\\?xml" . nxml-mode) magic-mode-alist)
-#+END_SRC
+#+end_src
 
 Show current XML path as current function
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-xml-path ()
   "Return the XML element hierarchy as a path."
   (interactive)
@@ -5892,7 +5974,7 @@ Show current XML path as current function
 
 (with-eval-after-load "which-func"
   (add-to-list 'which-func-functions 'cpped-xml-path))
-#+END_SRC
+#+end_src
 
 **** Navigation
 ***** Jump to element
@@ -5902,17 +5984,17 @@ Show current XML path as current function
 
 **** Editing
 ***** Always add XML declaration
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defvar nxml-auto-insert-xml-declaration-flag t)
-#+END_SRC
+#+end_src
 
 ***** Language Server
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (add-hook 'nxml-mode-hook 'lsp-deferred)
-#+END_SRC
+#+end_src
 
 ***** Syntax checkers
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "system-packages"
   (cpped-install-system-package "xmllint")
   (cpped-install-system-package "xmlstarlet")
@@ -5920,10 +6002,10 @@ Show current XML path as current function
     (flycheck-add-next-checker 'xml-xmllint '(t . xml-xmlstarlet))
     (add-hook 'nxml-mode-hook (lambda ()
                                 (flycheck-select-checker 'xml-xmllint)))))
-#+END_SRC
+#+end_src
 
 ***** Formatting
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "format-all"
   (cpped-install-system-package "xmllint")
   (define-format-all-formatter xmllint-fmt
@@ -5935,23 +6017,23 @@ Show current XML path as current function
                                       "--format"
                                       "--nowarning"
                                       "-"))))
-#+END_SRC
+#+end_src
 
 **** Documentation
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "devdocs-browser"
     (cpped-add-apidocs 'nxml-mode '("dom" "html" "svg" "xslt_xpath")))
-#+END_SRC
+#+end_src
 
 *** [[https://github.com/yoshiki/yaml-mode][YAML]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package yaml-mode
   :hook (yaml-mode . lsp-deferred)
   :mode "\.yml\'")
-#+END_SRC
+#+end_src
 
 **** [[https://github.com/krzysztof-magosa/flycheck-yamllint][Syntax checker]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "system-packages"
   (cpped-install-system-package "js-yaml" :package-manager 'npm))
 
@@ -5960,7 +6042,7 @@ Show current XML path as current function
   :ensure-system-package yamllint
   :config (flycheck-yamllint-setup)
           (flycheck-add-next-checker 'yaml-jsyaml '(t . yaml-yamllint)))
-#+END_SRC
+#+end_src
 
 ** Debugging
 #+BEGIN_SRC emacs-lisp
@@ -5970,54 +6052,54 @@ Show current XML path as current function
 
 (use-package realgud
   :custom (realgud-bp-fringe-indicator-style '(realgud-bp-filled . realgud-bp-hollow)))
-#+END_SRC
+#+end_src
 
 *** Show symbols of ELF files
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package elf-mode
   :config
   (elf-setup-default)
   (push "\\.so\\'" cpped-no-hexedit-extensions))
-#+END_SRC
+#+end_src
 
 **** [[https://github.com/liblit/demangle-mode][Demangle symbols in ELF files]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package demangle-mode
   :config
   (advice-add 'elf-mode :after 'demangle-mode))
-#+END_SRC
+#+end_src
 
 ** Diff/Merge
 *** Diff support
 Use smerge-mode
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (add-hook 'diff-mode-hook 'smerge-mode)
-#+END_SRC
+#+end_src
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (push '("\\.diff\\'" . diff-mode) auto-mode-alist)
 (push '("\\.patch\\'" . diff-mode) auto-mode-alist)
 
 (setq diff-default-read-only t)
-#+END_SRC
+#+end_src
 
 Auto-highlight details
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq diff-refine 'font-lock)
-#+END_SRC
+#+end_src
 
 *** Quit smerge-mode after last resolved conflict
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq smerge-auto-leave t)
-#+END_SRC
+#+end_src
 
 *** Re-use current frame for all diff contents (including command frame)
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
-#+END_SRC
+#+end_src
 
 *** Quit diff view without confirmation if buffer is unchanged
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-ediff-smart-quit ()
   "Ask for confirmation only before quitting changed ediff buffers"
   (interactive)
@@ -6042,38 +6124,38 @@ Auto-highlight details
 
 (add-hook 'ediff-startup-hook (lambda ()
                                 (local-set-key (kbd "q") 'cpped-ediff-smart-quit)))
-#+END_SRC
+#+end_src
 
 *** Split windows horizontally
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defvar ediff-merge-split-window-function 'split-window-horizontally)
 (defvar ediff-split-window-function 'split-window-horizontally)
-#+END_SRC
+#+end_src
 
 *** [[https://github.com/mgalgs/diffview-mode][Show unified diff as normal diff]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package diffview)
-#+END_SRC
+#+end_src
 
 *** [[https://github.com/fourier/ztree][Tree diff]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package ztree
   :custom
   (ztree-draw-unicode-lines t)
   (ztree-show-number-of-children t))
-#+END_SRC
+#+end_src
 
 ** Version Control
 *** Common
 **** Limit version control systems to most used ones
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq vc-handled-backends '(git svn))
-#+END_SRC
+#+end_src
 
 **** Always open actual file under source control when visited through a symbolic link
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq vc-follow-symlinks t)
-#+END_SRC
+#+end_src
 
 **** [[https://github.com/emacsorphanage/git-gutter-fringe][Show uncommitted lines in the fringe]]
 #+BEGIN_SRC emacs-lisp
@@ -6114,10 +6196,10 @@ Auto-highlight details
     "..X.XXXX"
     ".X..XXXX"
     "X......."))
-#+END_SRC
+#+end_src
 
 **** Colorize commit age
-#+begin_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq shark-bytes/commit-age-colors `((7 . ,shark-bytes-burning)
                                       (14 . ,shark-bytes-hot)
                                       (31 . ,shark-bytes-cozy)
@@ -6135,11 +6217,11 @@ Auto-highlight details
                                   age-colors-sorted)
                          (car (last age-colors-sorted))))))
     color))
-#+end_SRC
+#+end_src
 
 *** Git
 **** [[https://github.com/magit/magit][Magit]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package magit
   :after (consult projectile super-save)
   :custom
@@ -6195,7 +6277,7 @@ If the region is active, act on all lines touched by the region."
   (transient-append-suffix 'magit-dispatch "X" '("x" "Clean" magit-clean)))
 
 (use-package magit-popup)
-#+END_SRC
+#+end_src
 
 You can easily create git scripts with magit commands. For instance, for auto rebasing a branch "MY-BRANCH" and push
 forcing it by running
@@ -6206,24 +6288,24 @@ forcing it by running
 #+END_SRC
 
 ***** Full screen magit-status
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defadvice magit-status (around magit-fullscreen activate)
   (window-configuration-to-register :magit-fullscreen)
   ad-do-it
   (delete-other-windows))
-#+END_SRC
+#+end_src
 
 ***** Restore previous window configuration on quit
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun magit-quit-session ()
   "Restores the previous window configuration and kills the magit buffer"
   (interactive)
   (kill-buffer)
   (jump-to-register :magit-fullscreen))
-#+END_SRC
+#+end_src
 
 ***** Show ToDos in status window
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package magit-todos
   :ensure-system-package ripgrep
   :custom
@@ -6236,30 +6318,30 @@ forcing it by running
   (magit-todos-nice nil)
   (magit-todos-update 10)
   :config (magit-todos-mode))
-#+END_SRC
+#+end_src
 
 ***** Highlight Bug References
-#+BEGIN_SRC emacs-lisp
 (add-hook 'magit-mode-hook 'bug-reference-mode)
-#+END_SRC
+#+begin_src emacs-lisp
+#+end_src
 
 ***** [[https://github.com/magit/forge][Git forge integration]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package forge
   :after magit)
-#+END_SRC
+#+end_src
 
 [[https://github.com/charignon/github-review][GitHub review]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package github-review
   :after magit forge
   :config
   (transient-append-suffix 'forge-dispatch "c u"
     '("c r" "Review pull request" github-review-forge-pr-at-point)))
-#+END_SRC
+#+end_src
 
 ***** [[https://github.com/terranpro/magit-gerrit][Gerrit integration]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package magit-gerrit
   :after (magit magit-popup)
   :straight (magit-gerrit
@@ -6269,7 +6351,6 @@ forcing it by running
   :custom
   (magit-gerrit-remote "")
   (magit-gerrit-ssh-creds ""))
-#+END_SRC
 
 ***** Find other projects
 #+BEGIN_SRC emacs-lisp
@@ -6279,10 +6360,10 @@ forcing it by running
                                              (cl-remove-if-not (lambda (project)
                                                                  (magit-git-repo-p project))
                                                                (projectile-relevant-known-projects)))))
-#+END_SRC
+#+end_src
 
 ***** Icons for changes
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defvar prettify-magit-alist (list (list (rx (= 8 (in "0-9a-f")) space (+ (in space punctuation "*" "/" "\\" "|")) (group "|")) "│")
                                    (list (rx (= 8 (in "0-9a-f")) space (+ (in space punctuation "*" "/" "\\" "|")) (group "/")) "╱")
                                    (list (rx (= 8 (in "0-9a-f")) space (+ (in space punctuation "*" "/" "\\" "|")) (group "\\")) "╲")
@@ -6348,10 +6429,10 @@ forcing it by running
 (advice-add 'magit-status :after 'cpped-prettify-magit)
 (advice-add 'magit-refresh-buffer :after 'cpped-prettify-magit)
 (add-hook 'diff-mode-hook #'cpped-prettify-magit)
-#+END_SRC
+#+end_src
 
 ***** Import file from stash or branch
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "magit"
   (defun cpped-list-refs-and-stashes (wrapped-function &rest arguments)
     "Create a list of branches and stashes."
@@ -6370,10 +6451,10 @@ forcing it by running
     ?I "Import" 'cpped-import-git-file ?!)
   (define-key magit-status-mode-map
     "I" 'cpped-import-git-file))
-#+END_SRC
+#+end_src
 
 ***** Open file from stash or branch
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "magit"
   (defun cpped-open-git-file ()
     "Open a git-versioned file from either a branch or the stash."
@@ -6393,16 +6474,16 @@ forcing it by running
     ?Z "Open" 'cpped-open-git-file ?!)
   (define-key magit-status-mode-map
     "Z" 'cpped-open-git-file))
-#+END_SRC
+#+end_src
 
 ***** Automatically commit changes to WIP branches
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "magit"
   (magit-wip-after-save-mode))
-#+END_SRC
+#+end_src
 
 **** [[https://github.com/Artawower/blamer.el][Show git commit information inline]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package blamer
   :custom
   (blamer--overlay-popup-position 'smart)
@@ -6415,10 +6496,10 @@ forcing it by running
     (set-face-attribute 'blamer-face nil :foreground (shark-bytes/get-commit-age-color date)))
   (advice-add 'blamer--format-commit-info :before #'shark-bytes/blamer-set-foreground-color)
   (global-blamer-mode 1))
-#+END_SRC
+#+end_src
 
 **** [[https://github.com/pidu/git-timemachine][Switch to previous version]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package git-timemachine
   :straight (git-timemachine
              :type git
@@ -6426,22 +6507,22 @@ forcing it by running
              :repo "https://codeberg.org/pidu/git-timemachine"
              :build t)
   :custom (git-timemachine-abbreviation-length 8))
-#+END_SRC
+#+end_src
 
 **** [[https://github.com/jwiegley/git-undo-el][Git undo]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package git-undo
   :straight (git-undo
              :type git
              :host github
              :repo "jwiegley/git-undo-el"))
-#+END_SRC
+#+end_src
 
 **** [[https://github.com/defunkt/gist.el][Gist support]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package gist
   :custom (gist-ask-for-description t))
-#+END_SRC
+#+end_src
 
 **** Config file support
 #+BEGIN_SRC emacs-lisp
@@ -6451,13 +6532,13 @@ forcing it by running
 #+END_SRC
 
 **** [[https://github.com/sei40kr/gitignore-snippets][Snippets]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package gitignore-snippets
   :config (gitignore-snippets-init))
-#+END_SRC
+#+end_src
 
 **** Show contributors
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-get-contributor-info (files &optional start end)
   "Get contributor information for file(s) or region."
   (let ((lines (if (and start end)
@@ -6563,12 +6644,12 @@ forcing it by running
 (add-hook 'after-save-hook 'cpped-show-file-contributor-info)
 (add-hook 'magit-post-commmit-hook 'cpped-show-file-contributor-info)
 (add-hook 'magit-post-refresh-hook 'cpped-show-file-contributor-info)
-#+END_SRC
+#+end_src
 
 *  Viewer
 ** Web pages
 *** Imenu integration
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun shark-bytes/imenu-eww-headings ()
     "Add HTML headings to imenu."
     (let ((faces '(shr-h1 shr-h2 shr-h3 shr-h4 shr-h5 shr-h6 shr-heading)))
@@ -6588,31 +6669,31 @@ forcing it by running
 
 (add-hook 'eww-mode-hook (lambda ()
                            (setq-local imenu-create-index-function #'shark-bytes/imenu-eww-headings)))
-#+END_SRC
+#+end_src
 
 ** Man Pages
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq woman-fill-frame t
       woman-imenu t
       woman-use-topic-at-point t
       woman-use-topic-at-point-default t)
-#+END_SRC
+#+end_src
 
 ** Info Pages
 Hide info buffer in buffer list
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "consult"
   (push "\\`\\*info\\*\\'" consult-buffer-filter))
-#+END_SRC
+#+end_src
 
 *** [[https://github.com/ubolonton/info-colors][Add extra coloring]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package info-colors
   :hook (Info-selection . info-colors-fontify-node))
-#+END_SRC
+#+end_src
 
 ** [[https://github.com/politza/pdf-tools][PDF]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package pdf-tools
   :after (popwin)
   :ensure-system-package (poppler-devel poppler-glib-devel)
@@ -6632,65 +6713,65 @@ Hide info buffer in buffer list
   (push '("*PDF-Metadata*" :width 60 :position right :noselect t :stick t) popwin:special-display-config)
   (advice-add 'pdf-view-mode :before (lambda (&rest arguments)
                                        (nlinum-mode -1))))
-#+END_SRC
+#+end_src
 
 [[https://github.com/nicolaisingh/saveplace-pdf-view][Save last position]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package saveplace-pdf-view
   :after pdf-tools doc-view)
-#+END_SRC
+#+end_src
 
 ** Doc-View
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (require 'doc-view)
 
 (setq doc-view-continuous t
       doc-view-scale-internally nil)
 
 (define-key doc-view-mode-map (kbd "q") 'doc-view-kill-proc-and-buffer)
-#+END_SRC
+#+end_src
 
 *** ODF
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (push '("\\.odt\\'" . doc-view-mode) auto-mode-alist)
 (push "\\.odt\\'" cpped-no-hexedit-extensions)
-#+END_SRC
+#+end_src
 
 *** DOC
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (push '("\\.doc\\'" . doc-view-mode) auto-mode-alist)
 (push "\\.doc\\'" cpped-no-hexedit-extensions)
-#+END_SRC
+#+end_src
 
 *** DVI
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (push '("\\.dvi\\'" . doc-view-mode) auto-mode-alist)
 (push "\\.dvi\\'" cpped-no-hexedit-extensions)
-#+END_SRC
+#+end_src
 
 *** Postscript
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (push '("\\.ps\\'" . doc-view-mode) auto-mode-alist)
 (push "\\.ps\\'" cpped-no-hexedit-extensions)
-#+END_SRC
+#+end_src
 
 ** [[https://github.com/doublep/logview][System Logs]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package logview
   :mode "\\.log\\'"
   :hook (logview-mode . (lambda()
                           (auto-revert-tail-mode)
                           (read-only-mode)))
   :custom (logview-auto-revert-mode 'auto-revert-tail-mode))
-#+END_SRC
+#+end_src
 
 ** STrace Logs
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package strace-mode)
-#+END_SRC
+#+end_src
 
 ** Certificates
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defvar certificate-mode-font-lock-keywords
   '(("^\\(-----[^-]*-----\\)"
      (1 font-lock-comment-face)))
@@ -6730,10 +6811,10 @@ Hide info buffer in buffer list
 (add-hook 'certificate-mode-hook '(lambda ()
                                     (cpped-show-certificate-info)
                                     (read-only-mode)))
-#+END_SRC
+#+end_src
 
 *  Org-Mode
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package org
   :after (consult rainbow-mode); popwin)
   :mode ("\\.org\\'" . org-mode)
@@ -6797,8 +6878,8 @@ Hide info buffer in buffer list
       (org-update-all-dblocks)))
   (add-hook 'after-save-hook #'cpped-org-update-all-dblocks)
   (add-hook 'window-state-change-hook #'cpped-org-update-all-dblocks) )
+#+end_src
 
-#+END_SRC
 
 ** Default files
 *** Create agenda files if necessary
@@ -6850,21 +6931,20 @@ Remove check on buffer close
 *** Show clock information
 #+BEGIN_SRC emacs-lisp
 (add-hook 'org-mode-hook #'org-clock-display)
-#+END_SRC
+#+end_src
 
 ** Tangling
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package org-auto-tangle
   :hook (org-mode . org-auto-tangle-mode))
-#+END_SRC
+#+end_src
 
 ** Lists
 *** Automatically create lists
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package org-autolist
   :after org
   :hook (org-mode . org-autolist-mode))
-#+END_SRC
 
 *** Hide stars for header items
 #+BEGIN_SRC emacs-lisp
@@ -6878,10 +6958,10 @@ Remove check on buffer close
                                      (?+ . ?•)
                                      (?- . ?•)))
   (org-superstar-special-todo-items t))
-#+END_SRC
+#+end_src
 
 ** Use current heading as function name
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-org-log-current-defun ()
   (save-excursion
     (org-back-to-heading)
@@ -6891,18 +6971,18 @@ Remove check on buffer close
 (add-hook 'org-mode-hook (lambda ()
                            (make-variable-buffer-local 'add-log-current-defun-function)
                            (setq add-log-current-defun-function 'cpped-org-log-current-defun)))
-#+END_SRC
+#+end_src
 
 ** Links
 *** [[https://orgmode.org/manual/Link-Abbreviations.html#Link-Abbreviations][Shortcuts]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (push '("google" . "https://www.google.de/?gws_rd=ssl#q=%s") org-link-abbrev-alist)
 (push '("wikipedia" . "https://en.wikipedia.org/wiki/%s") org-link-abbrev-alist)
 (push '("github" . "https://github.com/%s") org-link-abbrev-alist)
-#+END_SRC
+#+end_src
 
 *** Insertion
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-url-to-title (url)
   "Returns the content of the <title> tag of the page at url."
   (with-temp-buffer
@@ -6965,17 +7045,17 @@ Remove check on buffer close
                          (delete-region begin end)
                          title))))
   (org-insert-link nil url title))
-#+END_SRC
+#+end_src
 
 ** Inline code
 *** Auto-save
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq org-edit-src-auto-save-idle-delay super-save-idle-duration)
-#+END_SRC
+#+end_src
 
 *** Allow evaluation
 Disable evaluation confirmation for some languages
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-org-confirm-babel-evaluate (lang body)
   "Do not confirm evaluation for these languages."
   (not (or (string= lang "bash")
@@ -6989,10 +7069,10 @@ Disable evaluation confirmation for some languages
            (string= lang "sed")
            (string= lang "shell")
            (string= lang "zsh"))))
-#+END_SRC
+#+end_src
 
 Note: For this to work, Org must be version 8.3 or higher. Org is bundled with emacs and must be updated manually from the repository.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (org-babel-do-load-languages 'org-babel-load-languages
                              '((calc . t)
                                (dot . t)
@@ -7007,18 +7087,18 @@ Note: For this to work, Org must be version 8.3 or higher. Org is bundled with e
 (setq org-confirm-babel-evaluate 'cpped-org-confirm-babel-evaluate)
 (org-babel-shell-initialize)
 (add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
-#+END_SRC
+#+end_src
 
 *** Set file name for edit buffer
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defadvice org-edit-src-code (around set-buffer-file-name activate compile)
   (let ((file-name (buffer-file-name)))
     ad-do-it
     (setq buffer-file-name file-name)))
-#+END_SRC
+#+end_src
 
 *** Support Dockerfiles
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package ob-docker-build
   :after org
   :ensure-system-package podman
@@ -7029,31 +7109,31 @@ Note: For this to work, Org must be version 8.3 or higher. Org is bundled with e
   :config
   (add-to-list 'org-babel-load-languages '(docker-build . t))
   (org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages))
-#+END_SRC
+#+end_src
 
 ** Structure Templates
-#+BEGIN_SRC emacs-lisp
-(setq org-structure-template-alist '(("a" . "ASCII")
-                                     ("b" . "SRC bash")
-                                     ("*" . "SRC calc")
-                                     ("c" . "CENTER")
-                                     ("+" . "SRC c++")
-                                     ("d" . "SRC dot :file :cmdline -Kdot -Tpng")
-                                     ("e" . "EXAMPLE")
-                                     ("h" . "HTML")
-                                     ("l" . "SRC emacs-lisp")
-                                     ("p" . "SRC gnuplot :file")
-                                     ("/" . "COMMENT")
-                                     ("q" . "QUOTE")
-                                     ("r" . "SRC")
-                                     ("s" . "SRC shell")
-                                     ("u" . "SRC plantuml :file ")
-                                     ("v" . "VERBATIM")
-                                     ("z" . "SRC zsh")))
-#+END_SRC
+#+begin_src emacs-lisp
+(setq org-structure-template-alist '(("a" . "ascii")
+                                     ("b" . "src bash")
+                                     ("*" . "src calc")
+                                     ("c" . "center")
+                                     ("+" . "src c++")
+                                     ("d" . "src dot :file :cmdline -Kdot -Tpng")
+                                     ("e" . "example")
+                                     ("h" . "html")
+                                     ("l" . "src emacs-lisp")
+                                     ("p" . "src gnuplot :file")
+                                     ("/" . "comment")
+                                     ("q" . "quote")
+                                     ("r" . "src")
+                                     ("s" . "src shell")
+                                     ("u" . "src plantuml :file ")
+                                     ("v" . "verbatim")
+                                     ("z" . "src zsh")))
+#+end_src
 
 ** TODO-States
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq cpped-org-todo-keyword-todo "ToDo"
       cpped-org-todo-keyword-done "Done"
       cpped-org-todo-keyword-bug "Bug"
@@ -7082,10 +7162,10 @@ Note: For this to work, Org must be version 8.3 or higher. Org is bundled with e
                           (sequence ,(concat cpped-org-todo-keyword-waiting "(w@/!)")
                                     ,(concat cpped-org-todo-keyword-suspended "(s@/!)"))
                           (sequence "|" ,(concat cpped-org-todo-keyword-canceled "(x@/@)"))))
-#+END_SRC
+#+end_src
 
 Format according to the state.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defface org-todo-keyword-todo '((t :inherit default)) "Face used for todo items." :group 'org)
 (defface org-todo-keyword-in-progress '((t :inherit default)) "Face used for in-progress items." :group 'org)
 (defface org-todo-keyword-waiting '((t :inherit default)) "Face used for waiting items." :group 'org)
@@ -7120,10 +7200,10 @@ Format according to the state.
                                           (,cpped-org-todo-keyword-review . ?)
                                           (,cpped-org-todo-keyword-canceled . ?ﰸ)))
   (org-superstar-restart))
-#+END_SRC
+#+end_src
 
 Archive when done, remove flag if reset to todo.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq org-archive-mark-done nil
       org-archive-location "%s_archive::* Archived")
 #+END_SRC
@@ -7143,49 +7223,45 @@ Archive when done, remove flag if reset to todo.
   :custom (org-fancy-priorities-list '((?A . "")
                                        (?B . "")
                                        (?C . "⏾"))))
-#+END_SRC
+#+end_src
 
 ** Prettify symbols
-#+BEGIN_SRC emacs-lisp
-(add-hook 'org-mode-hook (lambda ()
-                           (push '("[ ]" . ?) prettify-symbols-alist)
-                           (push '("[X]" . ?) prettify-symbols-alist)
-                           (push '("[-]" . ?) prettify-symbols-alist)
-                           (push '("#+BEGIN_SRC" . ?) prettify-symbols-alist)
-                           (push '("#+begin_src" . ?) prettify-symbols-alist)
-                           (push '("#+END_SRC" . ?) prettify-symbols-alist)
-                           (push '("#+end_src" . ?) prettify-symbols-alist)
-                           (push '("#+RESULTS" . ?⇒) prettify-symbols-alist)
-                           (push '("#+results" . ?⇒) prettify-symbols-alist)
-                           (push '("#+BEGIN_EXAMPLE" . ?﬒) prettify-symbols-alist)
-                           (push '("#+begin_example" . ?﬒) prettify-symbols-alist)
-                           (push '("#+END_EXAMPLE" . ?﬒) prettify-symbols-alist)
-                           (push '("#+end_example" . ?﬒) prettify-symbols-alist)
-                           (push '("#+BEGIN_HTML" . ?爵) prettify-symbols-alist)
-                           (push '("#+begin_html" . ?爵) prettify-symbols-alist)
-                           (push '("#+END_HTML" . ?爵) prettify-symbols-alist)
-                           (push '("#+end_html" . ?爵) prettify-symbols-alist)
-                           (push '("#+BEGIN_QUOTE" . ?“) prettify-symbols-alist)
-                           (push '("#+begin_quote" . ?“) prettify-symbols-alist)
-                           (push '("#+END_QUOTE" . ?”) prettify-symbols-alist)
-                           (push '("#+end_quote" . ?”) prettify-symbols-alist)
-                           (push '("#+BEGIN_VERBATIM" . ?) prettify-symbols-alist)
-                           (push '("#+begin_verbatim" . ?) prettify-symbols-alist)
-                           (push '("#+END_VERBATIM" . ?) prettify-symbols-alist)
-                           (push '("#+end_verbatim" . ?) prettify-symbols-alist)
-                           (push '(":LOGBOOK:" . ?) prettify-symbols-alist)
-                           (push '("#+BEGIN:" . ?⌜) prettify-symbols-alist)
-                           (push '("#+END:" . ?⌞) prettify-symbols-alist)
-                           (push '("#+CAPTION:" . ?🗩) prettify-symbols-alist)
-                           (push '(":END:" . ?⌞) prettify-symbols-alist)
-                           (push '("CLOCK:" . ?) prettify-symbols-alist)
-                           (push '("clocktable" . ?) prettify-symbols-alist)
-                           (push '("\\_" . ?⮩) prettify-symbols-alist)
-                           (prettify-symbols-mode)))
-#+END_SRC
+#+begin_src emacs-lisp :tangle no
+(defun shark-bytes/enable-org-mode-prettification ()
+  "Enable prettification of org-mode elements."
+  (interactive)
+  (push '("[#A]" . ?) prettify-symbols-alist)
+  (push '("[#B]" . ?) prettify-symbols-alist)
+  (push '("[#C]" . ?⏾) prettify-symbols-alist)
+  (push '("[ ]" . ?) prettify-symbols-alist)
+  (push '("[X]" . ?) prettify-symbols-alist)
+  (push '("[-]" . ?) prettify-symbols-alist)
+  (push '("#+begin_src" . ?) prettify-symbols-alist)
+  (push '("#+end_src" . ?) prettify-symbols-alist)
+  (push '("#+results" . ?⇒) prettify-symbols-alist)
+  (push '("#+begin_example" . ?﬒) prettify-symbols-alist)
+  (push '("#+end_example" . ?﬒) prettify-symbols-alist)
+  (push '("#+begin_html" . ?爵) prettify-symbols-alist)
+  (push '("#+end_html" . ?爵) prettify-symbols-alist)
+  (push '("#+begin_quote" . ?“) prettify-symbols-alist)
+  (push '("#+end_quote" . ?”) prettify-symbols-alist)
+  (push '("#+begin_verbatim" . ?) prettify-symbols-alist)
+  (push '("#+end_verbatim" . ?) prettify-symbols-alist)
+  (push '(":LOGBOOK:" . ?) prettify-symbols-alist)
+  (push '("#+BEGIN:" . ?⌜) prettify-symbols-alist)
+  (push '("#+END:" . ?⌞) prettify-symbols-alist)
+  (push '("#+CAPTION:" . ?🗩) prettify-symbols-alist)
+  (push '(":END:" . ?⌞) prettify-symbols-alist)
+  (push '("CLOCK:" . ?) prettify-symbols-alist)
+  (push '("clocktable" . ?) prettify-symbols-alist)
+  (push '("\\_" . ?⮩) prettify-symbols-alist)
+  (prettify-symbols-mode))
+
+(add-hook 'org-mode-hook #'shark-bytes/enable-org-mode-prettification)
+#+end_src
 
 ** Capture Templates
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "org"
   (defun shark-bytes/select-agenda-file (name)
   "Select a customer agenda file."
@@ -7223,17 +7299,16 @@ Archive when done, remove flag if reset to todo.
       `(("t" "To Do" entry (function shark-bytes/select-tasks-file) ,(concat "* " cpped-org-todo-keyword-todo " [#B] %?\n%U\n%i\n") :empty-lines 1 :kill-buffer t)
         ("p" "Priority To Do" entry (function shark-bytes/select-tasks-file) ,(concat "* " cpped-org-todo-keyword-todo " [#A] %?\n%T\nDEADLINE: %t\n%i\n") :empty-lines 1 :kill-buffer t)
         ("b" "Bug" entry (function shark-bytes/select-tasks-file) ,(concat "* " cpped-org-todo-keyword-bug " [#B] %?\n%U\n%i\n") :empty-lines 1 :kill-buffer t)
-        ("f" "Fixme" entry (function shark-bytes/select-tasks-file) ,(concat "* " cpped-org-todo-keyword-fixme " [#A] %?\n%U\nSCHEDULED: %t\nIn function *[[file:%F::%(with-current-buffer (org-capture-get :original-buffer) (number-to-string (line-number-at-pos)))][%(with-current-buffer (org-capture-get :original-buffer) (which-function))()]]*\n#+BEGIN_SRC %(with-current-buffer (org-capture-get :original-buffer) (org-src-language-from-major-mode major-mode))\n%i\n#+END_SRC\n") :empty-lines 1 :kill-buffer t)
+        ("f" "Fixme" entry (function shark-bytes/select-tasks-file) ,(concat "* " cpped-org-todo-keyword-fixme " [#A] %?\n%U\nSCHEDULED: %t\nIn function *[[file:%F::%(with-current-buffer (org-capture-get :original-buffer) (number-to-string (line-number-at-pos)))][%(with-current-buffer (org-capture-get :original-buffer) (which-function))()]]*\n#+begin_src %(with-current-buffer (org-capture-get :original-buffer) (org-src-language-from-major-mode major-mode))\n%i\n#+end_src\n") :empty-lines 1 :kill-buffer t)
         ("s" "Support" entry (function shark-bytes/select-tasks-file) ,(concat "* " cpped-org-todo-keyword-in-progress " [#B] %?\n%U\n%i\n") :empty-lines 1 :kill-buffer t :clock-in t :clock-keep t)
         ("n" "Note" entry (function shark-bytes/select-notes-file) "* %?\n%U\n%i\n" :empty-lines 1 :kill-buffer t)
         ("m" "Meeting" entry (function shark-bytes/select-events-file) ,(concat "* " cpped-org-todo-keyword-todo " [#A] %?\n%T\n%i\n") :empty-lines 1 :kill-buffer t)
         ("i" "Instant Meeting" entry (function shark-bytes/select-events-file) ,(concat "* " cpped-org-todo-keyword-in-progress " [#A] %?\ns%T\n%i\n") :empty-lines 1 :kill-buffer t :clock-in t :clock-keep t)
-        ("c" "Source Code" entry (function shark-bytes/select-notes-file) ,(concat "* %?\n%U\n\nIn function *[[file:%F::%(with-current-buffer (org-capture-get :original-buffer) (number-to-string (line-number-at-pos)))][%(with-current-buffer (org-capture-get :original-buffer) (which-function))()]]*\n#+BEGIN_SRC %(with-current-buffer (org-capture-get :original-buffer) (org-src-language-from-major-mode major-mode))\n%i\n#+END_SRC\n") :empty-lines 1 :kill-buffer t)))
+        ("c" "Source Code" entry (function shark-bytes/select-notes-file) ,(concat "* %?\n%U\n\nIn function *[[file:%F::%(with-current-buffer (org-capture-get :original-buffer) (number-to-string (line-number-at-pos)))][%(with-current-buffer (org-capture-get :original-buffer) (which-function))()]]*\n#+begin_src %(with-current-buffer (org-capture-get :original-buffer) (org-src-language-from-major-mode major-mode))\n%i\n#+end_src\n") :empty-lines 1 :kill-buffer t)))
 )
-#+END_SRC
+#+end_src
 
 ** Agenda
-#+BEGIN_SRC emacs-lisp
 (setq org-agenda-compact-blocks t
       org-agenda-current-time-string "now ────────────────────────────────────────"
       org-agenda-deadline-faces '((0.7 . error)
@@ -7266,9 +7341,10 @@ Archive when done, remove flag if reset to todo.
                              "──────────" "──────────")
       org-agenda-todo-keyword-format "%-14s")
 #+END_SRC
+#+begin_src emacs-lisp
 
 *** Custom Views
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq org-agenda-custom-commands '(("D" "Default agenda view"
                                     ((agenda "" ((org-agenda-skip-function '(let ((tags (save-excursion
                                                                                           (outline-back-to-heading)
@@ -7350,29 +7426,29 @@ Archive when done, remove flag if reset to todo.
                                      (org-agenda-time-grid nil)
                                      (org-agenda-include-diary nil)
                                      (org-agenda-clockreport-parameter-plist '(:scope agenda-with-archives :indent t :link t :emphasize t :tcolumns 1 :maxlevel 5 :fileskip0 t :formula %))))))
-#+END_SRC
+#+end_src
 
 *** Reschedule to today
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-org-agenda-reschedule-to-today ()
   "Reschedule the selected item to today."
   (interactive)
   (cl-letf (((symbol-function 'org-read-date) '(lambda (&rest args)
                                                  (current-time))))
     (call-interactively 'org-agenda-schedule)))
-#+END_SRC
+#+end_src
 
 ** [[https://github.com/bard/org-dashboard/blob/master/org-dashboard.el][Progress Report]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (require 'url)
 (setq url-privacy-level 'high)
 
 (use-package org-dashboard
   :custom (org-dashboard-omit-completed t))
-#+END_SRC
+#+end_src
 
 ** Alert messages
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package org-alert
   :after org
   :hook (after-make-frame-functions . (lambda (_)
@@ -7381,16 +7457,16 @@ Archive when done, remove flag if reset to todo.
   (alert-default-style 'libnotify)
   (org-alert-interval 86400)
   (org-alert-notification-title "TODO"))
-#+END_SRC
+#+end_src
 
 ** EDiff Compatibility
-#+BEGIN_SRC emacs-lisp
 (defun cpped-run-in-org-buffer (buffer command &rest arguments)
   "Execute command if given buffer is in org mode"
   (when (and buffer
              (eq (buffer-local-value 'major-mode (get-buffer buffer)) 'org-mode)
              (save-excursion
                (set-buffer buffer)
+#+begin_src emacs-lisp
                (apply command arguments)))))
 
 (defun cpped-ediff-org-unfold ()
@@ -7407,10 +7483,10 @@ Archive when done, remove flag if reset to todo.
 
 (add-hook 'ediff-select-hook 'cpped-ediff-org-unfold)
 (add-hook 'ediff-unselect-hook 'cpped-ediff-org-fold)
-#+END_SRC
+#+end_src
 
 ** Magit compatibility
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "magit"
   (defun cpped-expand-org-entry ()
   "Expand all entries leading to the selected entry."
@@ -7418,10 +7494,10 @@ Archive when done, remove flag if reset to todo.
     (org-reveal '(4)))))
 
 (add-hook 'magit-diff-visit-file-hook 'cpped-expand-org-entry)
-#+END_SRC
+#+end_src
 
 ** Change todo state of subtree
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-todo-subtree ()
   "Change the todo state of a subtree."
   (interactive)
@@ -7435,10 +7511,10 @@ Archive when done, remove flag if reset to todo.
           (org-todo state)
           (outline-previous-visible-heading 1))
         (org-todo state)))))
-#+END_SRC
+#+end_src
 
 ** Mark heading done when all subheadings are done
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-org-summary-change-todo (done todo)
   "Switch entry to DONE when all subentries are done, to TODO otherwise."
   (let (org-log-done org-log-states) ; turn off logging
@@ -7447,10 +7523,10 @@ Archive when done, remove flag if reset to todo.
                 cpped-org-todo-keyword-todo))))
 
 (add-hook 'org-after-todo-statistics-hook 'cpped-org-summary-change-todo)
-#+END_SRC
+#+end_src
 
 ** Mark heading done when all checkboxes are checked.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-checkbox-list-complete ()
   (interactive)
   (save-excursion
@@ -7465,10 +7541,10 @@ Archive when done, remove flag if reset to todo.
           (org-todo cpped-org-todo-keyword-todo))))))
 
 (add-hook 'org-checkbox-statistics-hook 'cpped-checkbox-list-complete)
-#+END_SRC
+#+end_src
 
 ** Wrap Region
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "wrap-region"
   (wrap-region-add-wrappers
    '(("*" "*" nil org-mode)
@@ -7478,10 +7554,10 @@ Archive when done, remove flag if reset to todo.
      ("_" "_" nil org-mode)
      ("$" "$" nil org-mode)))
   (add-hook 'org-mode-hook 'wrap-region-mode))
-#+END_SRC
+#+end_src
 
 ** Clocking
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq org-clock-history-length 25
       org-clock-idle-time nil
       org-clock-in-resume t
@@ -7498,10 +7574,10 @@ Archive when done, remove flag if reset to todo.
 
 (add-hook 'org-clock-in-hook 'org-save-all-org-buffers)
 (add-hook 'org-clock-out-hook 'org-save-all-org-buffers)
-#+END_SRC
+#+end_src
 
 *** Remaining work time
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defvar cpped-show-work-time t "Whether to show work time in the mode line.")
 (defvar cpped-daily-work-hours 8 "The number of hours of work per day.")
 
@@ -7567,10 +7643,10 @@ Archive when done, remove flag if reset to todo.
               (cpped-format-remaining-minutes (cpped-remaining-work-minutes 'thismonth clocked-time-this-month))
               (org-duration-from-minutes clocked-time-this-month)
               (org-duration-from-minutes (cpped-monthly-work-minutes))))))
-#+END_SRC
+#+end_src
 
 *** Current task
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-print-current-task ()
   "Return the currently clocked-in task and clocked time."
   (interactive)
@@ -7581,7 +7657,7 @@ Archive when done, remove flag if reset to todo.
                 (concat "/" (org-duration-from-minutes (org-clock-effort)))
               "")
             (shark-bytes/truncate org-clock-heading 15))))
-#+END_SRC
+#+end_src
 
 *** Do not show default clocking information in mode line
 #+BEGIN_SRC emacs-lisp
@@ -7622,7 +7698,7 @@ Archive when done, remove flag if reset to todo.
 #+END_SRC
 
 *** Clock in/out of task when starting/stopping
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-org-clock-in-if-starting ()
   "Clock in when a task is started."
   (when (and (string= org-state cpped-org-todo-keyword-in-progress)
@@ -7648,16 +7724,17 @@ Archive when done, remove flag if reset to todo.
     (org-clock-out)))
 
 (add-hook 'org-after-todo-state-change-hook #'cpped-org-clock-out-if-inactive)
-#+END_SRC
+#+end_src
 
 *** [[https://github.com/unhammer/org-mru-clock][Switch to last used clock]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package org-mru-clock
   :custom
   (org-mru-clock-how-many 100)
   (org-mru-clock-files 'org-agenda-files)
   (org-mru-clock-predicate #'org-mru-clock-exclude-done-and-archived))
-#+END_SRC
+
+#+end_src
 
 *** Create customer journal entry
 #+begin_src emacs-lisp
@@ -7776,12 +7853,12 @@ Add global shortcut with
 emacsclient --eval "(emacs-everywhere)"
 #+END_SRC
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package emacs-everywhere)
-#+END_SRC
+#+end_src
 
 *** Process Management
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq proced-auto-update-flag t)
 (setq proced-auto-update-interval 5)
 (setq proced-descend t)
@@ -7790,23 +7867,23 @@ emacsclient --eval "(emacs-everywhere)"
 
 (with-eval-after-load "consult"
   (push "\\*Proced\\*" consult-buffer-filter))
-#+END_SRC
+#+end_src
 
 *** Services
 
 ** Use rx syntax for regular expression builder
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq reb-re-syntax 'rx)
-#+END_SRC
+#+end_src
 
 ** Calculator
 Do not use scientific form so quickly
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq calc-display-sci-low -5)
-#+END_SRC
+#+end_src
 
 ** Calendar
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package german-holidays
   :straight (german-holidays
              :type git
@@ -7822,10 +7899,10 @@ Do not use scientific form so quickly
       calendar-mark-holidays-flag t
       calendar-view-holidays-initially-flag t
       calendar-time-display-form '(24-hours ":" minutes (and time-zone (concat " (" time-zone ")"))))
-#+END_SRC
+#+end_src
 
 ** GNUPlot
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package gnuplot
   :ensure-system-package gnuplot
   :mode ("\\.gnuplot\\'" . gnuplot-mode)
@@ -7835,17 +7912,17 @@ Do not use scientific form so quickly
   (gnuplot-image-format "svg")
   (gnuplot-inline-image-mode 'dedicated)
   (gnuplot-tab-completion t))
-#+END_SRC
+#+end_src
 
 *** Documentation
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "devdocs-browser"
   (cpped-add-apidocs 'gnuplot-mode '("gnuplot")))
-#+END_SRC
+#+end_src
 
 * ﯱ Remote
 ** Serial Devices
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defcustom shark-bytes/serial-port nil "The last used serial port.")
 (defcustom shark-bytes/serial-port-baudrate 115200 "The last used serial port baud rate.")
 
@@ -7864,7 +7941,7 @@ Do not use scientific form so quickly
         (customize-save-variable 'shark-bytes/serial-port port)
         (customize-save-variable 'shark-bytes/serial-port-baudrate baudrate))
     (message "No serial port found.")))
-#+END_SRC
+#+end_src
 
 ** [[https://www.emacswiki.org/emacs/TrampMode][Network Devices]]
 #+BEGIN_SRC emacs-lisp
@@ -7877,10 +7954,11 @@ Do not use scientific form so quickly
   (tramp-default-host nil)
   (tramp-default-user "root")
   (tramp-histfile-override nil))
-#+END_SRC
+
+#+end_src
 
 ** [[https://github.com/cjohansson/emacs-ssh-deploy][Automatic Deployment]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package ssh-deploy
   :commands (ssh-deploy-upload-handler
              ssh-deploy-upload-handler-forced
@@ -7900,7 +7978,7 @@ Do not use scientific form so quickly
                       (ssh-deploy-exclude-list . listp)))
     (put (car variable) 'safe-local-variable (cdr variable)))
   (advice-add 'ssh-deploy-rename-handler :around 'cpped-post-rename))
-#+END_SRC
+#+end_src
 
 ** [[https://kubernetes-el.github.io/kubernetes-el/][Kubernetes]]
 #+begin_src emacs-lisp
@@ -7910,7 +7988,7 @@ Do not use scientific form so quickly
 
 * [[https://github.com/abo-abo/hydra][ Keybindings]]
 ** Quit from any context
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-keyboard-quit-context ()
   "Quit from any context."
   (interactive)
@@ -7928,15 +8006,15 @@ Do not use scientific form so quickly
          (keyboard-quit))))
 
 (global-set-key [remap keyboard-quit] #'cpped-keyboard-quit-context)
-#+END_SRC
+#+end_src
 
 ** Use Escape instead of C-g
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
-#+END_SRC
+#+end_src
 
 ** Smart close
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-close-editor ()
   "Close the editor (either frame or emacs), depending on the current mode of operation."
   (interactive)
@@ -7946,7 +8024,7 @@ Do not use scientific form so quickly
                  1)
       (kill-emacs)
     (delete-frame)))
-#+END_SRC
+#+end_src
 
 ** Hydra
 #+BEGIN_SRC emacs-lisp
