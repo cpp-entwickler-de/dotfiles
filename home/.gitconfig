@@ -130,6 +130,9 @@ autoStash = true
 # Do not apply rebase if commits were removed via line removal (force drop to remove)
 missingCommitsCheck=error
 
+# Automatically update dependent branches when rebasing
+updateRefs = true
+
 
 [diff]
 tool = meld
