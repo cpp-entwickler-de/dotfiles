@@ -6302,13 +6302,6 @@ If the region is active, act on all lines touched by the region."
 (use-package magit-popup)
 #+end_src
 
-You can easily create git scripts with magit commands. For instance, for auto rebasing a branch "MY-BRANCH" and push
-forcing it by running
-#+BEGIN_SRC emacs-lisp :tangle no
-(magit-checkout "MY-BRANCH")
-(magit-rebase-onto-upstream nil)
-(magit-push-current-to-pushremote "-f")
-#+END_SRC
 
 ***** Full screen magit-status
 #+begin_src emacs-lisp
