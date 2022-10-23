@@ -28,6 +28,12 @@ editor = "emacsclient"
 # Use filesystem cache on Windows
 fscache = true
 
+# Use FSMonitor daemon
+fsmonitor = true
+
+# Always cache untracked files
+untrackedCache = true
+
 
 [init]
 templateDir  = ~/.git-templates
