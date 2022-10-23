@@ -1316,10 +1316,10 @@ Helper function to figure out version control root directory
     (interactive)
     (let ((consult-buffer-filter))
       (consult-buffer)))
-  (defun cpped-consult-line-symbol-at-point ()
-    ""
+  (defun shark-bytes/consult-line-preset ()
+    "Run consult-line with region or symbol at point."
     (interactive)
-    (consult-line (thing-at-point 'symbol)))
+    (consult-line (shark-bytes/region-or-symbol)))
   (defun cpped-consult-ripgrep (original-function &optional dir initial-argument)
      ""
      (interactive)
@@ -2187,6 +2187,15 @@ https://github.com/purcell/exec-path-from-shell
 #+END_SRC
 
 ** Utilites
+*** Intelligent input
+#+begin_src emacs-lisp
+(defun shark-bytes/region-or-symbol ()
+  "Get string from region or symbol-at-point."
+  (or (when (region-active-p)
+        (buffer-substring-no-properties (region-beginning) (region-end)))
+      (thing-at-point 'symbol t)))
+#+end_src
+
 *** [[https://github.com/bbatsov/crux][A Collection of Ridiculously Useful eXtensions]]
 #+BEGIN_SRC emacs-lisp
 (use-package crux
@@ -8294,6 +8303,7 @@ _C-<right>_: Next word                 _y_: Down block                 _C-t_: Ne
 ** Finding
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-s") 'helm-occur)
+(global-set-key (kbd "C-S-s") 'shark-bytes/consult-line-preset)
 #+END_SRC
 
 ** Mark
