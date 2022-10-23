@@ -1434,6 +1434,21 @@ Helper function to figure out version control root directory
 #+BEGIN_SRC emacs-lisp
 #+END_SRC
 
+*** Header line
+#+begin_src emacs-lisp
+(defface shark-bytes-minibuffer-header '((t :inherit default)) "Face for the minibuffer header")
+
+(defun shark-bytes/minibuffer-header ()
+  "Add a header to the minibuffer."
+  (overlay-put (make-overlay (point-min) (+ (point-min) 1))
+               'before-string
+               (concat (propertize " " 'display '(raise +0.5))
+                       (propertize "… Completion" 'face `shark-bytes-minibuffer-header)
+                       (propertize " \n" 'display '(raise -0.5)))))
+
+(add-hook 'minibuffer-setup-hook #'shark-bytes/minibuffer-header)
+#+end_src
+
 ** Imenu
 *** Automatically rescan
 #+begin_src emacs-lisp
