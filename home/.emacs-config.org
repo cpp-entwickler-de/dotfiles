@@ -1047,7 +1047,169 @@ Helper function to figure out version control root directory
                        (force-mode-line-update t)))
 #+END_SRC
 
+** Sidebar
+#+begin_src emacs-lisp
+(defface shark-bytes-sidebar '((t :inherit shark-bytes-ui)) "Default face for the sidebar" :group 'sidebar)
+(defface shark-bytes-sidebar-title '((t :inherit shark-bytes-ui-title)) "Face for sidebar titles" :group 'sidebar)
+(defface shark-bytes-sidebar-section '((t :inherit shark-bytes-ui-section)) "Face for section headers" :group 'sidebar)
+(defface shark-bytes-sidebar-entry '((t :inherit shark-bytes-ui)) "Face for sidebar entries" :group 'sidebar)
+(defface shark-bytes-sidebar-info `((t :inherit shark-bytes-ui  :foreground ,shark-bytes-detail)) "Face for sidebar info lines" :group 'sidebar)
+(defface shark-bytes-sidebar-detail `((t :inherit shark-bytes-info :height 0.8 :weight bold :foreground ,shark-bytes-detail)) "Face for sidebar details" :group 'sidebar)
 
+(defvar shark-bytes/sidebar-buffer "*sidebar-buffer*"
+  "The sidebar buffer.")
+
+(with-eval-after-load "consult"
+  (push (regexp-quote shark-bytes/sidebar-buffer) consult-buffer-filter))
+
+(defvar shark-bytes/sidebar-active nil "Flag to indicate whether the sidebar is active.")
+
+(defun shark-bytes/create-sidebar ()
+  "Create a new sidebar frame"
+  (setq default-minibuffer-frame (window-frame))
+  (let* ((parent (window-frame))
+         (sidebar (make-frame `((parent-frame . ,parent)
+                                (no-accept-focus . t)
+                                (min-width  . t)
+                                (min-height . t)
+                                (border-width . 0)
+                                (internal-border-width . 16)
+                                (line-spacing . 8)
+                                (vertical-scroll-bars . nil)
+                                (horizontal-scroll-bars . nil)
+                                (left-fringe . 0)
+                                (right-fringe . 0)
+                                (user-position . nil)
+                                (user-size . nil)
+                                (keep-ratio . (height-only . nil))
+                                (menu-bar-lines . 0)
+                                (tool-bar-lines . 0)
+                                (no-other-frame . t)
+                                (desktop-dont-save . t)
+                                (unsplittable . t)
+                                (background-color . "#303030")
+                                (no-other-frame . t)
+                                (undecorated . t)
+                                (pixelwise . t)
+                                (visibility . nil)
+                                (cursor-type . nil)
+                                (minibuffer . nil))))
+         (window (frame-root-window sidebar)))
+    (set-face-attribute 'default sidebar :family (face-attribute 'shark-bytes-ui :family))
+    (set-frame-parameter parent 'sidebar sidebar)
+    (set-window-buffer window (get-buffer-create shark-bytes/sidebar-buffer))
+    (set-window-dedicated-p window t)
+    (set-window-parameter window 'mode-line-format 'none)
+    (set-window-parameter window 'header-line-format 'none)
+    sidebar))
+
+(defun shark-bytes/get-sidebar ()
+  "Return the existing sidebar or create a new one."
+  (let ((sidebar (frame-parameter nil 'sidebar)))
+    (if (frame-live-p sidebar)
+        sidebar
+      (shark-bytes/create-sidebar))))
+
+(defun shark-bytes/show-sidebar ()
+  "Show the sidebar."
+  (let* ((sidebar (shark-bytes/get-sidebar)))
+    (modify-frame-parameters sidebar `((top    . 0)
+                                       (height . 1.0)
+                                       (left . 0)))
+    (shark-bytes/resize-sidebar)
+    (make-frame-visible sidebar)))
+
+(defun shark-bytes/format-sidebar-element(element type)
+  "Format an elment of the sidebar."
+  (when element
+    (add-face-text-property 0
+                            (length element)
+                            (pcase type
+                              (:title 'shark-bytes-sidebar-title)
+                              (:header 'shark-bytes-sidebar-section)
+                              (:entry 'shark-bytes-sidebar-entry)
+                              (:info 'shark-bytes-sidebar-info)
+                              (:detail 'shark-bytes-sidebar-detail)
+                              (_ 'shark-bytes-ui))
+                            nil
+                            element)
+    (concat (propertize "​" 'display `(raise ,(if (eq type :header)
+                                                 +0.7
+                                               0.0)))
+            element)))
+
+(defun shark-bytes/resize-sidebar ()
+  "Resize the sidebar."
+  (let ((sidebar (shark-bytes/get-sidebar))
+        (max-width 0))
+    (with-current-buffer (window-buffer (frame-root-window sidebar))
+      (save-excursion
+        (goto-char (point-min))
+        (while (not (eobp))
+          (end-of-line)
+          (setq max-width (max (current-column) max-width))
+          (forward-line 1))))
+    (set-frame-size sidebar (+ max-width 2) (frame-height sidebar))))
+
+(defun shark-bytes/format-sidebar-header (title &rest args)
+  "Format a sidebar header."
+  (s-join "\n"
+          (-non-nil (-concat (list (shark-bytes/format-sidebar-element (concat "☰ " title) :title))
+                             (mapcar (lambda (content)
+                                       (shark-bytes/format-sidebar-element content :info))
+                              args)
+                             (list " ")))))
+
+(defun shark-bytes/hide-sidebar-for-minibuffer ()
+  "Hide the sidebar when showing minibuffer."
+  (let ((sidebar (shark-bytes/get-sidebar)))
+    (setq shark-bytes/sidebar-active (frame-visible-p sidebar))
+    (make-frame-invisible sidebar)))
+
+(defun shark-bytes/restore-sidebar-after-minibuffer ()
+  "Restore the sidebar after closing the minibuffer."
+  (when shark-bytes/sidebar-active
+    (make-frame-visible (shark-bytes/get-sidebar))))
+
+(add-hook 'minibuffer-setup-hook 'shark-bytes/hide-sidebar-for-minibuffer)
+(add-hook 'minibuffer-exit-hook 'shark-bytes/restore-sidebar-after-minibuffer)
+#+end_src
+
+** Transient
+#+begin_src emacs-lisp
+(use-package transient
+  :custom
+  (transient-show-popup 0.4)
+  (transient-force-single-column t)
+  (transient-mode-line-format nil)
+  (transient-semantic-coloring nil)
+  (transient-detect-key-conflicts t)
+  :config
+  (defun shark-bytes/show-transient-sidebar (buffer _alist)
+    "Show transient in the sidebar"
+    (let ((sidebar (shark-bytes/get-sidebar)))
+      (with-current-buffer shark-bytes/sidebar-buffer
+        (erase-buffer)
+        (insert (with-current-buffer buffer
+                  (buffer-string))))
+      (redirect-frame-focus sidebar nil)
+      (shark-bytes/show-sidebar)
+      (frame-root-window sidebar)))
+  (setq transient-display-buffer-action '(shark-bytes/show-transient-sidebar))
+  (advice-add 'transient--delete-window :override #'(lambda ()
+                                                      (make-frame-invisible (shark-bytes/get-sidebar)))))
+
+(defun shark-bytes/format-transient-key (wrapped-function &optional key command)
+  "Format transient keys."
+  (let ((face (or (and (transient--semantic-coloring-p)
+                       (transient--suffix-color command))
+                  'transient-key)))
+    (propertize key
+                'face face
+                'display (svg-tag-make key :face face :inverse (not (eq (transient--get-predicate-for command) 'transient--do-stay))))))
+
+(advice-add 'transient--colorize-key :around #'shark-bytes/format-transient-key)
+#+end_src
 
 ** [[https://github.com/minad/vertico][Minibuffer completion]]
 #+BEGIN_SRC emacs-lisp
