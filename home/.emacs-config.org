@@ -1431,9 +1431,6 @@ Helper function to figure out version control root directory
 #+end_src
 
 
-#+BEGIN_SRC emacs-lisp
-#+END_SRC
-
 *** Header line
 #+begin_src emacs-lisp
 (defface shark-bytes-minibuffer-header '((t :inherit default)) "Face for the minibuffer header")
@@ -1544,8 +1541,8 @@ Switch to previous buffer
 #+end_src
 
 *** Popup Windows
-#+BEGIN_SRC emacs-lisp
 (use-package popwin
+#+begin_src emacs-lisp
   :config
   (push '("*Messages*" :dedicated t :position bottom :height 40 :tail) popwin:special-display-config)
   (push '(compilation-mode :dedicated t :position bottom :height 30) popwin:special-display-config)
@@ -1574,7 +1571,7 @@ Switch to previous buffer
 #+end_src
 
 *** [[https://github.com/mina86/auto-dim-other-buffers.el][Dim inactive buffers]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package auto-dim-other-buffers
   :hook (after-init . auto-dim-other-buffers-mode))
 #+end_src
@@ -1887,7 +1884,7 @@ https://github.com/purcell/exec-path-from-shell
 #+end_src
 
 *** Aliases
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (with-eval-after-load "em-alias"
   (eshell/alias ".." "cd ..")
   (eshell/alias "..." "cd ../..")
@@ -1964,7 +1961,7 @@ https://github.com/purcell/exec-path-from-shell
   (defun eshell/unpack (argument)
     "Uncompress file."
     (dired-compress-file argument)))
-#+END_SRC
+#+end_src
 
 **** Git support
 #+begin_src emacs-lisp
@@ -2381,7 +2378,7 @@ https://github.com/purcell/exec-path-from-shell
 #+end_src
 
 *** [[https://github.com/cyrus-and/zoom][Automatically zoom current window]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package zoom
   :custom
   (zoom-size '(0.618 . 0.618))
@@ -3307,7 +3304,7 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 #+end_src
 
 *** Easier escaping
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package string-edit)
 #+end_src
 
@@ -4072,7 +4069,7 @@ Handler to close buffer after quitting ccmake.
 #+END_SRC
 
 *** Build
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun cpped-build-target (target)
   "Build the current target in the current build directory. Ask for target if not set."
   (interactive (list (or (or (cpped-build-target)
@@ -4619,8 +4616,6 @@ Custom error highlighting (colored line under location)
 
 TODO
 
-#+BEGIN_SRC emacs-lisp
-#+END_SRC
 
 ***** Always kill running compilation when starting another
 #+begin_src emacs-lisp
@@ -5090,7 +5085,7 @@ Show API info via [[https://devdocs.io][devdocs.io]]
 #+end_src
 
 ***** Automatically change dash to underscore in identifiers
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package smart-dash
   :hook (c-mode-common . smart-dash-mode))
 #+end_src
@@ -6003,9 +5998,9 @@ Show current XML path as current function
 
 **** Navigation
 ***** Jump to element
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package x-path-walker)
-#+END_SRC
+#+end_src
 
 **** Editing
 ***** Always add XML declaration
@@ -6183,7 +6178,7 @@ Auto-highlight details
 #+end_src
 
 **** [[https://github.com/emacsorphanage/git-gutter-fringe][Show uncommitted lines in the fringe]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package git-gutter
   :custom
   (git-gutter:hide-gutter t)
@@ -6543,11 +6538,11 @@ If the region is active, act on all lines touched by the region."
 #+end_src
 
 **** Config file support
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package gitconfig-mode)
 (use-package gitignore-mode)
 (use-package gitattributes-mode)
-#+END_SRC
+#+end_src
 
 **** [[https://github.com/sei40kr/gitignore-snippets][Snippets]]
 #+begin_src emacs-lisp
@@ -7358,8 +7353,8 @@ Archive when done, remove flag if reset to todo.
                              (800 930 1000 1230 1300 1600 1800)
                              "──────────" "──────────")
       org-agenda-todo-keyword-format "%-14s")
-#+END_SRC
 #+begin_src emacs-lisp
+#+end_src
 
 *** Custom Views
 #+begin_src emacs-lisp
@@ -7867,9 +7862,9 @@ Archive when done, remove flag if reset to todo.
 ** System
 *** [[https://github.com/tecosaur/emacs-everywhere][Use emacs for editing everywhere]]
 Add global shortcut with
-#+BEGIN_SRC shell :tangle no
+#+begin_src shell :tangle no
 emacsclient --eval "(emacs-everywhere)"
-#+END_SRC
+#+end_src
 
 #+begin_src emacs-lisp
 (use-package emacs-everywhere)
@@ -7962,7 +7957,7 @@ Do not use scientific form so quickly
 #+end_src
 
 ** [[https://www.emacswiki.org/emacs/TrampMode][Network Devices]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package tramp
   :custom
   (tramp-adb-connect-if-not-connected t)
