@@ -2315,48 +2315,55 @@ https://github.com/purcell/exec-path-from-shell
 #+end_src
 
 **** Run freedesktop applications
-#+BEGIN_SRC emacs-lisp
-(defun cpped-run-application ()
-  "Run a freedesktop application."
+#+begin_src emacs-lisp
+(defun shark-bytes/xdg-application-candidates (&optional mime-type)
+  "Get a list of (name . exec) entries for XDG applications, optionally limited to MIME-TYPE."
+  (-non-nil (mapcar (lambda (entry)
+                      (let* ((entry-data (xdg-desktop-read-file entry))
+                             (hidden (gethash "Hidden" entry-data "false"))
+                             (nodisplay (gethash "NoDisplay" entry-data "false")))
+                        (unless (or (string= hidden "true")
+                                    (string= hidden "1")
+                                    (string= nodisplay "true")
+                                    (string= nodisplay "1")
+                                    (not (string= (gethash "Type" entry-data) "Application"))
+                                    (not (executable-find (gethash "TryExec" entry-data "true"))))
+                          (cons (propertize (format "%s %s"
+                                                    (let ((name (gethash "Name" entry-data))
+                                                          (generic-name (gethash "GenericName" entry-data)))
+                                                      (if (and generic-name
+                                                               (not (string= name generic-name)))
+                                                          (format "%s %s" name (propertize generic-name 'face '(:height 0.7 :weight extra-light :slant italic)))
+                                                        name))
+                                                    (propertize (gethash "Keywords" entry-data "") 'invisible t))
+                                            'help-echo (gethash "Comment" entry-data ""))
+                                (replace-regexp-in-string "%[dDinNmv]" "" (replace-regexp-in-string "%k" entry (replace-regexp-in-string "%c" (gethash "Name" entry-data) (gethash "Exec" entry-data))))))))
+                    (if mime-type
+                        (xdg-mime-apps mime-type)
+                      (-flatten (-non-nil (mapcar (lambda (directory)
+                                                    (let ((directory (expand-file-name "applications" directory)))
+                                                      (when (and (file-exists-p directory) (file-readable-p directory))
+                                                        (directory-files-recursively directory ".*\.desktop"))))
+                                                  (split-string (getenv "XDG_DATA_DIRS") ":"))))))))
+
+(defun shark-bytes/xdg-open-with (&optional file)
+  "Open FILE with a associated XDG application."
   (interactive)
-  (helm :sources (helm-build-sync-source "Applications"
-                   :candidates (let ((candidates))
-                                 (mapcar (lambda (directory)
-                                           (let ((desktop-directory (expand-file-name "applications" directory)))
-                                             (when (file-exists-p desktop-directory)
-                                               (mapcar (lambda (desktop-file)
-                                                         (with-temp-buffer
-                                                           (insert-file-contents desktop-file)
-                                                           (let ((content (buffer-string)))
-                                                             (when (and (not (string-match (rx bol (or "Hidden" "NoDisplay") (0+ (in space)) "=" (0+ (in space)) "true") content))
-                                                                        (string-match (rx bol "Type" (0+ (in space)) "=" (0+ (in space)) "Application") content)
-                                                                        (or (not (string-match (rx bol "TryExec" (0+ (in space)) "=" (0+ (in space)) (group (+ any))) content))
-                                                                            (executable-find (match-string-no-properties 1 content))))
-                                                               (let ((simple-name)
-                                                                     (name)
-                                                                     (exec))
-                                                                 (when (string-match (rx bol "Name" (0+ (in space)) "=" (0+ (in space)) (group (+ any)) eol) content)
-                                                                   (setq simple-name (match-string-no-properties 1 content))
-                                                                   (setq name simple-name)
-                                                                   (when (and (string-match (rx bol "GenericName" (0+ (in space)) "=" (0+ (in space)) (group (+ any)) eol) content)
-                                                                              (not (equal name (match-string-no-properties 1 content))))
-                                                                     (setq name (format "%s %s" simple-name (propertize (match-string-no-properties 1 content) 'face '(:weight extra-light :slant italic)))))
-                                                                   (when (string-match (rx bol "Keywords" (0+ (in space)) "=" (0+ (in space)) (group (+ any)) eol) content)
-                                                                     (setq name (format "%s %s" name (propertize (match-string-no-properties 1 content) 'invisible t))))
-                                                                   (when (string-match (rx bol "Comment" (0+ (in space)) "=" (0+ (in space)) (group (+ any)) eol) content)
-                                                                     (setq name (propertize name 'help-echo (match-string-no-properties 1 content))))
-                                                                   (when (string-match (rx bol "Exec" (0+ (in space)) "=" (0+ (in space)) (group (+ any)) eol) content)
-                                                                     (setq exec (split-string (replace-regexp-in-string "%k" desktop-file (replace-regexp-in-string "%c" simple-name (replace-regexp-in-string "%[FfUuDdNnivm]" "" (match-string-no-properties 1 content))))))
-                                                                     (push (cons name exec) candidates))))))))
-                                                       (directory-files-recursively desktop-directory ".*\.desktop")))))
-                                         (split-string (getenv "XDG_DATA_DIRS") ":"))
-                                 candidates)
-                   :action (helm-make-actions "Run" (lambda (selection)
-                                                      (make-process :name (car selection)
-                                                                    :buffer (format "*%s*" (car selection))
-                                                                    :command selection))))
-        :prompt "Run: "
-        :buffer "*Applications*"))
+  (let* ((candidates (shark-bytes/xdg-application-candidates (when file
+                                                                 (s-replace "\n" "" (shell-command-to-string (format "xdg-mime query filetype %s" file))))))
+         (selection (completing-read (if file
+                                         "Open with: "
+                                       "Run: ") candidates nil t nil 'shark-bytes/xdg-open)))
+    (when selection
+      (message "%s %s" (cdr (assoc selection candidates)) file)
+      (make-process :name selection
+                    :buffer (format "*%s*" selection)
+                    :command (split-string (replace-regexp-in-string "%[fFuU]" (or file "") (cdr (assoc selection candidates)) t))))))
+
+(defun shark-bytes/xdg-run-application ()
+  "Run an XDG application."
+  (interactive)
+  (shark-bytes/xdg-open-with))
 
 (with-eval-after-load "consult"
   (push "\\*Applications\\*" consult-buffer-filter))
@@ -2686,21 +2693,16 @@ https://github.com/purcell/exec-path-from-shell
   :bind (:map dired-mode-map ("v" . peep-dired)))
 #+end_src
 
-**** [[https://github.com/dalanicolai/mediator][Open in application]]
-#+BEGIN_SRC emacs-lisp
-(use-package mediator
-  :straight (mediator
-             :type git
-             :host github
-             :repo "dalanicolai/mediator")
-  :bind (:map dired-mode-map ("o" . cpped-dired-open-xdg))
-  :custom (mediator-data-directories "/usr/share//")
-  :config
-  (defun cpped-dired-open-xdg ()
-    "Open a file selected in dired with the default xdg application."
-    (interactive)
-    (mediator-open-file (dired-get-file-for-visit))))
-#+END_SRC
+**** Open in application
+#+begin_src emacs-lisp
+(defun shark-bytes/dired-xdg-open (file)
+  "Open FILES with XDG applications."
+  (interactive (list (or (car (dired-get-marked-files))
+                         (dired-get-filename))) dired-mode)
+  (shark-bytes/xdg-open-with file))
+
+(define-key dired-mode-map "o" #'shark-bytes/dired-xdg-open)
+#+end_src
 
 **** Diff files
 #+begin_src emacs-lisp
@@ -2753,7 +2755,7 @@ https://github.com/purcell/exec-path-from-shell
                        (dired-get-marked-files)
                        "")))
 
-(define-key dired-mode-map "o" 'cpped-dired-ocr)
+(define-key dired-mode-map "E" 'cpped-dired-ocr)
 #+end_src
 
 *** [[https://github.com/Alexander-Miller/treemacs][Treemacs]]
