@@ -398,6 +398,7 @@ alias mv="mv -i"
 alias p="ps aux"
 alias t="htop"
 alias top="htop"
+alias extract="atool --extract --subdir --explain $*"
 alias x="extract"
 alias yank="yank-cli"
 

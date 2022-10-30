@@ -1905,7 +1905,8 @@ https://github.com/purcell/exec-path-from-shell
   (eshell/alias "mkdir" "mkdir -p $*")
   (eshell/alias "mv" "mv -i $*")
   (eshell/alias "p" "ps aux $*")
-  (eshell/alias "x" "extract $*")
+  (eshell/alias "extract" "atool --extract --subdir --explain $*")
+  (eshell/alias "x" "atool --extract --subdir --explain $*")
   (eshell/alias "ag" "ag --smart-case $*")
 
   (when (executable-find "ninja-build")
@@ -1942,6 +1943,7 @@ https://github.com/purcell/exec-path-from-shell
         (eshell-printn
           (pcase type
             ((or "gif" "jpeg" "jpg" "png" "svg" "tiff") (propertize " " 'display (create-image file)))
+            ((or "ace" "arj" "bz2" "cpio" "gz" "lha" "lz" "rar" "rpm" "tar" "zip") (shell-command-to-string (format "atool --list %s" file)))
             (_ (with-temp-buffer
                  (insert-file-contents file)
                  (let ((buffer-file-name file))
