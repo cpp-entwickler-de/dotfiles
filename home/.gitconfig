@@ -305,7 +305,7 @@ add-files = !git add $(git status | sed -e 's/^[[:blank:][:alnum:][:punct:]].[[:
 
 # Mark commit as fix for given revision
 fix = commit --fixup
-fixup = commit --fixup
+fixup = "!git log -n 100 --pretty=format:'%h %s' --no-merges | fzf | cut -c -7 | xargs -o git commit --fixup"
 
 # create zip archive
 zip = archive --format zip
