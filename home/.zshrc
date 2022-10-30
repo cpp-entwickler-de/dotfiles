@@ -311,6 +311,7 @@ alias cp="cp -i"
 alias du="du -h"
 alias gti="git"
 alias gitroot='cd $(git root)'
+alias lisp='emacs -Q --batch -l cl-lib --eval "(cl-loop (print (eval (read))))"'
 
 if command -v fzf > /dev/null; then
     function helm()
