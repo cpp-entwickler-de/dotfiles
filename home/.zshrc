@@ -174,6 +174,8 @@ export LESS_TERMCAP_me=$(printf "\e[0m")
 export LESS_TERMCAP_se=$(printf "\e[0m")
 export LESS_TERMCAP_ue=$(printf "\e[0m")
 
+export RIPGREP_CONFIG_PATH="~/.ripgreprc"
+
 # Select browser
 if [ -n "$DISPLAY" ]; then
     export BROWSER=firefox

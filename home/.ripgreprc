@@ -1,0 +1,23 @@
+# limit line length
+--max-columns=150
+
+# show preview
+--max-columns-preview
+
+# follow symbolic links while traversing directories
+--follow
+
+# search hidden files and directories
+--hidden
+
+# show line numbers
+--line-number
+
+# whenever a file path is printed, follow it with a NUL byte
+--null
+
+# search in compressed files
+--search-zip
+
+# search case insensitively if the pattern is all lowercase
+--smart-case
