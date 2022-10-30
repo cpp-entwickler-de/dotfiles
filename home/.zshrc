@@ -386,7 +386,7 @@ alias dnf="sudo dnf"
 alias log="sudo lnav"
 alias sysinfo="glances -1 --tree --fs-free-space --process-short-name -C ~/.config/glances"
 
-alias find="fd --glob"
+alias fd="fd --glob"
 alias r=$LESS_COMMAND
 alias l="ls -AFhl1v --color --group-directories-first $*"
 alias lstree="l -R $*"
