@@ -20,30 +20,30 @@ fi
 for ARGUMENT in "$@"; do
     case $ARGUMENT in
         --packages)
-        PACKAGES=TRUE
-        ;;
+            PACKAGES=TRUE
+            ;;
         --links)
-        LINKS=TRUE
-        ;;
+            LINKS=TRUE
+            ;;
         --printers)
-        PRINTERS=TRUE
-        ;;
+            PRINTERS=TRUE
+            ;;
         --fonts)
-        FONTS=TRUE
-        ;;
+            FONTS=TRUE
+            ;;
         --shell)
-        SHELL=TRUE
-        ;;
+            SHELL=TRUE
+            ;;
         --all)
-        PACKAGES=TRUE
-        LINKS=TRUE
-        PRINTERS=TRUE
-        FONTS=TRUE
-        SHELL=TRUE
-        ;;
+            PACKAGES=TRUE
+            LINKS=TRUE
+            PRINTERS=TRUE
+            FONTS=TRUE
+            SHELL=TRUE
+            ;;
         *)
-        show_help
-        ;;
+            show_help
+            ;;
     esac
     shift
 done
@@ -134,29 +134,29 @@ if [ "$LINKS" = TRUE ]; then
             mv "$GIT_USER_FILE" "$GIT_USER_FILE"".bak"
         fi
         echo -e "[user]\nname = $USER_NAME\nemail = $EMAIL" > "$GIT_USER_FILE"
-        
+
         function read_xml
         {
             local IFS=\>
             read -r -d \< TAG VALUE
         }
-        
+
         while read_xml; do
             case $TAG in
                 City)
                     CITY="$VALUE"
-                ;;
+                    ;;
                 Latitude)
                     LATITUDE="$VALUE"
-                ;;
+                    ;;
                 Longitude)
                     LONGITUDE="$VALUE"
-                ;;
-                *)
-                ;;
+                    ;;
+                *) ;;
+
             esac
         done <<< "$(curl --location --silent freegeoip.net/xml)"
-        
+
         read -r -e -p "Please enter your location name: " -i "$CITY" CITY
         read -r -e -p "Please enter your latitude:      " -i "$LATITUDE" LATITUDE
         read -r -e -p "Please enter your longitude:     " -i "$LONGITUDE" LONGITUDE

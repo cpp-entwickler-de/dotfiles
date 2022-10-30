@@ -57,7 +57,8 @@ LAST_EXIT_CODE=0
 TIME_SINCE_LAST_COMMAND=0
 
 TMOUT=1800
-TRAPALRM() {
+TRAPALRM()
+{
     if [ $? -eq 0 -a ! -f /.dockerenv ]; then
         exit
     fi
@@ -67,12 +68,14 @@ TRAPALRM() {
 autoload -U add-zsh-hook
 
 COMMAND_START_TIME=0
-function cpped-save-timestamp() {
+function cpped-save-timestamp()
+{
     COMMAND_START_TIME=$SECONDS
 }
 
 if command -v notify-send > /dev/null; then
-    function cpped-notify-command-finished() {
+    function cpped-notify-command-finished()
+    {
         RETURN_CODE=$?
         TIME_NEEDED=$((SECONDS - COMMAND_START_TIME))
         if [ $TIME_NEEDED -gt $REPORTTIME ]; then
@@ -174,7 +177,7 @@ export LESS_TERMCAP_ue=$(printf "\e[0m")
 # Select browser
 if [ -n "$DISPLAY" ]; then
     export BROWSER=firefox
-else 
+else
     export BROWSER=links2
 fi
 
@@ -251,18 +254,20 @@ setopt nobeep
 # Use emacs keybindings
 setopt emacs
 # Use existing process if available
-setopt autoresume 
+setopt autoresume
 
 # Disable line editor in emacs shell mode
 [[ $EMACS = t ]] && unsetopt zle
 
 case $(tty) in /dev/tty[0-9]*)
-     setterm -blength 0 
+    setterm -blength 0
+    ;;
 esac
 
 # Skip directories with no files
 zmodload zsh/parameter
-function chpwd() {
+function chpwd()
+{
     LIST=true
     if [[ ! $history[$HISTCMD] =~ "cd +[\./]+" ]]; then
         ITEMS=$(ls -A)
@@ -283,7 +288,8 @@ source /usr/share/fzf/shell/key-bindings.zsh
 
 export FZF_DEFAULT_OPTS='--reverse --inline-info --prompt="▶ " --select-1 --exit-0'
 
-function edit() {
+function edit()
+{
     local FILES
     FILES="$*"
     [[ ! -a $@ ]] && IFS=$'\n' FILES=($(fzf-tmux --query="$FILES" --multi))
@@ -332,8 +338,8 @@ if command -v fzf > /dev/null; then
         done
         if [[ -n "$PROCESS_NAMES" || -z "$PIDS" ]]; then
             local PIDS=($PIDS $(ps aux | fzf --multi --query="$PROCESS_NAMES" --exit-0 | while IFS= read -r LINE; do
-                                    echo $LINE | tr -s " " | cut --delimiter=\  -f 2; 
-                                done))
+                echo $LINE | tr -s " " | cut --delimiter=\  -f 2
+            done))
         fi
         if [[ -n "$PIDS" ]]; then
             $KILL_COMMAND $KILL_ARGUMENTS $PIDS
@@ -341,18 +347,19 @@ if command -v fzf > /dev/null; then
     }
 fi
 
-function largest() {
+function largest()
+{
     local FILTER_VALUE=d
     local MAXDEPTH=-maxdepth
     local DEPTH=1
     for ARGUMENT in "$@"; do
         case $ARGUMENT in
-            -f|--files)
+            -f | --files)
                 local FILTER_VALUE=f
                 ;;
-            -d|--directories)
-                ;;
-            -r|--recursive)
+            -d | --directories) ;;
+
+            -r | --recursive)
                 local MAXDEPTH=
                 local DEPTH=
                 ;;
@@ -370,7 +377,7 @@ function largest() {
         MODE=';'
     fi
 
-    find $DIRECTORY $MAXDEPTH $DEPTH -type $FILTER_VALUE -exec du --summarize --human-readable {} "$MODE" 2>/dev/null | sort --reverse --human-numeric-sort | uniq | head --lines=10 | sed -r -e 's%/$%%' -e 's%\./+(.)%\1%'
+    find $DIRECTORY $MAXDEPTH $DEPTH -type $FILTER_VALUE -exec du --summarize --human-readable {} "$MODE" 2> /dev/null | sort --reverse --human-numeric-sort | uniq | head --lines=10 | sed -r -e 's%/$%%' -e 's%\./+(.)%\1%'
 }
 
 alias dnf="sudo dnf"
@@ -400,7 +407,7 @@ alias mac2unix="recode mac..lat1"
 
 alias magit='e --eval "(magit-status \"$(pwd)\")" &> /dev/null'
 
-function smart-enter ()
+function smart-enter()
 {
     if [[ -n $BUFFER ]]; then
         zle reset-prompt
@@ -415,7 +422,7 @@ zle -N smart-enter
 bindkey "^M" smart-enter
 
 if command -v fzf > /dev/null; then
-    function ssh-connect ()
+    function ssh-connect()
     {
         CONNECTIONS=$(fc -ln -10000 | grep -E "^ssh\s" | sed -e 's/\s*$//' | sort | uniq -c | sort -nr | sed -e "s/^\s*[0-9]*\s//")
         if [ "$CONNECTIONS" ]; then
@@ -605,13 +612,13 @@ function prompt_left()
 
 function git_info()
 {
-    GIT_DIR=$(git rev-parse --git-dir 2>/dev/null)
+    GIT_DIR=$(git rev-parse --git-dir 2> /dev/null)
     if [[ -n $GIT_DIR ]]; then
-        REF=$(git symbolic-ref --short HEAD 2>/dev/null) || REF=$(git rev-parse --short HEAD 2> /dev/null)
+        REF=$(git symbolic-ref --short HEAD 2> /dev/null) || REF=$(git rev-parse --short HEAD 2> /dev/null)
 
         GIT_STATUS=$(git status --porcelain --ignore-submodules)
         if [[ -n "$GIT_STATUS" ]]; then
-            if echo $GIT_STATUS | ag --silent -c "^[ ]?M" -- >/dev/null; then
+            if echo $GIT_STATUS | ag --silent -c "^[ ]?M" -- > /dev/null; then
                 if [ -n "$DISPLAY" ]; then
                     MODIFIED="✎"
                 else
@@ -619,7 +626,7 @@ function git_info()
                 fi
             fi
 
-            if echo $GIT_STATUS | ag --silent -c "^.?" -- >/dev/null; then
+            if echo $GIT_STATUS | ag --silent -c "^.?" -- > /dev/null; then
                 if [ -n "$DISPLAY" ]; then
                     MODIFIED="$MODIFIED🟊"
                 else
@@ -679,29 +686,66 @@ function git_info()
     fi
 }
 
-function emoji-clock() {
+function emoji-clock()
+{
     if [ -n "$DISPLAY" ]; then
         # Add 15 minutes to the current time and save the value as $minutes.
-        (( minutes = $(date '+%_M') + 15 ))
-        (( hour = $(date '+%_I') + $minutes / 60 ))
+        ((minutes = $(date '+%_M') + 15))
+        ((hour = $(date '+%_I') + $minutes / 60))
         # make sure minutes and hours don't exceed 60 nor 12 respectively
-        (( minutes %= 60 ))
-        (( hour %= 12 ))
+        ((minutes %= 60))
+        ((hour %= 12))
 
         case $hour in
-            0) clock="🕛"; [ $minutes -ge 30 ] && clock="🕧";;
-            1) clock="🕐"; [ $minutes -ge 30 ] && clock="🕜";;
-            2) clock="🕑"; [ $minutes -ge 30 ] && clock="🕝";;
-            3) clock="🕒"; [ $minutes -ge 30 ] && clock="🕞";;
-            4) clock="🕓"; [ $minutes -ge 30 ] && clock="🕟";;
-            5) clock="🕔"; [ $minutes -ge 30 ] && clock="🕠";;
-            6) clock="🕕"; [ $minutes -ge 30 ] && clock="🕡";;
-            7) clock="🕖"; [ $minutes -ge 30 ] && clock="🕢";;
-            8) clock="🕗"; [ $minutes -ge 30 ] && clock="🕣";;
-            9) clock="🕘"; [ $minutes -ge 30 ] && clock="🕤";;
-            10) clock="🕙"; [ $minutes -ge 30 ] && clock="🕥";;
-            11) clock="🕚"; [ $minutes -ge 30 ] && clock="🕦";;
-            *) clock="";;
+            0)
+                clock="🕛"
+                [ $minutes -ge 30 ] && clock="🕧"
+                ;;
+            1)
+                clock="🕐"
+                [ $minutes -ge 30 ] && clock="🕜"
+                ;;
+            2)
+                clock="🕑"
+                [ $minutes -ge 30 ] && clock="🕝"
+                ;;
+            3)
+                clock="🕒"
+                [ $minutes -ge 30 ] && clock="🕞"
+                ;;
+            4)
+                clock="🕓"
+                [ $minutes -ge 30 ] && clock="🕟"
+                ;;
+            5)
+                clock="🕔"
+                [ $minutes -ge 30 ] && clock="🕠"
+                ;;
+            6)
+                clock="🕕"
+                [ $minutes -ge 30 ] && clock="🕡"
+                ;;
+            7)
+                clock="🕖"
+                [ $minutes -ge 30 ] && clock="🕢"
+                ;;
+            8)
+                clock="🕗"
+                [ $minutes -ge 30 ] && clock="🕣"
+                ;;
+            9)
+                clock="🕘"
+                [ $minutes -ge 30 ] && clock="🕤"
+                ;;
+            10)
+                clock="🕙"
+                [ $minutes -ge 30 ] && clock="🕥"
+                ;;
+            11)
+                clock="🕚"
+                [ $minutes -ge 30 ] && clock="🕦"
+                ;;
+            *) clock="" ;;
         esac
         echo $clock
     else
