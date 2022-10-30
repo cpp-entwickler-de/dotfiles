@@ -2761,6 +2761,7 @@ https://github.com/purcell/exec-path-from-shell
 *** [[https://github.com/Alexander-Miller/treemacs][Treemacs]]
 #+begin_src emacs-lisp
 (use-package treemacs
+  :demand t
   :after consult
   :bind ("<f1>" . treemacs)
   :custom
