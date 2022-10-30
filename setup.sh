@@ -115,6 +115,7 @@ if [ "$LINKS" = TRUE ]; then
         make_link "$FILE" "$LINK"
     done
     ln -s "$DOTFILES_DIRECTORY/home/early-init.el" "$(realpath ~)/.config/emacs/early-init.el"
+    ln -s "$DOTFILES_DIRECTORY/home/init.el" "$(realpath ~)/.config/emacs/init.el"
     ln -s "$DOTFILES_DIRECTORY/home/.emacs-config.el" "$(realpath ~)/.emacs-config.el"
 
     make_link "$DOTFILES_DIRECTORY/home/cpp-entwickler.de-theme.el" "$(realpath ~)/.emacs.d/cpp-entwickler.de-theme.el"
