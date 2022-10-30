@@ -1,0 +1,22 @@
+set atblanks
+set fill 120
+set guidestripe 120
+set minibar
+set indicator
+set autoindent
+set constantshow
+set cutfromcursor
+set linenumbers
+set positionlog
+set smarthome
+set softwrap
+set tabsize 4
+set tabstospaces
+set trimblanks
+set zap
+set magic
+set boldtext
+set keycolor grey
+set functioncolor grey
+set numbercolor italic,grey
+set stripecolor grey
