@@ -2597,7 +2597,8 @@ https://github.com/purcell/exec-path-from-shell
       dired-recursive-copies 'always
       dired-recursive-deletes 'top
       dired-dwim-target t
-      dired-create-destination-dirs 'ask)
+      dired-create-destination-dirs 'ask
+      dired-vc-rename-file t)
 #+end_src
 
 **** Re-use dired buffers
