@@ -237,7 +237,7 @@ user = cpp-entwickler-de
 
 
 [credential]
-# store credentials in memoty
+# store credentials in memory
 helper = cache
 
 
