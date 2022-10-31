@@ -114,16 +114,16 @@ if [ "$LINKS" = TRUE ]; then
         LINK="$(realpath ~)/$(basename "$FILE")"
         make_link "$FILE" "$LINK"
     done
-    ln -s "$DOTFILES_DIRECTORY/home/early-init.el" "$(realpath ~)/.config/emacs/early-init.el"
-    ln -s "$DOTFILES_DIRECTORY/home/init.el" "$(realpath ~)/.config/emacs/init.el"
-    ln -s "$DOTFILES_DIRECTORY/home/.emacs-config.el" "$(realpath ~)/.emacs-config.el"
+    ln -s "$DOTFILES_DIRECTORY/home/early-init.el" "$(realpath ~)/.emacs.d/early-init.el"
+    ln -s "$DOTFILES_DIRECTORY/home/init.el" "$(realpath ~)/.emacs.d/init.el"
+    ln -s "$DOTFILES_DIRECTORY/home/.emacs-config.el" "$(realpath ~)/.emacs.d/emacs-config.el"
 
     make_link "$DOTFILES_DIRECTORY/home/cpp-entwickler.de-theme.el" "$(realpath ~)/.emacs.d/cpp-entwickler.de-theme.el"
     make_link "$DOTFILES_DIRECTORY/home/glances" "$(realpath ~)/.config/glances"
     make_link "$DOTFILES_DIRECTORY/home/mc" "$(realpath ~)/.config/mc"
     make_link "$DOTFILES_DIRECTORY/home/htoprc" "$(realpath ~)/.config/htop/htoprc"
 
-    EMACS_USER_FILE=~/.emacs.user
+    EMACS_USER_FILE=~/.emacs.d/user-config.el
     GIT_USER_FILE=~/.gitconfig.user
     if [ ! -s "$EMACS_USER_FILE" ] || [ ! -s "$GIT_USER_FILE" ]; then
         USER_NAME=$(/bin/grep -P "^$(whoami):" /etc/passwd | cut -f5 -d:)

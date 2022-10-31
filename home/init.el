@@ -21,7 +21,7 @@
 (straight-use-package 'use-package)
 
 ;; Save customizations to different file
-(setq custom-file "~/.emacs.d/customizations.el")
+(setq custom-file (expand-file-name "customizations.el" user-emacs-directory))
 (load custom-file 'noerror)
 
 (setq vc-follow-symlinks t
@@ -36,7 +36,7 @@
       (gc-cons-percentage 0.6))
   (use-package org)
   ;; Load actual configuration.
-  (org-babel-load-file "~/.emacs-config.org"))
+  (org-babel-load-file "~/.dotfiles/home/emacs-config.org"))
 
 (setq gc-cons-threshold (* 100 1024 1024)
       gc-cons-percentage 0.2)

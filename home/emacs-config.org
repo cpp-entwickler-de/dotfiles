@@ -6,7 +6,7 @@
 
 *  Custom configuration
 #+begin_src emacs-lisp
-(load "~/.emacs.user" t t)
+(load (expand-file-name "user-config.el" user-emacs-directory) t t)
 #+end_src
 
 *  Package Management
@@ -2392,7 +2392,7 @@ https://github.com/purcell/exec-path-from-shell
 *  File Handling
 ** Config
 #+begin_src emacs-lisp
-(defvar shark-bytes/config-file "~/.emacs-config.org")
+(defvar shark-bytes/config-file "~/.dotfiles/home/emacs-config.org")
 #+end_src
 
 ** Ignore case for file names
