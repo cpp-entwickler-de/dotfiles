@@ -1,33 +1,3 @@
-;;  *temp*
-;;
-;; Date: 2022-09-04
-;; Author: Martin Schön <martin.schoen@shark-bytes.de>
-;; Copyright © SharkBytes GmbH. All rights reserved.
-
-;;  *temp*
-;;
-;; Date: 2022-09-04
-;; Author: Martin Schön <martin.schoen@shark-bytes.de>
-;; Copyright © SharkBytes GmbH. All rights reserved.
-
-;;  *temp*
-;;
-;; Date: 2022-08-27
-;; Author: Martin Schön <martin.schoen@shark-bytes.de>
-;; Copyright © SharkBytes GmbH. All rights reserved.
-
-;;  *temp*
-;;
-;; Date: 2022-08-27
-;; Author: Martin Schön <martin.schoen@shark-bytes.de>
-;; Copyright © SharkBytes GmbH. All rights reserved.
-
-;;  *temp*
-;;
-;; Date: 2022-08-27
-;; Author: Martin Schön <martin.schoen@shark-bytes.de>
-;; Copyright © SharkBytes GmbH. All rights reserved.
-
 (deftheme shark-bytes
   "Created 2022-04-09.")
 
