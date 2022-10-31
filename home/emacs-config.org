@@ -676,12 +676,12 @@ The saturation for non-saturated colors is 60.
     (interactive)
     (unless shark-bytes/project-dir-checked
       (setq shark-bytes/project-dir (or (when (and (ignore-errors (projectile-project-p))
-					     (fboundp 'projectile-project-root))
-				    (projectile-project-root))
-				  (when vc-mode
-				    (let ((backend (vc-deduce-backend)))
-				      (when backend
-					(ignore-errors (vc-call-backend backend 'root default-directory)))))))
+                                                   (fboundp 'projectile-project-root))
+                                          (projectile-project-root))
+                                        (when vc-mode
+                                          (let ((backend (vc-deduce-backend)))
+                                            (when backend
+                                              (ignore-errors (vc-call-backend backend 'root default-directory)))))))
       (setq shark-bytes/project-dir-checked t))
     shark-bytes/project-dir)
 
@@ -691,19 +691,19 @@ The saturation for non-saturated colors is 60.
         (let* ((project-root (shark-bytes/project-dir))
                (project-name (projectile-project-name project-root))
                (remote (if (shark-bytes/tramp-file-remote-p buffer-location)
-			   (tramp-file-name-host (tramp-dissect-file-name buffer-location))))
+                           (tramp-file-name-host (tramp-dissect-file-name buffer-location))))
                (localname (if (tramp-tramp-file-p buffer-location)
                               (tramp-file-local-name buffer-location)
-			    buffer-location)))
+                            buffer-location)))
           (concat (when remote ((format " %s " remote))
                   (if (string-prefix-p (getenv "HOME") localname)
                       (replace-regexp-in-string "/Projects/" "🗐 " (concat "/"
                                                                            (file-name-directory (directory-file-name (file-relative-name (file-name-directory (or project-root
                                                                                                                                                            (file-name-directory localname)))
-											  (getenv "HOME"))))))
-	     (concat "" (file-name-directory (directory-file-name (file-name-directory (tramp-file-local-name (or project-root
-										                                   localname)))))))
-	   (when (not (= 0 (length project-name))) (concat " " project-name))))))))
+                                                                                                                                         (getenv "HOME"))))))
+                    (concat "" (file-name-directory (directory-file-name (file-name-directory (tramp-file-local-name (or project-root
+                                                                                                                          localname)))))))
+                  (when (not (= 0 (length project-name))) (concat " " project-name)))))))))
 #+end_src
 
 *** Major mode icon
