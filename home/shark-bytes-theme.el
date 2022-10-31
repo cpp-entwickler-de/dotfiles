@@ -34,6 +34,8 @@
 (custom-theme-set-faces
  'shark-bytes
  `(avy-background-face ((t (:foreground ,shark-bytes-shadow :background ,shark-bytes-window-background :extend t))))
+ `(auto-dim-other-buffers-face ((t (:background ,shark-bytes-block-background :extend t))))
+ `(auto-dim-other-buffers-hide-face ((t (:foreground ,shark-bytes-block-background :background ,shark-bytes-block-background :extend t))))
  `(avy-lead-face ((t (:foreground ,shark-bytes-text :background ,shark-bytes-cozy))))
  '(avy-lead-face-0 ((t (:inherit avy-lead-face))))
  '(avy-lead-face-1 ((t (:inherit avy-lead-face))))
