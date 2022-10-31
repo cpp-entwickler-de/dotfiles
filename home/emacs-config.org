@@ -1570,7 +1570,8 @@ Switch to previous buffer
 *** [[https://github.com/mina86/auto-dim-other-buffers.el][Dim inactive buffers]]
 #+begin_src emacs-lisp
 (use-package auto-dim-other-buffers
-  :hook (after-init . auto-dim-other-buffers-mode))
+  :hook (after-init . auto-dim-other-buffers-mode)
+  :custom (auto-dim-other-buffers-dim-on-focus-out nil))
 #+end_src
 
 *** Use recursive minibuffer
