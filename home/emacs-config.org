@@ -512,40 +512,38 @@ Prettify escaped newline
 *** Colors
 Taken from SharkBytes background image.
 #+begin_src emacs-lisp
-
-#+begin_src emacs-lisp
-(defvar shark-bytes-ok-saturated           "#35E356" "")
-(defvar shark-bytes-info-saturated         "#E3D835" "")
-(defvar shark-bytes-warning-saturated      "#E38635" "")
-(defvar shark-bytes-error-saturated        "#E3353C" "Background color for windows.")
-(defvar shark-bytes-burning-saturated      "#E335A6" ".")
-(defvar shark-bytes-hot-saturated          "#CA36BB" ".")
-(defvar shark-bytes-warm-saturated         "#B137CF" ".")
-(defvar shark-bytes-cozy-saturated         "#9939E2" ".")
-(defvar shark-bytes-mild-saturated         "#8139F4" ".")
-(defvar shark-bytes-bleak-saturated        "#6F3BFD" ".")
-(defvar shark-bytes-chilly-saturated       "#563DF9" ".")
-(defvar shark-bytes-cold-saturated         "#3D3FF3" ".")
-(defvar shark-bytes-icy-saturated          "#2442ED" ".")
-(defvar shark-bytes-freezing-saturated     "#0C43E8" ".")
+(defvar shark-bytes-ok-saturated           "#35E356" "Color for okay messages (saturated).")
+(defvar shark-bytes-info-saturated         "#E3D835" "Color for information (saturated).")
+(defvar shark-bytes-warning-saturated      "#E38635" "Color for warnings (saturated).")
+(defvar shark-bytes-error-saturated        "#E3353C" "Color for errors (saturated).")
+(defvar shark-bytes-burning-saturated      "#E335A6" "Color for burning priority (saturated).")
+(defvar shark-bytes-hot-saturated          "#CA36BB" "Color for hot priority (saturated).")
+(defvar shark-bytes-warm-saturated         "#B137CF" "Color for warm priority (saturated).")
+(defvar shark-bytes-cozy-saturated         "#9939E2" "Color for cozy priority (saturated).")
+(defvar shark-bytes-mild-saturated         "#8139F4" "Color for mild priority (saturated).")
+(defvar shark-bytes-bleak-saturated        "#6F3BFD" "Color for bleak priority (saturated).")
+(defvar shark-bytes-chilly-saturated       "#563DF9" "Color for chilly priority (saturated).")
+(defvar shark-bytes-cold-saturated         "#3D3FF3" "Color for cold priority (saturated).")
+(defvar shark-bytes-icy-saturated          "#2442ED" "Color for icy priority (saturated).")
+(defvar shark-bytes-freezing-saturated     "#0C43E8" "Color for freezinh priority (saturated).")
 #+end_src
 
 The saturation for non-saturated colors is 60.
 #+begin_src emacs-lisp
-(defvar shark-bytes-ok                     "#5BE375" "")
-(defvar shark-bytes-info                   "#E3DA5B" "")
-(defvar shark-bytes-warning                "#E39A5B" "")
-(defvar shark-bytes-error                  "#E35B60" "Background color for windows.")
-(defvar shark-bytes-burning                "#E35BB3" ".")
-(defvar shark-bytes-hot                    "#CA51BE" ".")
-(defvar shark-bytes-warm                   "#B653CF" ".")
-(defvar shark-bytes-cozy                   "#A75AE2" ".")
-(defvar shark-bytes-mild                   "#9A62F4" ".")
-(defvar shark-bytes-bleak                  "#8E65FD" ".")
-(defvar shark-bytes-chilly                 "#7764F9" ".")
-(defvar shark-bytes-cold                   "#6163F3" ".")
-(defvar shark-bytes-icy                    "#5F74ED" ".")
-(defvar shark-bytes-freezing               "#5D80E8" ".")
+(defvar shark-bytes-ok                     "#5BE375" "Color for okay messages.")
+(defvar shark-bytes-info                   "#E3DA5B" "Color for information.")
+(defvar shark-bytes-warning                "#E39A5B" "Color for warnings.")
+(defvar shark-bytes-error                  "#E35B60" "Color for errors.")
+(defvar shark-bytes-burning                "#E35BB3" "Color for burning priority.")
+(defvar shark-bytes-hot                    "#CA51BE" "Color for hot priority.")
+(defvar shark-bytes-warm                   "#B653CF" "Color for warm priority.")
+(defvar shark-bytes-cozy                   "#A75AE2" "Color for cozy priority.")
+(defvar shark-bytes-mild                   "#9A62F4" "Color for mild priority.")
+(defvar shark-bytes-bleak                  "#8E65FD" "Color for bleak priority.")
+(defvar shark-bytes-chilly                 "#7764F9" "Color for chilly priority.")
+(defvar shark-bytes-cold                   "#6163F3" "Color for cold priority.")
+(defvar shark-bytes-icy                    "#5F74ED" "Color for icy priority.")
+(defvar shark-bytes-freezing               "#5D80E8" "Color for freezing priority.")
 #+end_src
 
 #+begin_src emacs-lisp
