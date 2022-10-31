@@ -60,13 +60,13 @@ Do not ask for confirmation for new shell buffers
   :ensure-system-package ((pip . python3-pip) npm (gem . rubygems))
   :custom (system-packages-noconfirm t))
 (with-eval-after-load "system-packages"
-  (defun cpped-run-command-sync-logged (wrapped-function &rest arguments)
+  (defun shark-bytes/run-command-sync-logged (wrapped-function &rest arguments)
     "Run a command synchronously and return the output."
     (shell-command-to-string (car arguments)))
-  (advice-add 'async-shell-command :around #'cpped-run-command-sync-logged)
+  (advice-add 'async-shell-command :around #'shark-bytes/run-command-sync-logged)
   (add-hook 'after-init-hook '(lambda ()
-                                (advice-remove 'async-shell-command #'cpped-run-command-sync-logged)))
-  (defun cpped-install-system-package (package &rest arguments)
+                                (advice-remove 'async-shell-command #'shark-bytes/run-command-sync-logged)))
+  (defun shark-bytes/install-system-package (package &rest arguments)
     "Wrapper around system-packages-install to install only missing packages."
     (let ((system-packages-packagemanager (or (plist-get arguments :package-manager)
                                               system-packages-packagemanager)))
@@ -168,7 +168,7 @@ Do not ask for confirmation for new shell buffers
 
 ** Utilities
 #+begin_src emacs-lisp
-(defun cpped-word-or-region-bounds()
+(defun shark-bytes/word-or-region-bounds()
   "Get the bounds of the current region or word under point."
   (if (use-region-p)
       (cons (region-beginning) (region-end))
@@ -232,7 +232,7 @@ Do not ask for confirmation for new shell buffers
 ** Frame Setup
 Show normal for single monitor, fullscreen for non-4k monitor
 #+begin_src emacs-lisp
-(defvar cpped-is-4k-monitor nil "Indicates if a 4k monitor is available.")
+(defvar shark-bytes/is-4k-monitor nil "Indicates if a 4k monitor is available.")
 
 (set-frame-name "IDE")
 
@@ -242,22 +242,22 @@ Show normal for single monitor, fullscreen for non-4k monitor
                                                                  (background-color . "#121212")
                                                                  (internal-border-width . 8))
 
-                                           cpped-is-4k-monitor (>= (x-display-pixel-width) 3840))
-                                     (unless cpped-is-4k-monitor
+                                           shark-bytes/is-4k-monitor (>= (x-display-pixel-width) 3840))
+                                     (unless shark-bytes/is-4k-monitor
                                        (push '(fullscreen . fullboth) default-frame-alist))))
 #+end_src
 
 Show below other windows
 #+begin_src emacs-lisp
-(defun cpped-move-frame-below-others (&optional frame)
+(defun shark-bytes/move-frame-below-others (&optional frame)
   "Move frame below others in window system."
   (interactive)
   (with-selected-frame (or frame (selected-frame))
     (when (and window-system
-               (not cpped-is-4k-monitor))
+               (not shark-bytes/is-4k-monitor))
       (x-send-client-message nil 0 nil "_NET_WM_STATE" 32 '(1 "_NET_WM_STATE_BELOW" 0)))))
 
-(add-hook 'after-make-frame-functions #'cpped-move-frame-below-others t)
+(add-hook 'after-make-frame-functions #'shark-bytes/move-frame-below-others t)
 #+end_src
 
 ** Do not auto-raise minibuffer
@@ -405,7 +405,7 @@ Do not disable prettification if cursor is at edge of expression
 
 Allow prettification in comments
 #+begin_src emacs-lisp
-(defun cpped-prettify-symbols-default-compose-p (start end _match)
+(defun shark-bytes/prettify-symbols-default-compose-p (start end _match)
   "Same as `prettify-symbols-default-compose-p', except compose symbols in comments as well."
   (let* ((syntaxes-beg (if (memq (char-syntax (char-after start)) '(?w ?_))
                            '(?w ?_) '(?. ?\\)))
@@ -416,7 +416,7 @@ Allow prettification in comments
              (nth 3 (syntax-ppss))))))
 
 (add-hook 'prog-mode-hook '(lambda ()
-                             (setq prettify-symbols-compose-predicate 'cpped-prettify-symbols-default-compose-p)))
+                             (setq prettify-symbols-compose-predicate 'shark-bytes/prettify-symbols-default-compose-p)))
 #+end_src
 
 Prettify common symbols
@@ -458,44 +458,44 @@ Prettify escaped newline
 ** Icons
 *** [[https://github.com/domtronn/all-the-icons.el][Show icons]]
 #+begin_src emacs-lisp
-(defconst cpped-faicon5-data-file (expand-file-name "data-faicon5.el" user-emacs-directory) "The data file for FontAwesome 5 icon names.")
+(defconst shark-bytes/faicon5-data-file (expand-file-name "data-faicon5.el" user-emacs-directory) "The data file for FontAwesome 5 icon names.")
 
-(defun cpped-update-faicon5-data ()
-  (delete-file cpped-faicon5-data-file)
-  (write-region "(defvar fa5-icon-alist\n'(\n" nil cpped-faicon5-data-file 'append)
+(defun shark-bytes/update-faicon5-data ()
+  (delete-file shark-bytes/faicon5-data-file)
+  (write-region "(defvar fa5-icon-alist\n'(\n" nil shark-bytes/faicon5-data-file 'append)
   (with-current-buffer (url-retrieve-synchronously "https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/css/all.css")
     (widen)
     (goto-char 1)
     (save-match-data
       (while (search-forward-regexp (rx bol (0+ space) ".fa-" (group (+ (not (in ":")))) ":before" (0+ space) "{" (+ space) "content:" (0+ space) "\"\\" (group (+ (not (in "\""))))) nil t)
-        (write-region (format "(\"%s\" . \"\\x%s\")\n" (match-string 1) (match-string 2)) nil cpped-faicon5-data-file 'append)))
+        (write-region (format "(\"%s\" . \"\\x%s\")\n" (match-string 1) (match-string 2)) nil shark-bytes/faicon5-data-file 'append)))
     (kill-buffer))
-  (write-region "\n))\n(provide 'data-faicon5)" nil cpped-faicon5-data-file 'append))
+  (write-region "\n))\n(provide 'data-faicon5)" nil shark-bytes/faicon5-data-file 'append))
 
-(defconst cpped-material-icon-data-file (expand-file-name "data-material-icon.el" user-emacs-directory) "The data file for material icon names.")
+(defconst shark-bytes/material-icon-data-file (expand-file-name "data-material-icon.el" user-emacs-directory) "The data file for material icon names.")
 
-(defun cpped-update-material-icon-data ()
-  (delete-file cpped-material-icon-data-file)
-  (write-region "(defvar material-icon-alist\n'(\n" nil cpped-material-icon-data-file 'append)
+(defun shark-bytes/update-material-icon-data ()
+  (delete-file shark-bytes/material-icon-data-file)
+  (write-region "(defvar material-icon-alist\n'(\n" nil shark-bytes/material-icon-data-file 'append)
   (with-current-buffer (url-retrieve-synchronously "https://raw.githubusercontent.com/google/material-design-icons/master/iconfont/codepoints")
     (widen)
     (goto-char 1)
     (save-match-data
       (while (search-forward-regexp (rx bol (0+ space) (group (+ (or (in alphanumeric) "_"))) (+ space) (group (+ (in hex-digit)))) nil t)
-        (write-region (format "(\"%s\" . \"\\x%s\")\n" (match-string 1) (match-string 2)) nil cpped-material-icon-data-file 'append)))
+        (write-region (format "(\"%s\" . \"\\x%s\")\n" (match-string 1) (match-string 2)) nil shark-bytes/material-icon-data-file 'append)))
     (kill-buffer))
-  (write-region "\n))\n(provide 'data-material-icon)" nil cpped-material-icon-data-file 'append))
+  (write-region "\n))\n(provide 'data-material-icon)" nil shark-bytes/material-icon-data-file 'append))
 
 (use-package all-the-icons
   :config
-  (unless (file-exists-p cpped-faicon5-data-file)
-    (cpped-update-faicon5-data))
-  (require 'data-faicon5 cpped-faicon5-data-file)
+  (unless (file-exists-p shark-bytes/faicon5-data-file)
+    (shark-bytes/update-faicon5-data))
+  (require 'data-faicon5 shark-bytes/faicon5-data-file)
   (define-icon faicon5 fa5-icon-alist "Font Awesome 5 Free" "fa-regular-400")
   (define-icon faicon-brands fa5-icon-alist "Font Awesome 5 Brands" "fa-brands-400")
-  (unless (file-exists-p cpped-material-icon-data-file)
-    (cpped-update-material-icon-data))
-  (require 'data-material-icon cpped-material-icon-data-file)
+  (unless (file-exists-p shark-bytes/material-icon-data-file)
+    (shark-bytes/update-material-icon-data))
+  (require 'data-material-icon shark-bytes/material-icon-data-file)
   (define-icon material-icon material-icon-alist "Material Icons" "MaterialIcons-Regular"))
 #+end_src
 
@@ -585,7 +585,7 @@ The saturation for non-saturated colors is 60.
 
 ** [[https://github.com/rakanalh/emacs-dashboard][Dashboard]]
 #+begin_src emacs-lisp
-(defvar cpped-dashboard-footer nil "The dashboard footer text")
+(defvar shark-bytes/dashboard-footer nil "The dashboard footer text")
 
 (use-package dashboard
   :after consult
@@ -616,14 +616,14 @@ The saturation for non-saturated colors is 60.
                                     (split-string (buffer-string) "\n" t))
                                   '(""))))
    :config
-   (setq cpped-dashboard-footer (dashboard-random-footer))
+   (setq shark-bytes/dashboard-footer (dashboard-random-footer))
    (advice-add 'dashboard-insert-banner :after #'(lambda ()
                                                    (insert "\n")
-                                                   (dashboard-center-line cpped-dashboard-footer)
+                                                   (dashboard-center-line shark-bytes/dashboard-footer)
                                                    (insert " ")
-                                                   (insert (propertize cpped-dashboard-footer 'face 'dashboard-footer))
+                                                   (insert (propertize shark-bytes/dashboard-footer 'face 'dashboard-footer))
                                                    (insert "\n")))
-   (defun cpped-dashboard-insert-heading (heading &optional shortcut)
+   (defun shark-bytes/dashboard-insert-heading (heading &optional shortcut)
      "Insert a widget HEADING in dashboard buffer, adding SHORTCUT if provided."
      (when (and (display-graphic-p)
                 dashboard-set-heading-icons)
@@ -643,7 +643,7 @@ The saturation for non-saturated colors is 60.
        (insert " "))
      (insert (propertize heading 'face 'dashboard-heading))
      (when shortcut (insert (format " (%s)" shortcut))))
-   (advice-add 'dashboard-insert-heading :override 'cpped-dashboard-insert-heading)
+   (advice-add 'dashboard-insert-heading :override 'shark-bytes/dashboard-insert-heading)
    (push (regexp-quote dashboard-buffer-name) consult-buffer-filter)
    (defun shark-bytes/show-dashboard ()
      "Show the dashboard."
@@ -654,7 +654,7 @@ The saturation for non-saturated colors is 60.
 
 ** Mode Line
 #+begin_src emacs-lisp
-(defun cpped-buffer-name ()
+(defun shark-bytes/buffer-name ()
   "Returns a (virtual) buffer name, for non-file modes."
   (pcase major-mode
     ('shell-mode default-directory)
@@ -665,43 +665,42 @@ The saturation for non-saturated colors is 60.
 
 *** Base Location
 #+begin_src emacs-lisp
-(defvar-local cpped-project-dir-checked nil)
-(defvar-local cpped-project-dir nil)
+(defvar-local shark-bytes/project-dir-checked nil)
+(defvar-local shark-bytes/project-dir nil)
 
-(defun cpped-tramp-file-remote-p (file)
+(defun shark-bytes/tramp-file-remote-p (file)
   "Checks if a tramp file is actually remote."
   (and (tramp-tramp-file-p file)
        (not (string-equal (tramp-file-name-host (tramp-dissect-file-name file)) "localhost"))))
 
 (with-eval-after-load "projectile"
-  (defun cpped-project-dir ()
+  (defun shark-bytes/project-dir ()
     (interactive)
-    (unless cpped-project-dir-checked
-      (setq cpped-project-dir (or (when (and (ignore-errors (projectile-project-p))
+    (unless shark-bytes/project-dir-checked
+      (setq shark-bytes/project-dir (or (when (and (ignore-errors (projectile-project-p))
 					     (fboundp 'projectile-project-root))
 				    (projectile-project-root))
 				  (when vc-mode
 				    (let ((backend (vc-deduce-backend)))
 				      (when backend
 					(ignore-errors (vc-call-backend backend 'root default-directory)))))))
-      (setq cpped-project-dir-checked t))
-    cpped-project-dir)
+      (setq shark-bytes/project-dir-checked t))
+    shark-bytes/project-dir)
 
-  (defun cpped-modeline-project-id ()
-    (let ((buffer-location (cpped-buffer-name)))
+  (defun shark-bytes/modeline-project-id ()
+    (let ((buffer-location (shark-bytes/buffer-name)))
       (when buffer-location
-	(let* ((project-root (cpped-project-dir))
-	       (project-name (projectile-project-name project-root))
-	       (remote (if (cpped-tramp-file-remote-p buffer-location)
+        (let* ((project-root (shark-bytes/project-dir))
+               (project-name (projectile-project-name project-root))
+               (remote (if (shark-bytes/tramp-file-remote-p buffer-location)
 			   (tramp-file-name-host (tramp-dissect-file-name buffer-location))))
-	       (localname (if (tramp-tramp-file-p buffer-location)
-			      (tramp-file-local-name buffer-location)
+               (localname (if (tramp-tramp-file-p buffer-location)
+                              (tramp-file-local-name buffer-location)
 			    buffer-location)))
-	  (concat
-	   (when remote (format " %s " remote))
-	   (if (string-prefix-p (getenv "HOME") localname)
-	       (replace-regexp-in-string "/Projects/" "🗐 " (concat "/"
-                                                                    (file-name-directory (directory-file-name (file-relative-name (file-name-directory (or project-root
+          (concat (when remote ((format " %s " remote))
+                  (if (string-prefix-p (getenv "HOME") localname)
+                      (replace-regexp-in-string "/Projects/" "🗐 " (concat "/"
+                                                                           (file-name-directory (directory-file-name (file-relative-name (file-name-directory (or project-root
                                                                                                                                                            (file-name-directory localname)))
 											  (getenv "HOME"))))))
 	     (concat "" (file-name-directory (directory-file-name (file-name-directory (tramp-file-local-name (or project-root
@@ -711,7 +710,7 @@ The saturation for non-saturated colors is 60.
 
 *** Major mode icon
 #+begin_src emacs-lisp
-(defun cpped-modeline-mode-icon ()
+(defun shark-bytes/modeline-mode-icon ()
   (let ((icon (all-the-icons-icon-for-buffer)))
     (unless (symbolp icon)
       (propertize icon
@@ -725,57 +724,57 @@ The saturation for non-saturated colors is 60.
 *** Buffer name
 Helper function to figure out version control root directory
 #+begin_src emacs-lisp
-(defvar cpped-special-buffer-names-alist nil "A list of buffer name transformations.")
+(defvar shark-bytes/special-buffer-names-alist nil "A list of buffer name transformations.")
 
 (with-eval-after-load "projectile"
-  (defun cpped-modeline-buffer-id ()
+  (defun shark-bytes/modeline-buffer-id ()
     (let* ((home-dir (getenv "HOME"))
-	   (buffer-virtual-name (cpped-buffer-name))
-	   (buffer-name (let ((name (if buffer-virtual-name
-					(if (tramp-tramp-file-p buffer-virtual-name)
-					    (tramp-file-local-name buffer-virtual-name)
-					  buffer-virtual-name)
-				      (format-mode-line "%b"))))
-			  (or (cdr (assoc name cpped-special-buffer-names-alist))
-			      name)))
-	   (filename (if buffer-virtual-name
-			 (file-truename buffer-name)))
-	   (project-root (or (cpped-project-dir)
-			     (when (and filename
-					home-dir
-					(string-equal (substring filename 0 (length home-dir)) home-dir))
-			       home-dir)))
-	   (relative-path (when filename
-			    (shark-bytes/truncate (file-name-directory (if project-root
-						                           (file-relative-name filename project-root)
-						                         filename)) 20)))
-	   (special-buffer (string-match "^\\*.*\\*?$" buffer-name)))
+           (buffer-virtual-name (shark-bytes/buffer-name))
+           (buffer-name (let ((name (if buffer-virtual-name
+                                        (if (tramp-tramp-file-p buffer-virtual-name)
+                                            (tramp-file-local-name buffer-virtual-name)
+                                          buffer-virtual-name)
+                                      (format-mode-line "%b"))))
+                          (or (cdr (assoc name shark-bytes/special-buffer-names-alist))
+                              name)))
+           (filename (if buffer-virtual-name
+                         (file-truename buffer-name)))
+           (project-root (or (shark-bytes/project-dir)
+                             (when (and filename
+                                        home-dir
+                                        (string-equal (substring filename 0 (length home-dir)) home-dir))
+                               home-dir)))
+           (relative-path (when filename
+                            (shark-bytes/truncate (file-name-directory (if project-root
+                                                                           (file-relative-name filename project-root)
+                                                                         filename)) 20)))
+           (special-buffer (string-match "^\\*.*\\*?$" buffer-name)))
       (if special-buffer
-	  (propertize (replace-regexp-in-string "^\\*\\([^\*]*\\)\\*?$" "\\1" buffer-name)
-		      'face `(:background ,(face-attribute 'header-line :background)
-				          :weight normal
-				          :slant italic))
-	(concat
-	 (when relative-path
-	   (propertize relative-path
-		       'face `(:background ,(face-attribute 'header-line :background)
-				           :weight light)))
-	 (propertize (file-name-nondirectory buffer-name)
-		     'face `(:background ,(face-attribute 'header-line :background)
-			                 :weight black)))))))
+          (propertize (replace-regexp-in-string "^\\*\\([^\*]*\\)\\*?$" "\\1" buffer-name)
+                      'face `(:background ,(face-attribute 'header-line :background)
+                                          :weight normal
+                                          :slant italic))
+        (concat
+         (when relative-path
+           (propertize relative-path
+                       'face `(:background ,(face-attribute 'header-line :background)
+                                           :weight light)))
+         (propertize (file-name-nondirectory buffer-name)
+                     'face `(:background ,(face-attribute 'header-line :background)
+                                         :weight black)))))))
 #+end_src
 
 *** Docker project
 #+begin_src emacs-lisp
-(defun cpped-modeline-docker-project ()
-  (when (cpped-is-docker-project-p)
+(defun shark-bytes/modeline-docker-project ()
+  (when (shark-bytes/is-docker-project-p)
     ""))
 #+end_src
 
 *** Git Info
 #+begin_src emacs-lisp
 (with-eval-after-load "magit"
-  (defun cpped-modeline-version-control ()
+  (defun shark-bytes/modeline-version-control ()
     (when (and buffer-file-name (magit-inside-worktree-p t))
       (let* ((branch (shark-bytes/truncate (magit-get-current-branch) 10))
              (branch-head (magit-rev-parse "--short" branch))
@@ -788,14 +787,14 @@ Helper function to figure out version control root directory
 
 *** Running process
 #+begin_src emacs-lisp
-(defvar-local cpped-process-running nil "Flag to indicate if a process is running for the current buffer.")
-(defvar-local cpped-current-process-start-time nil)
+(defvar-local shark-bytes/process-running nil "Flag to indicate if a process is running for the current buffer.")
+(defvar-local shark-bytes/current-process-start-time nil)
 
-(defun cpped-get-run-time ()
+(defun shark-bytes/get-run-time ()
   (time-subtract (current-time)
-                 cpped-current-process-start-time))
+                 shark-bytes/current-process-start-time))
 
-(defun cpped-format-run-time (time)
+(defun shark-bytes/format-run-time (time)
   (let* ((run-time (truncate (float-time time)))
          (days (/ run-time 60 60 24))
          (hours (% (/ run-time 60 60) 24))
@@ -817,21 +816,21 @@ Helper function to figure out version control root directory
                 (format "%02ds" seconds)
               (format "%ds" seconds)))))
 
-(defun cpped-modeline-process-running ()
-  (when cpped-process-running
-    (concat "  " (cpped-format-run-time (cpped-get-run-time)))))
+(defun shark-bytes/modeline-process-running ()
+  (when shark-bytes/process-running
+    (concat "  " (shark-bytes/format-run-time (shark-bytes/get-run-time)))))
 #+end_src
 
 *** Show if file is opened in su-mode
 #+begin_src emacs-lisp
-(defun cpped-modeline-su ()
+(defun shark-bytes/modeline-su ()
   (when (string-match "^/su\\(do\\)?:" default-directory)
     ""))
 #+end_src
 
 *** Modification
 #+begin_src emacs-lisp
-(defun cpped-modeline-modified ()
+(defun shark-bytes/modeline-modified ()
   (pcase (format-mode-line "%*")
     (`"*" "")
     (`"-" (if buffer-file-name
@@ -847,20 +846,20 @@ Helper function to figure out version control root directory
 
 *** Auto-format
 #+begin_src emacs-lisp
-(defun cpped-modeline-auto-format ()
+(defun shark-bytes/modeline-auto-format ()
   (when (bound-and-true-p format-all-mode)
     ""))
 #+end_src
 
 *** Cursor position
 #+begin_src emacs-lisp
-(defun cpped-modeline-position-info ()
+(defun shark-bytes/modeline-position-info ()
   (format "%s %s" (format-mode-line "%4l ") (format-mode-line "%3c")))
 #+end_src
 
 *** Selected region
 #+begin_src emacs-lisp
-(defun cpped-modeline-region-info ()
+(defun shark-bytes/modeline-region-info ()
   (when mark-active
     (format " %s/%s/%s"
             (count-lines (region-beginning) (region-end))
@@ -870,7 +869,7 @@ Helper function to figure out version control root directory
 
 *** IEdit Info
 #+begin_src emacs-lisp
-(defun cpped-modeline-iedit-info ()
+(defun shark-bytes/modeline-iedit-info ()
   (when (bound-and-true-p iedit-mode)
     (format " %s/%s"
             iedit-occurrence-index
@@ -879,7 +878,7 @@ Helper function to figure out version control root directory
 
 *** Show if overwrite mode is active
 #+begin_src emacs-lisp
-(defun cpped-modeline-overwrite-mode ()
+(defun shark-bytes/modeline-overwrite-mode ()
   (when overwrite-mode
     "סּ"))
 #+end_src
@@ -887,29 +886,29 @@ Helper function to figure out version control root directory
 *** Show if typo mode is active
 #+begin_src emacs-lisp
 (with-eval-after-load "typo"
-  (defun cpped-modeline-typo-mode ()
+  (defun shark-bytes/modeline-typo-mode ()
     (when typo-mode
       "")))
 #+end_src
 
 *** Show if buffer is narrowed
 #+begin_src emacs-lisp
-(defun cpped-modeline-narrowed ()
+(defun shark-bytes/modeline-narrowed ()
     (when (buffer-narrowed-p)
       ""))
 #+end_src
 
 *** Show if buffer is filtered
 #+begin_src emacs-lisp
-(defun cpped-modeline-filtered ()
+(defun shark-bytes/modeline-filtered ()
     (when loccur-mode
       ""))
 #+end_src
 
 *** Key Lock
 #+begin_src emacs-lisp
-(defvar cpped-caps-lock-active nil "Indicates if caps lock is enabled.")
-(defvar cpped-num-lock-active nil "Indicates if num lock is enabled.")
+(defvar shark-bytes/caps-lock-active nil "Indicates if caps lock is enabled.")
+(defvar shark-bytes/num-lock-active nil "Indicates if num lock is enabled.")
 
 (add-hook 'after-init-hook '(lambda ()
                               (run-with-timer 60 3 '(lambda ()
@@ -919,33 +918,33 @@ Helper function to figure out version control root directory
                                                                                             (and (string-match ".*LED mask:[[:space:]]*\\([[:alnum:]]+\\).*" (buffer-string))
                                                                                                  (match-string 1 (buffer-string))))
                                                                                           16)))
-                                                          (setq cpped-caps-lock-active (eq (logand led-mask 1) 1)
-                                                                cpped-num-lock-active (eq (logand led-mask 2) 2))))))))
+                                                          (setq shark-bytes/caps-lock-active (eq (logand led-mask 1) 1)
+                                                                shark-bytes/num-lock-active (eq (logand led-mask 2) 2))))))))
 
-(defun cpped-modeline-key-lock (lock icon)
+(defun shark-bytes/modeline-key-lock (lock icon)
    (when lock
      icon))
 #+end_src
 
 *** Line/Character Mode
 #+begin_src emacs-lisp
-(make-local-variable 'cpped-term-char-mode)
+(make-local-variable 'shark-bytes/term-char-mode)
 
 (advice-add 'term-char-mode :after (lambda ()
-                                     (setq cpped-term-char-mode t)))
+                                     (setq shark-bytes/term-char-mode t)))
 
 (advice-add 'term-line-mode :after (lambda ()
-                                     (setq cpped-term-char-mode nil)))
+                                     (setq shark-bytes/term-char-mode nil)))
 
-(defun cpped-modeline-term-input-mode ()
+(defun shark-bytes/modeline-term-input-mode ()
   (when (and (equal major-mode 'term-mode)
-             cpped-term-char-mode)
+             shark-bytes/term-char-mode)
     ""))
 #+end_src
 
 *** Current function
 #+begin_src emacs-lisp
-(defun cpped-modeline-which-function ()
+(defun shark-bytes/modeline-which-function ()
   "Print current function in hte mode line."
   (when-let ((current-function (when (bound-and-true-p which-function-mode)
                                  (which-function))))
@@ -954,34 +953,34 @@ Helper function to figure out version control root directory
 
 *** Check Status
 #+begin_src emacs-lisp
-(defvar cpped-modeline-check-status-functions nil "A list of functions that format mode line status data.")
+(defvar shark-bytes/modeline-check-status-functions nil "A list of functions that format mode line status data.")
 
 (defun shark-bytes/check-process-status()
   "Format generic mode line status information."
   (format-mode-line mode-line-process))
 
-(add-to-list 'cpped-modeline-check-status-functions 'shark-bytes/check-process-status)
+(add-to-list 'shark-bytes/modeline-check-status-functions 'shark-bytes/check-process-status)
 
-(defface cpped-check-status-info `((t :inherit info
+(defface shark-bytes/check-status-info `((t :inherit info
                                       :weight ultra-bold))
   "Face used for modeline check info status."
-  :group 'cpped-modeline-check-status)
+  :group 'shark-bytes/modeline-check-status)
 
-(defface cpped-check-status-warning `((t :inherit warning
+(defface shark-bytes/check-status-warning `((t :inherit warning
                                          :foreground ,shark-bytes-warning-saturated
                                          :weight ultra-bold))
   "Face used for modeline check warning status."
-  :group 'cpped-modeline-check-status)
+  :group 'shark-bytes/modeline-check-status)
 
-(defface cpped-check-status-error `((t :inherit error
+(defface shark-bytes/check-status-error `((t :inherit error
                                        :weight ultra-bold))
   "Face used for modeline check error status."
-  :group 'cpped-modeline-check-status)
+  :group 'shark-bytes/modeline-check-status)
 
-(defun cpped-modeline-check-status ()
+(defun shark-bytes/modeline-check-status ()
   "Collect check status information."
   (let ((status (mapconcat 'identity
-                           (-non-nil (mapcar 'funcall cpped-modeline-check-status-functions))
+                           (-non-nil (mapcar 'funcall shark-bytes/modeline-check-status-functions))
                            " ")))
     (add-face-text-property 0 (length status) (list ':background (face-attribute 'header-line :background)) nil status)
     status))
@@ -992,46 +991,46 @@ Helper function to figure out version control root directory
 (defface shark-bytes-mode-line-emphasis '((t :inherit mode-line :weight bold)) "")
 (defface shark-bytes-mode-line-de-emphasis '((t :inherit mode-line :height 0.7 :weight extra-light)) "")
 
-(defvar cpped-selected-window nil)
-(add-function :before pre-redisplay-function (lambda (_wins) (setq cpped-selected-window (selected-window))))
+(defvar shark-bytes/selected-window nil)
+(add-function :before pre-redisplay-function (lambda (_wins) (setq shark-bytes/selected-window (selected-window))))
 
 (setq-default mode-line-format nil)
 (setq-default header-line-format
               '((:eval
-                 (let* ((mode-line-face (if (eq (frame-selected-window) cpped-selected-window)
+                 (let* ((mode-line-face (if (eq (frame-selected-window) shark-bytes/selected-window)
                                        'mode-line
                                      'mode-line-inactive))
                         (left-side (mapconcat #'identity
-                                              (-non-nil (list (cpped-modeline-mode-icon)
-                                                              (shark-bytes/truncate (cpped-modeline-project-id) 20)
-                                                              (propertize (or (when (fboundp 'cpped-modeline-version-control)
-                                                                                (cpped-modeline-version-control))
+                                              (-non-nil (list (shark-bytes/modeline-mode-icon)
+                                                              (shark-bytes/truncate (shark-bytes/modeline-project-id) 20)
+                                                              (propertize (or (when (fboundp 'shark-bytes/modeline-version-control)
+                                                                                (shark-bytes/modeline-version-control))
                                                                               "")
                                                                           'face 'shark-bytes-mode-line-de-emphasis)
-                                                              (propertize (or (cpped-modeline-buffer-id)
+                                                              (propertize (or (shark-bytes/modeline-buffer-id)
                                                                               "")
                                                                           'face 'shark-bytes-mode-line-emphasis)
-                                                              (propertize (or (cpped-modeline-which-function)
+                                                              (propertize (or (shark-bytes/modeline-which-function)
                                                                               "")
                                                                           'face 'shark-bytes-mode-line-de-emphasis
                                                                           'display '(raise 0.0))))
                                               "  "))
                         (right-side (mapconcat #'identity
-                                          (-non-nil (list (cpped-modeline-process-running)
-                                                          (cpped-modeline-su)
-                                                          (cpped-modeline-modified)
-                                                          (cpped-modeline-overwrite-mode)
-                                                          (cpped-modeline-auto-format)
-                                                          (cpped-modeline-typo-mode)
-                                                          (cpped-modeline-narrowed)
-                                                          (cpped-modeline-filtered)
-                                                          (cpped-modeline-key-lock (symbol-value 'cpped-caps-lock-active) "")
-                                                          (cpped-modeline-key-lock (symbol-value 'cpped-num-lock-active) "")
-                                                          (cpped-modeline-term-input-mode)
-                                                          (cpped-modeline-position-info)
-                                                          (cpped-modeline-region-info)
-                                                          (cpped-modeline-iedit-info)
-                                                          (cpped-modeline-check-status)
+                                          (-non-nil (list (shark-bytes/modeline-process-running)
+                                                          (shark-bytes/modeline-su)
+                                                          (shark-bytes/modeline-modified)
+                                                          (shark-bytes/modeline-overwrite-mode)
+                                                          (shark-bytes/modeline-auto-format)
+                                                          (shark-bytes/modeline-typo-mode)
+                                                          (shark-bytes/modeline-narrowed)
+                                                          (shark-bytes/modeline-filtered)
+                                                          (shark-bytes/modeline-key-lock (symbol-value 'shark-bytes/caps-lock-active) "")
+                                                          (shark-bytes/modeline-key-lock (symbol-value 'shark-bytes/num-lock-active) "")
+                                                          (shark-bytes/modeline-term-input-mode)
+                                                          (shark-bytes/modeline-position-info)
+                                                          (shark-bytes/modeline-region-info)
+                                                          (shark-bytes/modeline-iedit-info)
+                                                          (shark-bytes/modeline-check-status)
                                                           ))
                                           "  ")))
                     (concat (propertize "  " 'display `(raise +0.4))
@@ -1403,7 +1402,7 @@ Helper function to figure out version control root directory
     "Run consult-line with region or symbol at point."
     (interactive)
     (consult-line (shark-bytes/region-or-symbol)))
-  (defun cpped-consult-ripgrep (original-function &optional dir initial-argument)
+  (defun shark-bytes/consult-ripgrep (original-function &optional dir initial-argument)
      ""
      (interactive)
      (let ((initial (list (or initial-argument
@@ -1411,9 +1410,9 @@ Helper function to figure out version control root directory
 			          (buffer-substring (region-beginning) (region-end))
                                 (thing-at-point 'symbol))))))
 	 (apply original-function (or dir
-                                      (cpped-project-dir)
+                                      (shark-bytes/project-dir)
                                       default-directory) initial)))
-  (advice-add 'consult-ripgrep :around #'cpped-consult-ripgrep)
+  (advice-add 'consult-ripgrep :around #'shark-bytes/consult-ripgrep)
   (advice-add #'completing-read-multiple :override #'consult-completing-read-multiple)
   (push "\\*emacs\\*" consult-buffer-filter)
   (push "\\*Backtrace\\*" consult-buffer-filter)
@@ -1486,15 +1485,15 @@ This optimizes line-scrolling.
 
 *** Remember open buffers
 #+begin_src emacs-lisp
-(defun cpped-yes (_)
+(defun shark-bytes/yes (_)
   t)
 
-(defun cpped-always-yes (wrapped-function &rest arguments)
-  (advice-add 'yes-or-no-p :override #'cpped-yes)
-  (advice-add 'y-or-n-p :override #'cpped-yes)
+(defun shark-bytes/always-yes (wrapped-function &rest arguments)
+  (advice-add 'yes-or-no-p :override #'shark-bytes/yes)
+  (advice-add 'y-or-n-p :override #'shark-bytes/yes)
   (let ((result (apply wrapped-function arguments)))
-    (advice-remove 'yes-or-no-p #'cpped-yes)
-    (advice-remove 'y-or-n-p #'cpped-yes)
+    (advice-remove 'yes-or-no-p #'shark-bytes/yes)
+    (advice-remove 'y-or-n-p #'shark-bytes/yes)
     result))
 
 (use-package desktop
@@ -1512,8 +1511,8 @@ This optimizes line-scrolling.
   (desktop-save-mode 1)
   (run-with-idle-timer 300 t '(lambda ()
                                 (desktop-save user-emacs-directory)))
-  (advice-add 'desktop-save :around #'cpped-always-yes)
-  (advice-add 'desktop-read :around #'cpped-always-yes))
+  (advice-add 'desktop-save :around #'shark-bytes/always-yes)
+  (advice-add 'desktop-read :around #'shark-bytes/always-yes))
 #+end_src
 
 *** Go to last position when opening buffer
@@ -1523,7 +1522,7 @@ This optimizes line-scrolling.
 
 Switch to previous buffer
 #+begin_src emacs-lisp
-(defun cpped-previous-buffer ()
+(defun shark-bytes/previous-buffer ()
   (interactive)
   (switch-to-buffer (other-buffer (current-buffer) 1)))
 #+end_src
@@ -1599,14 +1598,14 @@ Indicate recursive minibuffer
 
 *** Kill current buffer by default
 #+begin_src emacs-lisp
-(defvar cpped-bury-buffers-list '("*scratch*" "*Messages*") "A list of buffer names to bury instead of kill.")
+(defvar shark-bytes/bury-buffers-list '("*scratch*" "*Messages*") "A list of buffer names to bury instead of kill.")
 
-(defun cpped-kill-default-buffer ()
+(defun shark-bytes/kill-default-buffer ()
   "Kill the currently active buffer."
   (interactive)
   (let ((kill-buffer-query-functions)
         (name (substring-no-properties (buffer-name))))
-    (if (member name cpped-bury-buffers-list)
+    (if (member name shark-bytes/bury-buffers-list)
         (bury-buffer)
       (when (and buffer-file-name
                (buffer-modified-p))
@@ -1628,7 +1627,7 @@ Indicate recursive minibuffer
 
 *** Kill unused buffers automatically
 #+begin_src emacs-lisp
-(defun cpped-clean-buffer-list-delay-1hour (name)
+(defun shark-bytes/clean-buffer-list-delay-1hour (name)
   "Wrapper around clean-buffer-list-delay to allow delays in hours instead of days"
   (or (assoc-default name clean-buffer-list-kill-buffer-names #'string=
                      clean-buffer-list-delay-special)
@@ -1639,7 +1638,7 @@ Indicate recursive minibuffer
                      clean-buffer-list-delay-special)
       (* 60 60)))
 
-(fset 'clean-buffer-list-delay 'cpped-clean-buffer-list-delay-1hour)
+(fset 'clean-buffer-list-delay 'shark-bytes/clean-buffer-list-delay-1hour)
 (run-with-timer 0 (* 60 60) 'clean-buffer-list)
 #+end_src
 
@@ -1688,10 +1687,10 @@ Indicate recursive minibuffer
 *** Utilities
 **** Copy buffer file name to clipboard
 #+begin_src emacs-lisp
-(defun cpped-copy-file-name-to-clipboard ()
+(defun shark-bytes/copy-file-name-to-clipboard ()
   "Copy the current buffer file name to the clipboard."
   (interactive)
-  (kill-new (cpped-buffer-name)))
+  (kill-new (shark-bytes/buffer-name)))
 #+end_src
 
 ** Screen
@@ -1699,7 +1698,7 @@ Indicate recursive minibuffer
 #+begin_src emacs-lisp
 (require 'dbus)
 
-(defun cpped-lock-screen ()
+(defun shark-bytes/lock-screen ()
   "Lock the screen."
   (interactive)
   (dbus-call-method :session "org.freedesktop.ScreenSaver" "/org/freedesktop/ScreenSaver" "org.freedesktop.ScreenSaver" "Lock"))
@@ -1861,13 +1860,13 @@ Indicate recursive minibuffer
         eshell-review-quick-commands nil
         eshell-smart-space-goes-to-end t)
   (add-hook 'eshell-mode-hook 'eshell-smart-initialize)
-  (defun cpped-eshell-last-command ()
+  (defun shark-bytes/eshell-last-command ()
     "Return the last command."
     (interactive)
     (when (derived-mode-p 'eshell-mode)
       (format "%s %s" eshell-last-command-name (mapconcat 'identity eshell-last-arguments " "))))
   (with-eval-after-load "which-func"
-    (add-to-list 'which-func-functions 'cpped-eshell-last-command)))
+    (add-to-list 'which-func-functions 'shark-bytes/eshell-last-command)))
 #+end_src
 
 *** Environment
@@ -1992,7 +1991,7 @@ https://github.com/purcell/exec-path-from-shell
 
 *** Smart-open new eshell buffers
 #+begin_src emacs-lisp
-(defun cpped-eshell-maybe-new-session (&optional argument)
+(defun shark-bytes/eshell-maybe-new-session (&optional argument)
   "Create a new interactive Eshell buffer if the current buffer is an Eshell buffer."
   (interactive "P")
   (if (eq major-mode 'eshell-mode)
@@ -2003,14 +2002,14 @@ https://github.com/purcell/exec-path-from-shell
 
 *** Prompt
 #+begin_src emacs-lisp
-(defun cpped-eshell-prompt-concat (&rest contents)
+(defun shark-bytes/eshell-prompt-concat (&rest contents)
   (let ((items (-flatten (-non-nil contents))))
     (when items
       (s-join " " items))))
 
-(defun cpped-eshell-prompt-section (section-face next-section-face &rest contents)
+(defun shark-bytes/eshell-prompt-section (section-face next-section-face &rest contents)
   (when contents
-    (concat (propertize (cpped-eshell-prompt-concat " "
+    (concat (propertize (shark-bytes/eshell-prompt-concat " "
                                                     contents
                                                     " ")
                         'face section-face)
@@ -2018,53 +2017,53 @@ https://github.com/purcell/exec-path-from-shell
                         'face `(:foreground ,(face-attribute section-face :background)
                                             :background ,(face-attribute next-section-face :background))))))
 
-(defun cpped-eshell-prompt-result ()
+(defun shark-bytes/eshell-prompt-result ()
   (unless (= 0 0)
-    (propertize (cpped-eshell-prompt-concat ""
+    (propertize (shark-bytes/eshell-prompt-concat ""
                                             eshell-last-command-status)
                 'face '(:foreground ,(face-attribute 'warning :foreground)
                                     :weight 'bold))))
 
-(defun cpped-eshell-prompt-user ()
+(defun shark-bytes/eshell-prompt-user ()
   (if (string= "root"
                (getenv "USER"))
       (concat "")
     (unless (string= (getenv "LOGNAME")
                      (getenv "USER"))
-        (cpped-eshell-prompt-concat "𓄅"
+        (shark-bytes/eshell-prompt-concat "𓄅"
                                     (user-login-name)))))
 
-(defun cpped-eshell-prompt-host ()
+(defun shark-bytes/eshell-prompt-host ()
   (when (let ((host (getenv "SSH_CONNECTION")))
           (and host
                (not (string= "" host))))
-    (cpped-eshell-prompt-concat "" (system-name))))
+    (shark-bytes/eshell-prompt-concat "" (system-name))))
 
-(defun cpped-eshell-prompt-docker ()
+(defun shark-bytes/eshell-prompt-docker ()
   (let* ((id (shell-command-to-string "cat /proc/self/cgroup | grep docker | head -n 1 | cut -d '/' -f3"))
          (container (when (and id
                                (not (string= "" id)))
                       (shell-command-to-string (concat "docker inspect -f '{{.Config.Image}}' "
                                                        id)))))
     (when container
-      (cpped-eshell-prompt-concat "" container))))
+      (shark-bytes/eshell-prompt-concat "" container))))
 
-(defun cpped-eshell-prompt-path ()
-  (cpped-eshell-prompt-concat "ﱮ"
+(defun shark-bytes/eshell-prompt-path ()
+  (shark-bytes/eshell-prompt-concat "ﱮ"
                               (propertize (eshell/pwd)
                                           'face `(:weight 'ultra-bold))))
 
 (setq eshell-prompt-function (lambda ()
-                               (concat (cpped-eshell-prompt-section 'modeline-active1
-                                                                    'modeline-active2
-                                                                    (cpped-eshell-prompt-result)
-                                                                    (cpped-eshell-prompt-user)
-                                                                    (cpped-eshell-prompt-host)
-                                                                    (cpped-eshell-prompt-docker)
-                                                                    (cpped-modeline-version-control))
-                                       (cpped-eshell-prompt-section 'modeline-active2
+                               (concat (shark-bytes/eshell-prompt-section 'default
+                                                                    'default
+                                                                    (shark-bytes/eshell-prompt-result)
+                                                                    (shark-bytes/eshell-prompt-user)
+                                                                    (shark-bytes/eshell-prompt-host)
+                                                                    (shark-bytes/eshell-prompt-docker)
+                                                                    (shark-bytes/modeline-version-control))
+                                       (shark-bytes/eshell-prompt-section 'default
                                                                     'mode-line
-                                                                    (cpped-eshell-prompt-path))
+                                                                    (shark-bytes/eshell-prompt-path))
                                        "\n▶ "))
       eshell-highlight-prompt nil
       eshell-prompt-regexp (rx bol "▶ "))
@@ -2079,7 +2078,7 @@ https://github.com/purcell/exec-path-from-shell
 
 *** Clear buffer
 #+begin_src emacs-lisp
-(defun cpped-clear-comint-buffer ()
+(defun shark-bytes/clear-comint-buffer ()
   "Remove content of comint buffer."
   (interactive)
   (delete-region (point-min) (point-max))
@@ -2152,7 +2151,7 @@ https://github.com/purcell/exec-path-from-shell
 
 **** Re-enter directory if necessary
 #+begin_src emacs-lisp
-(defun cpped-eshell-reenter ()
+(defun shark-bytes/eshell-reenter ()
   "Re-enter current directory if necessary."
   (unless (> (file-nlinks default-directory) 0)
     (eshell/cd (if (file-directory-p default-directory)
@@ -2160,14 +2159,14 @@ https://github.com/purcell/exec-path-from-shell
                  (expand-file-name "~")))))
 
 (add-hook 'eshell-mode-hook #'(lambda ()
-                                (add-hook 'eshell-pre-command-hook #'cpped-eshell-reenter nil t)))
+                                (add-hook 'eshell-pre-command-hook #'shark-bytes/eshell-reenter nil t)))
 #+end_src
 
 
 *** Add sudo to command line
 #+begin_src emacs-lisp
 (with-eval-after-load "eshell"
-  (defun cpped-add-sudo ()
+  (defun shark-bytes/add-sudo ()
     "Add sudo to the curent command."
     (interactive)
     (save-excursion
@@ -2179,7 +2178,7 @@ https://github.com/purcell/exec-path-from-shell
           (insert "sudo ")))))
 
   (add-hook 'eshell-mode-hook (lambda ()
-                                (define-key eshell-mode-map (kbd "C-M-s") 'cpped-add-sudo))))
+                                (define-key eshell-mode-map (kbd "C-M-s") 'shark-bytes/add-sudo))))
 #+end_src
 
 *** History
@@ -2206,17 +2205,17 @@ https://github.com/purcell/exec-path-from-shell
 *** Show running command status in mode line
 #+begin_src emacs-lisp
 (advice-add 'eshell-command-started :before (lambda ()
-                                              (setq cpped-process-running t)
+                                              (setq shark-bytes/process-running t)
                                               (force-mode-line-update t)))
 
 (advice-add 'eshell-command-finished :before (lambda ()
-                                               (setq cpped-process-running nil)
+                                               (setq shark-bytes/process-running nil)
                                                (force-mode-line-update t)))
 #+end_src
 
 *** Show last command status in mode line
 #+begin_src emacs-lisp
-(defun cpped-modeline-eshell-status ()
+(defun shark-bytes/modeline-eshell-status ()
   "Format the mode line eshell status information."
   (when (and (equal major-mode 'eshell-mode)
              (> eshell-last-command-status 0))
@@ -2224,23 +2223,23 @@ https://github.com/purcell/exec-path-from-shell
                             'face `(:foreground, (face-attribute 'error :foreground)
                                                  :weight 'bold)))))
 
-(add-to-list 'cpped-modeline-check-status-functions 'cpped-modeline-eshell-status)
+(add-to-list 'shark-bytes/modeline-check-status-functions 'shark-bytes/modeline-eshell-status)
 #+end_src
 
 *** Notify when long-running command finishes
 #+begin_src emacs-lisp
-(defcustom cpped-eshell-minimum-interesting-run-time 30 "The minimum time a command has to take to be interesting.")
+(defcustom shark-bytes/eshell-minimum-interesting-run-time 30 "The minimum time a command has to take to be interesting.")
 
-(defun cpped-eshell-current-command-start ()
+(defun shark-bytes/eshell-current-command-start ()
   "Save timestamp on command start."
-  (setq cpped-eshell-current-process-start-time (current-time)))
+  (setq shark-bytes/eshell-current-process-start-time (current-time)))
 
-(defun cpped-eshell-current-command-stop ()
+(defun shark-bytes/eshell-current-command-stop ()
   "Show notification when command stops."
-  (when cpped-eshell-current-process-start-time
-    (let ((run-time (truncate (float-time (cpped-get-run-time)))))
-      (unless (< run-time cpped-eshell-minimum-interesting-run-time)
-        (let ((time-string (cpped-format-run-time (cpped-get-run-time)))
+  (when shark-bytes/eshell-current-process-start-time
+    (let ((run-time (truncate (float-time (shark-bytes/get-run-time)))))
+      (unless (< run-time shark-bytes/eshell-minimum-interesting-run-time)
+        (let ((time-string (shark-bytes/format-run-time (shark-bytes/get-run-time)))
               (command (s-join " " (eshell-flatten-list (list eshell-last-command-name eshell-last-arguments)))))
           (eshell-interactive-print (format "\nRunning time: %s\n"
                                             time-string))
@@ -2261,11 +2260,11 @@ https://github.com/purcell/exec-path-from-shell
                                 :timeout (if (= 0 eshell-last-command-status)
                                              7200
                                            0)))))
-    (setq cpped-eshell-current-process-start-time nil)))
+    (setq shark-bytes/eshell-current-process-start-time nil)))
 
 (add-hook 'eshell-mode-hook #'(lambda ()
-                                (add-hook 'eshell-pre-command-hook #'cpped-eshell-current-command-start nil t)
-                                (add-hook 'eshell-post-command-hook #'cpped-eshell-current-command-stop nil t)))
+                                (add-hook 'eshell-pre-command-hook #'shark-bytes/eshell-current-command-start nil t)
+                                (add-hook 'eshell-post-command-hook #'shark-bytes/eshell-current-command-stop nil t)))
 #+end_src
 
 
@@ -2296,20 +2295,20 @@ https://github.com/purcell/exec-path-from-shell
 *** [[https://github.com/bbatsov/crux][A Collection of Ridiculously Useful eXtensions]]
 #+begin_src emacs-lisp
 (use-package crux
-  :config (advice-add 'crux-rename-file-and-buffer :around 'cpped-post-rename))
+  :config (advice-add 'crux-rename-file-and-buffer :around 'shark-bytes/post-rename))
 #+end_src
 
 *** Date/time formatting
 #+begin_src emacs-lisp
 (with-eval-after-load "all-the-icons"
-  (defun cpped-print-date ()
+  (defun shark-bytes/print-date ()
     (concat
      ""
      (propertize (format-time-string " %W")
                  'face '(:weight ultra-light))
      (format-time-string " %e.%-m.%G")))
 
-  (defun cpped-print-time ()
+  (defun shark-bytes/print-time ()
     (format "%c %s" (+ #xe381 (% (string-to-number (format-time-string "%I")) 12)) (format-time-string " %H:%M"))))
 #+end_src
 
@@ -2393,7 +2392,7 @@ https://github.com/purcell/exec-path-from-shell
 *  File Handling
 ** Config
 #+begin_src emacs-lisp
-(defvar cpped-config-file "~/.emacs-config.org")
+(defvar shark-bytes/config-file "~/.emacs-config.org")
 #+end_src
 
 ** Ignore case for file names
@@ -2463,7 +2462,7 @@ https://github.com/purcell/exec-path-from-shell
 
 ** Save current region or buffer to different file
 #+begin_src emacs-lisp
-(defun cpped-save-copy ()
+(defun shark-bytes/save-copy ()
   "Save the current buffer or region to a different file."
   (interactive)
   (let* ((original (buffer-file-name))
@@ -2510,7 +2509,7 @@ https://github.com/purcell/exec-path-from-shell
 
 ** Execute command on file
 #+begin_src emacs-lisp
-(defun cpped-execute-command-on-buffer-file (command)
+(defun shark-bytes/execute-command-on-buffer-file (command)
   (interactive "sCommand: ")
   (when buffer-file-name
     (shell-command (concat command " " buffer-file-name))))
@@ -2523,7 +2522,7 @@ https://github.com/purcell/exec-path-from-shell
 
 ** Handle renames
 #+begin_src emacs-lisp
-(defun cpped-post-rename (function)
+(defun shark-bytes/post-rename (function)
   "Update recent files and projectile after rename."
   (let ((old buffer-file-name))
     (funcall function)
@@ -2551,7 +2550,7 @@ https://github.com/purcell/exec-path-from-shell
 *** Show multiple sources for open command
 #+begin_src emacs-lisp
 
-(defvar cpped-consult-source-projectile
+(defvar shark-bytes/consult-source-projectile
   `(:name     "Project files"
     :narrow   ?p
     :category file
@@ -2560,11 +2559,11 @@ https://github.com/purcell/exec-path-from-shell
     :state    ,#'consult--file-state
     :enabled  ,(lambda () (ignore-errors (projectile-project-p)))
     :items    ,(lambda () (mapcar (lambda (file)
-                                    (expand-file-name file (cpped-project-dir)))
-                                  (projectile-project-files (cpped-project-dir)))))
+                                    (expand-file-name file (shark-bytes/project-dir)))
+                                  (projectile-project-files (shark-bytes/project-dir)))))
   "Project file candidate source for `consult'.")
 
-(defvar cpped-consult-source-directory
+(defvar shark-bytes/consult-source-directory
   `(:name     "Directory files"
     :narrow   ?d
     :category file
@@ -2575,14 +2574,14 @@ https://github.com/purcell/exec-path-from-shell
     :items    ,(lambda () (directory-files default-directory t)))
   "Directory file candidate source for `consult'.")
 
-(defun cpped-consult-find-file ()
+(defun shark-bytes/consult-find-file ()
   ""
   (interactive)
   (when-let (buffer (consult--multi '(
                                       ;consult--source-buffer
                                       consult--source-recent-file
-                                      cpped-consult-source-directory
-                                      cpped-consult-source-projectile)
+                                      shark-bytes/consult-source-directory
+                                      shark-bytes/consult-source-projectile)
                                     :require-match (confirm-nonexistent-file-or-buffer)
                                     :prompt "Open: "
                                     :history 'consult--buffer-history
@@ -2706,9 +2705,9 @@ https://github.com/purcell/exec-path-from-shell
 
 **** Diff files
 #+begin_src emacs-lisp
-(defvar cpped-dired-ediff-window-configuration nil)
+(defvar shark-bytes/dired-ediff-window-configuration nil)
 
-(defun cpped-dired-ediff-files ()
+(defun shark-bytes/dired-ediff-files ()
   "Show a diff of two files marked in dired."
   (interactive)
   (let* ((files (dired-get-marked-files))
@@ -2718,14 +2717,14 @@ https://github.com/purcell/exec-path-from-shell
                   (read-file-name "Diff to: " (dired-dwim-target-directory)))))
     (when (file-newer-than-file-p file1 file2)
       (cl-rotatef file1 file2))
-    (setq cpped-dired-ediff-window-configuration (current-window-configuration))
+    (setq shark-bytes/dired-ediff-window-configuration (current-window-configuration))
     (ediff-files file1 file2 '((lambda ()
                                  (setq-local ediff-quit-hook (lambda ()
                                                                (ediff-kill-buffer-carefully ediff-buffer-A)
                                                                (ediff-kill-buffer-carefully ediff-buffer-B)
-                                                               (set-window-configuration cpped-dired-ediff-window-configuration))))))))
+                                                               (set-window-configuration shark-bytes/dired-ediff-window-configuration))))))))
 
-(define-key dired-mode-map "d" 'cpped-dired-ediff-files)
+(define-key dired-mode-map "d" 'shark-bytes/dired-ediff-files)
 #+end_src
 
 **** Compress files
@@ -2741,21 +2740,21 @@ https://github.com/purcell/exec-path-from-shell
 
 **** OCR files
 #+begin_src emacs-lisp
-(cpped-install-system-package "tesseract")
-(cpped-install-system-package "tesseract-langpack-eng")
-(cpped-install-system-package "tesseract-langpack-deu")
+(shark-bytes/install-system-package "tesseract")
+(shark-bytes/install-system-package "tesseract-langpack-eng")
+(shark-bytes/install-system-package "tesseract-langpack-deu")
 
-(defcustom cpped-ocr-language "deu+eng" "The language(s) for OCR.")
+(defcustom shark-bytes/ocr-language "deu+eng" "The language(s) for OCR.")
 
-(defun cpped-dired-ocr ()
+(defun shark-bytes/dired-ocr (files)
   "Copy text in images to kill ring."
-  (interactive)
+  (interactive (dired-get-marked-files))
   (kill-new (mapconcat '(lambda (file)
-                          (shell-command-to-string (format "tesseract -l %s %s stdout" cpped-ocr-language file)))
-                       (dired-get-marked-files)
-                       "")))
+                          (shell-command-to-string (format "tesseract -l %s %s stdout" shark-bytes/ocr-language file)))
+                       files
+                       "\n")))
 
-(define-key dired-mode-map "E" 'cpped-dired-ocr)
+(define-key dired-mode-map "E" 'shark-bytes/dired-ocr)
 #+end_src
 
 *** [[https://github.com/Alexander-Miller/treemacs][Treemacs]]
@@ -2817,11 +2816,11 @@ https://github.com/purcell/exec-path-from-shell
 (setq locale-coding-system 'utf-8)
 (setq default-process-coding-system '(utf-8-unix . utf-8-unix))
 
-(defun cpped-dos2unix ()
+(defun shark-bytes/dos2unix ()
   (interactive)
   (set-buffer-file-coding-system 'utf-8-unix nil))
 
-(defun cpped-unix2dos ()
+(defun shark-bytes/unix2dos ()
   (interactive)
   (set-buffer-file-coding-system 'utf-8-dos nil))
 #+end_src
@@ -2929,7 +2928,7 @@ https://github.com/purcell/exec-path-from-shell
 ***** [[github:mivok/markdownlint][Syntax checker]]
 #+begin_src emacs-lisp
 (with-eval-after-load "system-packages"
-  (cpped-install-system-package "mdl" :package-manager 'gem))
+  (shark-bytes/install-system-package "mdl" :package-manager 'gem))
 #+end_src
 
 ***** [[https://github.com/mola-T/flymd][Preview]]
@@ -3017,12 +3016,12 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 
 (setq blink-matching-paren 'show)
 
-(defvar-local cpped-matching-paren-overlay nil "An overlay for off-screen matching parens.")
+(defvar-local shark-bytes/matching-paren-overlay nil "An overlay for off-screen matching parens.")
 
-(defun cpped-highlight-paren (&rest unused-arguments)
+(defun shark-bytes/highlight-paren (&rest unused-arguments)
   "Display matching line for off-screen paren."
-  (when (overlayp cpped-matching-paren-overlay)
-    (delete-overlay cpped-matching-paren-overlay))
+  (when (overlayp shark-bytes/matching-paren-overlay)
+    (delete-overlay shark-bytes/matching-paren-overlay))
   (when (and (overlay-buffer show-paren--overlay)
              (not (or cursor-in-echo-area
                       executing-kbd-macro
@@ -3038,16 +3037,16 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
                                  (point))))))
     (cl-letf (((symbol-function #'minibuffer-message)
                (lambda (message &rest arguments)
-                 (setq cpped-matching-paren-overlay (save-excursion
+                 (setq shark-bytes/matching-paren-overlay (save-excursion
                                                       (goto-char (window-start))
                                                       (make-overlay (line-beginning-position)
                                                                     (line-end-position))))
-                 (overlay-put cpped-matching-paren-overlay 'display (replace-regexp-in-string "Matches " "" (apply #'format-message message arguments)))
-                 (overlay-put cpped-matching-paren-overlay 'priority 2000)
-                 (overlay-put cpped-matching-paren-overlay 'face '(:inherit flycheck-info)))))
+                 (overlay-put shark-bytes/matching-paren-overlay 'display (replace-regexp-in-string "Matches " "" (apply #'format-message message arguments)))
+                 (overlay-put shark-bytes/matching-paren-overlay 'priority 2000)
+                 (overlay-put shark-bytes/matching-paren-overlay 'face '(:inherit flycheck-info)))))
       (blink-matching-open))))
 
-(advice-add #'show-paren-function :after #'cpped-highlight-paren)
+(advice-add #'show-paren-function :after #'shark-bytes/highlight-paren)
 #+end_src
 
 *** Highlight last screen content when navigating
@@ -3065,7 +3064,7 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 
 *** Smart narrowing/widening
 #+begin_src emacs-lisp
-(defun cpped-narrow-or-widen-dwim (prefix)
+(defun shark-bytes/narrow-or-widen-dwim (prefix)
   "Widen if buffer is narrowed, narrow otherwise. If a prefix is given, always narrow regardless of narrowed state."
   (interactive "P")
   (declare (interactive-only))
@@ -3102,7 +3101,7 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 *** [[https://github.com/amperser/proselint][Prose Linter]]
 #+begin_src emacs-lisp
 (with-eval-after-load "system-packages"
-  (cpped-install-system-package "proselint" :package-manager 'pip)
+  (shark-bytes/install-system-package "proselint" :package-manager 'pip)
   (with-eval-after-load "flycheck"
     (flycheck-define-checker proselint
       "A linter for prose."
@@ -3119,32 +3118,31 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 
 *** Diction
 #+begin_src emacs-lisp
-(defvar-local cpped-diction-language "en" "The language used for diction checks.")
+(defvar-local shark-bytes/diction-language "en" "The language used for diction checks.")
 #+end_src
 
 #+begin_src emacs-lisp
 (with-eval-after-load "flycheck"
   (with-eval-after-load "guess-language"
-    (defun cpped-guess-language-switch-diction-function (lang &optional beginning end)
+    (defun shark-bytes/guess-language-switch-diction-function (lang &optional beginning end)
       "Switch the diction dictionary and recheck the current paragraph."
       (let ((new-language (cadr (assq lang guess-language-langcodes))))
-        (when (and (not (string= cpped-diction-language new-language))
+        (when (and (not (string= shark-bytes/diction-language new-language))
                    (member new-language '("en" "de")))
-          (setq cpped-diction-language new-language)
-          (flyspell-buffer))))
+          (setq shark-bytes/diction-language new-language))))
 
-    (add-to-list 'guess-language-after-detection-functions 'cpped-guess-language-switch-diction-function))
+    (add-to-list 'guess-language-after-detection-functions 'shark-bytes/guess-language-switch-diction-function))
 
   (with-eval-after-load "system-packages"
-    (cpped-install-system-package "diction")
+    (shark-bytes/install-system-package "diction")
 
-    (flycheck-define-checker cpped-diction
+    (flycheck-define-checker shark-bytes/diction
       "Diction checker"
-      :command ("diction" "-bs" "-L" (eval cpped-diction-language) source-original)
+      :command ("diction" "-bs" "-L" (eval shark-bytes/diction-language) source-original)
       :error-patterns ((info line-start (file-name) ":" line ": " (message) line-end))
       :modes (text-mode org-mode markdown-mode gfm-mode))
 
-    (add-to-list 'flycheck-checkers 'cpped-diction)))
+    (add-to-list 'flycheck-checkers 'shark-bytes/diction)))
 #+end_src
 
 ** Navigation
@@ -3234,7 +3232,7 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 (use-package ace-link
   :config
   (ace-link-setup-default)
-  (defun cpped-jump-to-url ()
+  (defun shark-bytes/jump-to-url ()
     "Jump to the URL at point."
     (interactive)
     (let ((url (url-get-url-at-point)))
@@ -3260,7 +3258,7 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
       text-mode-hook '(turn-on-auto-fill text-mode-hook-identify)
       require-final-newline nil)
 
-(defvar cpped-default-indentation 4 "The default number of spaces to indent.")
+(defvar shark-bytes/default-indentation 4 "The default number of spaces to indent.")
 (defvar autopair-skip-whitespace t)
 (defvar electric-spacing-double-space-docs nil)
 #+end_src
@@ -3290,7 +3288,7 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 
 *** Join lines
 #+begin_src emacs-lisp
-(defun cpped-join-lines ()
+(defun shark-bytes/join-lines ()
   "Join lines, optionally with a separator and quotes."
   (interactive)
   (if (region-active-p)
@@ -3368,7 +3366,7 @@ Set prefered clipboard formats
 
 *** Smart backward delete
 #+begin_src emacs-lisp
-(defun cpped-backward-kill-dwim ()
+(defun shark-bytes/backward-kill-dwim ()
   (interactive "p")
   (if (region-active-p)
       (call-interactively #'kill-region)
@@ -3386,7 +3384,7 @@ Set prefered clipboard formats
 
 *** Allow adding a newline to the end of the current line, regardless of point position
 #+begin_src emacs-lisp
-(defun cpped-newline-after-current-line ()
+(defun shark-bytes/newline-after-current-line ()
   "Moves to the end of the current line and inserts a newline."
   (interactive)
   (end-of-line)
@@ -3401,7 +3399,7 @@ Set prefered clipboard formats
 
 *** Case-insensitive line sorting
 #+begin_src emacs-lisp
-(defun cpped-sort-lines-case-insensitive ()
+(defun shark-bytes/sort-lines-case-insensitive ()
   (interactive)
   (let ((sort-fold-case t))
     (call-interactively 'sort-lines)))
@@ -3409,7 +3407,7 @@ Set prefered clipboard formats
 
 *** Remove duplicate adjacent lines
 #+begin_src emacs-lisp
-(defun cpped-remove-duplicate-lines ()
+(defun shark-bytes/remove-duplicate-lines ()
   "Remove duplicate adjacent lines in a region or buffer."
   (interactive)
   (save-excursion
@@ -3449,7 +3447,7 @@ Set prefered clipboard formats
 #+begin_src emacs-lisp
 (use-package typo
   :hook (text-mode . (lambda ()
-                       (when (not (string-equal (buffer-name) (file-name-nondirectory cpped-config-file)))
+                       (when (not (string-equal (buffer-name) (file-name-nondirectory shark-bytes/config-file)))
                          (typo-mode)))))
 #+end_src
 
@@ -3516,27 +3514,27 @@ Some useful abbreviations
 
 *** Insert Date/Time
 #+begin_src emacs-lisp
-(defun cpped-insert-timestamp ()
+(defun shark-bytes/insert-timestamp ()
   "Insert date and time according to the locale's date and time format."
   (interactive)
   (insert (format-time-string "%c" (current-time))))
 
-(defun cpped-insert-date ()
+(defun shark-bytes/insert-date ()
   "Insert the date according to the locale's date format."
   (interactive)
   (insert (format-time-string "%x" (current-time))))
 
-(defun cpped-insert-time ()
+(defun shark-bytes/insert-time ()
   "Insert the time according to the locale's time format."
   (interactive)
   (insert (format-time-string "%X" (current-time))))
 
-(defun cpped-insert-iso-date ()
+(defun shark-bytes/insert-iso-date ()
   "Insert the date according to the ISO date format."
   (interactive)
   (insert (format-time-string "%F" (current-time))))
 
-(defun cpped-insert-iso-timestamp ()
+(defun shark-bytes/insert-iso-timestamp ()
   "Insert the date according to the ISO date format."
   (interactive)
   (insert (format-time-string "%FT%T%z" (current-time))))
@@ -3544,8 +3542,8 @@ Some useful abbreviations
 
 *** Insert UUID
 #+begin_src emacs-lisp
-(cpped-install-system-package "util-linux")
-(defun cpped-insert-uuid ()
+(shark-bytes/install-system-package "util-linux")
+(defun shark-bytes/insert-uuid ()
   "Insert a UUID at point."
   (interactive)
   (insert (replace-regexp-in-string "\n" "" (shell-command-to-string (executable-find "uuidgen")))))
@@ -3597,20 +3595,20 @@ Some useful abbreviations
                         (shell-command-to-string (concat ispell-program-name " --help")))
     (push "--camel-case" ispell-extra-args))
   (push "\\`\\*flypell.*\\*\\'" consult-buffer-filter)
-  (defvar-local cpped-flyspell-errors 0 "The number of spelling errors in the document.")
+  (defvar-local shark-bytes/flyspell-errors 0 "The number of spelling errors in the document.")
   (advice-add 'flyspell-after-change-function :after (lambda (&rest arguments)
-                                                       (setq cpped-flyspell-errors 0)
+                                                       (setq shark-bytes/flyspell-errors 0)
                                                        (dolist (buffer-overlay (overlays-in (point-min) (point-max)))
                                                          (when (flyspell-overlay-p buffer-overlay)
-                                                             (setq cpped-flyspell-errors (1+ cpped-flyspell-errors))))
+                                                             (setq shark-bytes/flyspell-errors (1+ shark-bytes/flyspell-errors))))
                                                        (force-mode-line-update)))
-  (defun cpped-modeline-flyspell-status()
+  (defun shark-bytes/modeline-flyspell-status()
     "Format the modeline flyspell information."
     (when (and flyspell-mode
-               (> cpped-flyspell-errors 0))
-      (propertize (format " %d" cpped-flyspell-errors)
-                          'face 'cpped-check-status-error)))
-  (add-to-list 'cpped-modeline-check-status-functions 'cpped-modeline-flyspell-status))
+               (> shark-bytes/flyspell-errors 0))
+      (propertize (format " %d" shark-bytes/flyspell-errors)
+                          'face 'shark-bytes/check-status-error)))
+  (add-to-list 'shark-bytes/modeline-check-status-functions 'shark-bytes/modeline-flyspell-status))
 #+end_src
 
 https://github.com/d12frosted/flyspell-correct
@@ -3656,10 +3654,10 @@ https://github.com/d12frosted/flyspell-correct
   (google-translate-output-destination 'popup)
   (google-translate-default-source-language "auto")
   :config
-  (defun cpped-translate-word-or-region (&optional target-language replace)
+  (defun shark-bytes/translate-word-or-region (&optional target-language replace)
     "Replace the current region or word with its translation."
     (interactive)
-    (let* ((bounds (cpped-word-or-region-bounds))
+    (let* ((bounds (shark-bytes/word-or-region-bounds))
            (begin (car bounds))
            (end (cdr bounds))
            (text (buffer-substring-no-properties begin
@@ -3679,7 +3677,7 @@ https://github.com/d12frosted/flyspell-correct
 *  Binaries
 Open binary files in hexl-mode
 #+begin_src emacs-lisp
-(defvar cpped-no-hexedit-extensions nil "File extensions for which automatic hex editing is disabled")
+(defvar shark-bytes/no-hexedit-extensions nil "File extensions for which automatic hex editing is disabled")
 
 (add-hook 'find-file-hook (lambda ()
                             (when (and (eq buffer-file-coding-system 'no-conversion)
@@ -3688,7 +3686,7 @@ Open binary files in hexl-mode
                                                       (when (and (stringp buffer-file-name)
                                                                  (string-match pattern buffer-file-name))
                                                         (throw 'found pattern)))
-                                                    cpped-no-hexedit-extensions)
+                                                    shark-bytes/no-hexedit-extensions)
                                               nil)))
                               (hexl-mode))))
 #+end_src
@@ -3698,7 +3696,7 @@ Open binary files in hexl-mode
 (use-package cpio-mode
   :bind (:map cpio-mode-map ("q" . kill-this-buffer))
   :config
-  (push "\\.cpio\\'" cpped-no-hexedit-extensions)
+  (push "\\.cpio\\'" shark-bytes/no-hexedit-extensions)
   (push '("070707" . cpio-mode) magic-mode-alist)
   (push '("0123456789abcdef" . cpio-mode) magic-mode-alist)
   (push '("0123456789abcdefCPIO archive" . cpio-mode) magic-mode-alist))
@@ -3707,11 +3705,11 @@ Open binary files in hexl-mode
 *  Images
 ** Disable hex edit mode for images
 #+begin_src emacs-lisp
-(push "\\.jpg\\'" cpped-no-hexedit-extensions)
-(push "\\.jpeg\\'" cpped-no-hexedit-extensions)
-(push "\\.png\\'" cpped-no-hexedit-extensions)
-(push "\\.gif\\'" cpped-no-hexedit-extensions)
-(push "\\.svg\\'" cpped-no-hexedit-extensions)
+(push "\\.jpg\\'" shark-bytes/no-hexedit-extensions)
+(push "\\.jpeg\\'" shark-bytes/no-hexedit-extensions)
+(push "\\.png\\'" shark-bytes/no-hexedit-extensions)
+(push "\\.gif\\'" shark-bytes/no-hexedit-extensions)
+(push "\\.svg\\'" shark-bytes/no-hexedit-extensions)
 #+end_src
 
 *  Programming
@@ -3737,16 +3735,16 @@ Open binary files in hexl-mode
 *** Utilities
 **** Find file in project
 #+begin_src emacs-lisp
-(defun cpped-find-project-file (file)
+(defun shark-bytes/find-project-file (file)
   "Find a file in source or build directory."
   (or
-   (let* ((source-dir (cpped-project-dir))
+   (let* ((source-dir (shark-bytes/project-dir))
           (source-file (when source-dir
                          (expand-file-name file source-dir))))
      (when (and source-file
                 (file-exists-p source-file))
        source-file))
-   (let* ((build-dir (cpped-build-dir))
+   (let* ((build-dir (shark-bytes/current-build-directory))
           (build-file (when build-dir
                         (expand-file-name file build-dir))))
      (when (and build-file
@@ -3761,31 +3759,31 @@ Open binary files in hexl-mode
 (defvar default-docker-compose-file "docker-compose.yml" "The default name for the docker-compose file.")
 (defvar default-docker-start-script "docker-run.sh" "The default path to a script to start applications in a docker container.")
 
-(defun cpped-docker-compose-file ()
+(defun shark-bytes/docker-compose-file ()
   "Find the compose file in the project root."
-  (let ((compose-file (cpped-find-project-file default-docker-compose-file)))
+  (let ((compose-file (shark-bytes/find-project-file default-docker-compose-file)))
     (when (and compose-file
              (file-exists-p compose-file))
         compose-file)))
 
-(defun cpped-is-docker-project-p ()
+(defun shark-bytes/is-docker-project-p ()
   "Check if the current project supports docker."
-  (or (cpped-docker-compose-file)
-      (cpped-find-project-file ".docker-project")))
+  (or (shark-bytes/docker-compose-file)
+      (shark-bytes/find-project-file ".docker-project")))
 
-(defun cpped-maybe-run-in-docker (command)
+(defun shark-bytes/maybe-run-in-docker (command)
   "Run a command in docker if supported by the project."
-  (let* ((compose-file (cpped-docker-compose-file)))
+  (let* ((compose-file (shark-bytes/docker-compose-file)))
     (if compose-file
         (append `(docker-compose --file ,compose-file --exec) command)
-      (if (and (cpped-is-docker-project-p)
+      (if (and (shark-bytes/is-docker-project-p)
                default-docker-start-script)
           (append default-docker-start-script command)
         command))))
 
 (with-eval-after-load "flycheck"
   (setq flycheck-command-wrapper-function #'(lambda (command)
-                                              (cpped-maybe-run-in-docker command))))
+                                              (shark-bytes/maybe-run-in-docker command))))
 #+end_src
 
 *** CMake
@@ -3965,11 +3963,11 @@ Handler to close buffer after quitting ccmake.
 #+END_SRC
 
 **** Show target dependencies
-(defun cpped-show-target-dependencies (build-dir)
+(defun shark-bytes/show-target-dependencies (build-dir)
   "Show the target dependencies."
-  (interactive (list (or (cpped-build-dir)
+  (interactive (list (or (shark-bytes/current-build-directory)
                          (read-directory-name "Build-directory: "
-                                              (file-name-as-directory cpped-build-base-directory)))))
+                                              (file-name-as-directory shark-bytes/build-base-directory)))))
   (let ((dot (executable-find "dot"))
         (inhibit-read-only t))
     (if dot
@@ -3980,19 +3978,19 @@ Handler to close buffer after quitting ccmake.
                                                    dot
                                                    (helm :sources (helm-build-sync-source "Target Dependencies"
                                                                     :candidates
-                                                                    (let ((candidates (list (cons "all" (expand-file-name cpped-dependencies-file build-dir)))))
+                                                                    (let ((candidates (list (cons "all" (expand-file-name shark-bytes/cmake-dependencies-file build-dir)))))
                                                                       (mapc (lambda (element)
-                                                                              (when (string-match (rx (literal cpped-dependencies-file) "." (group (+ (not "."))) (group (? ".dependers")) eol) element)
+                                                                              (when (string-match (rx (literal shark-bytes/cmake-dependencies-file) "." (group (+ (not "."))) (group (? ".dependers")) eol) element)
                                                                                 (push (cons (concat (match-string 1 element)
                                                                                                     (if (match-string 3 element)
                                                                                                         " (dependents)"
                                                                                                        ""))
                                                                                             element)
                                                                                       candidates)))
-                                                                            (directory-files build-dir t (format "^%s.*" cpped-dependencies-file)))
+                                                                            (directory-files build-dir t (format "^%s.*" shark-bytes/cmake-dependencies-file)))
                                                                       candidates))
                                                          :prompt "Target: "
-                                                         :preselect (or (cdr (assoc build-dir cpped-current-targets))
+                                                         :preselect (or (taskrunner-get-last-command-ran)
                                                                         "all")
                                                          :buffer "*helm target dependencies*"))))
           (image-mode))
@@ -4096,32 +4094,30 @@ Handler to close buffer after quitting ccmake.
 #+end_src
 
 #+begin_src emacs-lisp
-(defun cpped-clean-build-directory ()
+(defun shark-bytes/clean-build-directory ()
   "Build the clean target in the current build directory."
   (interactive)
-  (cpped-build-target "clean"))
+  (shark-bytes/build-target "clean"))
 #+end_src
 
 *** Run/Debug
 #+begin_src emacs-lisp
-(defun cpped-run-target (target)
+(defun shark-bytes/run-target (target)
   "Build and run the current target in the current build directory. Ask for target if not set."
-  (interactive (list (or (or (cpped-build-target)
-                             (call-interactively 'cpped-select-target)))))
-  (cpped-build-target target)
+  (interactive)
+  (shark-bytes/build-target target)
   (let ((executable (locate-file target exec-path exec-suffixes 'executable)))
     (when executable
-      (let ((default-directory(file-name-directory executable)))
-        (call-process (cpped-maybe-run-in-docker executable))))))
+      (let ((default-directory (file-name-directory executable)))
+        (call-process (shark-bytes/maybe-run-in-docker executable))))))
 
-(defun cpped-debug-target (target)
+(defun shark-bytes/debug-target (target)
   "Build and run the current target in the current build directory. Ask for target if not set."
-  (interactive (list (or (or (cpped-build-target)
-                             (call-interactively 'cpped-select-target)))))
-  (cpped-build-target target)
+  (interactive)
+  (shark-bytes/build-target target)
   (let ((executable (locate-file target exec-path exec-suffixes 'executable)))
     (when executable
-      (realgud:gdb (cpped-maybe-run-in-docker (concat "gdb -cd=" (file-name-directory executable) " " executable))))))
+      (realgud:gdb (shark-bytes/maybe-run-in-docker (concat "gdb -cd=" (file-name-directory executable) " " executable))))))
 #+end_src
 
 ** Languages
@@ -4255,7 +4251,7 @@ Handler to close buffer after quitting ccmake.
 ***** Find ToDos in file or project
 #+begin_src emacs-lisp
 (with-eval-after-load "consult"
-  (defun cpped-find-todos-in-file ()
+  (defun shark-bytes/find-todos-in-file ()
     "Show all ToDo items in thqe file and allow jumping to specific item."
     (interactive)
     (let ((imenu-generic-expression (mapcar (lambda (element)
@@ -4277,33 +4273,33 @@ Handler to close buffer after quitting ccmake.
 (use-package cov
   :after all-the-icons
   :hook ((prog-mode . cov-mode)
-         (cpped-after-project-load . (lambda ()
-                                       (add-to-list 'cov-coverage-file-paths (cpped-build-dir)))))
+         (shark-bytes/after-project-load . (lambda ()
+                                       (add-to-list 'cov-coverage-file-paths (shark-bytes/current-build-directory)))))
   :custom (cov-coverage-mode t)
   :config
   (make-variable-buffer-local 'cov-coverage-file-paths)
-  (defvar-local cpped-cov-lines-covered 0 "The number of lines covered in tests and/or application runs.")
-  (defvar-local cpped-cov-percentage-covered 0 "The percentage of lines covered in tests and/or application runs.")
+  (defvar-local shark-bytes/cov-lines-covered 0 "The number of lines covered in tests and/or application runs.")
+  (defvar-local shark-bytes/cov-percentage-covered 0 "The percentage of lines covered in tests and/or application runs.")
   (advice-add 'cov--get-face :after (lambda (percentage)
                                       (when (> percentage 0)
-                                        (setq cpped-cov-lines-covered (1+ cpped-cov-lines-covered)))))
+                                        (setq shark-bytes/cov-lines-covered (1+ shark-bytes/cov-lines-covered)))))
   (advice-add 'cov-update :around (lambda (wrapped-function &rest arguments)
                                     (setq lines-covered 0)
                                     (apply wrapped-function arguments)
-                                    (setq cpped-cov-percentage-covered (* (/ cpped-cov-lines-covered (string-to-number (format-mode-line "%l"))) 100)
+                                    (setq shark-bytes/cov-percentage-covered (* (/ shark-bytes/cov-lines-covered (string-to-number (format-mode-line "%l"))) 100)
                                       (force-mode-line-update))))
-  (defun cpped-coverage-status-face ()
+  (defun shark-bytes/coverage-status-face ()
     "Calculate the face for the coverage status."
-    (cond ((> cpped-cov-percentage-covered 90) 'cpped-check-status-info)
-          ((> cpped-cov-percentage-covered 30) 'cpped-check-status-warning)
-          (t 'cpped-check-status-error)))
-  (defun cpped-modeline-coverage()
+    (cond ((> shark-bytes/cov-percentage-covered 90) 'shark-bytes/check-status-info)
+          ((> shark-bytes/cov-percentage-covered 30) 'shark-bytes/check-status-warning)
+          (t 'shark-bytes/check-status-error)))
+  (defun shark-bytes/modeline-coverage()
     "Format the modeline coverage information."
     (when cov-coverage-file
-      (let ((face (cpped-coverage-status-face)))
-        (propertize (format " %d%%" cpped-cov-percentage-covered)
+      (let ((face (shark-bytes/coverage-status-face)))
+        (propertize (format " %d%%" shark-bytes/cov-percentage-covered)
                     'face face))))
-  (add-to-list 'cpped-modeline-check-status-functions 'cpped-modeline-coverage))
+  (add-to-list 'shark-bytes/modeline-check-status-functions 'shark-bytes/modeline-coverage))
 #+end_src
 
 **** Navigation
@@ -4372,32 +4368,32 @@ Use [[https://editorconfig.org/][EditorConfig]] via [[https://github.com/editorc
 #+begin_src emacs-lisp
 (use-package comment-dwim-2
   :config
-  (defun cpped-comment-line ()
+  (defun shark-bytes/comment-line ()
     "Comment SEXPs instead of region in lisp code."
     (if (cd2/empty-line-p)
         (comment-dwim nil)
       (if (derived-mode-p 'emacs-lisp-mode)
           (comment-or-uncomment-sexp)
         (comment-region (line-beginning-position) (line-end-position)))))
-  (advice-add 'cd2/comment-line :override 'cpped-comment-line))
+  (advice-add 'cd2/comment-line :override 'shark-bytes/comment-line))
 #+end_src
 
 ***** [[https://github.com/victorhge/iedit][Edit all occurences within function]]
 #+begin_src emacs-lisp
-(defvar-local cpped-mark-function 'mark-defun "The function to call to mark the current function.")
-(defvar-local cpped-beginning-of-function 'beginning-of-defun "The function to call to jump to the beginning of the current function.")
-(defvar-local cpped-end-of-function 'end-of-defun "The function to call to jump to the end of the current function.")
+(defvar-local shark-bytes/mark-function 'mark-defun "The function to call to mark the current function.")
+(defvar-local shark-bytes/beginning-of-function 'beginning-of-defun "The function to call to jump to the beginning of the current function.")
+(defvar-local shark-bytes/end-of-function 'end-of-defun "The function to call to jump to the end of the current function.")
 
 (use-package iedit)
 
-(defun cpped-iedit-scoped (orig-fn)
+(defun shark-bytes/iedit-scoped (orig-fn)
   "Call `iedit-mode' with function-local scope, or global scope if called with a universal prefix."
   (interactive)
   (pcase-exhaustive current-prefix-arg
     ('nil (funcall orig-fn '(0)))
     ('(4) (funcall orig-fn))))
 
-(advice-add #'iedit-mode :around #'cpped-iedit-scoped)
+;(advice-add #'iedit-mode :around #'shark-bytes/iedit-scoped)
 #+end_src
 
 ***** Change numbers
@@ -4409,10 +4405,10 @@ Use [[https://editorconfig.org/][EditorConfig]] via [[https://github.com/editorc
 #+begin_src emacs-lisp
 (use-package 0xc
   :config
-  (defun cpped-convert-number (base)
+  (defun shark-bytes/convert-number (base)
     (interactive (list (string-to-number (completing-read "Base" '("2" "8" "10" "16")))))
     (0xc-convert-point base))
-  (defun cpped-show-number-info ()
+  (defun shark-bytes/number-info ()
     (interactive)
     (when-let* ((bounds (0xc--bounds-of-number-at-point))
                 (begin (car bounds))
@@ -4509,31 +4505,31 @@ Use [[https://editorconfig.org/][EditorConfig]] via [[https://github.com/editorc
   (flycheck-check-syntax-automatically '(mode-enabled save))
   :config
   (push "\\`\\*Flycheck.+\\*\\'" consult-buffer-filter)
-  (defun cpped-modeline-flycheck-status-face ()
+  (defun shark-bytes/modeline-flycheck-status-face ()
     (pcase flycheck-last-status-change
-      (`errored 'cpped-check-status-error)
+      (`errored 'shark-bytes/check-status-error)
       (`finished
        (if flycheck-current-errors
            (let-alist (flycheck-count-errors flycheck-current-errors)
-             (cond (.error 'cpped-check-status-error)
-                   (.warning 'cpped-check-status-warning)
-                   (.info 'cpped-check-status-info)))
-         'cpped-check-status-info))
-      (_ 'cpped-check-status-warning)))
-  (defun cpped-modeline-flycheck-status ()
+             (cond (.error 'shark-bytes/check-status-error)
+                   (.warning 'shark-bytes/check-status-warning)
+                   (.info 'shark-bytes/check-status-info)))
+         'shark-bytes/check-status-info))
+      (_ 'shark-bytes/check-status-warning)))
+  (defun shark-bytes/modeline-flycheck-status ()
     (when (and (boundp 'flycheck-last-status-change)
                (equal flycheck-last-status-change 'finished))
       (let ((issues (let-alist (flycheck-count-errors flycheck-current-errors)
                       (+ (or .warning 0) (or .error 0) (or .info 0))))
-            (face (cpped-modeline-flycheck-status-face)))
+            (face (shark-bytes/modeline-flycheck-status-face)))
         (propertize (format " %d" issues)
                      'face face))))
-  (add-to-list 'cpped-modeline-check-status-functions 'cpped-modeline-flycheck-status))
+  (add-to-list 'shark-bytes/modeline-check-status-functions 'shark-bytes/modeline-flycheck-status))
 #+end_src
 
 Custom error highlighting (colored line under location)
 #+begin_src emacs-lisp
-(defun cpped-flycheck-clear (status)
+(defun shark-bytes/flycheck-clear (status)
   "Clear the highlights if appropriate."
   (let ((clear nil))
     (when (boundp 'flycheck-last-status-change)
@@ -4543,11 +4539,11 @@ Custom error highlighting (colored line under location)
         (`interrupted (setq clear t))
         (_ (setq clear nil))))
     (when clear
-      (remove-overlays nil nil 'cpped-flycheck-inline-error t))))
+      (remove-overlays nil nil 'shark-bytes/flycheck-inline-error t))))
 
-(defun cpped-flycheck-inline-error-messages ()
+(defun shark-bytes/flycheck-inline-error-messages ()
   "Show Flycheck errors in a new line below the problematic line."
-  (remove-overlays nil nil 'cpped-flycheck-inline-error t)
+  (remove-overlays nil nil 'shark-bytes/flycheck-inline-error t)
   (mapc #'(lambda (error)
             (let* ((begin (save-excursion
                             (goto-char (flycheck-error-pos error))
@@ -4567,11 +4563,11 @@ Custom error highlighting (colored line under location)
                                                                         ("info" "")
                                                                         (_ ""))
                                                                       (flycheck-error-message error))
-                                                              'face face))
-            (overlay-put overlay 'cpped-flycheck-inline-error t))) flycheck-current-errors))
+                                                              'face `(:inherit ,face :extend t)))
+            (overlay-put overlay 'shark-bytes/flycheck-inline-error t))) flycheck-current-errors))
 
-(add-hook 'flycheck-after-syntax-check-hook #'cpped-flycheck-inline-error-messages)
-(add-hook 'flycheck-status-changed-functions #'cpped-flycheck-clear)
+(add-hook 'flycheck-after-syntax-check-hook #'shark-bytes/flycheck-inline-error-messages)
+(add-hook 'flycheck-status-changed-functions #'shark-bytes/flycheck-clear)
 #+end_src
 
 ***** Consult integration
@@ -4646,12 +4642,12 @@ TODO
 
 ***** Support ANSI escape codes
 #+begin_src emacs-lisp
-(defun cpped-colorize-compilation ()
+(defun shark-bytes/colorize-compilation ()
   "Colorize compilation output."
   (let ((inhibit-read-only t))
     (ansi-color-apply-on-region compilation-filter-start (point))))
 
-(add-hook 'compilation-filter-hook #'cpped-colorize-compilation)
+(add-hook 'compilation-filter-hook #'shark-bytes/colorize-compilation)
 #+end_src
 
 ***** Show status in mode line
@@ -4660,42 +4656,42 @@ TODO
 (defvar-local compilation-finished-successfully-p nil "Flag to indicate if a compilation finished successfully.")
 
 (add-hook 'compilation-start-hook (lambda (process)
-                                    (setq cpped-process-running t
-                                          cpped-current-process-start-time (current-time))))
+                                    (setq shark-bytes/process-running t
+                                          shark-bytes/current-process-start-time (current-time))))
 
 (add-to-list 'compilation-finish-functions '(lambda (buffer message)
-                                              (setq cpped-process-running nil
+                                              (setq shark-bytes/process-running nil
                                                     compilation-run-p t
                                                     compilation-finished-successfully-p (string-match "^finished" message))
                                               (force-mode-line-update)))
 
-(defun cpped-modeline-compilation-status ()
+(defun shark-bytes/modeline-compilation-status ()
   "Format the mode line compilation information."
   (when compilation-run-p
     (mapconcat 'identity
                (remove nil (list (propertize (all-the-icons-faicon5 "hammer")
                                              'face (list ':inherit (if compilation-finished-successfully-p
-                                                                       (cond ((> compilation-num-errors-found 0) 'cpped-check-status-error)
-                                                                             ((> compilation-num-warnings-found 0) 'cpped-check-status-warning)
-                                                                             ((> compilation-num-infos-found 0) 'cpped-check-status-info)
-                                                                             (t 'cpped-check-status-info))
-                                                                     'cpped-check-status-error)
+                                                                       (cond ((> compilation-num-errors-found 0) 'shark-bytes/check-status-error)
+                                                                             ((> compilation-num-warnings-found 0) 'shark-bytes/check-status-warning)
+                                                                             ((> compilation-num-infos-found 0) 'shark-bytes/check-status-info)
+                                                                             (t 'shark-bytes/check-status-info))
+                                                                     'shark-bytes/check-status-error)
                                                          ':family (all-the-icons-faicon5-family))
                                              'display '(raise -0.0))
                                  (mapconcat 'identity
                                             (remove nil (list (when (> compilation-num-errors-found 0)
                                                                 (propertize compilation-num-errors-found
-                                                                            'face 'cpped-check-status-error))
+                                                                            'face 'shark-bytes/check-status-error))
                                                               (when (> compilation-num-warnings-found 0)
                                                                 (propertize compilation-num-warnings-found
-                                                                            'face 'cpped-check-status-warning))
+                                                                            'face 'shark-bytes/check-status-warning))
                                                               (when (> compilation-num-infos-found 0)
                                                                 (propertize compilation-num-infos-found
-                                                                            'face 'cpped-check-status-info))))
+                                                                            'face 'shark-bytes/check-status-info))))
                                             " / ")))
                " ")))
 
-(add-to-list 'cpped-modeline-check-status-functions 'cpped-modeline-compilation-status)
+(add-to-list 'shark-bytes/modeline-check-status-functions 'shark-bytes/modeline-compilation-status)
 #+end_src
 
 ***** Show notification
@@ -4716,7 +4712,7 @@ Show API info via [[https://devdocs.io][devdocs.io]]
              :repo "blahgeek/emacs-devdocs-browser")
   :hook (eww-mode . devdocs-browser-eww-mode)
   :config
-  (defun cpped-add-apidocs (mode doclist)
+  (defun shark-bytes/add-apidocs (mode doclist)
     "Install API documentation and enable for mode."
     (mapcar (lambda (doc)
               (devdocs-browser-install-doc doc))
@@ -4817,17 +4813,17 @@ Show API info via [[https://devdocs.io][devdocs.io]]
 
 **** LOC counting/Metrics
 #+begin_src emacs-lisp
-(cpped-install-system-package "cloc")
+(shark-bytes/install-system-package "cloc")
 
-(defun cpped-cloc-project ()
+(defun shark-bytes/cloc-project ()
   "Count lines of code in project."
   (interactive)
-  (let ((project-root (cpped-project-dir)))
+  (let ((project-root (shark-bytes/project-dir)))
     (when project-root
       (shell-command (concat  "cloc --quiet " project-root " &") "*Cloc*")
       (pop-to-buffer "*Cloc*"))))
 
-(defun cpped-cloc-file ()
+(defun shark-bytes/cloc-file ()
   "Count lines of code in file."
   (interactive)
   (let ((cloc-input (make-temp-file "cloc-" nil (replace-regexp-in-string "[\\\\']" "" (car (rassq major-mode auto-mode-alist))))))
@@ -4838,7 +4834,7 @@ Show API info via [[https://devdocs.io][devdocs.io]]
 
 (with-eval-after-load "consult"
   (push "\\`\\*Cloc\\*\\'" consult-buffer-filter)
-  (push "*Cloc*" cpped-bury-buffers-list))
+  (push "*Cloc*" shark-bytes/bury-buffers-list))
 #+end_src
 
 *** Assembler
@@ -4861,12 +4857,12 @@ Show API info via [[https://devdocs.io][devdocs.io]]
 
 *** C/C++
 #+begin_src emacs-lisp
-(defconst cpped-c++-source-file-pattern "\\.[Cc]([Cc]|[Pp][Pp]|[Xx][Xx]|++)\\'")
-(defconst cpped-c++-header-file-pattern "\\.[Hh]([Hh]|[Pp][Pp]|[Xx][Xx]|++)\\'")
+(defconst shark-bytes/c++-source-file-pattern "\\.[Cc]([Cc]|[Pp][Pp]|[Xx][Xx]|++)\\'")
+(defconst shark-bytes/c++-header-file-pattern "\\.[Hh]([Hh]|[Pp][Pp]|[Xx][Xx]|++)\\'")
 
 (add-to-list 'auto-mode-alist '("\\.a\\'" . c-mode))
-(add-to-list 'auto-mode-alist `(,cpped-c++-source-file-pattern . c++-mode))
-(add-to-list 'auto-mode-alist `(,cpped-c++-header-file-pattern . c++-mode))
+(add-to-list 'auto-mode-alist `(,shark-bytes/c++-source-file-pattern . c++-mode))
+(add-to-list 'auto-mode-alist `(,shark-bytes/c++-header-file-pattern . c++-mode))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -4912,54 +4908,54 @@ Show API info via [[https://devdocs.io][devdocs.io]]
 #+begin_src emacs-lisp
 (require 'cc-menus)
 
-(defvar cpped-imenu-c-generic-expression nil)
-(defvar cpped-imenu-c++-generic-expression nil)
+(defvar shark-bytes/imenu-c-generic-expression nil)
+(defvar shark-bytes/imenu-c++-generic-expression nil)
 
-(defconst cpped-cc-imenu-include '("Include" "^[[:space:]]*#include[[:space:]]+[<\"]\\([^>\"]+\\)" 1) "A C/C++ include pattern for imenu")
-(add-to-list 'cpped-imenu-c-generic-expression cpped-cc-imenu-include)
-(add-to-list 'cpped-imenu-c++-generic-expression cpped-cc-imenu-include)
+(defconst shark-bytes/cc-imenu-include '("Include" "^[[:space:]]*#include[[:space:]]+[<\"]\\([^>\"]+\\)" 1) "A C/C++ include pattern for imenu")
+(add-to-list 'shark-bytes/imenu-c-generic-expression shark-bytes/cc-imenu-include)
+(add-to-list 'shark-bytes/imenu-c++-generic-expression shark-bytes/cc-imenu-include)
 
-(defconst cpped-cc-imenu-pragma '("Preprocessor Pragma" "^[[:space:]]*#pragma \\(.+\\)$" 1) "A C/C++ preprocessor pragma pattern for imenu")
-(add-to-list 'cpped-imenu-c-generic-expression cpped-cc-imenu-pragma)
-(add-to-list 'cpped-imenu-c++-generic-expression cpped-cc-imenu-pragma)
+(defconst shark-bytes/cc-imenu-pragma '("Preprocessor Pragma" "^[[:space:]]*#pragma \\(.+\\)$" 1) "A C/C++ preprocessor pragma pattern for imenu")
+(add-to-list 'shark-bytes/imenu-c-generic-expression shark-bytes/cc-imenu-pragma)
+(add-to-list 'shark-bytes/imenu-c++-generic-expression shark-bytes/cc-imenu-pragma)
 
-(defconst cpped-cc-imenu-define '("Preprocessor Define" "^[[:space:]]*#define \\(.+\\)$" 1) "A C/C++ preprocessor define pattern for imenu")
-(add-to-list 'cpped-imenu-c-generic-expression cpped-cc-imenu-define)
-(add-to-list 'cpped-imenu-c++-generic-expression cpped-cc-imenu-define)
+(defconst shark-bytes/cc-imenu-define '("Preprocessor Define" "^[[:space:]]*#define \\(.+\\)$" 1) "A C/C++ preprocessor define pattern for imenu")
+(add-to-list 'shark-bytes/imenu-c-generic-expression shark-bytes/cc-imenu-define)
+(add-to-list 'shark-bytes/imenu-c++-generic-expression shark-bytes/cc-imenu-define)
 
-(defconst cpped-cc-imenu-undefine '("Preprocessor Undefine" "^[[:space:]]*#undef \\(.+\\)$" 1) "A C/C++ preprocessor undefine pattern for imenu")
-(add-to-list 'cpped-imenu-c-generic-expression cpped-cc-imenu-undefine)
-(add-to-list 'cpped-imenu-c++-generic-expression cpped-cc-imenu-undefine)
+(defconst shark-bytes/cc-imenu-undefine '("Preprocessor Undefine" "^[[:space:]]*#undef \\(.+\\)$" 1) "A C/C++ preprocessor undefine pattern for imenu")
+(add-to-list 'shark-bytes/imenu-c-generic-expression shark-bytes/cc-imenu-undefine)
+(add-to-list 'shark-bytes/imenu-c++-generic-expression shark-bytes/cc-imenu-undefine)
 
-(defconst cpped-cc-imenu-condition '("Preprocessor Condition" "^[[:space:]]*#\\(ifn?\\(def\\)?.+\\)$" 1) "A C/C++ preprocessor condition pattern for imenu")
-(add-to-list 'cpped-imenu-c-generic-expression cpped-cc-imenu-condition)
-(add-to-list 'cpped-imenu-c++-generic-expression cpped-cc-imenu-condition)
+(defconst shark-bytes/cc-imenu-condition '("Preprocessor Condition" "^[[:space:]]*#\\(ifn?\\(def\\)?.+\\)$" 1) "A C/C++ preprocessor condition pattern for imenu")
+(add-to-list 'shark-bytes/imenu-c-generic-expression shark-bytes/cc-imenu-condition)
+(add-to-list 'shark-bytes/imenu-c++-generic-expression shark-bytes/cc-imenu-condition)
 
-(defconst cpped-cc-imenu-namespace '("Namespace" "^[[:space:]]*namespace[[:space:]]+\\([^/{]+\\)[[:space:]]*$" 1) "A C++ namespace pattern for imenu")
-(add-to-list 'cpped-imenu-c++-generic-expression cpped-cc-imenu-namespace)
+(defconst shark-bytes/cc-imenu-namespace '("Namespace" "^[[:space:]]*namespace[[:space:]]+\\([^/{]+\\)[[:space:]]*$" 1) "A C++ namespace pattern for imenu")
+(add-to-list 'shark-bytes/imenu-c++-generic-expression shark-bytes/cc-imenu-namespace)
 
-(nconc cc-imenu-c-generic-expression cpped-imenu-c-generic-expression)
-(nconc cc-imenu-c++-generic-expression cpped-imenu-c++-generic-expression)
+(nconc cc-imenu-c-generic-expression shark-bytes/imenu-c-generic-expression)
+(nconc cc-imenu-c++-generic-expression shark-bytes/imenu-c++-generic-expression)
 
-(defun cpped-custom-c-imenu-index (function)
+(defun shark-bytes/custom-c-imenu-index (function)
   "Add additional entries to C/C++ imenu. "
   (nconc (funcall function)
          (imenu--generic-function (cond ((equal major-mode 'c-mode)
-                                         cpped-imenu-c-generic-expression)
+                                         shark-bytes/imenu-c-generic-expression)
                                         ((equal major-mode 'c++-mode)
-                                         cpped-imenu-c++-generic-expression)))))
+                                         shark-bytes/imenu-c++-generic-expression)))))
 
 (with-eval-after-load "lsp-mode"
-  (advice-add 'lsp--imenu-create-index :around #'cpped-custom-c-imenu-index))
+  (advice-add 'lsp--imenu-create-index :around #'shark-bytes/custom-c-imenu-index))
 #+end_src
 
 **** Editing
 ***** Mark/navigation functions
 #+begin_src emacs-lisp
 (add-hook 'c-mode-common-hook (lambda ()
-                                (setq cpped-mark-function 'c-mark-function)
-                                (setq cpped-beginning-of-function 'c-beginning-of-defun)
-                                (setq cpped-end-of-function 'c-end-of-defun)))
+                                (setq shark-bytes/mark-function 'c-mark-function)
+                                (setq shark-bytes/beginning-of-function 'c-beginning-of-defun)
+                                (setq shark-bytes/end-of-function 'c-end-of-defun)))
 #+end_src
 
 ***** Clang include fixer
@@ -4968,7 +4964,7 @@ Show API info via [[https://devdocs.io][devdocs.io]]
 (add-hook 'after-save-hook #'(lambda()
                                (when (or (equal major-mode 'c-mode)
                                          (equal major-mode 'c++-mode))
-                                 (let ((directory (cpped-build-dir)))
+                                 (let ((directory (shark-bytes/current-build-directory)))
                                    (when directory
                                      (call-process "find-all-symbols" nil nil nil (concat "-merge-dir=" directory) (concat "-output-dir=" directory) (concat "-p" directory) (file-truename buffer-file-name))
                                    (clang-include-fixer))))))
@@ -4987,10 +4983,10 @@ Show API info via [[https://devdocs.io][devdocs.io]]
 
 ***** Indentation
 #+begin_src emacs-lisp
-(c-add-style "cpped-style"
+(c-add-style "shark-bytes/style"
              `("bsd"
                (c-progress-interval . nil)                   ; do not echo progress when indenting)
-               (c-basic-offset . ,cpped-default-indentation)
+               (c-basic-offset . ,shark-bytes/default-indentation)
                (comment-empty-lines . t)
                (c-electric-pound-behavior . '(alignleft))    ; do not indent macros
                (c-auto-align-backslashes . t)                ; align line end escape characters
@@ -5004,8 +5000,8 @@ Show API info via [[https://devdocs.io][devdocs.io]]
                                                                  c-lineup-cascaded-calls
                                                                  c-lineup-string-cont))))))
 
-(setq c-default-style '((c-mode . "cpped-style")
-                        (c++-mode . "cpped-style")
+(setq c-default-style '((c-mode . "shark-bytes/style")
+                        (c++-mode . "shark-bytes/style")
                         (java-mode . "java")
                         (awk-mode . "awk")
                         (other . "bsd")))
@@ -5047,14 +5043,14 @@ Show API info via [[https://devdocs.io][devdocs.io]]
 #+begin_src emacs-lisp
 (with-eval-after-load "bool-flip"
   (progn
-    (defun cpped-setup-c++-flip ()
+    (defun shark-bytes/setup-c++-flip ()
       (make-local-variable 'bool-flip-alist)
       (push '("class" . "struct") bool-flip-alist)
       (push '("struct" . "class") bool-flip-alist)
       (push '("public" . "protected") bool-flip-alist)
       (push '("protected" . "private") bool-flip-alist)
       (push '("private" . "public") bool-flip-alist))
-    (add-hook 'c++-mode-hook 'cpped-setup-c++-flip)))
+    (add-hook 'c++-mode-hook 'shark-bytes/setup-c++-flip)))
 #+end_src
 
 ***** Abbreviations
@@ -5116,7 +5112,7 @@ Show API info via [[https://devdocs.io][devdocs.io]]
     :config (flycheck-add-next-checker 'c/c++-gcc '(warning . clang-analyzer)))
 
   (with-eval-after-load "system-packages"
-    (cpped-install-system-package "cppcheck")
+    (shark-bytes/install-system-package "cppcheck")
     (setq flycheck-cppcheck-checks '("warning" "style" "performance" "portability" "information" "missingInclude"))
     (flycheck-add-next-checker 'clang-analyzer '(t . c/c++-cppcheck))
     (add-hook 'c++-mode-hook (lambda ()
@@ -5136,8 +5132,8 @@ Show API info via [[https://devdocs.io][devdocs.io]]
 **** Documentation
 #+begin_src emacs-lisp
 (with-eval-after-load "devdocs-browser"
-    (cpped-add-apidocs 'c-mode '("c"))
-    (cpped-add-apidocs 'c++-mode '("cpp" "c" "qt~5.15")))
+    (shark-bytes/add-apidocs 'c-mode '("c"))
+    (shark-bytes/add-apidocs 'c++-mode '("cpp" "c" "qt~5.15")))
 #+end_src
 
 **** Utilities
@@ -5241,19 +5237,19 @@ https://github.com/google/googletest
 
 ***** Language Server
 #+begin_src emacs-lisp
-(cpped-install-system-package "cmake-language-server" :package-manager 'pip)
+(shark-bytes/install-system-package "cmake-language-server" :package-manager 'pip)
 (add-hook 'cmake-mode-hook 'lsp-deferred)
 #+end_src
 
 ***** Formatting
 #+begin_src emacs-lisp
-(cpped-install-system-package "cmake-format" :package-manager 'pip)
+(shark-bytes/install-system-package "cmake-format" :package-manager 'pip)
 #+end_src
 
 **** Documentation
 #+begin_src emacs-lisp
 (with-eval-after-load "devdocs-browser"
-  (cpped-add-apidocs 'cmake-mode '("bash" "cmake~3.20" "gcc~11" "git")))
+  (shark-bytes/add-apidocs 'cmake-mode '("bash" "cmake~3.20" "gcc~11" "git")))
 #+end_src
 
 *** CSS
@@ -5265,8 +5261,8 @@ https://github.com/google/googletest
 ***** Syntax checkers
 #+begin_src emacs-lisp
 (with-eval-after-load "system-packages"
-  (cpped-install-system-package "csslint")
-  (cpped-install-system-package "stylelint" :package-manager 'npm)
+  (shark-bytes/install-system-package "csslint")
+  (shark-bytes/install-system-package "stylelint" :package-manager 'npm)
   (add-hook 'css-mode-hook (lambda ()
                              (flycheck-select-checker 'css-csslint)
                              (flycheck-add-next-checker 'css-csslint '(t . css-stylelint)))))
@@ -5275,7 +5271,7 @@ https://github.com/google/googletest
 **** Documentation
 #+begin_src emacs-lisp
 (with-eval-after-load "devdocs-browser"
-    (cpped-add-apidocs 'css-mode '("css")))
+    (shark-bytes/add-apidocs 'css-mode '("css")))
 #+end_src
 
 *** [[http://elpa.gnu.org/packages/csv-mode.html][CSV]]
@@ -5304,7 +5300,7 @@ https://github.com/google/googletest
 **** Documentation
 #+begin_src emacs-lisp
 (with-eval-after-load "devdocs-browser"
-    (cpped-add-apidocs 'dockerfile-mode '("bash" "docker~19" "git")))
+    (shark-bytes/add-apidocs 'dockerfile-mode '("bash" "docker~19" "git")))
 #+end_src
 
 **** [[https://github.com/Silex/docker.el][Control]]
@@ -5330,18 +5326,18 @@ https://github.com/google/googletest
 TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 #+begin_src emacs-lisp
 (with-eval-after-load "system-packages"
-  (cpped-install-system-package "dockerlint" :package-manager 'npm)
+  (shark-bytes/install-system-package "dockerlint" :package-manager 'npm)
   (with-eval-after-load "flycheck"
-    (flycheck-define-checker cpped-dockerlint
+    (flycheck-define-checker shark-bytes/dockerlint
       "Dockerfile checker (https://github.com/redcoolbeans/dockerlint)"
       :command ("dockerlint" source-original)
       :error-patterns ((error line-start "ERROR: " (message) " on line " line line-end)
                        (warning line-start "WARN: " (message) " on line " line line-end)
                        (info line-start "INFO: " (message) " on line " line line-end))
       :modes (dockerfile-mode))
-    (add-to-list 'flycheck-checkers 'cpped-dockerlint)
+    (add-to-list 'flycheck-checkers 'shark-bytes/dockerlint)
     (add-hook 'dockerfile-mode-hook (lambda ()
-                                      (flycheck-select-checker 'cpped-dockerlint)))))
+                                      (flycheck-select-checker 'shark-bytes/dockerlint)))))
 #+end_src
 
 *** Dot
@@ -5350,10 +5346,10 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
   :after (org system-packages)
   :custom
   (graphviz-dot-auto-indent-on-braces t)
-  (graphviz-dot-indent-width cpped-default-indentation)
+  (graphviz-dot-indent-width shark-bytes/default-indentation)
   (graphviz-dot-auto-preview-on-save t)
   :config
-  (cpped-install-system-package "graphviz")
+  (shark-bytes/install-system-package "graphviz")
   (add-to-list 'org-src-lang-modes '("dot" . graphviz-dot)))
 #+end_src
 
@@ -5443,14 +5439,14 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 ***** Syntax check
 #+begin_src emacs-lisp
 (with-eval-after-load "flycheck"
-  (defvar cpped-jenkins-url nil "The URL of the Jenkins installation.")
-  (cpped-install-system-package "curl")
+  (defvar shark-bytes/jenkins-url nil "The URL of the Jenkins installation.")
+  (shark-bytes/install-system-package "curl")
   (flycheck-define-checker jenkins
     "A Jenkins pipeline syntax checker."
     :command ("/usr/bin/curl"
               "-s" "-X" "POST" "-H" (eval (shell-command-to-string "/usr/bin/curl '-s' 'localhost:8080/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,\":\",//crumb)'"))
               "-F" (eval (concat "jenkinsfile=<" (car (flycheck-substitute-argument 'source 'jenkins))))
-              (eval (concat cpped-jenkins-url "/pipeline-model-converter/validate")))
+              (eval (concat shark-bytes/jenkins-url "/pipeline-model-converter/validate")))
     :error-patterns ((warning line-start (file-name) ":" (message) "@ line " line ", column " column))
     :modes (groovy-mode))
   (add-to-list 'flycheck-checkers 'jenkins))
@@ -5464,30 +5460,30 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 **** Documentation
 #+begin_src emacs-lisp
 (with-eval-after-load "devdocs-browser"
-  (cpped-add-apidocs 'html-mode '("css" "dom" "html" "http")))
+  (shark-bytes/add-apidocs 'html-mode '("css" "dom" "html" "http")))
 #+end_src
 
 **** Editing
 ***** Language server
 #+begin_src emacs-lisp
 (with-eval-after-load "system-packages"
-  (cpped-install-system-package "vscode-html-languageserver-bin" :package-manager 'npm)
+  (shark-bytes/install-system-package "vscode-html-languageserver-bin" :package-manager 'npm)
   (add-hook 'html-mode 'lsp-deferred))
 #+end_src
 
 ***** [[https://github.com/thedaviddias/HTMLHint][Syntax checker]]
 #+begin_src emacs-lisp
 (with-eval-after-load "system-packages"
-  (cpped-install-system-package "htmlhint" :package-manager 'npm)
+  (shark-bytes/install-system-package "htmlhint" :package-manager 'npm)
   (with-eval-after-load "flycheck"
-    (flycheck-define-checker cpped-htmlhint
+    (flycheck-define-checker shark-bytes/htmlhint
       "HTML file checker (https://github.com/thedaviddias/HTMLHint)"
       :command ("htmlhint" "--nocolor" "--format" "compact" source-original)
       :error-patterns ((error line-start (file-name) ": line " line ", col " column ", error - " (message) line-end)
 (warning line-start (file-name) ": line " line ", col " column ", warning - " (message) line-end)
 (info line-start (file-name) ": line " line ", col " column ", info - " (message) line-end))
       :modes (html-mode))
-    (add-to-list 'flycheck-checkers 'cpped-htmlhint)))
+    (add-to-list 'flycheck-checkers 'shark-bytes/htmlhint)))
 #+end_src
 
 *** Ini
@@ -5561,18 +5557,18 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 **** Documentation
 #+begin_src emacs-lisp
 (with-eval-after-load "devdocs-browser"
-  (cpped-add-apidocs 'js-mode '("javascript")))
+  (shark-bytes/add-apidocs 'js-mode '("javascript")))
 #+end_src
 
 **** Editing
 ***** Syntax checkers
 #+begin_src emacs-lisp
 (with-eval-after-load "system-packages"
-  (cpped-install-system-package "standard" :package-manager 'npm)
-  (cpped-install-system-package "jscs" :package-manager 'npm)
-  (cpped-install-system-package "eslint" :package-manager 'npm)
-  (cpped-install-system-package "jshint" :package-manager 'npm)
-  (cpped-install-system-package "jslint" :package-manager 'npm)
+  (shark-bytes/install-system-package "standard" :package-manager 'npm)
+  (shark-bytes/install-system-package "jscs" :package-manager 'npm)
+  (shark-bytes/install-system-package "eslint" :package-manager 'npm)
+  (shark-bytes/install-system-package "jshint" :package-manager 'npm)
+  (shark-bytes/install-system-package "jslint" :package-manager 'npm)
   (add-hook 'js-mode-hook (lambda ()
                           (flycheck-select-checker 'javascript-standard)
                           (flycheck-add-next-checker 'javascript-standard '(t . javascript-jscs))
@@ -5600,7 +5596,7 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
              :host github
              :repo "Sterlingg/json-snatcher")
   :config
-  (defun  cpped-json-path ()
+  (defun  shark-bytes/json-path ()
     "Return the JSON element hierarchy as a path."
     (interactive)
     (when (and (derived-mode-p 'json-mode)
@@ -5612,7 +5608,7 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
                   (reverse (jsons-get-path))
                   "/")))
   (with-eval-after-load "which-func"
-    (add-to-list 'which-func-functions 'cpped-json-path)))
+    (add-to-list 'which-func-functions 'shark-bytes/json-path)))
 #+end_src
 
 **** Editing
@@ -5631,9 +5627,9 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 **** Documentation
 #+begin_src emacs-lisp
 (with-eval-after-load "devdocs-browser"
-  (cpped-add-apidocs 'latex-mode '("latex"))
-  (cpped-add-apidocs 'texinfo-mode '("latex"))
-  (cpped-add-apidocs 'bibtex-mode '("latex")))
+  (shark-bytes/add-apidocs 'latex-mode '("latex"))
+  (shark-bytes/add-apidocs 'texinfo-mode '("latex"))
+  (shark-bytes/add-apidocs 'bibtex-mode '("latex")))
 #+end_src
 
 *** Lisp
@@ -5653,7 +5649,7 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 
 **** [[https://github.com/Fanael/highlight-defined][Highlight undefined symbols]]
 #+begin_src emacs-lisp
-(defun cpped-highlight-defined--determine-face (symbol)
+(defun shark-bytes/highlight-defined--determine-face (symbol)
   "Return the face SYMBOL should be fontified with. If SYMBOL is not one of the recognized types, return nil."
   (if (not (or (fboundp symbol) (special-variable-p symbol) (facep symbol)))
       'warning
@@ -5662,7 +5658,7 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 (use-package highlight-defined
   :hook (emacs-lisp-mode . highlight-defined-mode)
   :config
-  (advice-add 'highlight-defined--determine-face :override #'cpped-highlight-defined--determine-face))
+  (advice-add 'highlight-defined--determine-face :override #'shark-bytes/highlight-defined--determine-face))
 #+end_src
 
 **** [[https://github.com/cpitclaudel/easy-escape][Simplify Regular Expressions]]
@@ -5676,7 +5672,7 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 #+begin_src emacs-lisp
 (with-eval-after-load "bool-flip"
   (progn
-    (defun cpped-setup-elisp-flip ()
+    (defun shark-bytes/setup-elisp-flip ()
       (make-local-variable 'bool-flip-alist)
       (push '("t" . "nil") bool-flip-alist)
       (push '("nil" . "t") bool-flip-alist)
@@ -5688,8 +5684,8 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
       (push '("advice-remove" . "advice-add") bool-flip-alist)
       (push '("add-hook" . "remove-hook") bool-flip-alist)
       (push '("remove-hook" . "add-hook") bool-flip-alist))
-    (add-hook 'lisp-mode-hook 'cpped-setup-elisp-flip)
-    (add-hook 'emacs-lisp-mode-hook 'cpped-setup-elisp-flip)))
+    (add-hook 'lisp-mode-hook 'shark-bytes/setup-elisp-flip)
+    (add-hook 'emacs-lisp-mode-hook 'shark-bytes/setup-elisp-flip)))
 #+end_src
 
 **** [[https://github.com/Malabarba/comment-or-uncomment-sexp][Un-/Comment SEXPs]]
@@ -5705,7 +5701,7 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 **** Documentation
 #+begin_src emacs-lisp
 (with-eval-after-load "devdocs-browser"
-    (cpped-add-apidocs 'emacs-lisp-mode '("elisp")))
+    (shark-bytes/add-apidocs 'emacs-lisp-mode '("elisp")))
 #+end_src
 
 *** Make
@@ -5717,7 +5713,7 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
 **** Documentation
 #+begin_src emacs-lisp
 (with-eval-after-load "devdocs-browser"
-  (cpped-add-apidocs 'makefile-mode '("gcc~11")))
+  (shark-bytes/add-apidocs 'makefile-mode '("gcc~11")))
 #+end_src
 
 *** Perl
@@ -5757,7 +5753,7 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
                 (setq python-shell-interpreter "python3")))))
 
 (with-eval-after-load "devdocs-browser"
-  (cpped-add-apidocs 'python-mode . '(python~3.9))
+  (shark-bytes/add-apidocs 'python-mode . '(python~3.9))
 
 
 https://github.com/wbolster/emacs-python-pytest
@@ -5822,20 +5818,20 @@ https://github.com/marcwebbie/auto-virtualenv
 
 **** Imenu integration
 #+begin_src emacs-lisp
-(defun cpped-qml-imenu-create-index()
+(defun shark-bytes/qml-imenu-create-index()
   (append (imenu-default-create-index-function)
           (js--imenu-create-index)))
 
 (add-hook 'js-mode-hook (lambda()
                           (when (derived-mode-p 'qml-mode)
-                            (setq imenu-create-index-function #'cpped-qml-imenu-create-index)
+                            (setq imenu-create-index-function #'shark-bytes/qml-imenu-create-index)
                             (setq-local imenu-generic-expression '(("Items" "^[[:space:]]*\\([a-zA-Z0-9]+\\)[[:space:]\n]*{" 1))))))
 #+end_src
 
 **** Documentation
 #+begin_src emacs-lisp
 (with-eval-after-load "devdocs-browser"
-    (cpped-add-apidocs 'qml-mode '("qt~5.15")))
+    (shark-bytes/add-apidocs 'qml-mode '("qt~5.15")))
 #+end_src
 
 *** Shell
@@ -5845,10 +5841,10 @@ https://github.com/marcwebbie/auto-virtualenv
 
 **** Prettification
 #+begin_src emacs-lisp
-(setq cpped-font-lock-shebang `((,(rx bol (group "#!/" (? "usr/") (? "s") "bin/")) 1 '(face nil display " "))))
+(setq shark-bytes/font-lock-shebang `((,(rx bol (group "#!/" (? "usr/") (? "s") "bin/")) 1 '(face nil display " "))))
 
-(font-lock-add-keywords 'sh-mode cpped-font-lock-shebang)
-(font-lock-add-keywords 'shell-mode cpped-font-lock-shebang)
+(font-lock-add-keywords 'sh-mode shark-bytes/font-lock-shebang)
+(font-lock-add-keywords 'shell-mode shark-bytes/font-lock-shebang)
 #+end_src
 
 **** Editing
@@ -5886,12 +5882,12 @@ Set correct major mode
 
 ***** Prettification
 #+begin_src emacs-lisp
-(font-lock-add-keywords 'bash-mode cpped-font-lock-shebang)
+(font-lock-add-keywords 'bash-mode shark-bytes/font-lock-shebang)
 #+end_src
 
 ***** Language server
 #+begin_src emacs-lisp
-(cpped-install-system-package "bash-language-server" :package-manager 'npm)
+(shark-bytes/install-system-package "bash-language-server" :package-manager 'npm)
 (add-hook 'bash-mode-hook 'lsp-deferred)
 #+end_src
 
@@ -5912,7 +5908,7 @@ Set correct major mode
 
 ***** Prettification
 #+begin_src emacs-lisp
-(font-lock-add-keywords 'zsh-mode cpped-font-lock-shebang)
+(font-lock-add-keywords 'zsh-mode shark-bytes/font-lock-shebang)
 #+end_src
 
 **** DOS-Batch
@@ -5923,8 +5919,8 @@ Set correct major mode
 **** Documentation
 #+begin_src emacs-lisp
 (with-eval-after-load "devdocs-browser"
-  (cpped-add-apidocs 'sh-mode '("bash" "elisp" "gcc~11" "git"))
-  (cpped-add-apidocs 'bash-mode '("bash" "elisp" "gcc~11" "git")))
+  (shark-bytes/add-apidocs 'sh-mode '("bash" "elisp" "gcc~11" "git"))
+  (shark-bytes/add-apidocs 'bash-mode '("bash" "elisp" "gcc~11" "git")))
 #+end_src
 
 
@@ -5956,13 +5952,13 @@ Set correct major mode
   (push '("*PLANTUML Preview*" :dedicated t :width 60 :position right :noselect :stick) popwin:special-display-config)
   (add-to-list 'org-src-lang-modes '("plantuml" . plantuml)))
 
-(defun cpped-preview-plantuml-file ()
+(defun shark-bytes/preview-plantuml-file ()
   "Preview a plantuml file."
   (when (equal major-mode 'plantuml-mode)
     (plantuml-preview-string 4 (buffer-string))))
 
-(add-hook 'find-file-hook 'cpped-preview-plantuml-file)
-(add-hook 'after-save-hook 'cpped-preview-plantuml-file)
+(add-hook 'find-file-hook 'shark-bytes/preview-plantuml-file)
+(add-hook 'after-save-hook 'shark-bytes/preview-plantuml-file)
 #+end_src
 
 **** [[https://github.com/alexmurray/flycheck-plantuml][Syntax checker]]
@@ -5979,7 +5975,7 @@ Set correct major mode
 
 Show current XML path as current function
 #+begin_src emacs-lisp
-(defun cpped-xml-path ()
+(defun shark-bytes/xml-path ()
   "Return the XML element hierarchy as a path."
   (interactive)
   (when (derived-mode-p 'nxml-mode)
@@ -5997,7 +5993,7 @@ Show current XML path as current function
           (format "/%s" (mapconcat 'identity path "/")))))))
 
 (with-eval-after-load "which-func"
-  (add-to-list 'which-func-functions 'cpped-xml-path))
+  (add-to-list 'which-func-functions 'shark-bytes/xml-path))
 #+end_src
 
 **** Navigation
@@ -6020,8 +6016,8 @@ Show current XML path as current function
 ***** Syntax checkers
 #+begin_src emacs-lisp
 (with-eval-after-load "system-packages"
-  (cpped-install-system-package "xmllint")
-  (cpped-install-system-package "xmlstarlet")
+  (shark-bytes/install-system-package "xmllint")
+  (shark-bytes/install-system-package "xmlstarlet")
   (with-eval-after-load "flycheck"
     (flycheck-add-next-checker 'xml-xmllint '(t . xml-xmlstarlet))
     (add-hook 'nxml-mode-hook (lambda ()
@@ -6031,7 +6027,7 @@ Show current XML path as current function
 ***** Formatting
 #+begin_src emacs-lisp
 (with-eval-after-load "format-all"
-  (cpped-install-system-package "xmllint")
+  (shark-bytes/install-system-package "xmllint")
   (define-format-all-formatter xmllint-fmt
     (:executable "xmllint")
     (:install)
@@ -6046,7 +6042,7 @@ Show current XML path as current function
 **** Documentation
 #+begin_src emacs-lisp
 (with-eval-after-load "devdocs-browser"
-    (cpped-add-apidocs 'nxml-mode '("dom" "html" "svg" "xslt_xpath")))
+    (shark-bytes/add-apidocs 'nxml-mode '("dom" "html" "svg" "xslt_xpath")))
 #+end_src
 
 *** [[https://github.com/yoshiki/yaml-mode][YAML]]
@@ -6059,7 +6055,7 @@ Show current XML path as current function
 **** [[https://github.com/krzysztof-magosa/flycheck-yamllint][Syntax checker]]
 #+begin_src emacs-lisp
 (with-eval-after-load "system-packages"
-  (cpped-install-system-package "js-yaml" :package-manager 'npm))
+  (shark-bytes/install-system-package "js-yaml" :package-manager 'npm))
 
 (use-package flycheck-yamllint
   :after flycheck
@@ -6083,7 +6079,7 @@ Show current XML path as current function
 (use-package elf-mode
   :config
   (elf-setup-default)
-  (push "\\.so\\'" cpped-no-hexedit-extensions))
+  (push "\\.so\\'" shark-bytes/no-hexedit-extensions))
 #+end_src
 
 **** [[https://github.com/liblit/demangle-mode][Demangle symbols in ELF files]]
@@ -6124,7 +6120,7 @@ Auto-highlight details
 
 *** Quit diff view without confirmation if buffer is unchanged
 #+begin_src emacs-lisp
-(defun cpped-ediff-smart-quit ()
+(defun shark-bytes/ediff-smart-quit ()
   "Ask for confirmation only before quitting changed ediff buffers"
   (interactive)
   (ediff-barf-if-not-control-buffer)
@@ -6147,7 +6143,7 @@ Auto-highlight details
       (ediff-really-quit nil))))
 
 (add-hook 'ediff-startup-hook (lambda ()
-                                (local-set-key (kbd "q") 'cpped-ediff-smart-quit)))
+                                (local-set-key (kbd "q") 'shark-bytes/ediff-smart-quit)))
 #+end_src
 
 *** Split windows horizontally
@@ -6426,7 +6422,7 @@ If the region is active, act on all lines touched by the region."
                                    (list (rx bol (group "break")) ""))
   "An alist of expressions and icon properties to replace strings with icons in magit logs.")
 
-(defun cpped-prettify-magit (&rest arguments)
+(defun shark-bytes/prettify-magit (&rest arguments)
   "Add face properties and compose symbols for buffer from pretty-magit."
   (interactive)
   (with-silent-modifications
@@ -6443,40 +6439,40 @@ If the region is active, act on all lines touched by the region."
               (when properties
                 (add-face-text-property (match-beginning 1) (match-end 1) properties)))))))))
 
-(advice-add 'magit-status :after 'cpped-prettify-magit)
-(advice-add 'magit-refresh-buffer :after 'cpped-prettify-magit)
-(add-hook 'diff-mode-hook #'cpped-prettify-magit)
+(advice-add 'magit-status :after 'shark-bytes/prettify-magit)
+(advice-add 'magit-refresh-buffer :after 'shark-bytes/prettify-magit)
+(add-hook 'diff-mode-hook #'shark-bytes/prettify-magit)
 #+end_src
 
 ***** Import file from stash or branch
 #+begin_src emacs-lisp
 (with-eval-after-load "magit"
-  (defun cpped-list-refs-and-stashes (wrapped-function &rest arguments)
+  (defun shark-bytes/list-refs-and-stashes (wrapped-function &rest arguments)
     "Create a list of branches and stashes."
     (append
      (apply wrapped-function arguments)
      (magit-list-stashes)))
 
-  (defun cpped-import-git-file ()
+  (defun shark-bytes/import-git-file ()
     "Import a git-versioned file from either a branch or the stash."
     (interactive)
-    (advice-add #'magit-list-refnames :around #'cpped-list-refs-and-stashes)
+    (advice-add #'magit-list-refnames :around #'shark-bytes/list-refs-and-stashes)
     (call-interactively #'magit-file-checkout)
-    (advice-remove #'magit-list-refnames #'cpped-list-refs-and-stashes))
+    (advice-remove #'magit-list-refnames #'shark-bytes/list-refs-and-stashes))
 
   (magit-define-popup-action 'magit-dispatch-popup
-    ?I "Import" 'cpped-import-git-file ?!)
+    ?I "Import" 'shark-bytes/import-git-file ?!)
   (define-key magit-status-mode-map
-    "I" 'cpped-import-git-file))
+    "I" 'shark-bytes/import-git-file))
 #+end_src
 
 ***** Open file from stash or branch
 #+begin_src emacs-lisp
 (with-eval-after-load "magit"
-  (defun cpped-open-git-file ()
+  (defun shark-bytes/open-git-file ()
     "Open a git-versioned file from either a branch or the stash."
     (interactive)
-    (advice-add #'magit-list-refnames :around #'cpped-list-refs-and-stashes)
+    (advice-add #'magit-list-refnames :around #'shark-bytes/list-refs-and-stashes)
     (let* ((rev (magit-read-branch-or-commit
                  "Open from revision" magit-buffer-revision))
            (file (magit-read-file-from-rev rev "Open file"))
@@ -6488,9 +6484,9 @@ If the region is active, act on all lines touched by the region."
       (read-only-mode t)))
 
   (magit-define-popup-action 'magit-dispatch-popup
-    ?Z "Open" 'cpped-open-git-file ?!)
+    ?Z "Open" 'shark-bytes/open-git-file ?!)
   (define-key magit-status-mode-map
-    "Z" 'cpped-open-git-file))
+    "Z" 'shark-bytes/open-git-file))
 #+end_src
 
 ***** Automatically commit changes to WIP branches
@@ -6556,7 +6552,7 @@ If the region is active, act on all lines touched by the region."
 
 **** Show contributors
 #+begin_src emacs-lisp
-(defun cpped-get-contributor-info (files &optional start end)
+(defun shark-bytes/get-contributor-info (files &optional start end)
   "Get contributor information for file(s) or region."
   (let ((lines (if (and start end)
                    (format "-L %d,%d" (line-number-at-pos start t) (line-number-at-pos end t))
@@ -6578,7 +6574,7 @@ If the region is active, act on all lines touched by the region."
       (setq output (format "%s    %s (%d%%)\n" output (car entry) (/ (* (cdr entry) 100) linecount))))
     (concat output "\n")))
 
-(defun cpped-get-change-info (files &optional start end)
+(defun shark-bytes/get-change-info (files &optional start end)
   "Get last change date for file(s) or region."
   (let ((changes (sort (mapcar (lambda (file)
                                  (split-string (shell-command-to-string (concat "git log -1 "
@@ -6592,17 +6588,17 @@ If the region is active, act on all lines touched by the region."
                        (lambda (first second) (> (iso8601-parse (car first) (iso8601-parse (car second))))))))
     (propertize (cadar changes) 'face `(:foreground ,(shark-bytes/get-commit-age-color (caar changes))))))
 
-(defun cpped-show-contributor-info (files position type &optional start end)
+(defun shark-bytes/show-contributor-info (files position type &optional start end)
   "Show contributor information."
   (remove-overlays nil nil type t)
   (let ((overlay (make-overlay position position))
-        (text (concat (cpped-get-contributor-info files start end)
-                      (cpped-get-change-info files start end))))
+        (text (concat (shark-bytes/get-contributor-info files start end)
+                      (shark-bytes/get-change-info files start end))))
     (add-face-text-property 0 (length text) `(:family ,(face-attribute 'shark-bytes-ui :family) :background ,shark-bytes-menu-window-background :extend t) nil text)
     (overlay-put overlay 'before-string text)
     (overlay-put overlay type t)))
 
-(defun cpped-show-project-contributor-info ()
+(defun shark-bytes/show-project-contributor-info ()
   "Show contributor information for current project."
   (interactive)
   (let* ((backend (vc-deduce-backend))
@@ -6610,27 +6606,27 @@ If the region is active, act on all lines touched by the region."
                          (ignore-errors (vc-call-backend backend 'root default-directory))))
          (default-directory project-root))
     (when project-root
-      (cpped-show-contributor-info (mapcar (lambda (file)
+      (shark-bytes/show-contributor-info (mapcar (lambda (file)
                                              (expand-file-name file project-root))
                                            (split-string (shell-command-to-string (concat "git ls-files --full-name")) "\n" t))
                                    (save-excursion
                                      (save-restriction
                                        (point-min)))
-                                   'cpped-project-contributor-info))))
+                                   'shark-bytes/project-contributor-info))))
 
-(defun cpped-show-file-contributor-info ()
+(defun shark-bytes/show-file-contributor-info ()
   "Show contributor information for current file."
   (interactive)
   (when (and buffer-file-name
              (vc-state buffer-file-name)
              (not (string-equal (vc-state buffer-file-name) 'unregistered)))
-    (cpped-show-contributor-info `(,buffer-file-name)
+    (shark-bytes/show-contributor-info `(,buffer-file-name)
                                  (save-excursion
                                    (save-restriction
                                      (point-min)))
-                                   'cpped-show-file-contributor-info)))
+                                   'shark-bytes/show-file-contributor-info)))
 
-(defun cpped-show-region-contributor-info ()
+(defun shark-bytes/show-region-contributor-info ()
   "Show contributor information for current region. If no region is selected, defaults to current function"
   (interactive)
   (when (and buffer-file-name
@@ -6640,27 +6636,27 @@ If the region is active, act on all lines touched by the region."
                      (region-beginning)
                    (save-excursion
                      (save-restriction
-                       (funcall cpped-beginning-of-function)
+                       (funcall shark-bytes/beginning-of-function)
                        (point)))))
           (end (if (region-active-p)
                    (region-end)
                  (save-excursion
                    (save-restriction
-                     (funcall cpped-end-of-function)
+                     (funcall shark-bytes/end-of-function)
                      (point))))))
-      (cpped-show-contributor-info `(,buffer-file-name)
+      (shark-bytes/show-contributor-info `(,buffer-file-name)
                                    (save-excursion
                                      (save-restriction
                                        (goto-char start)
                                        (line-beginning-position)))
-                                   'cpped-region-contributor-info
+                                   'shark-bytes/region-contributor-info
                                    start
                                    end))))
 
-(add-hook 'find-file-hook 'cpped-show-file-contributor-info)
-(add-hook 'after-save-hook 'cpped-show-file-contributor-info)
-(add-hook 'magit-post-commmit-hook 'cpped-show-file-contributor-info)
-(add-hook 'magit-post-refresh-hook 'cpped-show-file-contributor-info)
+(add-hook 'find-file-hook 'shark-bytes/show-file-contributor-info)
+(add-hook 'after-save-hook 'shark-bytes/show-file-contributor-info)
+(add-hook 'magit-post-commmit-hook 'shark-bytes/show-file-contributor-info)
+(add-hook 'magit-post-refresh-hook 'shark-bytes/show-file-contributor-info)
 #+end_src
 
 *  Viewer
@@ -6726,7 +6722,7 @@ Hide info buffer in buffer list
   :config
   (push '("%PDF" . pdf-view-mode) magic-mode-alist)
   (pdf-tools-install t t t)
-  (push "\\.pdf\\'" cpped-no-hexedit-extensions)
+  (push "\\.pdf\\'" shark-bytes/no-hexedit-extensions)
   (push '("*PDF-Metadata*" :width 60 :position right :noselect t :stick t) popwin:special-display-config)
   (advice-add 'pdf-view-mode :before (lambda (&rest arguments)
                                        (nlinum-mode -1))))
@@ -6751,25 +6747,25 @@ Hide info buffer in buffer list
 *** ODF
 #+begin_src emacs-lisp
 (push '("\\.odt\\'" . doc-view-mode) auto-mode-alist)
-(push "\\.odt\\'" cpped-no-hexedit-extensions)
+(push "\\.odt\\'" shark-bytes/no-hexedit-extensions)
 #+end_src
 
 *** DOC
 #+begin_src emacs-lisp
 (push '("\\.doc\\'" . doc-view-mode) auto-mode-alist)
-(push "\\.doc\\'" cpped-no-hexedit-extensions)
+(push "\\.doc\\'" shark-bytes/no-hexedit-extensions)
 #+end_src
 
 *** DVI
 #+begin_src emacs-lisp
 (push '("\\.dvi\\'" . doc-view-mode) auto-mode-alist)
-(push "\\.dvi\\'" cpped-no-hexedit-extensions)
+(push "\\.dvi\\'" shark-bytes/no-hexedit-extensions)
 #+end_src
 
 *** Postscript
 #+begin_src emacs-lisp
 (push '("\\.ps\\'" . doc-view-mode) auto-mode-alist)
-(push "\\.ps\\'" cpped-no-hexedit-extensions)
+(push "\\.ps\\'" shark-bytes/no-hexedit-extensions)
 #+end_src
 
 ** [[https://github.com/doublep/logview][System Logs]]
@@ -6806,13 +6802,13 @@ Hide info buffer in buffer list
 
 (push '("-----BEGIN CERTIFICATE-----" . certificate-mode) magic-mode-alist)
 
-(define-key certificate-mode-map (kbd "q") 'cpped-kill-default-buffer)
+(define-key certificate-mode-map (kbd "q") 'shark-bytes/kill-default-buffer)
 
 (provide 'certificate-mode)
 
-(defun cpped-show-certificate-info ()
+(defun shark-bytes/show-certificate-info ()
   "Show certificate information"
-  (remove-overlays  nil nil 'cpped-certificate-info t)
+  (remove-overlays  nil nil 'shark-bytes/certificate-info t)
   (let* ((begin (save-excursion
                   (save-restriction
                     (point-min))))
@@ -6823,10 +6819,10 @@ Hide info buffer in buffer list
                                                                                                                       (replace-regexp-in-string "notAfter=" "  "
                                                                                                                                                 (replace-regexp-in-string "SHA1 Fingerprint=" "  "
                                                                                                                                                                           (concat (shell-command-to-string (concat "openssl x509 -in '" buffer-file-name "' -noout -issuer -subject -dates -fingerprint")) "\n")))))))
-    (overlay-put overlay 'cpped-certificate-info t)))
+    (overlay-put overlay 'shark-bytes/certificate-info t)))
 
 (add-hook 'certificate-mode-hook '(lambda ()
-                                    (cpped-show-certificate-info)
+                                    (shark-bytes/show-certificate-info)
                                     (read-only-mode)))
 #+end_src
 
@@ -6853,7 +6849,7 @@ Hide info buffer in buffer list
   (org-highlight-latex-and-related '(native latex script entities))
   (org-imenu-depth 10)
   (org-image-actual-width t)
-  (org-indent-indentation-per-level cpped-default-indentation)
+  (org-indent-indentation-per-level shark-bytes/default-indentation)
   (org-log-redeadline 'time)
   (org-log-reschedule 'time)
   (org-log-into-drawer t)
@@ -6889,12 +6885,13 @@ Hide info buffer in buffer list
   (font-lock-add-keywords 'org-mode `(("^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\|\\([0-9]+\\)/\\2\\)\\][^\n]*\n\\)" 1 'org-headline-done prepend)) 'append)
   (add-hook 'org-mode-hook #'org-update-all-dblocks)
   (push "\\`\\*Org Agenda\\*\\'" consult-buffer-filter)
-  (defun cpped-org-update-all-dblocks ()
+  (defun shark-bytes/org-update-all-dblocks ()
     "Update all dynamic blocks in org-mode."
     (when (equal major-mode 'org-mode)
       (org-update-all-dblocks)))
-  (add-hook 'after-save-hook #'cpped-org-update-all-dblocks)
-  (add-hook 'window-state-change-hook #'cpped-org-update-all-dblocks) )
+  (add-hook 'after-save-hook #'shark-bytes/org-update-all-dblocks)
+  (add-hook 'window-state-change-hook #'shark-bytes/org-update-all-dblocks)
+)
 #+end_src
 
 
@@ -6979,7 +6976,7 @@ Remove check on buffer close
 
 ** Use current heading as function name
 #+begin_src emacs-lisp
-(defun cpped-org-log-current-defun ()
+(defun shark-bytes/org-log-current-defun ()
   (save-excursion
     (org-back-to-heading)
     (when (looking-at org-complex-heading-regexp)
@@ -6987,7 +6984,7 @@ Remove check on buffer close
 
 (add-hook 'org-mode-hook (lambda ()
                            (make-variable-buffer-local 'add-log-current-defun-function)
-                           (setq add-log-current-defun-function 'cpped-org-log-current-defun)))
+                           (setq add-log-current-defun-function 'shark-bytes/org-log-current-defun)))
 #+end_src
 
 ** Links
@@ -7000,7 +6997,7 @@ Remove check on buffer close
 
 *** Insertion
 #+begin_src emacs-lisp
-(defun cpped-url-to-title (url)
+(defun shark-bytes/url-to-title (url)
   "Returns the content of the <title> tag of the page at url."
   (with-temp-buffer
     (url-insert-file-contents url)
@@ -7020,7 +7017,7 @@ Remove check on buffer close
         org-link-abbrev-alist)
   url)
 
-(defun cpped-org-insert-link-dwim (url)
+(defun shark-bytes/org-insert-link-dwim (url)
   "Insert an org link with the target page title as description. The URL is taken from either argument, region, thing-at-point or user input."
   (interactive (list (let (url begin end)
                        (if (region-active-p)
@@ -7045,9 +7042,9 @@ Remove check on buffer close
                        url)))
   (when (not (string-match-p (rx line-start "http" (zero-or-one "s") "://") url))
       (setq url (concat "https://" url)))
-  (org-insert-link nil (shark-bytes/shorten-url url) (cpped-url-to-title url)))
+  (org-insert-link nil (shark-bytes/shorten-url url) (shark-bytes/url-to-title url)))
 
-(defun cpped-org-convert-to-link-dwim (url title)
+(defun shark-bytes/org-convert-to-link-dwim (url title)
   "Convert the region or thing-at-point to a link with thing-at-point as the description."
   (interactive (list (read-string "URL: " "http://www.")
                      (let (title begin end)
@@ -7073,7 +7070,7 @@ Remove check on buffer close
 *** Allow evaluation
 Disable evaluation confirmation for some languages
 #+begin_src emacs-lisp
-(defun cpped-org-confirm-babel-evaluate (lang body)
+(defun shark-bytes/org-confirm-babel-evaluate (lang body)
   "Do not confirm evaluation for these languages."
   (not (or (string= lang "bash")
            (string= lang "calc")
@@ -7101,7 +7098,7 @@ Note: For this to work, Org must be version 8.3 or higher. Org is bundled with e
                                (sed . t)
                                (shell . t)))
 
-(setq org-confirm-babel-evaluate 'cpped-org-confirm-babel-evaluate)
+(setq org-confirm-babel-evaluate 'shark-bytes/org-confirm-babel-evaluate)
 (org-babel-shell-initialize)
 (add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
 #+end_src
@@ -7151,34 +7148,34 @@ Note: For this to work, Org must be version 8.3 or higher. Org is bundled with e
 
 ** TODO-States
 #+begin_src emacs-lisp
-(setq cpped-org-todo-keyword-todo "ToDo"
-      cpped-org-todo-keyword-done "Done"
-      cpped-org-todo-keyword-bug "Bug"
-      cpped-org-todo-keyword-analysis "Analysis"
-      cpped-org-todo-keyword-correction "Correction"
-      cpped-org-todo-keyword-fixed "Fixed"
-      cpped-org-todo-keyword-fixme "Fixme"
-      cpped-org-todo-keyword-in-progress "InProgress"
-      cpped-org-todo-keyword-waiting "Waiting"
-      cpped-org-todo-keyword-suspended "Suspended"
-      cpped-org-todo-keyword-review "Review"
-      cpped-org-todo-keyword-canceled "Canceled"
-      org-todo-keywords `((sequence ,(concat cpped-org-todo-keyword-todo "(t)")
-                                    ,(concat cpped-org-todo-keyword-in-progress "(p!)")
-                                    ,(concat cpped-org-todo-keyword-review "(r!/@)")
+(setq shark-bytes/org-todo-keyword-todo "ToDo"
+      shark-bytes/org-todo-keyword-done "Done"
+      shark-bytes/org-todo-keyword-bug "Bug"
+      shark-bytes/org-todo-keyword-analysis "Analysis"
+      shark-bytes/org-todo-keyword-correction "Correction"
+      shark-bytes/org-todo-keyword-fixed "Fixed"
+      shark-bytes/org-todo-keyword-fixme "Fixme"
+      shark-bytes/org-todo-keyword-in-progress "InProgress"
+      shark-bytes/org-todo-keyword-waiting "Waiting"
+      shark-bytes/org-todo-keyword-suspended "Suspended"
+      shark-bytes/org-todo-keyword-review "Review"
+      shark-bytes/org-todo-keyword-canceled "Canceled"
+      org-todo-keywords `((sequence ,(concat shark-bytes/org-todo-keyword-todo "(t)")
+                                    ,(concat shark-bytes/org-todo-keyword-in-progress "(p!)")
+                                    ,(concat shark-bytes/org-todo-keyword-review "(r!/@)")
                                     "|"
-                                    ,(concat cpped-org-todo-keyword-done "(d!/@)"))
-                          (sequence ,(concat cpped-org-todo-keyword-bug "(b)")
-                                    ,(concat cpped-org-todo-keyword-analysis "(a!/@)")
-                                    ,(concat cpped-org-todo-keyword-correction "(c!)")
+                                    ,(concat shark-bytes/org-todo-keyword-done "(d!/@)"))
+                          (sequence ,(concat shark-bytes/org-todo-keyword-bug "(b)")
+                                    ,(concat shark-bytes/org-todo-keyword-analysis "(a!/@)")
+                                    ,(concat shark-bytes/org-todo-keyword-correction "(c!)")
                                     "|"
-                                    ,(concat cpped-org-todo-keyword-fixed "(f!/@)"))
-                          (sequence ,(concat cpped-org-todo-keyword-fixme "(m)")
+                                    ,(concat shark-bytes/org-todo-keyword-fixed "(f!/@)"))
+                          (sequence ,(concat shark-bytes/org-todo-keyword-fixme "(m)")
                                     "|"
-                                    ,(concat cpped-org-todo-keyword-done "(f/@)"))
-                          (sequence ,(concat cpped-org-todo-keyword-waiting "(w@/!)")
-                                    ,(concat cpped-org-todo-keyword-suspended "(s@/!)"))
-                          (sequence "|" ,(concat cpped-org-todo-keyword-canceled "(x@/@)"))))
+                                    ,(concat shark-bytes/org-todo-keyword-done "(f/@)"))
+                          (sequence ,(concat shark-bytes/org-todo-keyword-waiting "(w@/!)")
+                                    ,(concat shark-bytes/org-todo-keyword-suspended "(s@/!)"))
+                          (sequence "|" ,(concat shark-bytes/org-todo-keyword-canceled "(x@/@)"))))
 #+end_src
 
 Format according to the state.
@@ -7190,33 +7187,33 @@ Format according to the state.
 (defface org-todo-keyword-done '((t :inherit default)) "Face used for done items." :group 'org)
 (defface org-todo-keyword-canceled '((t :inherit default)) "Face used for canceled items." :group 'org)
 
-(setq org-todo-keyword-faces `((,cpped-org-todo-keyword-todo . org-todo-keyword-todo)
-                               (,cpped-org-todo-keyword-done . org-todo-keyword-done)
-                               (,cpped-org-todo-keyword-bug . org-todo-keyword-todo)
-                               (,cpped-org-todo-keyword-analysis . org-todo-keyword-in-progress)
-                               (,cpped-org-todo-keyword-correction . org-todo-keyword-in-progress)
-                               (,cpped-org-todo-keyword-fixed . org-todo-keyword-done)
-                               (,cpped-org-todo-keyword-fixme . org-todo-keyword-todo)
-                               (,cpped-org-todo-keyword-in-progress . org-todo-keyword-in-progress)
-                               (,cpped-org-todo-keyword-review . org-todo-keyword-in-progress)
-                               (,cpped-org-todo-keyword-waiting . org-todo-keyword-waiting)
-                               (,cpped-org-todo-keyword-suspended . org-todo-keyword-suspended)
-                               (,cpped-org-todo-keyword-canceled . org-todo-keyword-canceled)))
+(setq org-todo-keyword-faces `((,shark-bytes/org-todo-keyword-todo . org-todo-keyword-todo)
+                               (,shark-bytes/org-todo-keyword-done . org-todo-keyword-done)
+                               (,shark-bytes/org-todo-keyword-bug . org-todo-keyword-todo)
+                               (,shark-bytes/org-todo-keyword-analysis . org-todo-keyword-in-progress)
+                               (,shark-bytes/org-todo-keyword-correction . org-todo-keyword-in-progress)
+                               (,shark-bytes/org-todo-keyword-fixed . org-todo-keyword-done)
+                               (,shark-bytes/org-todo-keyword-fixme . org-todo-keyword-todo)
+                               (,shark-bytes/org-todo-keyword-in-progress . org-todo-keyword-in-progress)
+                               (,shark-bytes/org-todo-keyword-review . org-todo-keyword-in-progress)
+                               (,shark-bytes/org-todo-keyword-waiting . org-todo-keyword-waiting)
+                               (,shark-bytes/org-todo-keyword-suspended . org-todo-keyword-suspended)
+                               (,shark-bytes/org-todo-keyword-canceled . org-todo-keyword-canceled)))
 
 (with-eval-after-load "org-superstar"
-  (setq org-superstar-todo-bullet-alist `((,cpped-org-todo-keyword-todo . ?)
-                                          (,cpped-org-todo-keyword-done . ?)
-                                          (,cpped-org-todo-keyword-bug . ?)
-                                          (,cpped-org-todo-keyword-analysis . ?)
-                                          (,cpped-org-todo-keyword-correction . ?)
-                                          (,cpped-org-todo-keyword-fixed . ?)
-                                          (,cpped-org-todo-keyword-fixme . ?)
-                                          (,cpped-org-todo-keyword-in-progress . ?)
-                                          (,cpped-org-todo-keyword-waiting . ?)
-                                          (,cpped-org-todo-keyword-suspended . ?鈴)
-                                          (,cpped-org-todo-keyword-review . ?)
-                                          (,cpped-org-todo-keyword-canceled . ?ﰸ)))
-  (org-superstar-restart))
+  (setq org-superstar-todo-bullet-alist `((,shark-bytes/org-todo-keyword-todo . ?)
+                                          (,shark-bytes/org-todo-keyword-done . ?)
+                                          (,shark-bytes/org-todo-keyword-bug . ?)
+                                          (,shark-bytes/org-todo-keyword-analysis . ?)
+                                          (,shark-bytes/org-todo-keyword-correction . ?)
+                                          (,shark-bytes/org-todo-keyword-fixed . ?)
+                                          (,shark-bytes/org-todo-keyword-fixme . ?)
+                                          (,shark-bytes/org-todo-keyword-in-progress . ?)
+                                          (,shark-bytes/org-todo-keyword-waiting . ?)
+                                          (,shark-bytes/org-todo-keyword-suspended . ?🛌)
+                                          (,shark-bytes/org-todo-keyword-review . ?)
+                                          (,shark-bytes/org-todo-keyword-canceled . ?🚫)))
+   (org-superstar-restart))
 #+end_src
 
 Archive when done, remove flag if reset to todo.
@@ -7282,7 +7279,7 @@ Archive when done, remove flag if reset to todo.
 (with-eval-after-load "org"
   (defun shark-bytes/select-agenda-file (name)
   "Select a customer agenda file."
-  (if-let ((file (shark-bytes/agenda-file (cpped-project-dir) name)))
+  (if-let ((file (shark-bytes/agenda-file (shark-bytes/project-dir) name)))
       (progn (find-file file)
              (goto-char (point-max))
              (org-capture-put-target-region-and-position)
@@ -7313,15 +7310,20 @@ Archive when done, remove flag if reset to todo.
               org-src-lang-modes)))
 
 (setq org-capture-templates
-      `(("t" "To Do" entry (function shark-bytes/select-tasks-file) ,(concat "* " cpped-org-todo-keyword-todo " [#B] %?\n%U\n%i\n") :empty-lines 1 :kill-buffer t)
-        ("p" "Priority To Do" entry (function shark-bytes/select-tasks-file) ,(concat "* " cpped-org-todo-keyword-todo " [#A] %?\n%T\nDEADLINE: %t\n%i\n") :empty-lines 1 :kill-buffer t)
-        ("b" "Bug" entry (function shark-bytes/select-tasks-file) ,(concat "* " cpped-org-todo-keyword-bug " [#B] %?\n%U\n%i\n") :empty-lines 1 :kill-buffer t)
-        ("f" "Fixme" entry (function shark-bytes/select-tasks-file) ,(concat "* " cpped-org-todo-keyword-fixme " [#A] %?\n%U\nSCHEDULED: %t\nIn function *[[file:%F::%(with-current-buffer (org-capture-get :original-buffer) (number-to-string (line-number-at-pos)))][%(with-current-buffer (org-capture-get :original-buffer) (which-function))()]]*\n#+begin_src %(with-current-buffer (org-capture-get :original-buffer) (org-src-language-from-major-mode major-mode))\n%i\n#+end_src\n") :empty-lines 1 :kill-buffer t)
-        ("s" "Support" entry (function shark-bytes/select-tasks-file) ,(concat "* " cpped-org-todo-keyword-in-progress " [#B] %?\n%U\n%i\n") :empty-lines 1 :kill-buffer t :clock-in t :clock-keep t)
+      `(("t" "To Do" entry (function shark-bytes/select-tasks-file) ,(concat "* " shark-bytes/org-todo-keyword-todo " [#B] %?\n%U\n%i\n") :empty-lines 1 :kill-buffer t)
+        ("p" "Priority To Do" entry (function shark-bytes/select-tasks-file) ,(concat "* " shark-bytes/org-todo-keyword-todo " [#A] %?\n%T\nDEADLINE: %t\n%i\n") :empty-lines 1 :kill-buffer t)
+        ("b" "Bug" entry (function shark-bytes/select-tasks-file) ,(concat "* " shark-bytes/org-todo-keyword-bug " [#B] %?\n%U\n%i\n") :empty-lines 1 :kill-buffer t)
+        ("f" "Fixme" entry (function shark-bytes/select-tasks-file) ,(concat "* " shark-bytes/org-todo-keyword-fixme " [#A] %?\n%U\nSCHEDULED: %t\nIn function *[[file:%F::%(with-current-buffer (org-capture-get :original-buffer) (number-to-string (line-number-at-pos)))][%(with-current-buffer (org-capture-get :original-buffer) (which-function))()]]*\n#+begin_src %(with-current-buffer (org-capture-get :original-buffer) (org-src-language-from-major-mode major-mode))\n%i\n#+end_src\n") :empty-lines 1 :kill-buffer t)
+        ("s" "Support" entry (function shark-bytes/select-tasks-file) ,(concat "* " shark-bytes/org-todo-keyword-in-progress " [#B] %?\n%U\n%i\n") :empty-lines 1 :kill-buffer t :clock-in t :clock-keep t)
         ("n" "Note" entry (function shark-bytes/select-notes-file) "* %?\n%U\n%i\n" :empty-lines 1 :kill-buffer t)
-        ("m" "Meeting" entry (function shark-bytes/select-events-file) ,(concat "* " cpped-org-todo-keyword-todo " [#A] %?\n%T\n%i\n") :empty-lines 1 :kill-buffer t)
-        ("i" "Instant Meeting" entry (function shark-bytes/select-events-file) ,(concat "* " cpped-org-todo-keyword-in-progress " [#A] %?\ns%T\n%i\n") :empty-lines 1 :kill-buffer t :clock-in t :clock-keep t)
-        ("c" "Source Code" entry (function shark-bytes/select-notes-file) ,(concat "* %?\n%U\n\nIn function *[[file:%F::%(with-current-buffer (org-capture-get :original-buffer) (number-to-string (line-number-at-pos)))][%(with-current-buffer (org-capture-get :original-buffer) (which-function))()]]*\n#+begin_src %(with-current-buffer (org-capture-get :original-buffer) (org-src-language-from-major-mode major-mode))\n%i\n#+end_src\n") :empty-lines 1 :kill-buffer t)))
+        ("m" "Meeting" entry (function shark-bytes/select-events-file) ,(concat "* " shark-bytes/org-todo-keyword-todo " [#A] %?\n%T\n%i\n") :empty-lines 1 :kill-buffer t)
+        ("i" "Instant Meeting" entry (function shark-bytes/select-events-file) ,(concat "* " shark-bytes/org-todo-keyword-in-progress " [#A] %?\ns%T\n%i\n") :empty-lines 1 :kill-buffer t :clock-in t :clock-keep t)
+        ("c" "Source Code" entry (function shark-bytes/select-notes-file) ,(concat "* %?\n"
+                                                                            "%U\n\n"
+                                                                            "In function *[[file:%F::%(with-current-buffer (org-capture-get :original-buffer) (number-to-string (line-number-at-pos)))][%(with-current-buffer (org-capture-get :original-buffer) (which-function))()]]*\n"
+                                                                            "#+begin_src %(with-current-buffer (org-capture-get :original-buffer) (org-src-language-from-major-mode major-mode))\n"
+                                                                            "%i\n"
+                                                                            "#+end_src\n") :empty-lines 1 :kill-buffer t)))
 )
 #+end_src
 
@@ -7370,24 +7372,18 @@ Archive when done, remove flag if reset to todo.
                                                                                       (member "Birthday" tags)
                                                                                       (member "Holiday" tags))
                                                                                   nil
-                                                                                (org-agenda-skip-entry-if 'done 'todo `(,cpped-org-todo-keyword-waiting ,cpped-org-todo-keyword-suspended)))))
+                                                                                (org-agenda-skip-entry-if 'done 'todo `(,shark-bytes/org-todo-keyword-waiting ,shark-bytes/org-todo-keyword-suspended)))))
                                                  (org-agenda-span (if (= 5 (nth 6 (decode-time)))
                                                                       4
                                                                     2))))
-                                     (todo (concat cpped-org-todo-keyword-bug "|" cpped-org-todo-keyword-fixme "|" cpped-org-todo-keyword-analysis "|" cpped-org-todo-keyword-correction "|" cpped-org-todo-keyword-review)
+                                     (todo (concat shark-bytes/org-todo-keyword-bug "|" shark-bytes/org-todo-keyword-fixme "|" shark-bytes/org-todo-keyword-analysis "|" shark-bytes/org-todo-keyword-correction "|" shark-bytes/org-todo-keyword-review)
                                            ((org-agenda-skip-function '(org-agenda-skip-entry-if 'done 'scheduled))
-                                            (org-agenda-overriding-header cpped-org-todo-keyword-bug)
                                             (org-agenda-prefix-format '((todo  . "  %(org-format-outline-path (org-get-outline-path))%?-12t")))
+                                            (org-agenda-overriding-header shark-bytes/org-todo-keyword-bug)
                                             (org-agenda-todo-keyword-format "")))
-                                     (todo cpped-org-todo-keyword-waiting
-                                           ((org-agenda-overriding-header cpped-org-todo-keyword-waiting)
-                                            (org-agenda-todo-keyword-format "")))
-                                     (todo cpped-org-todo-keyword-suspended
-                                           ((org-agenda-overriding-header cpped-org-todo-keyword-suspended)
-                                            (org-agenda-todo-keyword-format "")))
-                                     (todo (concat cpped-org-todo-keyword-todo "|" cpped-org-todo-keyword-in-progress)
+                                     (todo (concat shark-bytes/org-todo-keyword-todo "|" shark-bytes/org-todo-keyword-in-progress)
                                            ((org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline 'done))
-                                            (org-agenda-overriding-header cpped-org-todo-keyword-todo)
+                                            (org-agenda-overriding-header shark-bytes/org-todo-keyword-todo)
                                             (org-agenda-todo-keyword-format "")))))
                                    ("n" "Notes" tags "+CATEGORY=\"Notes\""
                                     ((org-agenda-overriding-header "Notes")
@@ -7447,7 +7443,7 @@ Archive when done, remove flag if reset to todo.
 
 *** Reschedule to today
 #+begin_src emacs-lisp
-(defun cpped-org-agenda-reschedule-to-today ()
+(defun shark-bytes/org-agenda-reschedule-to-today ()
   "Reschedule the selected item to today."
   (interactive)
   (cl-letf (((symbol-function 'org-read-date) '(lambda (&rest args)
@@ -7486,36 +7482,36 @@ Archive when done, remove flag if reset to todo.
 #+begin_src emacs-lisp
                (apply command arguments)))))
 
-(defun cpped-ediff-org-unfold ()
+(defun shark-bytes/ediff-org-unfold ()
   "Unfold at diff location"
-  (cpped-run-in-org-buffer ediff-buffer-A 'org-reveal)
-  (cpped-run-in-org-buffer ediff-buffer-B 'org-reveal)
-  (cpped-run-in-org-buffer ediff-buffer-C 'org-reveal))
+  (shark-bytes/run-in-org-buffer ediff-buffer-A 'org-reveal)
+  (shark-bytes/run-in-org-buffer ediff-buffer-B 'org-reveal)
+  (shark-bytes/run-in-org-buffer ediff-buffer-C 'org-reveal))
 
-(defun cpped-ediff-org-fold ()
+(defun shark-bytes/ediff-org-fold ()
   "Fold back to top level"
-  (cpped-run-in-org-buffer ediff-buffer-A 'hide-sublevels 1)
-  (cpped-run-in-org-buffer ediff-buffer-B 'hide-sublevels 1)
-  (cpped-run-in-org-buffer ediff-buffer-C 'hide-sublevels 1))
+  (shark-bytes/run-in-org-buffer ediff-buffer-A 'hide-sublevels 1)
+  (shark-bytes/run-in-org-buffer ediff-buffer-B 'hide-sublevels 1)
+  (shark-bytes/run-in-org-buffer ediff-buffer-C 'hide-sublevels 1))
 
-(add-hook 'ediff-select-hook 'cpped-ediff-org-unfold)
-(add-hook 'ediff-unselect-hook 'cpped-ediff-org-fold)
+(add-hook 'ediff-select-hook 'shark-bytes/ediff-org-unfold)
+(add-hook 'ediff-unselect-hook 'shark-bytes/ediff-org-fold)
 #+end_src
 
 ** Magit compatibility
 #+begin_src emacs-lisp
 (with-eval-after-load "magit"
-  (defun cpped-expand-org-entry ()
+  (defun shark-bytes/expand-org-entry ()
   "Expand all entries leading to the selected entry."
   (when (derived-mode-p 'org-mode)
     (org-reveal '(4)))))
 
-(add-hook 'magit-diff-visit-file-hook 'cpped-expand-org-entry)
+(add-hook 'magit-diff-visit-file-hook 'shark-bytes/expand-org-entry)
 #+end_src
 
 ** Change todo state of subtree
 #+begin_src emacs-lisp
-(defun cpped-todo-subtree ()
+(defun shark-bytes/todo-subtree ()
   "Change the todo state of a subtree."
   (interactive)
   (org-mark-subtree)
@@ -7532,19 +7528,19 @@ Archive when done, remove flag if reset to todo.
 
 ** Mark heading done when all subheadings are done
 #+begin_src emacs-lisp
-(defun cpped-org-summary-change-todo (done todo)
+(defun shark-bytes/org-summary-change-todo (done todo)
   "Switch entry to DONE when all subentries are done, to TODO otherwise."
   (let (org-log-done org-log-states) ; turn off logging
     (org-todo (if (= todo 0)
-                  cpped-org-todo-keyword-done
-                cpped-org-todo-keyword-todo))))
+                  shark-bytes/org-todo-keyword-done
+                shark-bytes/org-todo-keyword-todo))))
 
-(add-hook 'org-after-todo-statistics-hook 'cpped-org-summary-change-todo)
+(add-hook 'org-after-todo-statistics-hook 'shark-bytes/org-summary-change-todo)
 #+end_src
 
 ** Mark heading done when all checkboxes are checked.
 #+begin_src emacs-lisp
-(defun cpped-checkbox-list-complete ()
+(defun shark-bytes/checkbox-list-complete ()
   (interactive)
   (save-excursion
     (org-back-to-heading t)
@@ -7554,10 +7550,10 @@ Archive when done, remove flag if reset to todo.
         (if (or (equal (match-string 1) "100%")
                 (and (match-string 2)
                      (equal (match-string 2) (match-string 3))))
-            (org-todo cpped-org-todo-keyword-done)
-          (org-todo cpped-org-todo-keyword-todo))))))
+            (org-todo shark-bytes/org-todo-keyword-done)
+          (org-todo shark-bytes/org-todo-keyword-todo))))))
 
-(add-hook 'org-checkbox-statistics-hook 'cpped-checkbox-list-complete)
+(add-hook 'org-checkbox-statistics-hook 'shark-bytes/checkbox-list-complete)
 #+end_src
 
 ** Wrap Region
@@ -7578,7 +7574,7 @@ Archive when done, remove flag if reset to todo.
 (setq org-clock-history-length 25
       org-clock-idle-time nil
       org-clock-in-resume t
-      org-clock-in-switch-to-state cpped-org-todo-keyword-in-progress
+      org-clock-in-switch-to-state shark-bytes/org-todo-keyword-in-progress
       org-clock-into-drawer t
       org-clock-out-remove-zero-time-clocks t
       org-clock-out-when-done t
@@ -7595,44 +7591,44 @@ Archive when done, remove flag if reset to todo.
 
 *** Remaining work time
 #+begin_src emacs-lisp
-(defvar cpped-show-work-time t "Whether to show work time in the mode line.")
-(defvar cpped-daily-work-hours 8 "The number of hours of work per day.")
+(defvar shark-bytes/show-work-time t "Whether to show work time in the mode line.")
+(defvar shark-bytes/daily-work-hours 8 "The number of hours of work per day.")
 
-(defun cpped-daily-work-minutes ()
+(defun shark-bytes/daily-work-minutes ()
   "The number of minutes of work per day."
-  (* cpped-daily-work-hours 60))
+  (* shark-bytes/daily-work-hours 60))
 
-(defun cpped-weekly-work-minutes ()
+(defun shark-bytes/weekly-work-minutes ()
   "The number of minutes of work per week."
-  (* 5 (cpped-daily-work-minutes)))
+  (* 5 (shark-bytes/daily-work-minutes)))
 
-(defun cpped-monthly-work-minutes ()
+(defun shark-bytes/monthly-work-minutes ()
   "The number of minutes of work per month."
-  (* 4.5 (cpped-weekly-work-minutes)))
+  (* 4.5 (shark-bytes/weekly-work-minutes)))
 
-(defun cpped-clocked-time (range)
+(defun shark-bytes/clocked-time (range)
   "Return the clocked time for range."
   (interactive)
-  (let ((cpped-clocked-time 0)
+  (let ((shark-bytes/clocked-time 0)
         (org-range (org-clock-special-range range))
         (files (org-agenda-files)))
     (org-agenda-prepare-buffers files)
     (dolist (file files)
       (with-current-buffer (find-buffer-visiting file)
-        (setq cpped-clocked-time (+ cpped-clocked-time (org-clock-sum (car org-range) (cadr org-range))))))
-    cpped-clocked-time))
+        (setq shark-bytes/clocked-time (+ shark-bytes/clocked-time (org-clock-sum (car org-range) (cadr org-range))))))
+    shark-bytes/clocked-time))
 
-(defun cpped-remaining-work-minutes (range &optional clocked-time)
+(defun shark-bytes/remaining-work-minutes (range &optional clocked-time)
   "Return the remaining minutes between clocked time and work time."
   (interactive)
   (- (or clocked-time
-         (cpped-clocked-time range))
+         (shark-bytes/clocked-time range))
      (pcase range
-       ('today (cpped-daily-work-minutes))
-       ('thisweek (cpped-weekly-work-minutes))
-       ('thismonth (cpped-monthly-work-minutes)))))
+       ('today (shark-bytes/daily-work-minutes))
+       ('thisweek (shark-bytes/weekly-work-minutes))
+       ('thismonth (shark-bytes/monthly-work-minutes)))))
 
-(defun cpped-format-remaining-minutes (minutes)
+(defun shark-bytes/format-remaining-minutes (minutes)
   "Format the remaining minutes."
   (propertize (concat (if (< minutes 0)
                           "-"
@@ -7664,7 +7660,7 @@ Archive when done, remove flag if reset to todo.
 
 *** Current task
 #+begin_src emacs-lisp
-(defun cpped-print-current-task ()
+(defun shark-bytes/print-current-task ()
   "Return the currently clocked-in task and clocked time."
   (interactive)
   (when (org-clock-is-active)
@@ -7687,50 +7683,48 @@ Archive when done, remove flag if reset to todo.
 #+END_SRC
 
 *** Automatically stop clocking when entering system suspend/lock and restart on resume/unlock
-#+BEGIN_SRC emacs-lisp
-(defvar cpped-was-clocking nil "Indicates whether it was clocked-in before screensaver ran.")
+#+begin_src emacs-lisp
+(defvar shark-bytes/was-clocking nil "Indicates whether it was clocked-in before screensaver ran.")
 
-(defun cpped-org-clock-in-out (stop-clocking)
+(defun shark-bytes/org-clock-in-out (stop-clocking)
   (if stop-clocking
       (progn
-        (setq cpped-was-clocking (org-clock-is-active))
+        (setq shark-bytes/was-clocking (org-clock-is-active))
         (org-clock-save)
-        (let ((cpped-keep-clock-running nil))
-          (org-clock-out)))
-    (when cpped-was-clocking
-      (org-clock-in-last))))
+        (org-clock-out))
+    (shark-bytes/org-clock-in)))
 
 (dbus-register-signal :session
                       "org.freedesktop.ScreenSaver"
                       "/org/freedesktop/ScreenSaver"
                       "org.freedesktop.ScreenSaver"
                       "ActiveChanged"
-                      #'cpped-org-clock-in-out)
+                      #'shark-bytes/org-clock-in-out)
 (dbus-register-signal :system
                       "org.freedesktop.login1"
                       "/org/freedesktop/login1"
                       "org.freedesktop.login1.Manager"
                       "PrepareForSleep"
-                      #'cpped-org-clock-in-out)
-#+END_SRC
+                      #'shark-bytes/org-clock-in-out)
+#+end_src
 
 *** Clock in/out of task when starting/stopping
 #+begin_src emacs-lisp
-(defun cpped-org-clock-in-if-starting ()
+(defun shark-bytes/org-clock-in-if-starting ()
   "Clock in when a task is started."
-  (when (and (string= org-state cpped-org-todo-keyword-in-progress)
+  (when (and (string= org-state shark-bytes/org-todo-keyword-in-progress)
              (not (string= org-last-state org-state)))
     (org-clock-in)))
 
-(add-hook 'org-after-todo-state-change-hook #'cpped-org-clock-in-if-starting)
+(add-hook 'org-after-todo-state-change-hook #'shark-bytes/org-clock-in-if-starting)
 
-(defun cpped-org-clock-out-if-inactive ()
+(defun shark-bytes/org-clock-out-if-inactive ()
   "Clock out when a task is stopped."
-  (when (and (member org-state '(cpped-org-todo-keyword-done
-                                 cpped-org-todo-keyword-fixed
-                                 cpped-org-todo-keyword-waiting
-                                 cpped-org-todo-keyword-suspended
-                                 cpped-org-todo-keyword-canceled))
+  (when (and (member org-state '(shark-bytes/org-todo-keyword-done
+                                 shark-bytes/org-todo-keyword-fixed
+                                 shark-bytes/org-todo-keyword-waiting
+                                 shark-bytes/org-todo-keyword-suspended
+                                 shark-bytes/org-todo-keyword-canceled))
              (equal (marker-buffer org-clock-marker) (current-buffer))
              (< (point) org-clock-marker)
              (> (save-excursion
@@ -7740,7 +7734,7 @@ Archive when done, remove flag if reset to todo.
              (not (string= org-last-state org-state)))
     (org-clock-out)))
 
-(add-hook 'org-after-todo-state-change-hook #'cpped-org-clock-out-if-inactive)
+(add-hook 'org-after-todo-state-change-hook #'shark-bytes/org-clock-out-if-inactive)
 #+end_src
 
 *** [[https://github.com/unhammer/org-mru-clock][Switch to last used clock]]
@@ -7934,7 +7928,7 @@ Do not use scientific form so quickly
 *** Documentation
 #+begin_src emacs-lisp
 (with-eval-after-load "devdocs-browser"
-  (cpped-add-apidocs 'gnuplot-mode '("gnuplot")))
+  (shark-bytes/add-apidocs 'gnuplot-mode '("gnuplot")))
 #+end_src
 
 * ﯱ Remote
@@ -7994,7 +7988,7 @@ Do not use scientific form so quickly
                       (ssh-deploy-async . booleanp)
                       (ssh-deploy-exclude-list . listp)))
     (put (car variable) 'safe-local-variable (cdr variable)))
-  (advice-add 'ssh-deploy-rename-handler :around 'cpped-post-rename))
+  (advice-add 'ssh-deploy-rename-handler :around 'shark-bytes/post-rename))
 #+end_src
 
 ** [[https://kubernetes-el.github.io/kubernetes-el/][Kubernetes]]
@@ -8006,7 +8000,7 @@ Do not use scientific form so quickly
 * [[https://github.com/abo-abo/hydra][ Keybindings]]
 ** Quit from any context
 #+begin_src emacs-lisp
-(defun cpped-keyboard-quit-context ()
+(defun shark-bytes/keyboard-quit-context ()
   "Quit from any context."
   (interactive)
   (cond ((region-active-p)
@@ -8022,7 +8016,7 @@ Do not use scientific form so quickly
         (t
          (keyboard-quit))))
 
-(global-set-key [remap keyboard-quit] #'cpped-keyboard-quit-context)
+(global-set-key [remap keyboard-quit] #'shark-bytes/keyboard-quit-context)
 #+end_src
 
 ** Use Escape instead of C-g
