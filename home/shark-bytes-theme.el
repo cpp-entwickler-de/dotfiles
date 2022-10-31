@@ -252,6 +252,7 @@
  '(rainbow-delimiters-mismatched-face ((t (:inherit rainbow-delimiters-unmatched-face))))
  '(rainbow-delimiters-unmatched-face ((t (:inherit (error rainbow-delimiters-base-face) :inverse-video t))))
  '(region ((t (:background "#9A65F6" :distant-foreground "white smoke"))))
+ `(region-occurrences-highlighter-face ((t (:foreground ,shark-bytes-text :background ,shark-bytes-warm :weight bold))))
  '(secondary-selection ((t (:background "#8D68FD" :inherit region))))
  '(shadow ((t (:foreground "#757575"))))
  '(tooltip ((t (:inherit default))))
