@@ -1622,7 +1622,7 @@ Indicate recursive minibuffer
   "Kill the currently active buffer."
   (interactive)
   (let ((kill-buffer-query-functions)
-        (name (substring-no-properties (buffer-name))))
+        (name (substring-no-properties (shark-bytes/buffer-name))))
     (if (member name shark-bytes/bury-buffers-list)
         (bury-buffer)
       (when (and buffer-file-name
