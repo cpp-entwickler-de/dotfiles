@@ -3807,7 +3807,23 @@ Open binary files in hexl-mode
   (projectile-sort-order 'recently-active)
   (projectile-verbose nil)
   :config
-  (projectile-global-mode))
+  (projectile-global-mode)
+  (defun shark-bytes/switch-project (&optional arg)
+    "Load a project."
+    (interactive "P")
+    (if-let* ((projects (mapcar #'(lambda (project)
+                                    (cons (file-name-base (directory-file-name project)) project))
+                                (projectile-relevant-known-projects)))
+              (selected-project (cdr (assoc (completing-read "Project: " projects) projects))))
+        (projectile-switch-project-by-name selected-project arg)
+      (user-error "There are no known projects")))
+  (advice-add 'projectile-switch-project :override 'shark-bytes/switch-project)
+  (with-eval-after-load "magit"
+    (defun shark-bytes/load-after-clone (_repository directory _args)
+      "Automatically load project after clone operation."
+      (projectile-add-known-project directory)
+      (projectile-switch-project-by-name directory))
+    (advice-add 'magit-clone-internal :after #'shark-bytes/load-after-clone)))
 #+end_src
 
 *** Update project statistics
