@@ -2829,7 +2829,19 @@ https://github.com/purcell/exec-path-from-shell
   (treemacs-fringe-indicator-mode nil))
 
 (use-package treemacs-projectile
-  :after (treemacs projectile))
+  :after (treemacs projectile)
+  :config
+  (defun shark-bytes/treemacs-add-project (project-root)
+    "Add project to treemacs."
+    (if-let ((name (treemacs--filename project-root)))
+        (unless (string= name "")
+          (treemacs-do-add-project-to-workspace project-root name))))
+  (advice-add 'projectile-add-known-project :after #'shark-bytes/treemacs-add-project)
+  (mapc #'shark-bytes/treemacs-add-project projectile-known-projects)
+  (defun shark-bytes/treemacs-remove-project (project-root)
+    "Remove project from treemacs."
+    (treemacs-do-remove-project-from-workspace project-root))
+  (advice-add 'projectile-remove-known-project :after #'shark-bytes/treemacs-remove-project))
 
 (use-package lsp-treemacs
   :after (treemacs lsp-mode)
