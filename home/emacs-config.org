@@ -7806,8 +7806,19 @@ Archive when done, remove flag if reset to todo.
   :custom
   (org-mru-clock-how-many 100)
   (org-mru-clock-files 'org-agenda-files)
-  (org-mru-clock-predicate #'org-mru-clock-exclude-done-and-archived))
-
+  (org-mru-clock-predicate #'org-mru-clock-exclude-done-and-archived)
+  :config
+  (defun shark-bytes/org-mru-clock-format-entry ()
+    "Format an entry with an optional icon for org-mru-clock."
+    (let* ((heading (replace-regexp-in-string org-link-bracket-re "\\2" (substring-no-properties (org-get-heading 'no-tags 'no-todo 'no-priority))))
+           (category (org-get-category))
+           (icon (org-agenda-get-category-icon category)))
+      (concat (if icon
+                  (propertize " " 'display icon)
+                " ")
+              "  "
+              heading)))
+  (advice-add 'org-mru-clock-format-entry :override 'shark-bytes/org-mru-clock-format-entry))
 #+end_src
 
 *** Create customer journal entry
