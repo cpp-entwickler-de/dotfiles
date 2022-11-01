@@ -8040,7 +8040,6 @@ Do not use scientific form so quickly
   (tramp-adb-connect-if-not-connected t)
   (tramp-connection-properties nil)
   (tramp-connection-timeout 10)
-  (tramp-default-method "ssh")
   (tramp-default-host nil)
   (tramp-default-user "root")
   (tramp-histfile-override nil))
