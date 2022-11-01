@@ -6953,7 +6953,6 @@ Hide info buffer in buffer list
   (org-catch-invisible-edits 'error)
   (org-columns-default-format "%50ITEM(Task) %2PRIORITY %10Effort(Effort){:} %10CLOCKSUM")
   (org-cycle-separator-lines 0)
-  (org-default-notes-file (file-truename "~/.notes.org"))
   (org-duration-format 'h:mm)
   (org-ellipsis " ")
   (org-enforce-todo-checkbox-dependencies t)
@@ -6995,9 +6994,6 @@ Hide info buffer in buffer list
   (org-use-speed-commands t)
   (org-yank-adjusted-subtrees t)
   :config
-  (defvar org-default-todos-file (file-truename "~/.todos.org") "The default file for todo tasks.")
-  (defvar org-default-bugs-file (file-truename "~/.bugs.org") "The default file for bug tasks.")
-  (defvar org-default-events-file (file-truename "~/.events.org") "The default file for events.")
   (font-lock-add-keywords 'org-mode `(("^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\|\\([0-9]+\\)/\\2\\)\\][^\n]*\n\\)" 1 'org-headline-done prepend)) 'append)
   (add-hook 'org-mode-hook #'org-update-all-dblocks)
   (push "\\`\\*Org Agenda\\*\\'" consult-buffer-filter)
@@ -7009,56 +7005,7 @@ Hide info buffer in buffer list
 #+end_src
 
 
-** Default files
-*** Create agenda files if necessary
-#+BEGIN_SRC emacs-lisp
-(defun cpped-create-default-file (file &optional content)
-  "Create a file with given default content."
-  (when (not (file-exists-p file))
-    (with-temp-buffer
-      (when content
-        (insert content))
-      (write-file file)
-      (cpped-kill-default-buffer))))
 
-(cpped-create-default-file org-default-bugs-file "#+CATEGORY: Bugs\n#+BEGIN: clocktable :maxlevel 5 :scope file :block thisweek :step day :compact nil :narrow 80\n#+END:\n\n")
-(cpped-create-default-file org-default-todos-file "#+CATEGORY: ToDos\n#+BEGIN: clocktable :maxlevel 5 :scope file :block thisweek :step day :compact nil :narrow 80\n#+END:\n\n")
-(cpped-create-default-file org-default-events-file)
-(cpped-create-default-file org-default-notes-file "#+CATEGORY: Notes\n\n")
-#+END_SRC
-
-*** Hide default org files in buffer list
-#+BEGIN_SRC emacs-lisp
-#+END_SRC
-
-*** Show special name for default buffers in mode line
-#+BEGIN_SRC emacs-lisp
-(push `(,(file-name-nondirectory org-default-bugs-file) . "*Bugs*") cpped-special-buffer-names-alist)
-(push `(,(file-name-nondirectory org-default-todos-file) . "*ToDos*") cpped-special-buffer-names-alist)
-(push `(,(file-name-nondirectory org-default-events-file) . "*Events*") cpped-special-buffer-names-alist)
-(push `(,(file-name-nondirectory org-default-notes-file) . "*Notes*") cpped-special-buffer-names-alist)
-#+END_SRC
-
-*** Never kill special buffers
-#+BEGIN_SRC emacs-lisp
-(push (file-name-nondirectory org-default-bugs-file) cpped-bury-buffers-list)
-(push (file-name-nondirectory org-default-events-file) cpped-bury-buffers-list)
-(push (file-name-nondirectory org-default-todos-file) cpped-bury-buffers-list)
-#+END_SRC
-
-Remove check on buffer close
-#+BEGIN_SRC emacs-lisp
-(defun cpped-silence-org-clock (wrapped-function &rest arguments)
-  "Do not ask to clock out when closing todo buffer."
-  (when (not (string= (substring-no-properties (buffer-name)) (file-name-nondirectory org-default-todos-file)))
-    (apply wrapped-function arguments)))
-
-(advice-add 'org-check-running-clock :around #'cpped-silence-org-clock)
-#+END_SRC
-
-*** Show clock information
-#+BEGIN_SRC emacs-lisp
-(add-hook 'org-mode-hook #'org-clock-display)
 #+end_src
 
 ** Tangling
