@@ -8012,8 +8012,12 @@ Do not use scientific form so quickly
 (defcustom shark-bytes/serial-port nil "The last used serial port.")
 (defcustom shark-bytes/serial-port-baudrate 115200 "The last used serial port baud rate.")
 
+(defun shark-bytes/serial-ports ()
+  "Check if a serial port is available."
+  (directory-files "/dev/" nil "ttyUSB[0-9]+" t))
+
 (defun shark-bytes/serial-terminal (port baudrate)
-  (interactive (let ((ports (directory-files "/dev/" nil "ttyUSB[0-9]+" t)))
+  (interactive (let ((ports (shark-bytes/serial-ports)))
                  (list (cond ((= (length ports) 0) nil)
                              ((= (length ports) 1) (car ports))
                              (t (completing-read "Serial Port: " (directory-files "/dev/" nil "ttyUSB[0-9]+" t) nil t shark-bytes/serial-port)))
