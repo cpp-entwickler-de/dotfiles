@@ -7005,8 +7005,6 @@ Hide info buffer in buffer list
     "Update all dynamic blocks in org-mode."
     (when (equal major-mode 'org-mode)
       (org-update-all-dblocks)))
-  (add-hook 'after-save-hook #'shark-bytes/org-update-all-dblocks)
-  (add-hook 'window-state-change-hook #'shark-bytes/org-update-all-dblocks)
 )
 #+end_src
 
