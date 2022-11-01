@@ -6652,11 +6652,9 @@ If the region is active, act on all lines touched by the region."
   :custom (gist-ask-for-description t))
 #+end_src
 
-**** Config file support
+**** [[github:magit/git-modes][Config file support]]
 #+begin_src emacs-lisp
-(use-package gitconfig-mode)
-(use-package gitignore-mode)
-(use-package gitattributes-mode)
+(use-package git-modes)
 #+end_src
 
 **** [[https://github.com/sei40kr/gitignore-snippets][Snippets]]
