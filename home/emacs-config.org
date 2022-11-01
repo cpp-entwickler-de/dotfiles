@@ -1427,6 +1427,25 @@ Helper function to figure out version control root directory
   (push "\\*Compilation Log\\*" consult-buffer-filter))
 #+end_src
 
+**** [[github:karthink/consult-dir][Directories]]
+#+begin_src emacs-lisp
+(use-package consult-dir
+  :ensure-system-package fd-find
+  :after consult
+  :custom
+  (consult-dir-project-list-function #'consult-dir-projectile-dirs)
+  (consult-dir-sources '(consult-dir--source-bookmark consult-dir--source-default consult-dir--source-project consult-dir--source-recentf consult-dir--source-tramp-local shark-bytes/consult-dir--source-local))
+  :config
+  (defvar shark-bytes/consult-dir--source-local `(:name "Local Directories"
+                                                  :narrow ?d
+                                                  :category file
+                                                  :face consult-file
+                                                  :history file-name-history
+                                                  :items ,(lambda ()
+                                                            (split-string (let ((default-directory "/"))
+                                                                            (shell-command-to-string (substring-no-properties (format "fd --color=never --absolute-path --type d %s"
+                                                                                                                                      (string-join (mapcar (lambda (pattern) (format "--exclude '%s'" pattern)) '(*uild* /proc /run)) " "))))))))))
+#+end_src
 
 *** Header line
 #+begin_src emacs-lisp
@@ -2127,9 +2146,26 @@ https://github.com/purcell/exec-path-from-shell
     (eshell-up directory)))
 #+end_src
 
-**** [[https://github.com/coldnew/eshell-autojump][Jump to directories]]
+**** Jump to directories
 #+begin_src emacs-lisp
-(use-package eshell-autojump)
+(defvar shark-bytes/consult-dir--source-eshell-last-dir `(:name "Last Directories"
+                                                          :narrow ?e
+                                                          :category file
+                                                          :face consult-file
+                                                          :history file-name-history
+                                                          :items ,(lambda ()
+                                                                    (ring-elements eshell-last-dir-ring))))
+
+(defun eshell/cd-default ()
+  "Go to default-directory."
+  (interactive)
+  (eshell/cd default-directory))
+
+(defun eshell/j ()
+  "Select autojump directory via 'completing-read'."
+  (let ((consult-dir-sources (append '(shark-bytes/consult-dir--source-eshell-last-dir) consult-dir-sources)))
+    (let ((consult-dir-default-command 'eshell/cd-default))
+      (consult-dir))))
 #+end_src
 
 **** Jump over directories without files and one subdirectory
@@ -2604,6 +2640,15 @@ https://github.com/purcell/exec-path-from-shell
 (put 'dired-find-alternate-file 'disabled nil)
 
 (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
+#+end_src
+
+**** Open any existing directory
+#+begin_src emacs-lisp
+(defun shark-bytes/dired-any ()
+  "Open any existing directory"
+  (interactive)
+  (let ((consult-dir-default-command 'consult-dir-dired))
+    (consult-dir)))
 #+end_src
 
 **** [[https://github.com/DamienCassou/dired-imenu][imenu Integration]]
