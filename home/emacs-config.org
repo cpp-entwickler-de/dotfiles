@@ -3788,6 +3788,27 @@ Open binary files in hexl-mode
   (projectile-global-mode))
 #+end_src
 
+*** Update project statistics
+#+begin_src emacs-lisp
+(defvar shark-bytes/known-project-stats nil "Project statistics.")
+
+(defun shark-bytes/get-project-stats (project-root)
+  "Get project statistics for project in PROJECT-ROOT."
+  (async-start-process (concat "Project Statistics " project-root)
+                       "cloc"
+                       (lambda (process)
+                         (push (cons (car (last (process-command process)))
+                                     (json-read-from-string (with-current-buffer (process-buffer process)
+                                                              (buffer-substring-no-properties (point-min)
+                                                                                              (point-max)))))
+                               shark-bytes/known-project-stats))
+                       "--quiet" "--json" "--skip-uniqueness" (file-truename project-root)))
+
+(run-with-idle-timer 600 t (lambda ()
+                             (setq shark-bytes/known-project-stats nil)
+                             (mapcar #'shark-bytes/get-project-stats projectile-known-projects)))
+#+end_src
+
 *** Utilities
 **** Find file in project
 #+begin_src emacs-lisp
