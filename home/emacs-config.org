@@ -3076,7 +3076,9 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 #+begin_src emacs-lisp
 (use-package rainbow-mode
   :hook find-file
-  :config (add-to-list 'rainbow-html-colors-major-mode-list 'emacs-lisp-mode))
+  :config
+  (add-to-list 'rainbow-html-colors-major-mode-list 'emacs-lisp-mode)
+  (add-to-list 'rainbow-html-colors-major-mode-list 'org-mode))
 #+end_src
 
 *** Highlight matching parens
