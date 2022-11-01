@@ -7739,9 +7739,11 @@ Archive when done, remove flag if reset to todo.
 #+END_SRC
 
 *** Automatically stop clocking when exiting emacs.
-#+BEGIN_SRC emacs-lisp
-(add-hook 'kill-emacs-hook #'org-clock-out)
-#+END_SRC
+#+begin_src emacs-lisp
+(add-hook 'kill-emacs-hook '(lambda ()
+                              (when (org-clock-is-active)
+                                (org-clock-out))))
+#+end_src
 
 *** Automatically stop clocking when entering system suspend/lock and restart on resume/unlock
 #+begin_src emacs-lisp
