@@ -4285,7 +4285,7 @@ Handler to close buffer after quitting ccmake.
 
 **** Highlighting
 ***** [[https://codeberg.org/ideasman42/emacs-hl-indent-scope][Show Indentation]]
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
 (use-package hl-indent-scope
   :hook (prog-mode . hl-indent-scope-mode)
   :custom
