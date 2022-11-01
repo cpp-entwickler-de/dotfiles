@@ -1884,7 +1884,29 @@ Indicate recursive minibuffer
     (when (derived-mode-p 'eshell-mode)
       (format "%s %s" eshell-last-command-name (mapconcat 'identity eshell-last-arguments " "))))
   (with-eval-after-load "which-func"
-    (add-to-list 'which-func-functions 'shark-bytes/eshell-last-command)))
+    (add-to-list 'which-func-functions 'shark-bytes/eshell-last-command))
+  (with-eval-after-load "consult"
+    (defvar shark-bytes/consult--source-new-eshell `(:name     "New"
+                                                     :narrow   ?n
+                                                     :category string
+                                                     :default  t
+                                                     :items    ("New")
+                                                     :action   eshell)
+      "New buffer source for `consult-buffer'.")
+    (defvar shark-bytes/consult--source-buffer `(:name     "Existing"
+                                                 :narrow   ?b
+                                                 :category buffer
+                                                 :face     consult-buffer
+                                                 :history  buffer-name-history
+                                                 :state    ,#'consult--buffer-state
+                                                 :items    ,(lambda () (consult--buffer-query :sort 'visibility
+                                                                                         :include (rx "*eshell*" (* any))
+                                                                                         :as #'buffer-name)))
+      "Eshell buffer source for `consult-buffer'.")
+    (defun shark-bytes/eshell ()
+      "Open a new or existing eshell buffer."
+      (interactive)
+      (consult-buffer '(shark-bytes/consult--source-new-eshell shark-bytes/consult--source-buffer)))))
 #+end_src
 
 *** Environment
