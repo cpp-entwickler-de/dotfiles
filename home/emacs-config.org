@@ -7803,6 +7803,7 @@ Archive when done, remove flag if reset to todo.
 *** [[https://github.com/unhammer/org-mru-clock][Switch to last used clock]]
 #+begin_src emacs-lisp
 (use-package org-mru-clock
+  :after org
   :custom
   (org-mru-clock-how-many 100)
   (org-mru-clock-files 'org-agenda-files)
