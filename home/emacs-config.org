@@ -4774,13 +4774,14 @@ TODO
 
 (add-hook 'compilation-start-hook (lambda (process)
                                     (setq shark-bytes/process-running t
-                                          shark-bytes/current-process-start-time (current-time))))
+                                          shark-bytes/current-process-start-time (current-time))
+                                    (force-mode-line-update t)))
 
 (add-to-list 'compilation-finish-functions '(lambda (buffer message)
                                               (setq shark-bytes/process-running nil
                                                     compilation-run-p t
                                                     compilation-finished-successfully-p (string-match "^finished" message))
-                                              (force-mode-line-update)))
+                                              (force-mode-line-update t)))
 
 (defun shark-bytes/modeline-compilation-status ()
   "Format the mode line compilation information."
