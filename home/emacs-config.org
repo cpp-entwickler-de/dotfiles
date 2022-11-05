@@ -7827,6 +7827,7 @@ Archive when done, remove flag if reset to todo.
 (use-package org-ql)
 
 (defvar shark-bytes/customer-journal-unlisted-tasks '(Daily Misc) "A list of task names to omit in journals. Only the names will be omitted, not the clocked time.")
+(defvar shark-bytes/default-customer-journal-items '(date begin end sum pause tasks) "A list of fields to build the journal entry string. Valid values are date, begin, end, sum, pause, tasks, nil for an empty field or a string, which will be formatted by 'format-time-string'. May be overwritten by 'shark-bytes/customer-journal-items'.")
 (defvar shark-bytes/customer-journal-items nil "An alist of customer names and a list of fields to build the journal entry string. Valid values are date, begin, end, sum, pause, tasks, nil for an empty field or a string, which will be formatted by 'format-time-string'.")
 (defvar shark-bytes/customer-journal-default-date-format "de_DE" "Default date format for journal entries. May be overwritten by 'shark-bytes/customer-journal-date-format'.")
 (defvar shark-bytes/customer-journal-date-format nil "An alist of customer names and locales to build the journal entry string. Overwrites 'shark-bytes/customer-journal-default-date-format'.")
@@ -7920,7 +7921,8 @@ Archive when done, remove flag if reset to todo.
                                                               ", "))
                                          (`nil "")
                                          (_ (format-time-string entry))))
-                                   (cdr (assoc customer shark-bytes/customer-journal-items))) "\t"))
+                                   (or (cdr (assoc customer shark-bytes/customer-journal-items))
+                                       shark-bytes/default-customer-journal-items)) "\t"))
     (when-let ((file-basename (cdr (assoc customer shark-bytes/customer-journal-file-name))))
       (let ((process-connection-type nil))
         (start-process ""
