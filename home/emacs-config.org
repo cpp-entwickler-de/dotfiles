@@ -6409,6 +6409,12 @@ Auto-highlight details
                          "-n200"))
   (magit-diff-arguments '("--function-context" "--stat" "-M" "-C"))
   :config
+  (defun shark-bytes/projectile-invalidate-cache (&rest arguments)
+    "Invalidate projectile cache for current project."
+    (projectile-invalidate-cache nil))
+  (advice-add 'magit-checkout :after #'shark-bytes/projectile-invalidate-cache)
+  (advice-add 'magit-branch-and-checkout :after #'shark-bytes/projectile-invalidate-cache)
+  (push "\\`\\*?magit.*" consult-buffer-filter)
   (add-to-list 'super-save-triggers 'magit-status)
   (defun shark-bytes/git-rebase-kill-line ()
     "Kill the current action line.
