@@ -7680,21 +7680,24 @@ Archive when done, remove flag if reset to todo.
 *** Remaining work time
 #+begin_src emacs-lisp
 (defvar shark-bytes/show-work-time t "Whether to show work time in the mode line.")
-(defvar shark-bytes/daily-work-hours 8 "The number of hours of work per day.")
 
-(defun shark-bytes/daily-work-minutes ()
+(defvar shark-bytes/weekly-work-days 7 "The number of days of work per week.")
+
+(defun shark-bytes/daily-work-minutes (&optional customer)
   "The number of minutes of work per day."
-  (* shark-bytes/daily-work-hours 60))
+  (/ (shark-bytes/weekly-work-minutes customer) shark-bytes/weekly-work-days))
 
-(defun shark-bytes/weekly-work-minutes ()
+(defun shark-bytes/weekly-work-minutes (&optional customer)
   "The number of minutes of work per week."
-  (* 5 (shark-bytes/daily-work-minutes)))
+  (* (or (if customer
+             (cdr (assoc customer shark-bytes/customer-weekly-hours))
+           (apply '+ (-non-nil (mapcar 'cdr shark-bytes/customer-weekly-hours)))) 40) 60))
 
-(defun shark-bytes/monthly-work-minutes ()
+(defun shark-bytes/monthly-work-minutes (&optional customer)
   "The number of minutes of work per month."
-  (* 4.5 (shark-bytes/weekly-work-minutes)))
+  (* 4 (shark-bytes/weekly-work-minutes customer)))
 
-(defun shark-bytes/clocked-time (range)
+(defun shark-bytes/clocked-time (range &optional customer)
   "Return the clocked time for range."
   (interactive)
   (let ((shark-bytes/clocked-time 0)
@@ -7703,18 +7706,21 @@ Archive when done, remove flag if reset to todo.
     (org-agenda-prepare-buffers files)
     (dolist (file files)
       (with-current-buffer (find-buffer-visiting file)
-        (setq shark-bytes/clocked-time (+ shark-bytes/clocked-time (org-clock-sum (car org-range) (cadr org-range))))))
+        (setq shark-bytes/clocked-time (+ shark-bytes/clocked-time (org-clock-sum (car org-range) (cadr org-range) (lambda ()
+                                                                                                                     (if customer
+                                                                                                                         (string= (org-get-category) customer)
+                                                                                                                       t)))))))
     shark-bytes/clocked-time))
 
-(defun shark-bytes/remaining-work-minutes (range &optional clocked-time)
+(defun shark-bytes/remaining-work-minutes (range &optional customer clocked-time)
   "Return the remaining minutes between clocked time and work time."
   (interactive)
   (- (or clocked-time
-         (shark-bytes/clocked-time range))
+         (shark-bytes/clocked-time range customer))
      (pcase range
-       ('today (shark-bytes/daily-work-minutes))
-       ('thisweek (shark-bytes/weekly-work-minutes))
-       ('thismonth (shark-bytes/monthly-work-minutes)))))
+       ('today (shark-bytes/daily-work-minutes customer))
+       ('thisweek (shark-bytes/weekly-work-minutes customer))
+       ('thismonth (shark-bytes/monthly-work-minutes customer)))))
 
 (defun shark-bytes/format-remaining-minutes (minutes)
   "Format the remaining minutes."
@@ -7849,125 +7855,183 @@ Archive when done, remove flag if reset to todo.
   (advice-add 'org-mru-clock-format-entry :override 'shark-bytes/org-mru-clock-format-entry))
 #+end_src
 
-*** Create customer journal entry
+*** Customer journal
 #+begin_src emacs-lisp
 (use-package org-ql)
 
-(defvar shark-bytes/customer-journal-unlisted-tasks '(Daily Misc) "A list of task names to omit in journals. Only the names will be omitted, not the clocked time.")
-(defvar shark-bytes/default-customer-journal-items '(date begin end sum pause tasks) "A list of fields to build the journal entry string. Valid values are date, begin, end, sum, pause, tasks, nil for an empty field or a string, which will be formatted by 'format-time-string'. May be overwritten by 'shark-bytes/customer-journal-items'.")
-(defvar shark-bytes/customer-journal-items nil "An alist of customer names and a list of fields to build the journal entry string. Valid values are date, begin, end, sum, pause, tasks, nil for an empty field or a string, which will be formatted by 'format-time-string'.")
-(defvar shark-bytes/customer-journal-default-date-format "de_DE" "Default date format for journal entries. May be overwritten by 'shark-bytes/customer-journal-date-format'.")
-(defvar shark-bytes/customer-journal-date-format nil "An alist of customer names and locales to build the journal entry string. Overwrites 'shark-bytes/customer-journal-default-date-format'.")
-(defvar shark-bytes/customer-journal-default-duration-format 'h:mm "A duration format for journal entries acceptable to 'org-duration-format'. May be overwritten by 'shark-bytes/customer-journal-duration-format'.")
-(defvar shark-bytes/customer-journal-duration-format nil "An alist of customer names and 'org-duration-format' entries to build the journal entry string. Overwrites 'shark-bytes/customer-journal-default-duration-format'.")
-(defvar shark-bytes/customer-journal-file-name nil "An alist of customer names and 'format-time-string'-compatible strings to build the journal file name.")
-(defvar shark-bytes/customer-journal-default-range 'daily "The default range for a journal entry. Valid values are daily or monthly. May be overwritten by 'shark-bytes/customer-journal-range'.")
-(defvar shark-bytes/customer-journal-range nil "An alist of customer names and ranges for journal entries. Valid values are daily or monthly.")
+(defvar shark-bytes/customer-weekly-hours nil "An alist of customer names and weekly work hours.")
+
+(defun shark-bytes/create-customer (customer)
+  "Create a customer project directory and setup."
+  (interactive "sName: ")
+  (let ((customer-project-directory (expand-file-name customer (car shark-bytes/project-directories))))
+    (make-directory customer-project-directory t)
+    (mapc (lambda (file)
+            (when (not (file-exists-p file))
+              (with-temp-buffer
+                (insert (format "#+CATEGORY: %s\n\n" customer))
+                (write-file (expand-file-name file customer-project-directory)))))
+        '("tasks.org" "events.org" "notes.org"))
+    (when-let ((icon-url (read-string "Logo URL: "))
+               (icon-file (expand-file-name ".customer.svg" customer-project-directory)))
+      (url-copy-file icon-url icon-file t)
+      (shark-bytes/xdg-open-with icon-file)
+      (shark-bytes/add-customer-icon customer-project-directory))
+    (with-temp-buffer
+      (insert (format "(push '(\"%s\" . \"https://%s/%0s-%%s\") org-link-abbrev-alist)\n"
+                      (read-string "Ticket ID: ")
+                      (read-string "Ticket URL: ")))
+      (insert (format "(push '(\"%s\" . %s) shark-bytes/customer-weekly-hours)\n"
+                      customer
+                      (read-number "Hours per Week: " 40)))
+      (insert (format "(push '(\"%s\" . '(:range '%s :items (%s) :date-format '%s)) shark-bytes/customer-journal-options)\n"
+                      customer
+                      (if-let ((journal-file (read-file-name "Journal file: " "~/Documents/" nil nil (concat " " customer))))
+                          (format ":file \" \"" journal-file)
+                        "")
+                      (completing-read "Journal Range: " '(daily monthly))
+                      (completing-read "Journal Date Format: " '(de_DE en_US))
+                      (read-string "Journal Items: " (string-join (mapcar #'symbol-name (plist-get shark-bytes/customer-journal-default-options :items)) " "))))
+      (eval-buffer)
+      (write-file (expand-file-name ".customer.el" customer-project-directory)))))
+
+(defvar shark-bytes/customer-journal-default-options '(:range 'monthly
+                                                       :date-format 'de_DE
+                                                       :duration-format h:mm
+                                                       :items (date begin end sum pause tasks)
+                                                       :unlisted-tasks '(Daily Misc))
+  "A list of default options for journal entries.")
+(defvar shark-bytes/customer-journal-options nil "An alist of customer names and options for journal entries.")
+
+(defun shark-bytes/load-customer-configs (&optional project-directories)
+  "Load customer configurations from project directories."
+  (interactive (list shark-bytes/project-directories))
+  (mapc (lambda (customer-directory)
+          (when-let* ((config-directory (locate-dominating-file customer-directory ".customer.el"))
+                      (config (expand-file-name ".customer.el" config-directory)))
+            (load config))
+          (when-let* ((config-directory (locate-dominating-file customer-directory ".customer.svg"))
+                      (icon (expand-file-name ".customer.svg" config-directory)))
+            (add-to-list 'org-agenda-category-icon-alist `(,(file-name-nondirectory customer-directory) ,icon nil nil :width 16 :ascent center))))
+        (-flatten (mapcar (lambda (directory)
+                            (seq-filter #'file-directory-p (when (file-directory-p directory)
+                                                             (directory-files directory t))))
+                          shark-bytes/project-directories))))
+
+(shark-bytes/load-customer-configs)
+
+(defun shark-bytes/customer-journal-option (customer option)
+  "Get OPTION value for CUSTOMER or default."
+  (or (plist-get (cadr (assoc customer shark-bytes/customer-journal-options)) option)
+      (plist-get shark-bytes/customer-journal-default-options option)))
 
 (defun shark-bytes/clocked-customers (&optional range)
-  "Return all customers with clocked hours."
-  (let ((range (org-clock-special-range (or range 'today)))
+  "Return all customers with clocked hours in RANGE."
+  (let ((range (org-clock-special-range (or range 'today))))
     (delete-dups (org-ql-select org-agenda-files
                    '(and (clocked :from ,(nth 0 range) :to ,(nth 1 range)))
                    :action #'org-get-category))))
 
-(defun shark-bytes/collect-clocking-tasks (customer)
-  "Collect all clocked tasks today for CUSTOMER."
-  (let ((range (org-clock-special-range (pcase (or (cdr (assoc customer shark-bytes/customer-journal-range)) shark-bytes/customer-journal-default-range)
-                                          ('monthly 'thismonth)
-                                          (_ 'today)))))
-    (org-ql-select org-agenda-files
-                   `(and (clocked :from ,(nth 0 range) :to ,(nth 1 range)) (category ,customer))
-                   :action #'(lambda ()
-                             (let ((element-end (org-element-property :end (org-element-at-point)))
-                                   (range-start (time-to-seconds (nth 0 range)))
-                                   (range-end (time-to-seconds (nth 1 range)))
-                                   (task-data))
-                               (while (re-search-forward org-element-clock-line-re element-end t)
-                                 (let ((clock-end (point)))
-                                   (beginning-of-line)
-                                   (let* ((clock (car (cdr (org-element-clock-parser clock-end))))
-                                          (timestamp (car (cdr (plist-get clock :value))))
-                                          (start-time (max range-start
-                                                           (time-to-seconds (encode-time 0
-                                                                                    (or (plist-get timestamp :minute-start) 0)
-                                                                                    (or (plist-get timestamp :hour-start) 0)
-                                                                                    (or (plist-get timestamp :day-start) 1)
-                                                                                    (or (plist-get timestamp :month-start) 1)
-                                                                                    (or (plist-get timestamp :year-start) 1970)))))
-                                          (end-time (min range-end
-                                                         (time-to-seconds (if (string-equal (plist-get clock :status) 'running)
-                                                                              (current-time)
-                                                                            (encode-time 0
-                                                                                         (plist-get timestamp :minute-end)
-                                                                                         (plist-get timestamp :hour-end)
-                                                                                         (plist-get timestamp :day-end)
-                                                                                         (plist-get timestamp :month-end)
-                                                                                         (plist-get timestamp :year-end)))))))
-                                     (when (> end-time start-time)
-                                       (setq task-data (plist-put task-data :begin (if-let ((start (plist-get task-data :begin)))
-                                                                                       (min start start-time)
-                                                                                     start-time)))
-                                       (setq task-data (plist-put task-data :end (if-let ((end (plist-get task-data :end)))
-                                                                                     (max end end-time)
-                                                                                   end-time)))
-                                       (setq task-data (plist-put task-data :duration (+ (or (plist-get task-data :duration) 0)
-                                                                                         (- end-time start-time))))))
-                                     (end-of-line))
-                                 (when (plist-get task-data :duration)
-                                   (let ((headline (substring-no-properties (org-get-heading t t t t))))
-                                     (save-match-data
-                                       (setq task-data (plist-put task-data :title (if (string-match (rx "[[" (group (+ (not ":"))) ":" (group (+ (in numeric))) "][" (group (+ (not "]"))) "]]") headline)
-                                                                                       (if (assoc (match-string 1 headline) org-link-abbrev-alist)
-                                                                                           (format "%s-%s" (match-string 1 headline) (match-string 2 headline))
-                                                                                         (match-string 3 headline))
-                                                                                     headline)))))))
-                               task-data)))))
+(defun shark-bytes/collect-clocking-tasks (customer &optional range)
+  "Collect all clocked tasks in RANGE for CUSTOMER."
+  (let ((log-range (org-clock-special-range (or range (pcase (shark-bytes/customer-journal-option customer :range)
+                                                        ('weekly 'thisweek)
+                                                        ('monthly 'thismonth)
+                                                        (_ 'today))))))
+    (-non-nil (org-ql-select org-agenda-files
+                `(and (clocked :from ,(nth 0 log-range) :to ,(nth 1 log-range)) (category ,customer))
+                :action #'(lambda ()
+                            (let ((element-end (org-element-property :end (org-element-at-point)))
+                                  (range-start (time-to-seconds (nth 0 log-range)))
+                                  (range-end (time-to-seconds (nth 1 log-range)))
+                                  (task-data))
+                              (while (re-search-forward org-element-clock-line-re element-end t)
+                                (let ((clock-end (point)))
+                                  (beginning-of-line)
+                                  (let* ((clock (car (cdr (org-element-clock-parser clock-end))))
+                                         (timestamp (car (cdr (plist-get clock :value))))
+                                         (start-time (max range-start
+                                                          (time-to-seconds (encode-time 0
+                                                                                        (or (plist-get timestamp :minute-start) 0)
+                                                                                        (or (plist-get timestamp :hour-start) 0)
+                                                                                        (or (plist-get timestamp :day-start) 1)
+                                                                                        (or (plist-get timestamp :month-start) 1)
+                                                                                        (or (plist-get timestamp :year-start) 1970)))))
+                                         (end-time (min range-end
+                                                        (time-to-seconds (if (string-equal (plist-get clock :status) 'running)
+                                                                             (current-time)
+                                                                           (encode-time 0
+                                                                                        (plist-get timestamp :minute-end)
+                                                                                        (plist-get timestamp :hour-end)
+                                                                                        (plist-get timestamp :day-end)
+                                                                                        (plist-get timestamp :month-end)
+                                                                                        (plist-get timestamp :year-end)))))))
+                                    (when (>= end-time start-time)
+                                      (setq task-data (plist-put task-data :begin (if-let ((start (plist-get task-data :begin)))
+                                                                                      (min start start-time)
+                                                                                    start-time)))
+                                      (setq task-data (plist-put task-data :end (if-let ((end (plist-get task-data :end)))
+                                                                                    (max end end-time)
+                                                                                  end-time)))
+                                      (setq task-data (plist-put task-data :duration (+ (or (plist-get task-data :duration) 0)
+                                                                                        (- end-time start-time))))))
+                                  (end-of-line)))
+                              (when (plist-get task-data :duration)
+                                (let ((headline (substring-no-properties (org-get-heading t t t t))))
+                                  (save-match-data
+                                    (setq task-data (plist-put task-data :title (if (string-match (rx "[[" (group (+ (not ":"))) ":" (group (+ (in numeric))) "][" (group (+ (not "]"))) "]]") headline)
+                                                                                    (if (assoc (match-string 1 headline) org-link-abbrev-alist)
+                                                                                        (format "%s-%s" (match-string 1 headline) (match-string 2 headline))
+                                                                                      (match-string 3 headline))
+                                                                                  headline))))))
+                              task-data))))))
+
+;;shark-bytes/org-heading-text
+
 
 (defun shark-bytes/create-journal-entry (customer)
   "Create a journal entry string of all tasks clocked today for CUSTOMER and add it to the kill ring. Open the respective customer file if defined."
   (interactive (list (completing-read "Customer: "
                                       (shark-bytes/clocked-customers 'thismonth)
                                       nil t "")))
-  (let* ((system-time-locale (or (cdr (assoc customer shark-bytes/customer-journal-date-format)) shark-bytes/customer-journal-default-date-format))
-         (duration-format (or (cdr (assoc customer shark-bytes/customer-journal-duration-format)) shark-bytes/customer-journal-default-duration-format))
+  (let* ((system-time-locale (shark-bytes/customer-journal-option customer :date-format))
+         (duration-format (shark-bytes/customer-journal-option customer :duration-format))
          (tasks (shark-bytes/collect-clocking-tasks customer))
          (begin (apply 'min (-non-nil (mapcar #'(lambda (task)
-                                        (plist-get task :begin))
-                                    tasks))))
+                                                  (plist-get task :begin))
+                                              tasks))))
          (end (apply 'max (-non-nil (mapcar #'(lambda (task)
-                                      (plist-get task :end))
-                                  tasks))))
+                                                (plist-get task :end))
+                                            tasks))))
          (sum (apply '+ (-non-nil (mapcar #'(lambda (task)
-                                    (plist-get task :duration))
-                                tasks)))))
+                                              (plist-get task :duration))
+                                          tasks)))))
     (kill-new (string-join (mapcar #'(lambda (entry)
                                        (pcase entry
-                                         (`date (format-time-string "%x" (current-time)))
-                                         (`begin (format-time-string "%k:%M" (seconds-to-time begin)))
-                                         (`end (format-time-string "%k:%M" (seconds-to-time end)))
-                                         (`sum (org-duration-from-minutes (/ sum 60) duration-format))
-                                         (`pause (org-duration-from-minutes (/ (- end begin sum) 60) duration-format))
-                                         (`tasks (string-join (-non-nil (mapcar #'(lambda (task)
+                                         ('date (format-time-string "%x" (current-time)))
+                                         ('begin (format-time-string "%k:%M" (seconds-to-time begin)))
+                                         ('end (format-time-string "%k:%M" (seconds-to-time end)))
+                                         ('sum (org-duration-from-minutes (/ sum 60) 'h:mm))
+                                         ('pause (org-duration-from-minutes (/ (- end begin sum) 60) 'h:mm))
+                                         ('tasks (string-join (-non-nil (mapcar #'(lambda (task)
                                                                                     (when-let ((task-title (plist-get task :title)))
-                                                                                      (unless (cl-member task-title shark-bytes/customer-journal-unlisted-tasks :test #'string-equal)
+                                                                                      (unless (cl-member task-title (-flatten (shark-bytes/customer-journal-option customer :unlisted-tasks)) :test #'string-equal)
                                                                                         task-title)))
                                                                                 tasks))
                                                               ", "))
-                                         (`nil "")
-                                         (_ (format-time-string entry))))
-                                   (or (cdr (assoc customer shark-bytes/customer-journal-items))
-                                       shark-bytes/default-customer-journal-items)) "\t"))
-    (when-let ((file-basename (cdr (assoc customer shark-bytes/customer-journal-file-name))))
+                                         ('nil "")
+                                         (_ entry)))
+                                   (shark-bytes/customer-journal-option customer :items))
+                           "\t"))
+    (when-let ((file-basename (shark-bytes/customer-journal-option customer :file)))
       (let ((process-connection-type nil))
         (start-process ""
                        nil
                        shell-file-name
                        shell-command-switch
                        (format "nohup 1>/dev/null 2>/dev/null xdg-open '%s'" (file-truename (expand-file-name (format-time-string file-basename) "~/Documents"))))))))
-
-(provide 'customer-journal)
 #+end_src
+
 *  Utilities
 ** System
 *** [[https://github.com/tecosaur/emacs-everywhere][Use emacs for editing everywhere]]
