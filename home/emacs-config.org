@@ -2672,6 +2672,8 @@ https://github.com/purcell/exec-path-from-shell
 (put 'dired-find-alternate-file 'disabled nil)
 
 (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
+
+(setq dired-kill-when-opening-new-dired-buffer t)
 #+end_src
 
 **** Open any existing directory
