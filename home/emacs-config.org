@@ -7475,6 +7475,12 @@ Archive when done, remove flag if reset to todo.
                                      (todo (concat shark-bytes/org-todo-keyword-todo "|" shark-bytes/org-todo-keyword-in-progress)
                                            ((org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline 'done))
                                             (org-agenda-overriding-header shark-bytes/org-todo-keyword-todo)
+                                            (org-agenda-todo-keyword-format "")))
+                                     (todo shark-bytes/org-todo-keyword-waiting
+                                           ((org-agenda-overriding-header shark-bytes/org-todo-keyword-waiting)
+                                            (org-agenda-todo-keyword-format "")))
+                                     (todo shark-bytes/org-todo-keyword-suspended
+                                           ((org-agenda-overriding-header shark-bytes/org-todo-keyword-suspended)
                                             (org-agenda-todo-keyword-format "")))))
                                    ("n" "Notes" tags "+CATEGORY=\"Notes\""
                                     ((org-agenda-overriding-header "Notes")
