@@ -902,3 +902,5 @@ compile_commands.json
 
 # org mode
 *.org
+.customer.el
+.customer.svg
