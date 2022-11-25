@@ -7851,6 +7851,7 @@ Archive when done, remove flag if reset to todo.
                   (propertize " " 'display icon)
                 " ")
               "  "
+              (propertize category 'invisible t)
               heading)))
   (advice-add 'org-mru-clock-format-entry :override 'shark-bytes/org-mru-clock-format-entry))
 #+end_src
