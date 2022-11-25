@@ -7659,7 +7659,7 @@ Archive when done, remove flag if reset to todo.
 
 ** Clocking
 #+begin_src emacs-lisp
-(setq org-clock-history-length 25
+(setq org-clock-history-length 200
       org-clock-idle-time nil
       org-clock-in-resume t
       org-clock-in-switch-to-state shark-bytes/org-todo-keyword-in-progress
