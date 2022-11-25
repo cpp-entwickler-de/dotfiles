@@ -558,7 +558,7 @@ The saturation for non-saturated colors is 60.
 (defvar shark-bytes-minor                  "#424242" "Color for shadow text.")
 (defvar shark-bytes-detail                 "#757575" "Color for shadow text.")
 
-(defvar shark-bytes-shadow                 "#303030" "Color for shadow text.")
+(defvar shark-bytes-shadow                 "#606060" "Color for shadow text.")
 (defvar shark-bytes-text                   "#F1F1F1" "Color for normal text.")
 #+end_src
 
