@@ -6378,6 +6378,8 @@ Auto-highlight details
   :after (consult projectile super-save)
   :custom
   (magit-clone-set-remote.pushDefault t)
+  (magit-clone-default-directory (file-name-as-directory (or (car shark-bytes/project-directories)
+                                                             (getenv "HOME"))))
   (git-commit-style-convention-checks nil)
   (git-commit-summary-max-length 80)
   (magit-auto-revert-mode t)
