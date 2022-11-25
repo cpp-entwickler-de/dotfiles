@@ -46,6 +46,7 @@
  `(diff-indicator-added ((t (:foreground ,shark-bytes-window-background))))
  '(diff-indicator-changed ((t (:inherit diff-indicator-added))))
  '(diff-indicator-removed ((t (:inherit diff-indicator-added))))
+ '(dired-broken-symlink ((t (:inherit error))))
  `(error ((t (:foreground ,shark-bytes-error :distant-foreground ,shark-bytes-error-saturated :weight bold))))
  '(escape-glyph ((t (:foreground "#8D6E63"))))
  '(fixed-pitch ((t (:family "Monospace"))))
