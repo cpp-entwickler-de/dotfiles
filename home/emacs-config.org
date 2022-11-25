@@ -2596,6 +2596,11 @@ https://github.com/purcell/exec-path-from-shell
 #+end_src
 
 ** File Management
+*** Create symlinks if reasonable
+#+begin_src emacs-lisp
+(setq copy-directory-create-symlink t)
+#+end_src
+
 *** [[https://www.emacswiki.org/emacs/RecentFiles][Recent files]]
 #+begin_src emacs-lisp
 (use-package recentf
