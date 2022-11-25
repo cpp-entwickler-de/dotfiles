@@ -60,6 +60,7 @@ Do not ask for confirmation for new shell buffers
   :ensure-system-package ((pip . python3-pip) npm (gem . rubygems))
   :custom (system-packages-noconfirm t)
   :config
+  (require 'tramp)
   (defun shark-bytes/run-command-sync-logged (wrapped-function &rest arguments)
     "Run a command synchronously and return the output."
     (shell-command-to-string (car arguments)))
