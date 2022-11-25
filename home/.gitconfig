@@ -64,7 +64,7 @@ relativePaths = false
 # Use short format
 short = true
 
-# Show all untracked files 
+# Show all untracked files
 showUntrackedFiles = all
 
 # Show submodule info
