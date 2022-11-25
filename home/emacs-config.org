@@ -3808,6 +3808,8 @@ Open binary files in hexl-mode
 ** Projects
 *** [[https://github.com/bbatsov/projectile][Projectile]]
 #+begin_src emacs-lisp
+(defvar shark-bytes/project-directories (list "~/Projects" "~/projects") "A list of directories to check for projects.")
+
 (use-package projectile
   :custom
   (projectile-create-missing-test-files t)
