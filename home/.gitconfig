@@ -245,6 +245,10 @@ helper = cache
 username = cpp-entwickler-de
 
 
+[lfs]
+storage = ~/.cache/lfs
+
+
 [alias]
 root = rev-parse --show-toplevel
 
