@@ -7497,8 +7497,8 @@ Archive when done, remove flag if reset to todo.
                                      (org-agenda-start-with-clockreport-mode t)
                                      (org-agenda-time-grid nil)
                                      (org-agenda-include-diary nil)
-                                   ("D" "Today's Timesheet" agenda ""
                                      (org-agenda-clockreport-parameter-plist '(:scope agenda-with-archives :indent t :link t :emphasize t :tcolumns 1 :maxlevel 3 :properties ("CATEGORY") :sort (1 . ?a) :fileskip0 t :hidefiles t :formula %))))
+                                   ("t" "Today's Timesheet" agenda ""
                                     ((org-agenda-overriding-header "Today")
                                      (org-agenda-span 'day)
                                      (org-agenda-start-on-weekday nil)
