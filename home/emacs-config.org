@@ -7491,15 +7491,15 @@ Archive when done, remove flag if reset to todo.
                                      (org-agenda-start-with-clockreport-mode t)
                                      (org-agenda-time-grid nil)
                                      (org-agenda-include-diary nil)
-                                     (org-agenda-clockreport-parameter-plist '(:scope agenda-with-archives :indent t :link t :emphasize t :tcolumns 1 :maxlevel 6 :fileskip0 t :formula %))))
                                    ("D" "Today's Timesheet" agenda ""
+                                     (org-agenda-clockreport-parameter-plist '(:scope agenda-with-archives :indent t :link t :emphasize t :tcolumns 1 :maxlevel 3 :properties ("CATEGORY") :sort (1 . ?a) :fileskip0 t :hidefiles t :formula %))))
                                     ((org-agenda-overriding-header "Today")
                                      (org-agenda-span 'day)
                                      (org-agenda-start-on-weekday nil)
                                      (org-agenda-start-with-clockreport-mode t)
                                      (org-agenda-time-grid nil)
                                      (org-agenda-include-diary nil)
-                                     (org-agenda-clockreport-parameter-plist '(:scope agenda-with-archives :indent t :link t :emphasize t :tcolumns 1 :maxlevel 6 :fileskip0 t :formula %))))
+                                     (org-agenda-clockreport-parameter-plist '(:scope agenda-with-archives :indent t :link t :emphasize t :tcolumns 1 :maxlevel 3 :properties ("CATEGORY") :sort (1 . ?a) :fileskip0 t :hidefiles t :formula %))))
                                    ("p" "This Month's Timesheet" agenda ""
                                     ((org-agenda-overriding-header (concat (if (< (nth 3 (decode-time)) 25)
                                                                                "Last"
@@ -7521,7 +7521,7 @@ Archive when done, remove flag if reset to todo.
                                      (org-agenda-start-with-clockreport-mode t)
                                      (org-agenda-time-grid nil)
                                      (org-agenda-include-diary nil)
-                                     (org-agenda-clockreport-parameter-plist '(:scope agenda-with-archives :indent t :link t :emphasize t :tcolumns 1 :maxlevel 2 :fileskip0 t :formula %))))
+                                     (org-agenda-clockreport-parameter-plist '(:scope agenda-with-archives :indent t :link t :emphasize t :tcolumns 1 :maxlevel 3 :properties ("CATEGORY") :sort (1 . ?a) :fileskip0 t :hidefiles t :step month :stepskip0 t :formula %))))
                                    ("y" "This Year's Timesheet" agenda ""
                                     ((org-agenda-span 'year)
                                      (org-agenda-start-day (format "%04d-01-01" (nth 5 (decode-time))))
@@ -7529,7 +7529,7 @@ Archive when done, remove flag if reset to todo.
                                      (org-agenda-start-with-clockreport-mode t)
                                      (org-agenda-time-grid nil)
                                      (org-agenda-include-diary nil)
-                                     (org-agenda-clockreport-parameter-plist '(:scope agenda-with-archives :indent t :link t :emphasize t :tcolumns 1 :maxlevel 5 :fileskip0 t :formula %))))))
+                                     (org-agenda-clockreport-parameter-plist '(:scope agenda-with-archives :indent t :link t :emphasize t :tcolumns 1 :maxlevel 3 :properties ("CATEGORY") :sort (1 . ?a) :fileskip0 t :hidefiles t :formula %))))))
 #+end_src
 
 *** Reschedule to today
