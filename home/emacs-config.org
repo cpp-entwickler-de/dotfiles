@@ -7023,6 +7023,17 @@ Hide info buffer in buffer list
 )
 #+end_src
 
+** Unhide org items to edit
+#+begin_src emacs-lisp
+(use-package org-appear
+  :hook org-mode
+  :custom
+  (org-appear-autoemphasis t)
+  (org-appear-autolinks t)
+  (org-appear-autosubmarkers t)
+  (org-appear-autoentities t)
+  (org-appear-autokeywords t))
+#+end_src
 
 
 #+end_src
