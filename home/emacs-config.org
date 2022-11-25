@@ -6378,6 +6378,10 @@ Auto-highlight details
   :after (consult projectile super-save)
   :custom
   (magit-clone-set-remote.pushDefault t)
+  (magit-repository-directories (append (mapcar (lambda (directory)
+                                                  (cons directory 3))
+                                                shark-bytes/project-directories)
+                                        '(("~/.dotfiles/" . 1))))
   (magit-clone-default-directory (file-name-as-directory (or (car shark-bytes/project-directories)
                                                              (getenv "HOME"))))
   (git-commit-style-convention-checks nil)
@@ -6409,6 +6413,8 @@ Auto-highlight details
                          "-n200"))
   (magit-diff-arguments '("--function-context" "--stat" "-M" "-C"))
   :config
+  (setq projectile-project-search-path magit-repository-directories)
+  (mapc #'projectile-add-known-project (mapcar #'file-name-as-directory (magit-list-repos)))
   (defun shark-bytes/projectile-invalidate-cache (&rest arguments)
     "Invalidate projectile cache for current project."
     (projectile-invalidate-cache nil))
@@ -6504,15 +6510,6 @@ If the region is active, act on all lines touched by the region."
   :custom
   (magit-gerrit-remote "")
   (magit-gerrit-ssh-creds ""))
-
-***** Find other projects
-#+BEGIN_SRC emacs-lisp
-(with-eval-after-load "projectile"
-  (setq magit-repository-directories (mapcar (lambda (element)
-                                               (cons (directory-file-name element) 10))
-                                             (cl-remove-if-not (lambda (project)
-                                                                 (magit-git-repo-p project))
-                                                               (projectile-relevant-known-projects)))))
 #+end_src
 
 ***** Icons for changes
