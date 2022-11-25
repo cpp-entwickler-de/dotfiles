@@ -2590,6 +2590,11 @@ https://github.com/purcell/exec-path-from-shell
       (call-interactively #'projectile-invalidate-cache))))
 #+end_src
 
+** Handle file names with spaces
+#+begin_src emacs-lisp
+(setq ffap-file-name-with-spaces t)
+#+end_src
+
 ** File Management
 *** [[https://www.emacswiki.org/emacs/RecentFiles][Recent files]]
 #+begin_src emacs-lisp
