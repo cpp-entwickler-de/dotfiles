@@ -7333,12 +7333,6 @@ Archive when done, remove flag if reset to todo.
 #+begin_src emacs-lisp
 (setq org-archive-mark-done nil
       org-archive-location "%s_archive::* Archived")
-
-(use-package org-fancy-priorities
-  :hook ((org-mode org-agenda-mode) . org-fancy-priorities-mode)
-  :custom (org-fancy-priorities-list '((?A . "")
-                                       (?B . "")
-                                       (?C . "⏾"))))
 #+end_src
 
 ** Prettify symbols
