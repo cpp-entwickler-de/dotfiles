@@ -7076,9 +7076,10 @@ Hide info buffer in buffer list
 #+begin_src emacs-lisp
 (defun shark-bytes/org-log-current-defun ()
   (save-excursion
-    (org-back-to-heading)
-    (when (looking-at org-complex-heading-regexp)
-      (match-string 4))))
+    (let ((defun (org-get-heading t t t t)))
+      (if (string-match org-link-bracket-re defun)
+          (match-string 2 defun)
+        defun))))
 
 (add-hook 'org-mode-hook (lambda ()
                            (make-variable-buffer-local 'add-log-current-defun-function)
