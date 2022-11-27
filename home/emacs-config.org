@@ -1406,9 +1406,9 @@ Helper function to figure out version control root directory
                               (if (use-region-p)
 			          (buffer-substring (region-beginning) (region-end))
                                 (thing-at-point 'symbol))))))
-	 (apply original-function (or dir
-                                      (shark-bytes/project-dir)
-                                      default-directory) initial)))
+       (apply original-function (or dir
+                                    (shark-bytes/project-dir)
+                                    default-directory) initial)))
   (advice-add 'consult-ripgrep :around #'shark-bytes/consult-ripgrep)
   (advice-add #'completing-read-multiple :override #'consult-completing-read-multiple)
   (push "\\*emacs\\*" consult-buffer-filter)
