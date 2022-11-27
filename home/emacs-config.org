@@ -1361,9 +1361,7 @@ Helper function to figure out version control root directory
 (use-package consult
   :demand t
   :hook (completion-list-mode . consult-preview-at-point-mode)
-  :bind (
-;([remap find-file] . consult-find)
-         ([remap apropos] . consult-apropos)
+  :bind (([remap apropos] . consult-apropos)
          ([remap bookmark-jump] . consult-bookmark)
          ([remap goto-line] . consult-goto-line)
          ([remap imenu] . consult-imenu)
