@@ -7048,7 +7048,15 @@ Hide info buffer in buffer list
   (org-appear-autokeywords t))
 #+end_src
 
+** Priorities
+#+begin_src emacs-lisp
+(defface org-priority-high '((t :inherit default)) "Face used for high priority." :group 'org)
+(defface org-priority-medium '((t :inherit default)) "Face used for medium priority." :group 'org)
+(defface org-priority-low '((t :inherit default)) "Face used for low priority." :group 'org)
 
+(setq org-priority-faces '((?A . org-priority-high)
+                           (?B . org-priority-medium)
+                           (?C . org-priority-low)))
 #+end_src
 
 ** Tangling
@@ -7325,17 +7333,6 @@ Archive when done, remove flag if reset to todo.
 #+begin_src emacs-lisp
 (setq org-archive-mark-done nil
       org-archive-location "%s_archive::* Archived")
-#+END_SRC
-
-** Priorities
-#+BEGIN_SRC emacs-lisp
-(defface org-priority-high '((t :inherit default)) "Face used for high priority." :group 'org)
-(defface org-priority-medium '((t :inherit default)) "Face used for medium priority." :group 'org)
-(defface org-priority-low '((t :inherit default)) "Face used for low priority." :group 'org)
-
-(setq org-priority-faces '((?A . org-priority-high)
-                           (?B . org-priority-medium)
-                           (?C . org-priority-low)))
 
 (use-package org-fancy-priorities
   :hook ((org-mode org-agenda-mode) . org-fancy-priorities-mode)
