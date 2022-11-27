@@ -94,7 +94,7 @@ Do not ask for confirmation for new shell buffers
                         (verify-all-packages . "rpm -Va")
                         (verify-all-dependencies . "dnf repoquery --requires")
                         (remove-orphaned . "dnf autoremove")
-                        (system-packages-list-installed-packages . "dnf list --installed")
+                        (list-installed-packages . "dnf list --installed")
                         (list-installed-packages-all . nil)
                         (list-dependencies-of . "rpm -qR"))))
     (add-to-list 'system-packages-supported-package-managers
