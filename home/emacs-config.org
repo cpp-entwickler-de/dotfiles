@@ -1400,7 +1400,7 @@ Helper function to figure out version control root directory
     (interactive)
     (consult-line (shark-bytes/region-or-symbol)))
   (defun shark-bytes/consult-ripgrep (original-function &optional dir initial-argument)
-     ""
+     "Use project and region/thing at point as rg input."
      (interactive)
      (let ((initial (list (or initial-argument
                               (if (use-region-p)
