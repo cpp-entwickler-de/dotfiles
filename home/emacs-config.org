@@ -2442,8 +2442,8 @@ https://github.com/purcell/exec-path-from-shell
 (use-package zoom
   :custom
   (zoom-size '(0.618 . 0.618))
-  (zoom-ignored-major-modes '(dired-mode markdown-mode))
-  (zoom-ignored-buffer-name-regexps '("^*calc"))
+  (zoom-ignored-major-modes '(dired-mode markdown-mode compilation-mode help-mode helpful-mode))
+  (zoom-ignored-buffer-name-regexps '("\\*.*"))
   :config
   (zoom-mode t))
 #+end_src
