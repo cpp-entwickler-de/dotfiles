@@ -3564,6 +3564,11 @@ Some useful abbreviations
                                             ("ifomration" "information")))
 #+end_src
 
+Use hippie-expand instead of dabbrev
+#+begin_src emacs-lisp
+(global-set-key [remap dabbrev-expand] 'hippie-expand)
+#+end_src
+
 **** [[https://github.com/joaotavora/yasnippet][Templates]]
 #+begin_src emacs-lisp
 (use-package yasnippet
