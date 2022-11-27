@@ -3924,6 +3924,26 @@ Open binary files in hexl-mode
                                               (shark-bytes/maybe-run-in-docker command))))
 #+end_src
 
+**** [[https://github.com/bard/emacs-run-command][Run commands in project]]
+#+begin_src emacs-lisp
+(use-package run-command
+  :config
+  (defun shark-bytes/run-command-project-scripts-recipe ()
+    "Run-command recipe for project scripts."
+    (-non-nil (mapcar (lambda (file)
+                        (let ((file-path (expand-file-name file (shark-bytes/project-dir))))
+                          (when (and (file-regular-p file-path)
+                                     (file-executable-p file-path))
+                            (list :command-line file-path
+                                  :command-name file))))
+                      (projectile-project-files (shark-bytes/project-dir)))))
+  (defun shark-bytes/run-command-project-scripts ()
+    "Run a project script."
+    (interactive)
+    (let ((run-command-recipes '(shark-bytes/run-command-project-scripts-recipe)))
+      (run-command))))
+ #+end_src
+
 *** CMake
 #+BEGIN_SRC emacs-lisp
 (cpped-install-system-package "cmake")
