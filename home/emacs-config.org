@@ -4441,6 +4441,12 @@ Handler to close buffer after quitting ccmake.
 #+end_src
 
 **** Navigation
+
+***** Use ripgrep for xref
+#+begin_src emacs-lisp
+(setq xref-search-program 'ripgrep)
+#+end_src
+
 ***** [[https://github.com/gregsexton/origami.el][Folding]]
 #+begin_src emacs-lisp
 (use-package origami
