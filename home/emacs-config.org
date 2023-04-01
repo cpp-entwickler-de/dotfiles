@@ -7706,7 +7706,7 @@ Archive when done, remove flag if reset to todo.
 #+begin_src emacs-lisp
 (defvar shark-bytes/show-work-time t "Whether to show work time in the mode line.")
 
-(defvar shark-bytes/weekly-work-days 7 "The number of days of work per week.")
+(defvar shark-bytes/weekly-work-days 5.5 "The number of days of work per week.")
 
 (defun shark-bytes/daily-work-minutes (&optional customer)
   "The number of minutes of work per day."
