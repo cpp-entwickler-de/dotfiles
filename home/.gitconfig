@@ -267,6 +267,7 @@ diff-log = log -p
 commit-log = log --oneline --graph --decorate
 changed-files = diff-tree --no-commit-id --name-only -r
 file-history = log --follow -p --
+show-contributors = !git shortlog -s -n | head -15
 
 # show commits by curent user
 lastweek = !git log --all --no-merges --since='7 days ago' --abbrev-commit
