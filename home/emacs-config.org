@@ -659,7 +659,8 @@ The saturation for non-saturated colors is 60.
     ('shell-mode default-directory)
     ('term-mode default-directory)
     ('dired-mode default-directory)
-    (_ buffer-file-name)))
+    (_ (or buffer-file-name
+           (buffer-name)))))
 #+end_src
 
 *** Base Location
