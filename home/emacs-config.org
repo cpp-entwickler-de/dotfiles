@@ -1627,7 +1627,7 @@ Indicate recursive minibuffer
     (if (member name shark-bytes/bury-buffers-list)
         (bury-buffer)
       (when (and buffer-file-name
-               (buffer-modified-p))
+                 (buffer-modified-p))
         (save-buffer))
       (kill-buffer))))
 #+end_src
