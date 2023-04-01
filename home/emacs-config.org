@@ -3088,6 +3088,7 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 *** Highlight colors
 #+begin_src emacs-lisp
 (use-package rainbow-mode
+  :demand t
   :hook find-file
   :config
   (add-to-list 'rainbow-html-colors-major-mode-list 'emacs-lisp-mode)
