@@ -6451,7 +6451,11 @@ Auto-highlight details
   (magit-diff-arguments '("--function-context" "--stat" "-M" "-C"))
   :config
   (setq projectile-project-search-path magit-repository-directories)
-  (mapc #'projectile-add-known-project (mapcar #'file-name-as-directory (magit-list-repos)))
+  (defun shark-bytes/update-known-projects ()
+    (interactive)
+    (mapc #'projectile-add-known-project (mapcar #'file-name-as-directory (magit-list-repos)))
+    nil)
+  (shark-bytes/update-known-projects)
   (defun shark-bytes/projectile-invalidate-cache (&rest arguments)
     "Invalidate projectile cache for current project."
     (projectile-invalidate-cache nil))
