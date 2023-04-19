@@ -4597,6 +4597,7 @@ Use [[https://editorconfig.org/][EditorConfig]] via [[https://github.com/editorc
 ***** [[https://github.com/minad/corfu][Autocompletion]]
 #+begin_src emacs-lisp
 (use-package corfu
+  :demand t
   :custom
   (corfu-cycle nil)
   (corfu-auto t)
