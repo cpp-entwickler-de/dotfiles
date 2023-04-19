@@ -6416,7 +6416,7 @@ Auto-highlight details
   :custom
   (magit-clone-set-remote.pushDefault t)
   (magit-repository-directories (append (mapcar (lambda (directory)
-                                                  (cons directory 3))
+                                                  (cons directory 5))
                                                 shark-bytes/project-directories)
                                         '(("~/.dotfiles/" . 1))))
   (magit-clone-default-directory (file-name-as-directory (or (car shark-bytes/project-directories)
