@@ -571,6 +571,7 @@ The saturation for non-saturated colors is 60.
 (defface shark-bytes-ui-subsection '((t :inherit shark-bytes-ui :height 1.1 :weight bold)) "" :group 'user-interface)
 (defface shark-bytes-ui-entry '((t :inherit shark-bytes-ui)) "" :group 'user-interface)
 (defface shark-bytes-ui-info '((t :inherit shark-bytes-ui :weight light)) "" :group 'user-interface)
+(defface shark-bytes-ui-insignificant `((t :inherit shark-bytes-ui :foreground ,shark-bytes-insignificant :weight light)) "" :group 'user-interface)
 #+end_src
 
 *** Load default theme
