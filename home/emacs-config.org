@@ -1347,7 +1347,9 @@ Helper function to figure out version control root directory
   (add-to-list 'marginalia-command-categories '(projectile-recentf . project-file))
   (add-to-list 'marginalia-command-categories '(projectile-switch-to-buffer . buffer))
   (add-to-list 'marginalia-command-categories '(projectile-switch-project . project-file))
-  :custom (truncate-string-ellipsis "…")
+  :custom
+  (truncate-string-ellipsis "…")
+  (marginalia-align 'right)
   :init (marginalia-mode))
 #+end_src
 
