@@ -8073,7 +8073,8 @@ Archive when done, remove flag if reset to todo.
   ;                               :emphasize t
                                  :formula %))
   (beginning-of-buffer)
-  (kill-line 2)
+  (let (kill-ring)
+    (kill-line 2))
   (while (re-search-forward org-link-bracket-re nil t)
     (replace-match (concat "\\2" (make-string (+ 6 (length (match-string 1))) ? ))))
   (beginning-of-buffer)
