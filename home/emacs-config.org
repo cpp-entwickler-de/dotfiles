@@ -2099,16 +2099,16 @@ https://github.com/purcell/exec-path-from-shell
 
 (setq eshell-prompt-function (lambda ()
                                (concat (shark-bytes/eshell-prompt-section 'default
-                                                                    'default
-                                                                    (shark-bytes/eshell-prompt-result)
-                                                                    (shark-bytes/eshell-prompt-user)
-                                                                    (shark-bytes/eshell-prompt-host)
-                                                                    (shark-bytes/eshell-prompt-docker)
-                                                                    (shark-bytes/modeline-version-control))
+                                                                          'default
+                                                                          (shark-bytes/eshell-prompt-result)
+                                                                          (shark-bytes/eshell-prompt-user)
+                                                                          (shark-bytes/eshell-prompt-host)
+                                                                          (shark-bytes/eshell-prompt-docker)
+                                                                          (shark-bytes/modeline-version-control))
                                        (shark-bytes/eshell-prompt-section 'default
-                                                                    'mode-line
-                                                                    (shark-bytes/eshell-prompt-path))
-                                       "\n▶ "))
+                                                                          'mode-line
+                                                                          (shark-bytes/eshell-prompt-path))
+                                                   "\n▶ "))
       eshell-highlight-prompt nil
       eshell-prompt-regexp (rx bol "▶ "))
 #+end_src
