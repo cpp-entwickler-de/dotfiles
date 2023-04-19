@@ -4866,7 +4866,8 @@ TODO
 ***** Show notification
 #+begin_src emacs-lisp
 (add-to-list 'compilation-finish-functions '(lambda (buffer message)
-                                              (notifications-notify :title "Compilation finished")))
+                                              (when (> (float-time (shark-bytes/get-run-time)) 30)
+                                                (notifications-notify :title "Compilation finished"))))
 #+end_src
 
 **** Documentation
@@ -8282,6 +8283,15 @@ Required to mark events in the calendar
                       (ssh-deploy-exclude-list . listp)))
     (put (car variable) 'safe-local-variable (cdr variable)))
   (advice-add 'ssh-deploy-rename-handler :around 'shark-bytes/post-rename))
+#+end_src
+
+** [[github:fejfighter/toolbox-tramp][Tramp support for toolbox containers]]
+#+begin_src emacs-lisp
+(use-package toolbox-tramp
+  :straight (toolbox-tramp
+             :type git
+             :host github
+             :repo "fejfighter/toolbox-tramp"))
 #+end_src
 
 ** [[https://kubernetes-el.github.io/kubernetes-el/][Kubernetes]]
