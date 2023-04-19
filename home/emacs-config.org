@@ -8187,7 +8187,9 @@ Do not use scientific form so quickly
       mark-holidays-in-calendar t
       calendar-mark-holidays-flag t
       calendar-view-holidays-initially-flag t
-      calendar-time-display-form '(24-hours ":" minutes (and time-zone (concat " (" time-zone ")"))))
+      calendar-time-display-form '(24-hours ":" minutes (and time-zone (concat " (" time-zone ")")))
+      calendar-intermonth-text '(propertize (format "%2d" (car (calendar-iso-from-absolute (calendar-absolute-from-gregorian (list month day year)))))
+                                            'face 'shark-bytes-ui-insignificant))
 #+end_src
 
 ** GNUPlot
