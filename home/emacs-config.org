@@ -8179,7 +8179,16 @@ Do not use scientific form so quickly
              :host github
              :repo  "rudolfochrist/german-holidays")
   :custom (calendar-holidays holiday-german-HH-holidays))
+#+end_src
 
+Required to mark events in the calendar
+#+begin_src emacs-lisp
+(let ((diary-file (expand-file-name "diary" user-emacs-directory)))
+  (unless (file-exists-p diary-file)
+      (write-region "%%(org-diary)" nil diary-file)))
+#+end_src
+
+#+begin_src emacs-lisp
 (setq calendar-date-style 'european
       calendar-week-start-day 1
       european-calendar-style t
@@ -8187,6 +8196,7 @@ Do not use scientific form so quickly
       mark-holidays-in-calendar t
       calendar-mark-holidays-flag t
       calendar-view-holidays-initially-flag t
+      calendar-mark-diary-entries-flag t
       calendar-time-display-form '(24-hours ":" minutes (and time-zone (concat " (" time-zone ")")))
       calendar-intermonth-text '(propertize (format "%2d" (car (calendar-iso-from-absolute (calendar-absolute-from-gregorian (list month day year)))))
                                             'face 'shark-bytes-ui-insignificant))
