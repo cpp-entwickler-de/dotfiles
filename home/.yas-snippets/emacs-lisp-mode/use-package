@@ -3,5 +3,7 @@
 #key: use
 # --
 (use-package ${1:name}
-${2:    :config
-    }$0)
+${2:    :bind ("${3:key}" . ${4:function-name})}
+${5:    :hook ${6:hook-name}}
+${7:    :custom (${8:})}
+${9:    :config (${10:})})
