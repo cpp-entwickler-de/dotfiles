@@ -403,6 +403,8 @@ alias mac2unix="recode mac..lat1"
 
 alias magit='e --eval "(magit-status \"$(pwd)\")" &> /dev/null'
 
+eval "$(direnv hook zsh)"
+
 function smart-enter()
 {
     if [[ -n $BUFFER ]]; then
