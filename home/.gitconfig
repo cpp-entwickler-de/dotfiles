@@ -286,6 +286,8 @@ latest-tag = describe --abbrev=0 --tags
 switch-branch = !git checkout $(git branch -a | sed -r 's/^[\\* \\(]*([^ ]+).*$/\\1/' | peco --select-1 --prompt 'Branch:')
 
 find-change = log -p -S
+find-branch = "!f() { git branch -a --contains $1; }; f"
+find-tag = "!f() { git describe --always --contains $1; }; f"
 unpushed = log --branches --not --remotes
 
 # remove deleted files from git
