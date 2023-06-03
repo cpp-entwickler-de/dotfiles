@@ -4888,6 +4888,7 @@ Show API info via [[https://devdocs.io][devdocs.io]]
 #+begin_src emacs-lisp
 (use-package devdocs-browser
   :after consult
+  :demand t
   :straight (devdocs-browser
              :type git
              :host github
