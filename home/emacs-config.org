@@ -8235,7 +8235,7 @@ Required to mark events in the calendar
   (shark-bytes/add-apidocs 'gnuplot-mode '("gnuplot")))
 #+end_src
 
-* ﯱ Remote
+* 🖧 Remote
 ** Serial Devices
 #+begin_src emacs-lisp
 (defcustom shark-bytes/serial-port nil "The last used serial port.")
