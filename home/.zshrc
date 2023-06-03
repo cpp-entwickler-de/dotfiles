@@ -286,7 +286,7 @@ function edit()
 {
     local FILES
     FILES="$*"
-    [[ ! -a $@ ]] && IFS=$'\n' FILES=($(fzf-tmux --query="$FILES" --multi))
+    [[ ! -e $@ ]] && IFS=$'\n' FILES=($(fzf-tmux --query="$FILES" --multi))
     [[ -n "$FILES" ]] && e "${FILES[@]}"
 }
 alias e=edit
