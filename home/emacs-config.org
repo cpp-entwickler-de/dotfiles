@@ -3539,6 +3539,13 @@ Set prefered clipboard formats
   :after visual-regexp)
 #+end_src
 
+*** [[github:Atreyagaurav/units-mode][Convert Units]]
+#+begin_src emacs-lisp
+(use-package units-mode
+  :ensure-system-package units
+  :hook text-mode)
+#+end_src
+
 *** Automatic insert
 **** Typographic characters
 #+begin_src emacs-lisp
