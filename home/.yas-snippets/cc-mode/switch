@@ -4,8 +4,9 @@
 # --
 switch (${1:expr})
 {
-case ${2:constexpr}:${3: \{}
-    $0
+case ${2:constexpr}:
+${3:\{}
+    `yas-selected-text`$0
     break;
 ${3:$(if (string-match "\{" yas-text) "\}\n" "")}default:
     break;

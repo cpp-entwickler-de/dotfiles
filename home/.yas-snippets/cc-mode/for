@@ -4,5 +4,5 @@
 # --
 for (${1:auto }${2:$$(yas-choose-value '("index" "count"))} = ${3:0u}; $2 <${4:=} ${5:maximum}; ++$2)
 {
-    $0
+    `yas-selected-text`$0
 }

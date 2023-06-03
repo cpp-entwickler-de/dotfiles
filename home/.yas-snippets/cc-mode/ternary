@@ -2,4 +2,4 @@
 # name: ternary
 # key: ?
 # --
-${1:condition} ? $0 : ;
+${1:condition} ? `yas-selected-text`$0 : ;

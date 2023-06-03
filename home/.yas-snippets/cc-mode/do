@@ -3,5 +3,5 @@
 # --
 do
 {
-    $0
+    `yas-selected-text`$0
 } while(${1:condition});

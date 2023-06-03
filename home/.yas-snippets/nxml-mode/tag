@@ -1,4 +1,4 @@
 #name : <tag>...</tag>
 #key: <
 # --
-<${1:tag}>$0</$1>
+<${1:tag}>`yas-selected-text`$0</$1>
