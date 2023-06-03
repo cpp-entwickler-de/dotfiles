@@ -56,14 +56,6 @@ TIMEFMT=$'\nreal   %*E\nuser   %*U\nsystem %*S\ncpu    %P'
 LAST_EXIT_CODE=0
 TIME_SINCE_LAST_COMMAND=0
 
-TMOUT=1800
-TRAPALRM()
-{
-    if [ $? -eq 0 -a ! -f /.dockerenv ]; then
-        exit
-    fi
-}
-
 # Notify user after long running command finishes
 autoload -U add-zsh-hook
 
