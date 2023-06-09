@@ -4397,6 +4397,11 @@ Handler to close buffer after quitting ccmake.
             (push '("macro" . ?) prettify-symbols-alist)))
 #+end_src
 
+***** [[https://github.com/Lindydancer/nocomments-mode][Hide/Show comments]]
+#+begin_src emacs-lisp
+(use-package nocomments-mode)
+#+end_src
+
 ***** [[https://github.com/tarsius/hl-todo][Highlight TODO/FIXME/…]]
 #+begin_src emacs-lisp
 (defface hl-todo-info '((t :inherit info))
