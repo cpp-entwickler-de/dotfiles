@@ -6150,6 +6150,7 @@ Set correct major mode
   :custom
   (plantuml-jar-path "/usr/share/java/plantuml.jar")
   (org-plantuml-jar-path "/usr/share/java/plantuml.jar")
+  (org-plantuml-exec-mode 'plantuml)
   :config
   (push '("*PLANTUML Preview*" :dedicated t :width 60 :position right :noselect :stick) popwin:special-display-config)
   (add-to-list 'org-src-lang-modes '("plantuml" . plantuml)))
