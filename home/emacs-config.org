@@ -2144,6 +2144,14 @@ https://github.com/purcell/exec-path-from-shell
                                       (kill-buffer (process-buffer proc)))))
 #+end_src
 
+*** [[https://github.com/iostapyshyn/eshell-vterm][VTerm Support]]
+#+begin_src emacs-lisp
+(use-package eshell-vterm
+  :ensure-system-package libtool
+  :after eshell
+  :config (eshell-vterm-mode))
+#+end_src
+
 *** Visual commands
 #+begin_src emacs-lisp
 (with-eval-after-load "em-term"
