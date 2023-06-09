@@ -2629,19 +2629,6 @@ https://github.com/purcell/exec-path-from-shell
 *** Show multiple sources for open command
 #+begin_src emacs-lisp
 
-(defvar shark-bytes/consult-source-projectile
-  `(:name     "Project files"
-    :narrow   ?p
-    :category file
-    :face     consult-file
-    :history  file-name-history
-    :state    ,#'consult--file-state
-    :enabled  ,(lambda () (ignore-errors (projectile-project-p)))
-    :items    ,(lambda () (mapcar (lambda (file)
-                                    (expand-file-name file (shark-bytes/project-dir)))
-                                  (projectile-project-files (shark-bytes/project-dir)))))
-  "Project file candidate source for `consult'.")
-
 (defvar shark-bytes/consult-source-directory
   `(:name     "Directory files"
     :narrow   ?d
@@ -2660,7 +2647,7 @@ https://github.com/purcell/exec-path-from-shell
                                       ;consult--source-buffer
                                       consult--source-recent-file
                                       shark-bytes/consult-source-directory
-                                      shark-bytes/consult-source-projectile)
+                                      consult-projectile--source-projectile-file)
                                     :require-match (confirm-nonexistent-file-or-buffer)
                                     :prompt "Open: "
                                     :history 'consult--buffer-history
@@ -3849,27 +3836,34 @@ Open binary files in hexl-mode
   (projectile-verbose nil)
   :config
   (projectile-global-mode)
-  (defun shark-bytes/switch-project (&optional arg)
-    "Load a project."
-    (interactive "P")
-    (if-let* ((projects (mapcar #'(lambda (project)
-                                    (cons (directory-file-name (or (car (-non-nil (mapcar (lambda (project-directory)
-                                                                                        (let ((full-project-base (expand-file-name project-directory))
-                                                                                              (full-current-project (expand-file-name project)))
-                                                                                          (when (string-match (concat "^" full-project-base ".*") full-current-project)
-                                                                                            (file-relative-name full-current-project full-project-base))))
-                                                                                      shark-bytes/project-directories))) "")) project))
-                                    (projectile-relevant-known-projects)))
-              (selected-project (cdr (assoc (completing-read "Project: " projects) projects))))
-        (projectile-switch-project-by-name selected-project arg)
-      (user-error "There are no known projects")))
-  (advice-add 'projectile-switch-project :override 'shark-bytes/switch-project)
   (with-eval-after-load "magit"
     (defun shark-bytes/load-after-clone (_repository directory _args)
       "Automatically load project after clone operation."
       (projectile-add-known-project directory)
       (projectile-switch-project-by-name directory))
     (advice-add 'magit-clone-internal :after #'shark-bytes/load-after-clone)))
+#+end_src
+
+**** [[github:emacsmirror/consult-projectile][Consult integration]]
+#+begin_src emacs-lisp
+(use-package consult-projectile
+  :after (consult projectile)
+  :custom (consult-projectile-sources '(consult-projectile--source-projectile-project))
+  :config
+  (setq consult-projectile--source-projectile-project (list :category 'consult-projectile-project
+                                                            :history 'consult-projectile--project-history
+                                                            :annotate (lambda (dir)
+                                                                        (when consult-projectile-display-info
+                                                                          (format "%s %s  [%s]"
+                                                                                  (if-let* ((customer (file-name-nondirectory (directory-file-name (file-name-directory (directory-file-name dir)))))
+                                                                                            (icon (org-agenda-get-category-icon customer)))
+                                                                                      (propertize "   " 'display icon)
+                                                                                    "   ")
+                                                                                  (projectile-project-name dir)
+                                                                                  (projectile-project-vcs dir))))
+                                                            :action (lambda (dir) (funcall consult-projectile-source-projectile-project-action dir))
+                                                            :items #'projectile-relevant-known-projects))
+  (advice-add 'projectile-switch-project :override 'consult-projectile))
 #+end_src
 
 *** Update project statistics
