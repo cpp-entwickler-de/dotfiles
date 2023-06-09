@@ -2113,6 +2113,12 @@ https://github.com/purcell/exec-path-from-shell
       eshell-prompt-regexp (rx bol "▶ "))
 #+end_src
 
+*** Imenu Support
+#+begin_src emacs-lisp
+(add-hook 'eshell-mode-hook #'(lambda ()
+                                (setq-local imenu-generic-expression `(("Prompt" ,(concat eshell-prompt-regexp "\\(.*\\)$") 1)))))
+#+end_src
+
 *** [[https://github.com/akreisher/eshell-syntax-highlighting/][Syntax Highlighting]]
 #+begin_src emacs-lisp
 (use-package eshell-syntax-highlighting
