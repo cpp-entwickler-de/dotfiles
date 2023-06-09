@@ -3835,6 +3835,7 @@ Open binary files in hexl-mode
   (projectile-sort-order 'recently-active)
   (projectile-verbose nil)
   :config
+  (projectile--cleanup-known-projects)
   (projectile-global-mode)
   (with-eval-after-load "magit"
     (defun shark-bytes/load-after-clone (_repository directory _args)
