@@ -2365,6 +2365,11 @@ https://github.com/purcell/exec-path-from-shell
   (or (when (region-active-p)
         (buffer-substring-no-properties (region-beginning) (region-end)))
       (thing-at-point 'symbol t)))
+
+(defun shark-bytes/get-wim (prompt)
+  "Get string from region, symbol-at-point or manual input."
+  (or (shark-bytes/region-or-symbol)
+      (read-string prompt)))
 #+end_src
 
 *** [[https://github.com/bbatsov/crux][A Collection of Ridiculously Useful eXtensions]]
