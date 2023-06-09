@@ -6374,47 +6374,6 @@ Auto-highlight details
 (setq vc-follow-symlinks t)
 #+end_src
 
-**** [[https://github.com/emacsorphanage/git-gutter-fringe][Show uncommitted lines in the fringe]]
-#+begin_src emacs-lisp
-(use-package git-gutter
-  :custom
-  (git-gutter:hide-gutter t)
-  (git-gutter:update-interval 0.2)
-  (git-gutter:visual-line t)
-  :config (global-git-gutter-mode))
-
-(use-package git-gutter-fringe
-  :after git-gutter
-  :config
-  (fringe-helper-define 'git-gutter-fr:added nil
-    "...XX..."
-    "...XX..."
-    "...XX..."
-    "XXXXXXXX"
-    "XXXXXXXX"
-    "...XX..."
-    "...XX..."
-    "...XX...")
-  (fringe-helper-define 'git-gutter-fr:deleted nil
-    "........"
-    "........"
-    "........"
-    "XXXXXXXX"
-    "XXXXXXXX"
-    "........"
-    "........"
-    "........")
-  (fringe-helper-define 'git-gutter-fr:modified nil
-    ".XX....X"
-    "XXXXX.X."
-    "XXXX.X.."
-    ".XX.X..."
-    "...X...."
-    "..X.XXXX"
-    ".X..XXXX"
-    "X......."))
-#+end_src
-
 **** Colorize commit age
 #+begin_src emacs-lisp
 (setq shark-bytes/commit-age-colors `((7 . ,shark-bytes-burning)
