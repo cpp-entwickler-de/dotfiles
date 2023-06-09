@@ -8276,6 +8276,39 @@ Required to mark events in the calendar
   (tramp-default-user "root")
   (tramp-histfile-override nil))
 
+(defun shark-bytes/ssh-hosts (&optional file)
+  "Collect SSH hosts from FILE."
+  (let ((hosts '(("SUDO" . "/sudo:root@localhost:"))))
+    (dolist (line (split-string (with-temp-buffer
+                                  (insert-file-contents (or file
+                                                            "~/.ssh/config"))
+                                  (buffer-string))
+                                "\n"))
+      (when (string-match "Include +\\(.+\\)$" line)
+        (let* ((include-argument (match-string 1 line))
+               (include-file (if (file-name-absolute-p include-argument)
+                                 include-argument
+                               (concat (file-name-as-directory "~/.ssh") include-file))))
+          (when (file-exists-p include-file)
+            (setq hosts (append hosts (shark-bytes/ssh-hosts include-file))))))
+
+      (when (string-match "[H\\|h]ost +\\(.+?\\) *$" line)
+        (dolist (name (split-string (match-string 1 line)))
+          (push (cons name (format "/ssh:%s:/" name)) hosts))))
+    hosts))
+
+(defun shark-bytes/remote-shell (path)
+    "Tramp open shell at PATH."
+    (interactive (list (let ((hosts (shark-bytes/ssh-hosts)))
+                         (cdr (assoc (completing-read "Host: " hosts) hosts)))))
+    (let ((default-directory path))
+      (eshell)))
+
+(defun shark-bytes/remote-dired (path)
+    "Open shell at PATH."
+    (interactive (list (let ((hosts (shark-bytes/ssh-hosts)))
+                         (cdr (assoc (completing-read "Host: " hosts) hosts)))))
+    (dired path))
 #+end_src
 
 ** [[https://github.com/cjohansson/emacs-ssh-deploy][Automatic Deployment]]
