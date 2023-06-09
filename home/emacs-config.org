@@ -6199,12 +6199,6 @@ Show current XML path as current function
   (add-to-list 'which-func-functions 'shark-bytes/xml-path))
 #+end_src
 
-**** Navigation
-***** Jump to element
-#+begin_src emacs-lisp
-(use-package x-path-walker)
-#+end_src
-
 **** Editing
 ***** Always add XML declaration
 #+begin_src emacs-lisp
