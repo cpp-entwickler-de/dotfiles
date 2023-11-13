@@ -322,6 +322,7 @@ Show below other windows
 *** Hide mouse pointer
 #+begin_src emacs-lisp
 (setq make-pointer-invisible t)
+(setq mouse-highlight nil)
 #+end_src
 
 *** Do not copy highlighted text to the kill ring
