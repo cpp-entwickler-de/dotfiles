@@ -985,19 +985,14 @@ Helper function to figure out version control root directory
 
 *** Display on top
 #+begin_src emacs-lisp
-(defface shark-bytes-mode-line-emphasis '((t :inherit mode-line :weight bold)) "")
-(defface shark-bytes-mode-line-de-emphasis '((t :inherit mode-line :height 0.7 :weight extra-light)) "")
-
-(defvar shark-bytes/selected-window nil)
-(add-function :before pre-redisplay-function (lambda (_wins) (setq shark-bytes/selected-window (selected-window))))
+(defface shark-bytes-mode-line-base '((t :inherit shark-bytes-ui)) "")
+(defface shark-bytes-mode-line-emphasis '((t :inherit shark-bytes-mode-line-base :weight bold)) "")
+(defface shark-bytes-mode-line-de-emphasis '((t :inherit shark-bytes-mode-line-base :height 0.7 :weight extra-light)) "")
 
 (setq-default mode-line-format nil)
 (setq-default header-line-format
               '((:eval
-                 (let* ((mode-line-face (if (eq (frame-selected-window) shark-bytes/selected-window)
-                                       'mode-line
-                                     'mode-line-inactive))
-                        (left-side (mapconcat #'identity
+                 (let* ((left-side (mapconcat #'identity
                                               (-non-nil (list (shark-bytes/modeline-mode-icon)
                                                               (shark-bytes/truncate (shark-bytes/modeline-project-id) 20)
                                                               (propertize (or (when (fboundp 'shark-bytes/modeline-version-control)
@@ -1030,6 +1025,9 @@ Helper function to figure out version control root directory
                                                           (shark-bytes/modeline-check-status)
                                                           ))
                                           "  ")))
+                    (if (mode-line-window-selected-p)
+                        (face-remap-set-base 'header-line 'mode-line)
+                      (face-remap-set-base 'header-line 'mode-line-inactive))
                     (concat (propertize "  " 'display `(raise +0.4))
                                        left-side
                                        (propertize " " 'display `(space :align-to (- right ,(* 1.1 (length right-side)))))
