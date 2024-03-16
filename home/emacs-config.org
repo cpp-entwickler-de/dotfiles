@@ -6447,11 +6447,17 @@ If the region is active, act on all lines touched by the region."
     (?s . "squash")
     (?t . "reset")
     (?x . "exec")))
-  (transient-append-suffix 'magit-dispatch "X" '("x" "Clean" magit-clean)))
+  (transient-append-suffix 'magit-dispatch "X" '("x" "Clean" magit-clean))
+  (defun shark-bytes/magit-insert-user-info-header ()
+    "Insert git user information."
+    (insert (format "%-10s%s <%s>\n"
+                    "User:"
+                    (magit-git-string "config" "--get" "user.name")
+                    (magit-git-string "config" "--get" "user.email"))))
+  (add-hook 'magit-status-headers-hook #'shark-bytes/magit-insert-user-info-header))
 
 (use-package magit-popup)
 #+end_src
-
 
 ***** Full screen magit-status
 #+begin_src emacs-lisp
