@@ -2557,6 +2557,7 @@ https://github.com/purcell/exec-path-from-shell
   (super-save-auto-save-when-idle t)
   (super-save-idle-duration 2)
   (super-save-remote-files t)
+  (super-save-silent t)
   :config
   (add-to-list 'super-save-triggers 'compile)
   (super-save-mode +1))
