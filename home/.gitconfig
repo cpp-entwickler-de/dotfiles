@@ -65,6 +65,9 @@ side-by-side = true
 
 
 [status]
+# Show branch
+branch = true
+
 # Show paths from project root
 relativePaths = false
 
@@ -73,6 +76,9 @@ short = true
 
 # Show all untracked files
 showUntrackedFiles = all
+
+# Show stash
+showStash = true
 
 # Show submodule info
 submoduleSummary = true
