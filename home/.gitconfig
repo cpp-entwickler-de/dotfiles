@@ -180,6 +180,9 @@ colorMoved = default
 # Show log of submodules
 submodule = log
 
+# Merge hunks within 10 lines
+interHunkContext = 10
+
 [diff "lisp"]
 # Use function name in diff
 xfuncname = "^(\\(.*)$"
