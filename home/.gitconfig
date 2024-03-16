@@ -219,6 +219,9 @@ driver = true
 # Always write versions to worktree
 writeToTemp = false
 
+# Automatically select GUI or terminal merge tool
+guiDefault = auto
+
 [mergetool "meld"]
 cmd = meld --auto-merge "$LOCAL" "$BASE" "$REMOTE" --output "$MERGED" --newtab --diff "$BASE" "$LOCAL" --newtab --diff "$BASE" "$REMOTE"
 
