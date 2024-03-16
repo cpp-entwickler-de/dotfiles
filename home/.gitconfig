@@ -249,6 +249,9 @@ prune = true
 # Remove deleted remote tags
 prunetags = true
 
+# Cache the commit graph for faster log output
+writeCommitGraph = true
+
 
 [push]
 # Push without target refspec
