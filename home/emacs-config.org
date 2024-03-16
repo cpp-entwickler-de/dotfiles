@@ -4562,16 +4562,15 @@ Use [[https://editorconfig.org/][EditorConfig]] via [[https://github.com/editorc
 (defvar-local shark-bytes/beginning-of-function 'beginning-of-defun "The function to call to jump to the beginning of the current function.")
 (defvar-local shark-bytes/end-of-function 'end-of-defun "The function to call to jump to the end of the current function.")
 
-(use-package iedit)
-
-(defun shark-bytes/iedit-scoped (orig-fn)
-  "Call `iedit-mode' with function-local scope, or global scope if called with a universal prefix."
-  (interactive)
-  (pcase-exhaustive current-prefix-arg
-    ('nil (funcall orig-fn '(0)))
-    ('(4) (funcall orig-fn))))
-
-;(advice-add #'iedit-mode :around #'shark-bytes/iedit-scoped)
+(use-package iedit
+  :bind (:map iedit-mode-keymap ("C-g" . iedit-mode))
+  :config
+  (advice-add #'iedit--get-scope ; use function scope by default
+              :filter-args
+              (defun shark-bytes/iedit-defun-by-default (argument)
+                (cond ((eq (car argument) nil) '(0))
+                      ((eq (car argument) 0) '(nil))
+                      (t argument)))))
 #+end_src
 
 ***** Change numbers
