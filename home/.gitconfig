@@ -36,6 +36,7 @@ untrackedCache = true
 
 
 [init]
+# use default templates
 templateDir  = ~/.git-templates
 
 
