@@ -246,6 +246,9 @@ recurseSubmodules = on-demand
 # Remove deleted remote branches
 prune = true
 
+# Remove deleted remote tags
+prunetags = true
+
 
 [push]
 # Push without target refspec
