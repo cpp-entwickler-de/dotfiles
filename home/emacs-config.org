@@ -291,11 +291,6 @@ Show below other windows
 (setq ring-bell-function 'ignore)
 #+end_src
 
-** Disable messages
-#+begin_src emacs-lisp
-(setq inhibit-message t)
-#+end_src
-
 ** Keep more lines in message buffer
 #+begin_src emacs-lisp
 (setq message-log-max 16384)
