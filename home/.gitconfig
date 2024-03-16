@@ -127,11 +127,19 @@ suffix = "-qa"
 suffix = ""
 
 [branch]
+# Sort branches by committed date
+sort = -committerdate
+
 # Setup tracking
 autosetupmerge = true
 
 # Always rebase when pulling
 autosetuprebase = always
+
+
+[tag]
+# Sort tags by date
+sort = -taggerdate
 
 
 [rebase]
