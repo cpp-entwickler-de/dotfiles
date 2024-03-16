@@ -216,6 +216,8 @@ defaultToUpstream = true
 # Use zdiff3 style
 conflictStyle = zdiff3
 
+# Allow merge on dirty working copy
+autoStash = true
 
 [merge "keep-local"]
 # Pseudo-driver to always keep local changes on merge
