@@ -205,8 +205,8 @@ tool = meld
 # Merge upstream branches when called without argument
 defaultToUpstream = true
 
-# Use diff3 style
-conflictStyle = diff3
+# Use zdiff3 style
+conflictStyle = zdiff3
 
 
 [merge "keep-local"]
