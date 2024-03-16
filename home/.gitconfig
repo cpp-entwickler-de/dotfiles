@@ -47,6 +47,7 @@ templateDir  = ~/.git-templates
 # Detect color availability
 ui = auto
 
+
 [pager]
 diff = delta
 log = delta
@@ -358,6 +359,7 @@ clean = git-lfs clean -- %f
 [include]
 # Read user-specific data from separate file
 path = ~/.gitconfig.user
+
 
 [include]
 # Read user-specific data from separate file
