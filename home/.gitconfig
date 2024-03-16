@@ -118,12 +118,13 @@ browser = firefox
 
 [versionsort]
 # Proper sorting of version suffixes
-prereleaseSuffix = -alpha
-prereleaseSuffix = -beta
-prereleaseSuffix = -pre
-prereleaseSuffix = -rc
-prereleaseSuffix = -demo
-
+suffix = "-alpha"
+suffix = "-beta"
+suffix = -"pre"
+suffix = "-rc"
+suffix = "-demo"
+suffix = "-qa"
+suffix = ""
 
 [branch]
 # Setup tracking
