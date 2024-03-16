@@ -278,9 +278,11 @@ recurse = true
 fetch = +refs/pull/*/head:refs/pull/origin/*
 
 
-[url "https://github.com/"]
-insteadOf = github:
+[url "git@github.com:"]
+insteadOf = "https://github.com/"
 
+[url "git@github.com:"]
+insteadOf = gh:
 
 [url "https://github.com/cpp-entwickler-de/"]
 insteadOf = cpped:
