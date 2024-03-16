@@ -4428,19 +4428,6 @@ Handler to close buffer after quitting ccmake.
   :config (global-hl-todo-mode 1))
 #+end_src
 
-***** Find ToDos in file or project
-#+begin_src emacs-lisp
-(with-eval-after-load "consult"
-  (defun shark-bytes/find-todos-in-file ()
-    "Show all ToDo items in thqe file and allow jumping to specific item."
-    (interactive)
-    (let ((imenu-generic-expression (mapcar (lambda (element)
-                                              (let ((type (car element)))
-                                                (list type (rx (literal type) (one-or-more space) (group (one-or-more any)) eol) 1)))
-                                            hl-todo-keyword-faces)))
-      (call-interactively 'consult-imenu))))
-#+end_src
-
 ***** Show current function in mode-line
 #+begin_src emacs-lisp
 (use-package which-func
@@ -4523,6 +4510,11 @@ Set bug-reference-url-format to open in browser.
 #+begin_src emacs-lisp
 (add-hook 'text-mode-hook 'bug-reference-mode)
 (add-hook 'prog-mode-hook 'bug-reference-prog-mode)
+#+end_src
+
+***** [[github:liuyinz/consult-todo][List TODOs]]
+#+begin_src emacs-lisp
+(use-package consult-todo)
 #+end_src
 
 **** Editing
