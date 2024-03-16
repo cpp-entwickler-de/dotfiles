@@ -215,6 +215,10 @@ conflictStyle = zdiff3
 driver = true
 
 
+[mergetool]
+# Always write versions to worktree
+writeToTemp = false
+
 [mergetool "meld"]
 cmd = meld --auto-merge "$LOCAL" "$BASE" "$REMOTE" --output "$MERGED" --newtab --diff "$BASE" "$LOCAL" --newtab --diff "$BASE" "$REMOTE"
 
