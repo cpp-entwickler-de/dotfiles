@@ -143,6 +143,11 @@ autosetuprebase = always
 sort = -taggerdate
 
 
+[commit]
+# Show commit diff when committing
+verbose = true
+
+
 [rebase]
 # Apply fixups automatically
 autosquash = true
