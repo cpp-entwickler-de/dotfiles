@@ -3658,11 +3658,7 @@ Use hippie-expand instead of dabbrev
 
 *** Thesaurus
 #+begin_src emacs-lisp
-(use-package synosaurus
-  :ensure-system-package wordnet
-  :hook (after-init . synosaurus-mode)
-  :custom (synosaurus-choose-method 'default)
-  :config (setq-default synosaurus-backend 'synosaurus-backend-wordnet))
+(use-package powerthesaurus)
 #+end_src
 
 *** [[https://github.com/magnars/change-inner.el][Change inner]]
