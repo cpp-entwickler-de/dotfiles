@@ -45,7 +45,7 @@
  '(diff-indicator-changed ((t (:inherit diff-indicator-added))))
  '(diff-indicator-removed ((t (:inherit diff-indicator-added))))
  '(dired-broken-symlink ((t (:inherit error))))
- `(error ((t (:foreground ,shark-bytes-error :distant-foreground ,shark-bytes-error-saturated :weight bold))))
+ `(error ((t (:foreground ,shark-bytes-error :distant-foreground ,shark-bytes-error :weight bold))))
  '(escape-glyph ((t (:foreground "#8D6E63"))))
  '(fixed-pitch ((t (:family "Monospace"))))
  `(flycheck-error ((t (:inherit error :background ,shark-bytes-shadow :inverse-video t :height 1.0))))
