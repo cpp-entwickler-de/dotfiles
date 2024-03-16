@@ -202,6 +202,11 @@ xfuncname = "^\\[([a-zA-Z0-9]+)\\]$"
 prompt = false
 
 
+[blame]
+# optional file with commits to ignore when blaming
+ignoreRevsFile = .git-blame-ignore-revs
+
+
 [merge]
 tool = meld
 
