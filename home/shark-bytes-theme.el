@@ -24,8 +24,6 @@
  '(cov-coverage-run-face ((t (:inherit info))))
  `(shark-bytes-minibuffer-active ((t (:inherit shark-bytes-ui :background ,shark-bytes-menu-window-background))))
  '(shark-bytes-minibuffer-header ((t (:inherit minibuffer-active :weight bold :height 1.3))))
- '(shark-bytes-mode-line-de-emphasis ((t (:inherit mode-line :height 0.7 :weight extra-light :slant italic))))
- '(shark-bytes-mode-line-emphasis ((t (:inherit mode-line :weight bold))))
  '(shark-bytes-sidebar ((t (:inherit shark-bytes-ui))))
  '(shark-bytes-ui ((t (:family "Noto Sans Medium"))))
  `(cursor ((t (:background ,shark-bytes-text :extend t))))
