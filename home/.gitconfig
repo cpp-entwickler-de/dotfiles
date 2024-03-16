@@ -36,6 +36,9 @@ untrackedCache = true
 
 
 [init]
+# use "main" instead of "master" when creating a new repo
+defaultBranch = main
+
 # use default templates
 templateDir  = ~/.git-templates
 
