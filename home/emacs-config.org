@@ -2105,7 +2105,8 @@ https://github.com/purcell/exec-path-from-shell
 *** Imenu Support
 #+begin_src emacs-lisp
 (add-hook 'eshell-mode-hook #'(lambda ()
-                                (setq-local imenu-generic-expression `(("Prompt" ,(concat eshell-prompt-regexp "\\(.*\\)$") 1)))))
+                                (setq-local imenu-generic-expression `(("Prompt" ,(concat eshell-prompt-regexp "\\(.*\\)$") 1)))
+                                (setq-local outline-regexp eshell-prompt-regexp)))
 #+end_src
 
 *** [[https://github.com/akreisher/eshell-syntax-highlighting/][Syntax Highlighting]]
