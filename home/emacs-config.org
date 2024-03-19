@@ -1169,7 +1169,7 @@ Helper function to figure out version control root directory
 (add-hook 'minibuffer-exit-hook 'shark-bytes/restore-sidebar-after-minibuffer)
 #+end_src
 
-** Transient
+** [[https://github.com/positron-solutions/transient-showcase][Transient]]
 #+begin_src emacs-lisp
 (use-package transient
   :custom
