@@ -3597,6 +3597,8 @@ Use hippie-expand instead of dabbrev
 #+end_src
 
 **** [[https://github.com/joaotavora/yasnippet][Templates]]
+[[https://joaotavora.github.io/yasnippet/snippet-development.html][Snippet Development Documentation]]
+
 #+begin_src emacs-lisp
 (use-package yasnippet
   :bind (:map yas-keymap (("ESC" . yas-abort-snippet)
