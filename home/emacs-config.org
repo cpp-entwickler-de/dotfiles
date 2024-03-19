@@ -190,6 +190,15 @@ Do not ask for confirmation for new shell buffers
 (setq read-process-output-max (* 16 1024 1024))
 #+end_src
 
+** [[https://github.com/Malabarba/elisp-bug-hunter][Config Debugger]]
+#+begin_src emacs-lisp
+(use-package bug-hunter
+  :config
+  (defun shark-bytes/debug-init-file ()
+    (interactive)
+    (bug-hunter-file (concat (file-name-sans-extension shark-bytes/config-file) ".el"))))
+#+end_src
+
 ** [[https://github.com/jschaf/esup][Startup Profiler]]
 #+begin_src emacs-lisp
 (use-package esup
