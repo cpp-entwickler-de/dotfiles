@@ -2649,12 +2649,24 @@ https://github.com/purcell/exec-path-from-shell
                               (directory-files default-directory))))
   "Directory file candidate source for `consult'.")
 
+(defvar shark-bytes/consult-source-recently-modified
+  `(:name "Recently Modified File"
+    :narrow ?m
+    :category file
+    :face consult-file
+    :history file-name-history
+    :state ,#'consult--file-state
+    :enabled ,#'magit-inside-worktree-p
+    :items ,(lambda ()
+              (-non-nil (remove-duplicates (append (split-string (vc-git--run-command-string nil "ls-files" "-z" "-m" "-o" "--exclude-standard") "\0" t)
+                                                   (split-string (shell-command-to-string "find -type f -mtime -7 ! -path './.git/*' -printf '%P\n'") "\n" t)))))
+  "Recently modified file candidate source for `consult'."))
+
 (defun shark-bytes/consult-find-file ()
   ""
   (interactive)
-  (when-let (buffer (consult--multi '(
-                                      ;consult--source-buffer
-                                      consult--source-recent-file
+  (when-let (buffer (consult--multi '(consult--source-recent-file
+                                      shark-bytes/consult-source-recently-modified
                                       shark-bytes/consult-source-directory
                                       consult-projectile--source-projectile-file)
                                     :require-match (confirm-nonexistent-file-or-buffer)
