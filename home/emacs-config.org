@@ -64,96 +64,96 @@ Do not ask for confirmation for new shell buffers
   (defun shark-bytes/run-command-sync-logged (wrapped-function &rest arguments)
     "Run a command synchronously and return the output."
     (shell-command-to-string (car arguments)))
-    (advice-add 'async-shell-command :around #'shark-bytes/run-command-sync-logged)
-    (add-hook 'after-init-hook '(lambda ()
-                                  (advice-remove 'async-shell-command #'shark-bytes/run-command-sync-logged)))
-    (defun shark-bytes/install-system-package (package &rest arguments)
-      "Wrapper around system-packages-install to install only missing packages."
-      (let ((system-packages-packagemanager (or (plist-get arguments :package-manager)
-                                                system-packages-packagemanager)))
-        (if (not (or (executable-find (or (plist-get arguments :executable)
-                                          package))
-                     (string-match (concat ".*" package ".*") (system-packages--run-command 'list-installed-packages nil package))))
-            (progn
-              (message (concat "Installing system package '" package "'."))
-              (system-packages-install package))
-          (message (concat "System package '" package "' is already installed. Skipping."))))
-      nil)
-    (add-to-list 'system-packages-supported-package-managers
-                 '(dnf .
-                       ((default-sudo . t)
-                        (install . "dnf install --assumeyes")
-                        (search . "dnf search")
-                        (uninstall . "dnf remove --assumeyes")
-                        (update . ("dnf upgrade --assumeyes"))
-                        (clean-cache . "dnf clean all --assumeyes")
-                        (log . "dnf history")
-                        (get-info . "rpm -qi")
-                        (get-info-remote . "dnf info")
-                        (list-files-provided-by . "rpm -ql")
-                        (verify-all-packages . "rpm -Va")
-                        (verify-all-dependencies . "dnf repoquery --requires")
-                        (remove-orphaned . "dnf autoremove")
-                        (list-installed-packages . "dnf list --installed")
-                        (list-installed-packages-all . nil)
-                        (list-dependencies-of . "rpm -qR"))))
-    (add-to-list 'system-packages-supported-package-managers
-                 '(pip .
-                       ((default-sudo . nil)
-                        (install . "pip3 install")
-                        (search . "pip3 search")
-                        (uninstall . "pip3 uninstall")
-                        (update . nil)
-                        (clean-cache . nil)
-                        (log . nil)
-                        (get-info . nil)
-                        (get-info-remote . nil)
-                        (list-files-provided-by . nil)
-                        (verify-all-packages . nil)
-                        (verify-all-dependencies . nil)
-                        (remove-orphaned . nil)
-                        (list-installed-packages . "pip3 list")
-                        (list-installed-packages-all . nil)
-                        (list-dependencies-of . nil)))
-                 t)
-    (add-to-list 'system-packages-supported-package-managers
-                 '(npm .
-                       ((default-sudo . t)
-                        (install . "npm --global install")
-                        (search . "npm --global search")
-                        (uninstall . "npm --global uninstall")
-                        (update . "npm --global update")
-                        (clean-cache . "npm --global cache clean")
-                        (log . nil)
-                        (get-info . nil)
-                        (get-info-remote . nil)
-                        (list-files-provided-by . nil)
-                        (verify-all-packages . nil)
-                        (verify-all-dependencies . nil)
-                        (remove-orphaned . nil)
-                        (list-installed-packages . "npm --global list")
-                        (list-installed-packages-all . nil)
-                        (list-dependencies-of . nil)))
-                 t)
-    (add-to-list 'system-packages-supported-package-managers
-                 '(gem .
-                       ((default-sudo . nil)
-                        (install . "gem install")
-                        (search . "gem query")
-                        (uninstall . "gem uninstall")
-                        (update . "gem update")
-                        (clean-cache . "npm cache clean")
-                        (log . nil)
-                        (get-info . "gem query")
-                        (get-info-remote . "gem search")
-                        (system-packages-list-files-provided-by . nil)
-                        (verify-all-packages . nil)
-                        (verify-all-dependencies . nil)
-                        (remove-orphaned . nil)
-                        (list-installed-packages . "gem list")
-                        (list-installed-packages-all . nil)
-                        (list-dependencies-of . "gem dependency")))
-                 t))
+  (advice-add 'async-shell-command :around #'shark-bytes/run-command-sync-logged)
+  (add-hook 'after-init-hook #'(lambda ()
+                                 (advice-remove 'async-shell-command #'shark-bytes/run-command-sync-logged)))
+  (defun shark-bytes/install-system-package (package &rest arguments)
+    "Wrapper around system-packages-install to install only missing packages."
+    (let ((system-packages-packagemanager (or (plist-get arguments :package-manager)
+                                              system-packages-packagemanager)))
+      (if (not (or (executable-find (or (plist-get arguments :executable)
+                                        package))
+                   (string-match (concat ".*" package ".*") (system-packages--run-command 'list-installed-packages nil package))))
+          (progn
+            (message (concat "Installing system package '" package "'."))
+            (system-packages-install package))
+        (message (concat "System package '" package "' is already installed. Skipping."))))
+    nil)
+  (add-to-list 'system-packages-supported-package-managers
+               '(dnf .
+                     ((default-sudo . t)
+                      (install . "dnf install --assumeyes")
+                      (search . "dnf search")
+                      (uninstall . "dnf remove --assumeyes")
+                      (update . ("dnf upgrade --assumeyes"))
+                      (clean-cache . "dnf clean all --assumeyes")
+                      (log . "dnf history")
+                      (get-info . "rpm -qi")
+                      (get-info-remote . "dnf info")
+                      (list-files-provided-by . "rpm -ql")
+                      (verify-all-packages . "rpm -Va")
+                      (verify-all-dependencies . "dnf repoquery --requires")
+                      (remove-orphaned . "dnf autoremove")
+                      (list-installed-packages . "dnf list --installed")
+                      (list-installed-packages-all . nil)
+                      (list-dependencies-of . "rpm -qR"))))
+  (add-to-list 'system-packages-supported-package-managers
+               '(pip .
+                     ((default-sudo . nil)
+                      (install . "pip3 install")
+                      (search . "pip3 search")
+                      (uninstall . "pip3 uninstall")
+                      (update . nil)
+                      (clean-cache . nil)
+                      (log . nil)
+                      (get-info . nil)
+                      (get-info-remote . nil)
+                      (list-files-provided-by . nil)
+                      (verify-all-packages . nil)
+                      (verify-all-dependencies . nil)
+                      (remove-orphaned . nil)
+                      (list-installed-packages . "pip3 list")
+                      (list-installed-packages-all . nil)
+                      (list-dependencies-of . nil)))
+               t)
+  (add-to-list 'system-packages-supported-package-managers
+               '(npm .
+                     ((default-sudo . t)
+                      (install . "npm --global install")
+                      (search . "npm --global search")
+                      (uninstall . "npm --global uninstall")
+                      (update . "npm --global update")
+                      (clean-cache . "npm --global cache clean")
+                      (log . nil)
+                      (get-info . nil)
+                      (get-info-remote . nil)
+                      (list-files-provided-by . nil)
+                      (verify-all-packages . nil)
+                      (verify-all-dependencies . nil)
+                      (remove-orphaned . nil)
+                      (list-installed-packages . "npm --global list")
+                      (list-installed-packages-all . nil)
+                      (list-dependencies-of . nil)))
+               t)
+  (add-to-list 'system-packages-supported-package-managers
+               '(gem .
+                     ((default-sudo . nil)
+                      (install . "gem install")
+                      (search . "gem query")
+                      (uninstall . "gem uninstall")
+                      (update . "gem update")
+                      (clean-cache . "npm cache clean")
+                      (log . nil)
+                      (get-info . "gem query")
+                      (get-info-remote . "gem search")
+                      (system-packages-list-files-provided-by . nil)
+                      (verify-all-packages . nil)
+                      (verify-all-dependencies . nil)
+                      (remove-orphaned . nil)
+                      (list-installed-packages . "gem list")
+                      (list-installed-packages-all . nil)
+                      (list-dependencies-of . "gem dependency")))
+               t))
 #+end_src
 
 *  Internals
@@ -596,33 +596,31 @@ The saturation for non-saturated colors is 60.
                              (agenda    . "")
                              (projects . "")
                              (registers . "")))
-   (dashboard-set-heading-icons t)
-   (dashboard-set-init-info nil)
-   (dashboard-set-footer nil)
-   (dashboard-footer-icon "")
-   (dashboard-footer-messages (let ((file (expand-file-name "~/.dashboard-messages")))
-                                (if (file-exists-p file)
-                                  (with-temp-buffer
-                                    (insert-file-contents file)
-                                    (split-string (buffer-string) "\n" t))
-                                  '(""))))
-   :config
-   (setq shark-bytes/dashboard-footer (dashboard-random-footer))
-   (advice-add 'dashboard-insert-banner :after #'(lambda ()
-                                                   (insert "\n")
-                                                   (dashboard-center-line shark-bytes/dashboard-footer)
-                                                   (insert " ")
-                                                   (insert (propertize shark-bytes/dashboard-footer 'face 'dashboard-footer))
-                                                   (insert "\n")))
-   (defun shark-bytes/dashboard-insert-heading (heading &optional shortcut)
-     "Insert a widget HEADING in dashboard buffer, adding SHORTCUT if provided."
-     (when (and (display-graphic-p)
-                dashboard-set-heading-icons)
-       (insert (cond
-                ((string-equal heading "Recent Files:")
-                 (cdr (assoc 'recents dashboard-heading-icons)))
-                ((string-equal heading "Bookmarks:")
-                 (cdr (assoc 'bookmarks dashboard-heading-icons)))
+  (dashboard-set-heading-icons t)
+  (dashboard-set-init-info nil)
+  (dashboard-set-footer nil)
+  (dashboard-footer-icon "")
+  (dashboard-footer-messages (let ((file (expand-file-name "~/.dashboard-messages")))
+                               (if (file-exists-p file)
+                                   (with-temp-buffer
+                                     (insert-file-contents file)
+                                     (split-string (buffer-string) "\n" t))
+                                 '(""))))
+  :config
+  (advice-add 'dashboard-insert-banner :after #'(lambda ()
+                                                  (let ((shark-bytes/dashboard-footer (dashboard-random-footer)))
+                                                    (insert "\n")
+                                                    (insert (propertize shark-bytes/dashboard-footer 'face 'dashboard-footer))
+                                                    (insert "\n"))))
+  (defun shark-bytes/dashboard-insert-heading (heading &optional shortcut)
+    "Insert a widget HEADING in dashboard buffer, adding SHORTCUT if provided."
+    (when (and (display-graphic-p)
+               dashboard-set-heading-icons)
+      (insert (condition-case
+                  ((string-equal heading "Recent Files:")
+                   (cdr (assoc 'recents dashboard-heading-icons)))
+                  ((string-equal heading "Bookmarks:")
+                   (cdr (assoc 'bookmarks dashboard-heading-icons)))
                 ((or (string-equal heading "Agenda for today:")
                      (string-equal heading "Agenda for the coming week:"))
                  (cdr (assoc 'agenda dashboard-heading-icons)))
@@ -631,16 +629,15 @@ The saturation for non-saturated colors is 60.
                 ((string-equal heading "Projects:")
                  (cdr (assoc 'projects dashboard-heading-icons)))
                 (t " ")))
-       (insert " "))
-     (insert (propertize heading 'face 'dashboard-heading))
-     (when shortcut (insert (format " (%s)" shortcut))))
-   (advice-add 'dashboard-insert-heading :override 'shark-bytes/dashboard-insert-heading)
-   (push (regexp-quote dashboard-buffer-name) consult-buffer-filter)
-   (defun shark-bytes/show-dashboard ()
-     "Show the dashboard."
-     (interactive)
-     (switch-to-buffer "*dashboard*"))
-   (dashboard-setup-startup-hook))
+      (insert " "))
+    (insert (propertize heading 'face 'dashboard-heading))
+    (when shortcut (insert (format " (%s)" shortcut))))
+  (advice-add 'dashboard-insert-heading :override 'shark-bytes/dashboard-insert-heading)
+  (defun shark-bytes/show-dashboard ()
+    "Show the dashboard."
+    (interactive)
+    (switch-to-buffer "*dashboard*"))
+  (dashboard-setup-startup-hook))
 #+end_src
 
 ** Mode Line
@@ -954,18 +951,17 @@ Helper function to figure out version control root directory
 (add-to-list 'shark-bytes/modeline-check-status-functions 'shark-bytes/check-process-status)
 
 (defface shark-bytes/check-status-info `((t :inherit info
-                                      :weight ultra-bold))
+                                            :weight ultra-bold))
   "Face used for modeline check info status."
   :group 'shark-bytes/modeline-check-status)
 
 (defface shark-bytes/check-status-warning `((t :inherit warning
-                                         :foreground ,shark-bytes-warning-saturated
-                                         :weight ultra-bold))
+                                               :weight ultra-bold))
   "Face used for modeline check warning status."
   :group 'shark-bytes/modeline-check-status)
 
 (defface shark-bytes/check-status-error `((t :inherit error
-                                       :weight ultra-bold))
+                                             :weight ultra-bold))
   "Face used for modeline check error status."
   :group 'shark-bytes/modeline-check-status)
 
@@ -2632,14 +2628,16 @@ https://github.com/purcell/exec-path-from-shell
 #+begin_src emacs-lisp
 
 (defvar shark-bytes/consult-source-directory
-  `(:name     "Directory files"
-    :narrow   ?d
+  `(:name "Directory File"
+    :narrow ?d
     :category file
-    :face     consult-file
-    :history  file-name-history
-    :state    ,#'consult--file-state
-    :enabled  ,(lambda () (file-accessible-directory-p default-directory))
-    :items    ,(lambda () (directory-files default-directory t)))
+    :face consult-file
+    :history file-name-history
+    :state ,#'consult--file-state
+    :enabled ,(lambda () (file-accessible-directory-p default-directory))
+    :items ,(lambda () (seq-remove '(lambda (directory)
+                                 (string-match "\\.\\.?$" directory))
+                              (directory-files default-directory))))
   "Directory file candidate source for `consult'.")
 
 (defun shark-bytes/consult-find-file ()
