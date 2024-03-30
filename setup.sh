@@ -203,18 +203,12 @@ if [ "$FONTS" = TRUE ]; then
     # install all-the-icons fonts
     echo "Downloading fonts."
     FONT_DIR=~/.fonts/
-    ALL_THE_ICONS_FONTS="all-the-icons file-icons octicons weathericons"
-    for FONT in $ALL_THE_ICONS_FONTS; do
-        curl --location --show-error --output "$FONT_DIR/$FONT.ttf" "https://raw.githubusercontent.com/domtronn/all-the-icons.el/master/fonts/$FONT.ttf"
+    FONTS="FiraCode FiraMono"
+    for FONT in $FONTS; do
+        curl --location --show-error --create-dirs --output "$FONT_DIR/$FONT.ttf" "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/$FONT.tar.xz"
+        tar --extract --xz --overwrite --file "$FONT_DIR/$FONT.tar.xz" --directory "$FONT_DIR/"
+        rm "$FONT_DIR/$FONT.tar.xz"
     done
-    FONTAWESOME_FONTS="fa-brands-400 fa-regular-400 fa-solid-900"
-    for FONT in $FONTAWESOME_FONTS; do
-        curl --location --show-error --create-dirs --output "$FONT_DIR/$FONT.ttf" "https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/webfonts/$FONT.ttf"
-    done
-    curl --location --show-error --create-dirs --output "$FONT_DIR/MaterialIcons-Regular.ttf" "https://github.com/google/material-design-icons/raw/master/font/MaterialIcons-Regular.ttf"
-    curl --location --show-error --create-dirs --output "$FONT_DIR/FiraCode.zip" https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/FiraCode.zip
-    unzip -ou "$FONT_DIR/FiraCode.zip" -d "$FONT_DIR/"
-    rm "$FONT_DIR/FiraCode.zip"
 fi
 
 # install zsh plugins
