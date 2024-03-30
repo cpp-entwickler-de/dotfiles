@@ -5506,12 +5506,6 @@ https://github.com/google/googletest
 (use-package docker)
 #+end_src
 
-**** [[https://github.com/emacs-pe/docker-tramp.el][TRAMP support]]
-#+begin_src emacs-lisp
-(use-package docker-tramp
-  :after tramp)
-#+end_src
-
 **** Editing
 ***** Language server
 #+begin_src emacs-lisp
