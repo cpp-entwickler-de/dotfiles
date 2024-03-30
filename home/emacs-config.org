@@ -3299,20 +3299,37 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
                      :host github
                      :repo "Overdr0ne/gumshoe")
   :config
-  (defun shark-bytes/gumshoe--peruse (recs slot-spec &optional entry-filter)
+  (defun shark-bytes/gumshoe--consult-peruse (recs slot-spec &optional entry-filter)
     "Override for gumshoe--peruse to use 'consult--line'."
-    (consult--line (mapcar (lambda (entry)
-                             (let ((marker (make-marker)))
-                               (set-marker marker (slot-value entry 'position) (slot-value entry 'buffer))
-                               (when (and (marker-position marker) (marker-buffer marker))
-                                 (consult--location-candidate (slot-value entry 'line)
-                                                              marker
-                                                              (slot-value entry 'position)))))
-                           (if entry-filter
-                               (seq-filter entry-filter recs)
-                             recs))
-                   :prompt "Go to line: "))
-  (advice-add #'gumshoe--peruse :override #'shark-bytes/gumshoe--peruse)
+    (let ((candidates (mapcar (lambda (entry)
+                                (let ((marker (make-marker)))
+                                  (set-marker marker
+                                              (slot-value entry 'position)
+                                              (slot-value entry 'buffer))
+                                  (when (and (marker-position marker)
+                                             (marker-buffer marker))
+                                    (consult--location-candidate (slot-value entry 'line)
+                                                                 marker
+                                                                 (with-current-buffer (slot-value entry 'buffer)
+                                                                   (line-number-at-pos (slot-value entry 'position)))
+                                                                 (slot-value entry 'position)))))
+                              (if entry-filter
+                                  (seq-filter (lambda (entry)
+                                                (buffer-live-p (slot-value entry 'buffer))
+                                                (funcall entry-filter entry))
+                                              recs)
+                                recs))))
+      (consult--read candidates
+                     :category 'consult-location
+                     :annotate (consult--line-prefix)
+                     :prompt "Go to line: "
+                     :sort nil
+                     :require-match t
+                     :history '(:input consult--line-multi-history)
+                     :lookup #'consult--line-multi-match
+                     :state (consult--location-state (lambda () (funcall candidates nil)))
+                     :group #'consult--line-multi-group)))
+  (advice-add #'gumshoe--peruse :override #'shark-bytes/gumshoe--consult-peruse)
   (global-gumshoe-mode 1))
 #+end_src
 
