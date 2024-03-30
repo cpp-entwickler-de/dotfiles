@@ -585,8 +585,6 @@ The saturation for non-saturated colors is 60.
 
 ** [[https://github.com/rakanalh/emacs-dashboard][Dashboard]]
 #+begin_src emacs-lisp
-(defvar shark-bytes/dashboard-footer nil "The dashboard footer text")
-
 (use-package dashboard
   :after consult
   :custom
