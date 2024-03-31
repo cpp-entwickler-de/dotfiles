@@ -1924,7 +1924,7 @@ https://github.com/purcell/exec-path-from-shell
 #+begin_src emacs-lisp
 (with-eval-after-load "magit"
   (defun eshell/gitroot ()
-    "chnage directory to current project root."
+    "Change directory to current project root."
     (eshell/cd (vc-git-root default-directory)))
 
   (defun eshell/git-log (&rest arguments)
