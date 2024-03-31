@@ -782,13 +782,6 @@ Helper function to figure out version control root directory
     (_ "")))
 #+end_src
 
-*** Auto-format
-#+begin_src emacs-lisp
-(defun shark-bytes/modeline-auto-format ()
-  (when (bound-and-true-p format-all-mode)
-    ""))
-#+end_src
-
 *** Cursor position
 #+begin_src emacs-lisp
 (defun shark-bytes/modeline-position-info ()
@@ -952,7 +945,6 @@ Helper function to figure out version control root directory
                                                           (shark-bytes/modeline-su)
                                                           (shark-bytes/modeline-modified)
                                                           (shark-bytes/modeline-overwrite-mode)
-                                                          (shark-bytes/modeline-auto-format)
                                                           (shark-bytes/modeline-typo-mode)
                                                           (shark-bytes/modeline-narrowed)
                                                           (shark-bytes/modeline-filtered)
