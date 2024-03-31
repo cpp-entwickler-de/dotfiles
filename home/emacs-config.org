@@ -179,10 +179,11 @@ Do not ask for confirmation for new shell buffers
 #+begin_src emacs-lisp
 (defun shark-bytes/truncate (string max-length)
   "Truncate STRING to MAX-LENGTH charcaters by replacing characters in the middle with an ellipsis."
-  (if (< (length string) max-length)
-      string
-    (let ((len (min (/ (length string) 2) (/ (- max-length 1) 2))))
-      (concat (substring string 0 len) "…" (substring string (- 0 (+ len (- max-length 1 (* len 2)))) nil)))))
+  (when (stringp string)
+    (if (< (length string) max-length)
+        string
+      (let ((len (min (/ (length string) 2) (/ (- max-length 1) 2))))
+        (concat (substring string 0 len) "…" (substring string (- 0 (+ len (- max-length 1 (* len 2)))) nil))))))
 #+end_src
 
 ** Increase subprocess read chunk size
