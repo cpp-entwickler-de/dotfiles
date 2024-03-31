@@ -2575,11 +2575,11 @@ https://github.com/purcell/exec-path-from-shell
     :enabled ,#'magit-inside-worktree-p
     :items ,(lambda ()
               (-non-nil (remove-duplicates (append (split-string (vc-git--run-command-string nil "ls-files" "-z" "-m" "-o" "--exclude-standard") "\0" t)
-                                                   (split-string (shell-command-to-string "find -type f -mtime -7 ! -path './.git/*' -printf '%P\n'") "\n" t)))))
-  "Recently modified file candidate source for `consult'."))
+                                                   (split-string (shell-command-to-string "find -type f -mtime -7 ! -path './.git/*' -printf '%P\n'") "\n" t))))))
+  "Recently modified file candidate source for `consult'.")
 
 (defun shark-bytes/consult-find-file ()
-  ""
+  "Select file."
   (interactive)
   (when-let (buffer (consult--multi '(consult--source-recent-file
                                       shark-bytes/consult-source-recently-modified
@@ -2588,7 +2588,7 @@ https://github.com/purcell/exec-path-from-shell
                                       consult--source-buffer)
                                     :require-match (confirm-nonexistent-file-or-buffer)
                                     :prompt "Open: "
-                                    :history 'consult--buffer-history
+                                    :history 'file-name-history
                                     :sort nil))
     (unless (cdr buffer)
       (consult--buffer-action (car buffer)))))
