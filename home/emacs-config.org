@@ -241,15 +241,14 @@ Show normal for single monitor, fullscreen for non-4k monitor
 
 (set-frame-name "IDE")
 
-(add-hook 'before-make-frame-hook '(lambda ()
-                                     (setq default-frame-alist `((title . "IDE")
-                                                                 (name . "IDE")
-                                                                 (background-color . "#121212")
-                                                                 (internal-border-width . 8))
-
-                                           shark-bytes/is-4k-monitor (>= (x-display-pixel-width) 3840))
-                                     (unless shark-bytes/is-4k-monitor
-                                       (push '(fullscreen . fullboth) default-frame-alist))))
+(add-hook 'before-make-frame-hook #'(lambda ()
+                                      (setq default-frame-alist `((title . "IDE")
+                                                                  (name . "IDE")
+                                                                  (background-color . "#121212")
+                                                                  (internal-border-width . 8))
+                                            shark-bytes/is-4k-monitor (>= (x-display-pixel-width) 3840))
+                                      (unless shark-bytes/is-4k-monitor
+                                        (push '(fullscreen . fullboth) default-frame-alist))))
 #+end_src
 
 Show below other windows
@@ -416,8 +415,8 @@ Allow prettification in comments
              (memq (char-syntax (or (char-after end) ?\s)) syntaxes-end)
              (nth 3 (syntax-ppss))))))
 
-(add-hook 'prog-mode-hook '(lambda ()
-                             (setq prettify-symbols-compose-predicate 'shark-bytes/prettify-symbols-default-compose-p)))
+(add-hook 'prog-mode-hook #'(lambda ()
+                              (setq prettify-symbols-compose-predicate 'shark-bytes/prettify-symbols-default-compose-p)))
 #+end_src
 
 Prettify common symbols
@@ -887,16 +886,16 @@ Helper function to figure out version control root directory
 (defvar shark-bytes/caps-lock-active nil "Indicates if caps lock is enabled.")
 (defvar shark-bytes/num-lock-active nil "Indicates if num lock is enabled.")
 
-(add-hook 'after-init-hook '(lambda ()
-                              (run-with-timer 60 3 '(lambda ()
-                                                      (with-temp-buffer
-                                                        (call-process "xset" nil t nil "q")
-                                                        (let ((led-mask (string-to-number (save-match-data
-                                                                                            (and (string-match ".*LED mask:[[:space:]]*\\([[:alnum:]]+\\).*" (buffer-string))
-                                                                                                 (match-string 1 (buffer-string))))
-                                                                                          16)))
-                                                          (setq shark-bytes/caps-lock-active (eq (logand led-mask 1) 1)
-                                                                shark-bytes/num-lock-active (eq (logand led-mask 2) 2))))))))
+(add-hook 'after-init-hook #'(lambda ()
+                               (run-with-timer 60 3 #'(lambda ()
+                                                        (with-temp-buffer
+                                                          (call-process "xset" nil t nil "q")
+                                                          (let ((led-mask (string-to-number (save-match-data
+                                                                                              (and (string-match ".*LED mask:[[:space:]]*\\([[:alnum:]]+\\).*" (buffer-string))
+                                                                                                   (match-string 1 (buffer-string))))
+                                                                                            16)))
+                                                            (setq shark-bytes/caps-lock-active (eq (logand led-mask 1) 1)
+                                                                  shark-bytes/num-lock-active (eq (logand led-mask 2) 2))))))))
 
 (defun shark-bytes/modeline-key-lock (lock icon)
    (when lock
@@ -1016,8 +1015,8 @@ Helper function to figure out version control root directory
 
 *** Update every second
 #+begin_src emacs-lisp
-(run-with-timer 0 1 '(lambda()
-                       (force-mode-line-update t)))
+(run-with-timer 0 1 #'(lambda ()
+                        (force-mode-line-update t)))
 #+end_src
 
 ** Sidebar
@@ -1503,8 +1502,8 @@ This optimizes line-scrolling.
   (desktop-restore-frames t)
   :config
   (desktop-save-mode 1)
-  (run-with-idle-timer 300 t '(lambda ()
-                                (desktop-save user-emacs-directory)))
+  (run-with-idle-timer 300 t #'(lambda ()
+                                 (desktop-save user-emacs-directory)))
   (advice-add 'desktop-save :around #'shark-bytes/always-yes)
   (advice-add 'desktop-read :around #'shark-bytes/always-yes))
 #+end_src
@@ -2186,8 +2185,8 @@ https://github.com/purcell/exec-path-from-shell
 #+begin_src emacs-lisp
 (add-hook 'eshell-directory-change-hook #'(lambda ()
                                             (let* ((content (directory-files default-directory))
-                                                   (directories (seq-remove '(lambda (directory)
-                                                                               (string-match "\\.\\.?" directory))
+                                                   (directories (seq-remove #'(lambda (directory)
+                                                                                (string-match "\\.\\.?" directory))
                                                                             (seq-filter 'file-directory-p content)))
                                                    (files (seq-filter 'file-regular-p content)))
                                               (when (and (not files)
@@ -2606,9 +2605,9 @@ https://github.com/purcell/exec-path-from-shell
   (recentf-max-saved-items 200)
   (recentf-max-menu-items 15)
   (recentf-auto-save-timer (run-with-idle-timer 300 t
-                                                '(lambda ()
-                                                   (let ((warning-minimum-level :error))
-                                                     (ignore-errors (recentf-save-list))))))
+                                                #'(lambda ()
+                                                    (let ((warning-minimum-level :error))
+                                                      (ignore-errors (recentf-save-list))))))
   :config (recentf-mode))
 #+end_src
 
@@ -2826,8 +2825,8 @@ https://github.com/purcell/exec-path-from-shell
 (defun shark-bytes/dired-ocr (files)
   "Copy text in images to kill ring."
   (interactive (dired-get-marked-files))
-  (kill-new (mapconcat '(lambda (file)
-                          (shell-command-to-string (format "tesseract -l %s %s stdout" shark-bytes/ocr-language file)))
+  (kill-new (mapconcat #'(lambda (file)
+                           (shell-command-to-string (format "tesseract -l %s %s stdout" shark-bytes/ocr-language file)))
                        files
                        "\n")))
 
@@ -4855,7 +4854,7 @@ TODO
                                           shark-bytes/current-process-start-time (current-time))
                                     (force-mode-line-update t)))
 
-(add-to-list 'compilation-finish-functions '(lambda (buffer message)
+(add-to-list 'compilation-finish-functions #'(lambda (buffer message)
                                               (setq shark-bytes/process-running nil
                                                     compilation-run-p t
                                                     compilation-finished-successfully-p (string-match "^finished" message))
@@ -4892,9 +4891,9 @@ TODO
 
 ***** Show notification
 #+begin_src emacs-lisp
-(add-to-list 'compilation-finish-functions '(lambda (buffer message)
-                                              (when (> (float-time (shark-bytes/get-run-time)) 30)
-                                                (notifications-notify :title "Compilation finished"))))
+(add-to-list 'compilation-finish-functions #'(lambda (buffer message)
+                                               (when (> (float-time (shark-bytes/get-run-time)) 30)
+                                                 (notifications-notify :title "Compilation finished"))))
 #+end_src
 
 **** Documentation
@@ -4915,8 +4914,7 @@ Show API info via [[https://devdocs.io][devdocs.io]]
     (mapcar (lambda (doc)
               (devdocs-browser-install-doc doc))
             doclist)
-    (push `(,mode . ,doclist) devdocs-browser-major-mode-docs-alist))
-  (push "\`\\*devdocs-" consult-buffer-filter))
+    (push `(,mode . ,doclist) devdocs-browser-major-mode-docs-alist)))
 #+end_src
 
 ***** Change Log
@@ -5170,8 +5168,8 @@ Show API info via [[https://devdocs.io][devdocs.io]]
 
 ***** Auto-newline
 #+begin_src emacs-lisp
-(add-hook 'c-mode-common-hook '(lambda ()
-                                 (c-toggle-auto-newline 1)))
+(add-hook 'c-mode-common-hook #'(lambda ()
+                                  (c-toggle-auto-newline 1)))
 #+end_src
 
 ***** [[https://www.gnu.org/software/emacs/manual/html_node/ccmode/Clean_002dups.html][Auto-clean whitespace]]
@@ -5204,9 +5202,9 @@ Show API info via [[https://devdocs.io][devdocs.io]]
                         (awk-mode . "awk")
                         (other . "bsd")))
 
-(add-hook 'c-mode-common-hook '(lambda ()
-                                 (c-toggle-syntactic-indentation 1)
-                                 (c-toggle-electric-state 1)))
+(add-hook 'c-mode-common-hook #'(lambda ()
+                                  (c-toggle-syntactic-indentation 1)
+                                  (c-toggle-electric-state 1)))
 #+end_src
 
 ***** Auto-convert .. to ->
@@ -6735,14 +6733,14 @@ If the region is active, act on all lines touched by the region."
 
 (defun shark-bytes/get-change-info (files &optional start end)
   "Get last change date for file(s) or region."
-  (let ((changes (sort (mapcar (lambda (file)
-                                 (split-string (shell-command-to-string (concat "git log -1 "
-                                                                                (if (and start end)
-                                                                                    (format "-L %d,%d" (line-number-at-pos start t) (line-number-at-pos end t))
-                                                                                  "")
-                                                                                " --format=\"%aI; %an, %ar ◉ %s\" -- "
-                                                                                file))
-                                               ";"))
+  (let ((changes (sort (mapcar #'(lambda (file)
+                                   (split-string (shell-command-to-string (concat "git log -1 "
+                                                                                  (if (and start end)
+                                                                                      (format "-L %d,%d" (line-number-at-pos start t) (line-number-at-pos end t))
+                                                                                    "")
+                                                                                  " --format=\"%aI; %an, %ar ◉ %s\" -- "
+                                                                                  file))
+                                                 ";"))
                                files)
                        (lambda (first second) (> (iso8601-parse (car first) (iso8601-parse (car second))))))))
     (propertize (cadar changes) 'face `(:foreground ,(shark-bytes/get-commit-age-color (caar changes))))))
@@ -6765,13 +6763,13 @@ If the region is active, act on all lines touched by the region."
                          (ignore-errors (vc-call-backend backend 'root default-directory))))
          (default-directory project-root))
     (when project-root
-      (shark-bytes/show-contributor-info (mapcar (lambda (file)
-                                             (expand-file-name file project-root))
-                                           (split-string (shell-command-to-string (concat "git ls-files --full-name")) "\n" t))
-                                   (save-excursion
-                                     (save-restriction
-                                       (point-min)))
-                                   'shark-bytes/project-contributor-info))))
+      (shark-bytes/show-contributor-info (mapcar #'(lambda (file)
+                                                     (expand-file-name file project-root))
+                                                 (split-string (shell-command-to-string (concat "git ls-files --full-name")) "\n" t))
+                                         (save-excursion
+                                           (save-restriction
+                                             (point-min)))
+                                         'shark-bytes/project-contributor-info))))
 
 (defun shark-bytes/show-file-contributor-info ()
   "Show contributor information for current file."
@@ -6980,9 +6978,9 @@ Hide info buffer in buffer list
                                                                                                                                                                           (concat (shell-command-to-string (concat "openssl x509 -in '" buffer-file-name "' -noout -issuer -subject -dates -fingerprint")) "\n")))))))
     (overlay-put overlay 'shark-bytes/certificate-info t)))
 
-(add-hook 'certificate-mode-hook '(lambda ()
-                                    (shark-bytes/show-certificate-info)
-                                    (read-only-mode)))
+(add-hook 'certificate-mode-hook #'(lambda ()
+                                     (shark-bytes/show-certificate-info)
+                                     (read-only-mode)))
 #+end_src
 
 *  Org-Mode
@@ -7789,9 +7787,9 @@ Archive when done, remove flag if reset to todo.
 
 *** Automatically stop clocking when exiting emacs.
 #+begin_src emacs-lisp
-(add-hook 'kill-emacs-hook '(lambda ()
-                              (when (org-clock-is-active)
-                                (org-clock-out))))
+(add-hook 'kill-emacs-hook #'(lambda ()
+                               (when (org-clock-is-active)
+                                 (org-clock-out))))
 #+end_src
 
 *** Automatically stop clocking when entering system suspend/lock and restart on resume/unlock
