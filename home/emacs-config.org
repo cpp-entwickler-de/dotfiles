@@ -3289,6 +3289,7 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 #+begin_src emacs-lisp
 (setq-default indent-tabs-mode nil)
 (setq-default fill-column 120)
+(setq-default tab-width 4)
 (setq auto-fill-mode t
       comment-empty-lines t
       electric-indent-mode t
@@ -3297,7 +3298,6 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
       show-trailing-whitespace t
       tab-always-indent 'complete
       c-tab-always-indent 'complete
-      tab-width 4
       text-mode-hook '(turn-on-auto-fill text-mode-hook-identify)
       require-final-newline nil)
 
