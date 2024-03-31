@@ -235,7 +235,7 @@ Do not ask for confirmation for new shell buffers
 #+end_src
 
 ** Frame Setup
-Show normal for single monitor, fullscreen for non-4k monitor
+Show fullscreen for non-4k monitor
 #+begin_src emacs-lisp
 (defvar shark-bytes/is-4k-monitor nil "Indicates if a 4k monitor is available.")
 
@@ -526,7 +526,7 @@ The saturation for non-saturated colors is 60.
 (defvar shark-bytes-text                   "#F1F1F1" "Color for normal text.")
 #+end_src
 
-***  Faces
+*** Faces
 #+begin_src emacs-lisp
 (defface shark-bytes-ui '((t :inherit default)) "" :group 'user-interface)
 (defface shark-bytes-ui-title '((t :inherit shark-bytes-ui :height 1.7 :weight bold)) "" :group 'user-interface)
@@ -1468,7 +1468,7 @@ This optimizes line-scrolling.
 (save-place-mode 1)
 #+end_src
 
-Switch to previous buffer
+*** Switch to previous buffer
 #+begin_src emacs-lisp
 (defun shark-bytes/previous-buffer ()
   (interactive)
@@ -1534,7 +1534,7 @@ Indicate recursive minibuffer
 (minibuffer-depth-indicate-mode 1)
 #+end_src
 
-*** Highlight minibuffer when in use
+*** Use custom minibuffer color
 #+begin_src emacs-lisp
 (defface shark-bytes-minibuffer-active '((t :inherit default))
   "Face used for active minibuffer."
@@ -3750,7 +3750,7 @@ https://github.com/d12frosted/flyspell-correct
 #+end_src
 
 *  Binaries
-Open binary files in hexl-mode
+** Open binary files in hexl-mode
 #+begin_src emacs-lisp
 (defvar shark-bytes/no-hexedit-extensions nil "File extensions for which automatic hex editing is disabled")
 
