@@ -1301,7 +1301,6 @@ Helper function to figure out version control root directory
   (consult-ripgrep-args "rg --null --line-buffered --color=never --max-columns=1000 --path-separator /   --smart-case --no-heading --line-number .")
   (consult-line-point-placement 'match-beginning)
   (consult-line-start-from-top t)
-  (consult-preview-key (list :debounce 0.75 'any))
   (consult-async-min-input 2)
   (consult-async-refresh-delay 0.15)
   (consult-async-input-throttle 0.2)
