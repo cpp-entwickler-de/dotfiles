@@ -455,48 +455,12 @@ Prettify escaped newline
              :repo "Fuco1/fontify-face"))
 #+end_src
 
-** Icons
-*** [[https://github.com/domtronn/all-the-icons.el][Show icons]]
-#+begin_src emacs-lisp
-(defconst shark-bytes/faicon5-data-file (expand-file-name "data-faicon5.el" user-emacs-directory) "The data file for FontAwesome 5 icon names.")
+** [[https://github.com/rainstormstudio/nerd-icons.el][Icons]]
+[[https://www.nerdfonts.com/cheat-sheet][Cheat sheet]]
 
-(defun shark-bytes/update-faicon5-data ()
-  (delete-file shark-bytes/faicon5-data-file)
-  (write-region "(defvar fa5-icon-alist\n'(\n" nil shark-bytes/faicon5-data-file 'append)
-  (with-current-buffer (url-retrieve-synchronously "https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/css/all.css")
-    (widen)
-    (goto-char 1)
-    (save-match-data
-      (while (search-forward-regexp (rx bol (0+ space) ".fa-" (group (+ (not (in ":")))) ":before" (0+ space) "{" (+ space) "content:" (0+ space) "\"\\" (group (+ (not (in "\""))))) nil t)
-        (write-region (format "(\"%s\" . \"\\x%s\")\n" (match-string 1) (match-string 2)) nil shark-bytes/faicon5-data-file 'append)))
-    (kill-buffer))
-  (write-region "\n))\n(provide 'data-faicon5)" nil shark-bytes/faicon5-data-file 'append))
-
-(defconst shark-bytes/material-icon-data-file (expand-file-name "data-material-icon.el" user-emacs-directory) "The data file for material icon names.")
-
-(defun shark-bytes/update-material-icon-data ()
-  (delete-file shark-bytes/material-icon-data-file)
-  (write-region "(defvar material-icon-alist\n'(\n" nil shark-bytes/material-icon-data-file 'append)
-  (with-current-buffer (url-retrieve-synchronously "https://raw.githubusercontent.com/google/material-design-icons/master/iconfont/codepoints")
-    (widen)
-    (goto-char 1)
-    (save-match-data
-      (while (search-forward-regexp (rx bol (0+ space) (group (+ (or (in alphanumeric) "_"))) (+ space) (group (+ (in hex-digit)))) nil t)
-        (write-region (format "(\"%s\" . \"\\x%s\")\n" (match-string 1) (match-string 2)) nil shark-bytes/material-icon-data-file 'append)))
-    (kill-buffer))
-  (write-region "\n))\n(provide 'data-material-icon)" nil shark-bytes/material-icon-data-file 'append))
-
-(use-package all-the-icons
-  :config
-  (unless (file-exists-p shark-bytes/faicon5-data-file)
-    (shark-bytes/update-faicon5-data))
-  (require 'data-faicon5 shark-bytes/faicon5-data-file)
-  (define-icon faicon5 fa5-icon-alist "Font Awesome 5 Free" "fa-regular-400")
-  (define-icon faicon-brands fa5-icon-alist "Font Awesome 5 Brands" "fa-brands-400")
-  (unless (file-exists-p shark-bytes/material-icon-data-file)
-    (shark-bytes/update-material-icon-data))
-  (require 'data-material-icon shark-bytes/material-icon-data-file)
-  (define-icon material-icon material-icon-alist "Material Icons" "MaterialIcons-Regular"))
+#+begin_src emacs-lispset
+(use-package nerd-icons
+  :custom (nerd-icons-font-family "FiraCode Nerd Font Mono"))
 #+end_src
 
 ** SVG Tag support
@@ -687,14 +651,13 @@ The saturation for non-saturated colors is 60.
 *** Major mode icon
 #+begin_src emacs-lisp
 (defun shark-bytes/modeline-mode-icon ()
-  (let ((icon (all-the-icons-icon-for-buffer)))
-    (unless (symbolp icon)
+  (let ((icon (nerd-icons-icon-for-buffer)))
+    (if (not (symbolp icon))
       (propertize icon
-                  'face `(:family ,(all-the-icons-icon-family-for-buffer)
-                          :background ,(face-attribute 'header-line :background)
-                          :height 1.2)
-                  'display '(raise 0.0)
-                  'help-echo (format "%s" major-mode)))))
+                  'face `(:height 1.2)
+                  'display '(raise 0.1)
+                  'help-echo (format "%s" major-mode))
+      "")))
 #+end_src
 
 *** Buffer name
@@ -1323,13 +1286,6 @@ Helper function to figure out version control root directory
   (truncate-string-ellipsis "…")
   (marginalia-align 'right)
   :init (marginalia-mode))
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package all-the-icons-completion
-  :after (all-the-icons marginalia)
-  :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
-  :init (all-the-icons-completion-mode))
 #+end_src
 
 *** [[https://github.com/minad/consult][Additional completion functions]]
@@ -2353,16 +2309,17 @@ https://github.com/purcell/exec-path-from-shell
 
 *** Date/time formatting
 #+begin_src emacs-lisp
-(with-eval-after-load "all-the-icons"
-  (defun shark-bytes/print-date ()
-    (concat
-     ""
-     (propertize (format-time-string " %W")
-                 'face '(:weight ultra-light))
-     (format-time-string " %e.%-m.%G")))
+(defun shark-bytes/print-date ()
+  (concat
+   ""
+   (propertize (format-time-string " %W")
+               'face '(:weight ultra-light))
+   (format-time-string " %e.%-m.%G")))
 
-  (defun shark-bytes/print-time ()
-    (format "%c %s" (+ #xe381 (% (string-to-number (format-time-string "%I")) 12)) (format-time-string " %H:%M"))))
+(defun shark-bytes/print-time ()
+  (format "%c %s" (+ #xe381 (% (string-to-number (format-time-string "%I")) 12)) (format-time-string " %H:%M")))
+#+end_src
+
 #+end_src
 
 **** Run freedesktop applications
@@ -2715,11 +2672,11 @@ https://github.com/purcell/exec-path-from-shell
   :hook (dired-mode . turn-on-stripe-buffer-mode))
 #+end_src
 
-**** Show Icons
+**** [[github:rainstormstudio/nerd-icons-dired][Show Icons]]
 #+begin_src emacs-lisp
-(use-package all-the-icons-dired
-  :after all-the-icons
-  :hook (dired-mode . all-the-icons-dired-mode))
+(use-package nerd-icons-dired
+  :after (dired nerd-icons)
+  :hook (dired-mode . nerd-icons-dired-mode))
 #+end_src
 
 **** Collapse empty directories
@@ -4454,7 +4411,6 @@ Handler to close buffer after quitting ccmake.
 ***** [[https://github.com/AdamNiederer/cov][Code coverage]]
 #+begin_src emacs-lisp
 (use-package cov
-  :after all-the-icons
   :hook ((prog-mode . cov-mode)
          (shark-bytes/after-project-load . (lambda ()
                                        (add-to-list 'cov-coverage-file-paths (shark-bytes/current-build-directory)))))
@@ -4864,15 +4820,14 @@ TODO
   "Format the mode line compilation information."
   (when compilation-run-p
     (mapconcat 'identity
-               (remove nil (list (propertize (all-the-icons-faicon5 "hammer")
+               (remove nil (list (propertize ("🛠"
                                              'face (list ':inherit (if compilation-finished-successfully-p
                                                                        (cond ((> compilation-num-errors-found 0) 'shark-bytes/check-status-error)
                                                                              ((> compilation-num-warnings-found 0) 'shark-bytes/check-status-warning)
                                                                              ((> compilation-num-infos-found 0) 'shark-bytes/check-status-info)
                                                                              (t 'shark-bytes/check-status-info))
-                                                                     'shark-bytes/check-status-error)
-                                                         ':family (all-the-icons-faicon5-family))
-                                             'display '(raise -0.0))
+                                                                     'shark-bytes/check-status-error))
+                                             'display '(raise -0.0)))
                                  (mapconcat 'identity
                                             (remove nil (list (when (> compilation-num-errors-found 0)
                                                                 (propertize compilation-num-errors-found
@@ -5371,11 +5326,7 @@ https://github.com/google/googletest
   (push '("CMakeLists\\.txt\\'" . cmake-mode) auto-mode-alist)
   (push '(".\\cmake\\'" . cmake-mode) auto-mode-alist)
   (with-eval-after-load "aggressive-fill-paragraph"
-    (add-to-list 'afp-fill-comments-only-mode-list 'cmake-mode))
-  (with-eval-after-load "all-the-icons"
-    (push '(cmake-mode all-the-icons-fileicon "cmake" :v-adjust 0.0) all-the-icons-mode-icon-alist)
-    (push '("CMakeLists.txt$" all-the-icons-fileicon "cmake" :v-adjust 0.0) all-the-icons-icon-alist)
-    (push '("\\.cmake$" all-the-icons-fileicon "cmake" :v-adjust 0.0) all-the-icons-icon-alist)))
+    (add-to-list 'afp-fill-comments-only-mode-list 'cmake-mode)))
 #+end_src
 
 **** Imenu integration
