@@ -3644,65 +3644,34 @@ Use hippie-expand instead of dabbrev
 (use-package wgrep
   :hook (rg-mode . wgrep-rg-setup)
   :custom (wgrep-enable-key "e"))
-#+end_src
-
-** [[http://www-sop.inria.fr/members/Manuel.Serrano/flyspell/flyspell.html][Spell checking]]
-#+begin_src emacs-lisp
-(use-package flyspell
-  :after (consult system-packages)
-  :ensure-system-package (aspell aspell-en aspell-de)
-  :custom
-  (flyspell-issue-welcome-flag nil)
-  (flyspell-issue-message-flag nil)
-  (flyspell-sort-corrections t)
-  (flyspell-default-dictionary nil)
-  (flyspell-abbrev-p t)
-  (flyspell-use-global-abbrev-table-p t)
-  (ispell-dictionary "en_US")
-  (ispell-local-dictionary "en_US")
-  (ispell-personal-dictionary "~/.emacs.d/.aspell.en.pws")
-  (ispell-program-name "/usr/bin/aspell")
-  (ispell-silently-savep t)
-  (ispell-extra-args '("--sug-mode=ultra"
-                       "--lang=en_US"))
   :config
-  (when (string-match-p "--camel-case"
-                        (shell-command-to-string (concat ispell-program-name " --help")))
-    (push "--camel-case" ispell-extra-args))
-  (push "\\`\\*flypell.*\\*\\'" consult-buffer-filter)
-  (defvar-local shark-bytes/flyspell-errors 0 "The number of spelling errors in the document.")
-  (advice-add 'flyspell-after-change-function :after (lambda (&rest arguments)
-                                                       (setq shark-bytes/flyspell-errors 0)
-                                                       (dolist (buffer-overlay (overlays-in (point-min) (point-max)))
-                                                         (when (flyspell-overlay-p buffer-overlay)
-                                                             (setq shark-bytes/flyspell-errors (1+ shark-bytes/flyspell-errors))))
-                                                       (force-mode-line-update)))
-  (defun shark-bytes/modeline-flyspell-status()
-    "Format the modeline flyspell information."
-    (when (and flyspell-mode
-               (> shark-bytes/flyspell-errors 0))
-      (propertize (format " %d" shark-bytes/flyspell-errors)
-                          'face 'shark-bytes/check-status-error)))
-  (add-to-list 'shark-bytes/modeline-check-status-functions 'shark-bytes/modeline-flyspell-status))
 #+end_src
 
-https://github.com/d12frosted/flyspell-correct
+** [[https://github.com/minad/jinx][Spell checking]]
 #+begin_src emacs-lisp
-(use-package flyspell-correct
-  :after flyspell)
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package consult-flyspell
-  :straight (consult-flyspell
-             :type git
-             :host gitlab
-             :repo "OlMon/consult-flyspell")
-  :after (consult flyspell-correct)
+(use-package jinx
+  ;:ensure-system-package (pkgconf enchant-devel enchant-aspell)
+  :hook (emacs-startup . global-jinx-mode)
+  :bind ([remap ispell-word] . jinx-correct-nearest)
   :custom
-  (consult-flyspell-select-function (lambda () (flyspell-correct-at-point) (consult-flyspell)))
-  (consult-flyspell-set-point-after-word t)
-  (consult-flyspell-always-check-buffer t))
+  (jinx-languages "en_US de_DE")
+  :config
+  (add-to-list 'jinx-camel-modes 'prog-mode)
+  (defvar-local shark-bytes/spelling-errors 0 "The number of spelling errors in the document.")
+  (advice-add 'jinx--check-pending :after (lambda (&rest arguments)
+                                            (setq shark-bytes/spelling-errors (or (ignore-errors (length (jinx--force-overlays (window-start)
+                                                                                                                               (window-end)
+                                                                                                                               :visible nil
+                                                                                                                               :check t)))
+                                                                                  0))
+                                            (force-mode-line-update)))
+  (defun shark-bytes/modeline-spelling-status()
+    "Format the modeline spelling information."
+    (when (and jinx-mode
+               (> shark-bytes/spelling-errors 0))
+      (propertize (format " %d" shark-bytes/spelling-errors)
+                          'face 'shark-bytes/check-status-warning)))
+  (add-to-list 'shark-bytes/modeline-check-status-functions 'shark-bytes/modeline-spelling-status))
 #+end_src
 
 ** Utilities
@@ -8138,7 +8107,6 @@ Required to mark events in the calendar
 (use-package gnuplot
   :ensure-system-package gnuplot
   :mode ("\\.gnuplot\\'" . gnuplot-mode)
-  :hook (gnuplot-mode . flyspell-prog-mode)
   :custom
   (gnuplot-eldoc-mode t)
   (gnuplot-image-format "svg")
