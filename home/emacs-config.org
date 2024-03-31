@@ -6767,7 +6767,7 @@ If the region is active, act on all lines touched by the region."
 #+end_src
 
 ** Info Pages
-*** [[https://github.com/ubolonton/info-colors][Add extra coloring]]
+[[https://github.com/ubolonton/info-colors][Add extra coloring]]
 #+begin_src emacs-lisp
 (use-package info-colors
   :hook (Info-selection . info-colors-fontify-node))
@@ -6796,7 +6796,7 @@ If the region is active, act on all lines touched by the region."
                                        (nlinum-mode -1))))
 #+end_src
 
-[[https://github.com/nicolaisingh/saveplace-pdf-view][Save last position]]
+*** [[https://github.com/nicolaisingh/saveplace-pdf-view][Save last position]]
 #+begin_src emacs-lisp
 (use-package saveplace-pdf-view
   :after pdf-tools doc-view)
