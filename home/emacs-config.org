@@ -2286,8 +2286,7 @@ https://github.com/purcell/exec-path-from-shell
 
 *** [[https://github.com/bbatsov/crux][A Collection of Ridiculously Useful eXtensions]]
 #+begin_src emacs-lisp
-(use-package crux
-  :config (advice-add 'crux-rename-file-and-buffer :around 'shark-bytes/post-rename))
+(use-package crux)
 #+end_src
 
 *** Date/time formatting
@@ -2522,6 +2521,8 @@ https://github.com/purcell/exec-path-from-shell
       (recentf-remove-if-non-kept old))
     (when (ignore-errors (projectile-project-p))
       (call-interactively #'projectile-invalidate-cache))))
+
+(advice-add 'rename-visited-file :around 'shark-bytes/post-rename)
 #+end_src
 
 ** Handle file names with spaces
