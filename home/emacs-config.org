@@ -556,7 +556,13 @@ The saturation for non-saturated colors is 60.
                               (if (file-exists-p logo)
                                   logo
                                 nil)))
-  (dashboard-banner-logo-title "")
+  (dashboard-footer-messages (let ((file (expand-file-name "~/.dashboard-messages")))
+                               (if (file-exists-p file)
+                                   (with-temp-buffer
+                                     (insert-file-contents file)
+                                     (split-string (buffer-string) "\n" t))
+                                 '(""))))
+  (dashboard-banner-logo-title (nth (random (length dashboard-footer-messages)) dashboard-footer-messages))
   (dashboard-page-separator "\n\n")
   (dashboard-items '((agenda . 15)
                      (recents . 20)
@@ -571,17 +577,7 @@ The saturation for non-saturated colors is 60.
   (dashboard-set-init-info nil)
   (dashboard-set-footer nil)
   (dashboard-footer-icon "")
-  (dashboard-footer-messages (let ((file (expand-file-name "~/.dashboard-messages")))
-                               (if (file-exists-p file)
-                                   (with-temp-buffer
-                                     (insert-file-contents file)
-                                     (split-string (buffer-string) "\n" t))
-                                 '(""))))
   :config
-  (advice-add 'dashboard-insert-banner :after #'(lambda ()
-                                                  (insert "\n")
-                                                  (insert (propertize (dashboard-random-footer) 'face 'dashboard-footer-face))
-                                                  (insert "\n")))
   (defun shark-bytes/show-dashboard ()
     "Show the dashboard."
     (interactive)
