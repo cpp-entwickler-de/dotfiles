@@ -2550,8 +2550,8 @@ https://github.com/purcell/exec-path-from-shell
     :state ,#'consult--file-state
     :enabled ,(lambda () (file-accessible-directory-p default-directory))
     :items ,(lambda () (seq-remove '(lambda (directory)
-                                 (string-match "\\.\\.?$" directory))
-                              (directory-files default-directory))))
+                                       (string-match "\\.\\.?$" directory))
+                                   (directory-files default-directory))))
   "Directory file candidate source for `consult'.")
 
 (defvar shark-bytes/consult-source-recently-modified
@@ -6690,10 +6690,10 @@ If the region is active, act on all lines touched by the region."
              (vc-state buffer-file-name)
              (not (string-equal (vc-state buffer-file-name) 'unregistered)))
     (shark-bytes/show-contributor-info `(,buffer-file-name)
-                                 (save-excursion
-                                   (save-restriction
-                                     (point-min)))
-                                   'shark-bytes/show-file-contributor-info)))
+                                       (save-excursion
+                                         (save-restriction
+                                           (point-min)))
+                                       'shark-bytes/show-file-contributor-info)))
 
 (defun shark-bytes/show-region-contributor-info ()
   "Show contributor information for current region. If no region is selected, defaults to current function"
@@ -6714,13 +6714,13 @@ If the region is active, act on all lines touched by the region."
                      (funcall shark-bytes/end-of-function)
                      (point))))))
       (shark-bytes/show-contributor-info `(,buffer-file-name)
-                                   (save-excursion
-                                     (save-restriction
-                                       (goto-char start)
-                                       (line-beginning-position)))
-                                   'shark-bytes/region-contributor-info
-                                   start
-                                   end))))
+                                         (save-excursion
+                                           (save-restriction
+                                             (goto-char start)
+                                             (line-beginning-position)))
+                                         'shark-bytes/region-contributor-info
+                                         start
+                                         end))))
 
 (add-hook 'find-file-hook 'shark-bytes/show-file-contributor-info)
 (add-hook 'after-save-hook 'shark-bytes/show-file-contributor-info)
