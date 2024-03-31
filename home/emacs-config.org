@@ -6602,10 +6602,10 @@ If the region is active, act on all lines touched by the region."
              :repo "jwiegley/git-undo-el"))
 #+end_src
 
-**** [[https://github.com/defunkt/gist.el][Gist support]]
+**** [[github:KarimAziev/igist][Gist support]]
 #+begin_src emacs-lisp
-(use-package gist
-  :custom (gist-ask-for-description t))
+(use-package igist
+  :custom (igist-auth-marker 'igist))
 #+end_src
 
 **** [[github:magit/git-modes][Config file support]]
