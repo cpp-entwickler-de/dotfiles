@@ -1605,9 +1605,7 @@ Indicate recursive minibuffer
       display-line-numbers-widen nil
       display-line-numbers-width-start t)
 
-(add-hook 'find-file-hook (lambda ()
-                            (unless (equal major-mode 'org-mode)
-                              (display-line-numbers-mode))))
+(global-display-line-numbers-mode)
 #+end_src
 
 *** Utilities
