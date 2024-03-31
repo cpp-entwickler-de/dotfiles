@@ -972,7 +972,7 @@ Helper function to figure out version control root directory
                                                         'mode-line-inactive))
                     (concat (propertize "  " 'display `(raise +0.4))
                                        left-side
-                                       (propertize " " 'display `(space :align-to (- right ,(* 1.1 (length right-side)))))
+                                       (propertize " " 'display `(space :align-to (- right ,(length right-side))))
                                        (propertize " " 'display `(raise -0.4))
                                        right-side)))))
 #+end_src
