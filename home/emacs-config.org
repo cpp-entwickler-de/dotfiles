@@ -1293,7 +1293,8 @@ Helper function to figure out version control root directory
          ("C-x C-b" . shark-bytes/switch-to-buffer-show-all)
          ([remap switch-to-buffer-other-window] . consult-buffer-other-window)
          ([remap switch-to-buffer-other-frame] . consult-buffer-other-frame)
-         ([remap yank-pop] . consult-yank-pop))
+         ([remap yank-pop] . consult-yank-pop)
+         (:map minibuffer-local-map ("M-h" . consult-history)))
   :custom
   (consult-buffer-filter '("\\*.*\\*"))
   (consult-ripgrep-args "rg --null --line-buffered --color=never --max-columns=1000 --path-separator / --smart-case --no-heading --line-number .")
