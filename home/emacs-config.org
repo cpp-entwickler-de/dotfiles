@@ -579,10 +579,9 @@ The saturation for non-saturated colors is 60.
                                  '(""))))
   :config
   (advice-add 'dashboard-insert-banner :after #'(lambda ()
-                                                  (let ((shark-bytes/dashboard-footer (dashboard-random-footer)))
-                                                    (insert "\n")
-                                                    (insert (propertize shark-bytes/dashboard-footer 'face 'dashboard-footer))
-                                                    (insert "\n"))))
+                                                  (insert "\n")
+                                                  (insert (propertize (dashboard-random-footer) 'face 'dashboard-footer-face))
+                                                  (insert "\n")))
   (defun shark-bytes/show-dashboard ()
     "Show the dashboard."
     (interactive)
