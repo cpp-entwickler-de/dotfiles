@@ -6730,6 +6730,11 @@ If the region is active, act on all lines touched by the region."
 
 *  Viewer
 ** Web pages
+#+begin_src emacs-lisp
+(setq eww-auto-rename-buffer 'title
+      browse-url-default-scheme "https")
+#+end_src
+
 *** Imenu integration
 #+begin_src emacs-lisp
 (defun shark-bytes/imenu-eww-headings ()
