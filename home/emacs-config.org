@@ -4260,14 +4260,36 @@ Handler to close buffer after quitting ccmake.
 #+end_src
 
 **** Highlighting
-***** [[https://codeberg.org/ideasman42/emacs-hl-indent-scope][Show Indentation]]
+***** [[github:jdtsmith/indent-bars][Show Indentation]]
 #+begin_src emacs-lisp
-(use-package hl-indent-scope
-  :hook (prog-mode . hl-indent-scope-mode)
+(use-package indent-bars
+  :straight (indent-bars
+             :type git
+             :host github
+             :repo "jdtsmith/indent-bars")
+  :hook (prog-mode . indent-bars-mode)
   :custom
-  (hl-indent-scope-fixed-width t)
-  (hl-indent-scope-fill-empty-lines t)
-  (hl-indent-scope-fill-over-text t))
+  (indent-bars-treesit-support t)
+  (indent-bars-no-descend-string t)
+  (indent-bars-treesit-ignore-blank-lines-types '("module"))
+  (indent-bars-width-frac 0.11)
+  (indent-bars-prefer-character nil)
+  (indent-bars-pattern ".")
+  (indent-bars-highlight-current-depth '(:width 0.3))
+  (indent-bars-display-on-blank-lines t)
+  (indent-bars-starting-column nil)
+  (indent-bars-color '(default :face-bg t))
+  (indent-bars-color-by-depth `(:palette (,shark-bytes-freezing
+                                          ,shark-bytes-icy
+                                          ,shark-bytes-cold
+                                          ,shark-bytes-chilly
+                                          ,shark-bytes-bleak
+                                          ,shark-bytes-mild
+                                          ,shark-bytes-cozy
+                                          ,shark-bytes-warm
+                                          ,shark-bytes-hot
+                                          ,shark-bytes-burning)
+                                :blend 0.4)))
 #+end_src
 
 ***** [[https://github.com/ankurdave/color-identifiers-mode][Unique colors for identifiers]]
