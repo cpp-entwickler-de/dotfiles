@@ -624,24 +624,24 @@ The saturation for non-saturated colors is 60.
     shark-bytes/project-dir)
 
   (defun shark-bytes/modeline-project-id ()
-    (let ((buffer-location (shark-bytes/buffer-name)))
-      (when buffer-location
-        (let* ((project-root (shark-bytes/project-dir))
-               (project-name (projectile-project-name project-root))
-               (remote (if (shark-bytes/tramp-file-remote-p buffer-location)
-                           (tramp-file-name-host (tramp-dissect-file-name buffer-location))))
-               (localname (if (tramp-tramp-file-p buffer-location)
-                              (tramp-file-local-name buffer-location)
-                            buffer-location)))
-          (concat (when remote ((format " %s " remote))
-                  (if (string-prefix-p (getenv "HOME") localname)
-                      (replace-regexp-in-string "/Projects/" "🗐 " (concat "/"
-                                                                           (file-name-directory (directory-file-name (file-relative-name (file-name-directory (or project-root
-                                                                                                                                                           (file-name-directory localname)))
-                                                                                                                                         (getenv "HOME"))))))
-                    (concat "" (file-name-directory (directory-file-name (file-name-directory (tramp-file-local-name (or project-root
-                                                                                                                          localname)))))))
-                  (when (not (= 0 (length project-name))) (concat " " project-name)))))))))
+    (let* ((buffer-location (shark-bytes/buffer-name))
+           (project-root (shark-bytes/project-dir))
+           (project-name (projectile-project-name project-root))
+           (remote (when (shark-bytes/tramp-file-remote-p buffer-location)
+                     (tramp-file-name-host (tramp-dissect-file-name buffer-location))))
+           (localname (if (tramp-tramp-file-p buffer-location)
+                          (tramp-file-local-name buffer-location)
+                        buffer-location)))
+      (shark-bytes/truncate (concat (when remote
+                                      (format " %s " remote))
+                                    (if (string-prefix-p (getenv "HOME") localname)
+                                        (replace-regexp-in-string "/Projects/" "🗐 " (concat "/"
+                                                                                             (file-name-directory (directory-file-name (file-relative-name (file-name-directory (or project-root
+                                                                                                                                                                                        (file-name-directory localname)))
+                                                                                                                                                           (getenv "HOME"))))))
+                                      (concat "" (file-name-directory (directory-file-name (file-name-directory (tramp-file-local-name (or project-root
+                                                                                                                                            localname)))))))
+                                    project-name) 20))))
 #+end_src
 
 *** Major mode icon
@@ -849,9 +849,15 @@ Helper function to figure out version control root directory
                                                             (setq shark-bytes/caps-lock-active (eq (logand led-mask 1) 1)
                                                                   shark-bytes/num-lock-active (eq (logand led-mask 2) 2))))))))
 
-(defun shark-bytes/modeline-key-lock (lock icon)
-   (when lock
-     icon))
+(defun shark-bytes/modeline-caps-key-lock ()
+  "Show state of caps lock key."
+  (when shark-bytes/caps-lock-active
+    ""))
+
+(defun shark-bytes/modeline-num-key-lock ()
+  "Show state of num lock key."
+  (when shark-bytes/num-lock-active
+    ""))
 #+end_src
 
 *** Line/Character Mode
@@ -919,44 +925,51 @@ Helper function to figure out version control root directory
 (defface shark-bytes-mode-line-emphasis '((t :inherit shark-bytes-mode-line-base :weight bold)) "")
 (defface shark-bytes-mode-line-de-emphasis '((t :inherit shark-bytes-mode-line-base :height 0.7 :weight extra-light)) "")
 
+(defvar shark-bytes/modeline-left-side-functions '(shark-bytes/modeline-mode-icon
+                                                   shark-bytes/modeline-project-id
+                                                   (shark-bytes/modeline-version-control . shark-bytes-mode-line-de-emphasis)
+                                                   (shark-bytes/modeline-buffer-id . shark-bytes-mode-line-emphasis)
+                                                   (shark-bytes/modeline-which-function . shark-bytes-mode-line-de-emphasis))
+  "A list of functions to use for the right mode-line side.")
+
+(defvar shark-bytes/modeline-right-side-functions '(shark-bytes/modeline-process-running
+                                                    shark-bytes/modeline-su
+                                                    shark-bytes/modeline-modified
+                                                    shark-bytes/modeline-overwrite-mode
+                                                    shark-bytes/modeline-typo-mode
+                                                    shark-bytes/modeline-narrowed
+                                                    shark-bytes/modeline-filtered
+                                                    shark-bytes/modeline-caps-key-lock
+                                                    shark-bytes/modeline-num-key-lock
+                                                    shark-bytes/modeline-term-input-mode
+                                                    shark-bytes/modeline-position-info
+                                                    shark-bytes/modeline-region-info
+                                                    shark-bytes/modeline-iedit-info
+                                                    shark-bytes/modeline-check-status)
+  "A list of functions to use for the right mode-line side.")
+
+(defun shark-bytes/modeline-eval-functions (functions)
+  "Evaluate mode-line functions safely."
+  (mapconcat #'identity
+             (-non-nil (mapcar #'(lambda (entry)
+                                   (ignore-errors (let* ((value (funcall (or (car-safe entry)
+                                                                             entry)))
+                                                         (face (cdr-safe entry)))
+                                                    (if (and value
+                                                             face)
+                                                        (propertize value 'face face)
+                                                      value))))
+                               functions))
+                       "  "))
+
 (setq-default mode-line-format nil)
 (setq-default header-line-format
               '((:eval
-                 (let* ((left-side (mapconcat #'identity
-                                              (-non-nil (list (shark-bytes/modeline-mode-icon)
-                                                              (shark-bytes/truncate (shark-bytes/modeline-project-id) 20)
-                                                              (propertize (or (when (fboundp 'shark-bytes/modeline-version-control)
-                                                                                (shark-bytes/modeline-version-control))
-                                                                              "")
-                                                                          'face 'shark-bytes-mode-line-de-emphasis)
-                                                              (propertize (or (shark-bytes/modeline-buffer-id)
-                                                                              "")
-                                                                          'face 'shark-bytes-mode-line-emphasis)
-                                                              (propertize (or (shark-bytes/modeline-which-function)
-                                                                              "")
-                                                                          'face 'shark-bytes-mode-line-de-emphasis
-                                                                          'display '(raise 0.0))))
-                                              "  "))
-                        (right-side (mapconcat #'identity
-                                          (-non-nil (list (shark-bytes/modeline-process-running)
-                                                          (shark-bytes/modeline-su)
-                                                          (shark-bytes/modeline-modified)
-                                                          (shark-bytes/modeline-overwrite-mode)
-                                                          (shark-bytes/modeline-typo-mode)
-                                                          (shark-bytes/modeline-narrowed)
-                                                          (shark-bytes/modeline-filtered)
-                                                          (shark-bytes/modeline-key-lock (symbol-value 'shark-bytes/caps-lock-active) "")
-                                                          (shark-bytes/modeline-key-lock (symbol-value 'shark-bytes/num-lock-active) "")
-                                                          (shark-bytes/modeline-term-input-mode)
-                                                          (shark-bytes/modeline-position-info)
-                                                          (shark-bytes/modeline-region-info)
-                                                          (shark-bytes/modeline-iedit-info)
-                                                          (shark-bytes/modeline-check-status)
-                                                          ))
-                                          "  ")))
-                    (if (mode-line-window-selected-p)
-                        (face-remap-set-base 'header-line 'mode-line)
-                      (face-remap-set-base 'header-line 'mode-line-inactive))
+                 (let ((left-side (shark-bytes/modeline-eval-functions shark-bytes/modeline-left-side-functions))
+                       (right-side (shark-bytes/modeline-eval-functions shark-bytes/modeline-right-side-functions)))
+                    (face-remap-set-base 'header-line (if (mode-line-window-selected-p)
+                                                          'mode-line
+                                                        'mode-line-inactive))
                     (concat (propertize "  " 'display `(raise +0.4))
                                        left-side
                                        (propertize " " 'display `(space :align-to (- right ,(* 1.1 (length right-side)))))
