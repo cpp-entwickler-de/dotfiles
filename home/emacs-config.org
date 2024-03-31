@@ -1140,6 +1140,7 @@ Helper function to figure out version control root directory
   :init (vertico-mode)
   :hook ((rfn-eshadow-update-overlay . vertico-directory-tidy))
   :bind (:map vertico-map
+              ("M-w" . vertico-save)
               ("<pos1>" . vertico-first)
               ("<end>" . vertico-last)
               ("<left>" . vertico-previous-group)
