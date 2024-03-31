@@ -1332,7 +1332,6 @@ Helper function to figure out version control root directory
                                     (shark-bytes/project-dir)
                                     default-directory) initial)))
   (advice-add 'consult-ripgrep :around #'shark-bytes/consult-ripgrep)
-  (consult-customize consult-git-grep consult-recent-file consult--source-recent-file consult--source-project-recent-file :preview-key (kbd "C-p"))
   (advice-add #'completing-read-multiple :override #'consult-completing-read-multiple))
 #+end_src
 
