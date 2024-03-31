@@ -2584,7 +2584,8 @@ https://github.com/purcell/exec-path-from-shell
   (when-let (buffer (consult--multi '(consult--source-recent-file
                                       shark-bytes/consult-source-recently-modified
                                       shark-bytes/consult-source-directory
-                                      consult-projectile--source-projectile-file)
+                                      consult-projectile--source-projectile-file
+                                      consult--source-buffer)
                                     :require-match (confirm-nonexistent-file-or-buffer)
                                     :prompt "Open: "
                                     :history 'consult--buffer-history
