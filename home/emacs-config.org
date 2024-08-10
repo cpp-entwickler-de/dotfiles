@@ -3031,14 +3031,10 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
                                    "\\.\\([0-9]+\\)")))
 #+end_src
 
-*** Highlight colors
+*** [[github:DevelopmentCool2449/colorful-mode][Highlight colors]]
 #+begin_src emacs-lisp
-(use-package rainbow-mode
-  :demand t
-  :hook find-file
-  :config
-  (add-to-list 'rainbow-html-colors-major-mode-list 'emacs-lisp-mode)
-  (add-to-list 'rainbow-html-colors-major-mode-list 'org-mode))
+(use-package colorful-mode
+  :hook find-file)
 #+end_src
 
 *** Highlight matching parens
