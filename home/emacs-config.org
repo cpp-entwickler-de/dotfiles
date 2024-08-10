@@ -1504,11 +1504,16 @@ This optimizes line-scrolling.
 (setq-default indicate-buffer-boundaries nil)
 #+end_src
 
-*** [[https://github.com/mina86/auto-dim-other-buffers.el][Dim inactive buffers]]
+*** [[github:gonewest818/dimmer.el][Dim inactive buffers]]
 #+begin_src emacs-lisp
-(use-package auto-dim-other-buffers
-  :hook (after-init . auto-dim-other-buffers-mode)
-  :custom (auto-dim-other-buffers-dim-on-focus-out nil))
+(use-package dimmer
+  :custom
+  (dimmer-fraction 0.5)
+  :config
+  (dimmer-configure-magit)
+  (dimmer-configure-org)
+  (dimmer-configure-posframe)
+  (dimmer-mode t))
 #+end_src
 
 *** Use recursive minibuffer
