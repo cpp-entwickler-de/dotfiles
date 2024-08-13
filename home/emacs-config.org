@@ -2347,6 +2347,12 @@ https://github.com/purcell/exec-path-from-shell
   (format "%c %s" (+ #xe381 (% (string-to-number (format-time-string "%I")) 12)) (format-time-string " %H:%M")))
 #+end_src
 
+*** Bookmarks
+**** [[github:akirak/bookmark-frecency.el][Sort by frecency]]
+#+begin_src emacs-lisp
+(use-package bookmark-frecency
+  :custom (bookmark-sort-flag 'last-modified)
+  :config (bookmark-frecency-mode))
 #+end_src
 
 **** Run freedesktop applications
