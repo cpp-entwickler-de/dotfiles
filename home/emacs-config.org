@@ -456,6 +456,45 @@ Prettify escaped newline
              :repo "Fuco1/fontify-face"))
 #+end_src
 
+*** Determine base face at point (excluding highlighting)
+#+begin_src emacs-lisp
+(defun shark-bytes/face-at-point ()
+  "Determine base face at point (excluding highlighting)."
+  (let ((auto-highlight-symbol-mode-enabled auto-highlight-symbol-mode)
+        (global-hl-line-mode-enabled global-hl-line-mode)
+        (hl-line-mode-enabled hl-line-mode))
+    (auto-highlight-symbol-mode -1)
+    (global-hl-line-mode -1)
+    (hl-line-mode -1)
+    (let ((face (get-char-property (point) 'face)))
+      (unless face
+        (let ((start (point)))
+          (while (null (or (setq face (get-char-property (point) 'face))
+                           (eolp)))
+            (forward-char 1))))
+      (unless face
+        (let ((start (point)))
+          (while (null (or (setq face (get-char-property (point) 'face))
+                           (bolp)))
+            (forward-char -1))))
+      (unless face
+        (error "No face found."))
+      (auto-highlight-symbol-mode auto-highlight-symbol-mode-enabled)
+      (hl-line-mode hl-line-mode-enabled)
+      (global-hl-line-mode global-hl-line-mode-enabled)
+      (if (listp face)
+          (setq face (car face)))
+      face)))
+#+end_src
+
+*** Show info about face at point
+#+begin_src emacs-lisp
+(defun shark-bytes/describe-face-at-point ()
+  "Describe face at point."
+  (interactive)
+  (describe-face (shark-bytes/face-at-point)))
+#+end_src
+
 ** [[https://github.com/rainstormstudio/nerd-icons.el][Icons]]
 [[https://www.nerdfonts.com/cheat-sheet][Cheat sheet]]
 
