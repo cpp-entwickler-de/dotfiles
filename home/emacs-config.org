@@ -5515,53 +5515,27 @@ TODO use [[https://github.com/hadolint/hadolint/][hadolint]
   (add-to-list 'org-src-lang-modes '("dot" . graphviz-dot)))
 #+end_src
 
-*** GCode
+*** [[https://gitlab.com/wavexx/gcode-mode.el][G-Code-Mode]]
 #+begin_src emacs-lisp
-(defvar gcode-mode-font-lock-keywords
-  '(("\\(([^)]+)\\)"
-     (1 font-lock-string-face))
-    ("^\\([NnMm][0-9]+\\)"
-     (1 font-lock-constant-face))
-    ("\\(\\*[0-9]+\\) *$"
-     (1 font-lock-constant-face))
-    ("\\([Gg][0-9]+\\)"
-     (1 font-lock-function-name-face))
-    ("\\([AaBbCcEeFfHhIiJjKkLlPpQqRrSsTtUuVvWwXxYyZz][+-]*[0-9\\.]*\\)"
-     (1 font-lock-variable-name-face))
-    ("\\([+-]*[0-9\\.]*\\)"
-     (1 font-lock-variable-name-face)))
-  "Highlight rules for `gcode-mode'.")
-
-(defun gcode-mode-indent-line ()
-  "Indent current line."
-  (interactive)
-  (beginning-of-line))
-
-(define-derived-mode gcode-mode prog-mode "GCode-Mode"
-  "A major mode for editing gcode files."
-  (setq-local comment-start "(")
-  (setq-local comment-start-skip "([^)]+)")
-  (setq-local font-lock-defaults '(gcode-mode-font-lock-keywords)))
-
-(push '("\\.cnc\\'" . gcode-mode) auto-mode-alist)
-(push '("\\.din\\'" . gcode-mode) auto-mode-alist)
-(push '("\\.dnc\\'" . gcode-mode) auto-mode-alist)
-(push '("\\.eia\\'" . gcode-mode) auto-mode-alist)
-(push '("\\.fan\\'" . gcode-mode) auto-mode-alist)
-(push '("\\.f[gn]c\\'" . gcode-mode) auto-mode-alist)
-(push '("\\.gc[do]?\\'" . gcode-mode) auto-mode-alist)
-(push '("\\.gcode\\'" . gcode-mode) auto-mode-alist)
-(push '("\\.hnc\\'" . gcode-mode) auto-mode-alist)
-(push '("\\.maz\\'" . gcode-mode) auto-mode-alist)
-(push '("\\.mpf\\'" . gcode-mode) auto-mode-alist)
-(push '("\\.nc[fgp]?\\'" . gcode-mode) auto-mode-alist)
-(push '("\\.ngc\\'" . gcode-mode) auto-mode-alist)
-(push '("\\.pim\\'" . gcode-mode) auto-mode-alist)
-(push '("\\.plt\\'" . gcode-mode) auto-mode-alist)
-(push '("\\.ptp\\'" . gcode-mode) auto-mode-alist)
-(push '("\\.tap\\'" . gcode-mode) auto-mode-alist)
-
-(provide 'gcode-mode)
+(use-package gcode-mode
+  :hook (gcode-mode . eldoc-mode)
+  :mode ("\\.cnc\\'"
+         "\\.din\\'"
+         "\\.dnc\\'"
+         "\\.eia\\'"
+         "\\.fan\\'"
+         "\\.f[gn]c\\'"
+         "\\.gc[do]?\\'"
+         "\\.gcode\\'"
+         "\\.hnc\\'"
+         "\\.maz\\'"
+         "\\.mpf\\'"
+         "\\.nc[fgp]?\\'"
+         "\\.ngc\\'"
+         "\\.pim\\'"
+         "\\.plt\\'"
+         "\\.ptp\\'"
+         "\\.tap\\'"))
 #+end_src
 
 *** GLSL
