@@ -3405,9 +3405,9 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
 (use-package string-edit)
 #+end_src
 
-*** Expand selection
+*** [[github:casouri/expreg][Expand Region]]
 #+begin_src emacs-lisp
-(use-package expand-region)
+(use-package expreg)
 #+end_src
 
 *** Clipboard
