@@ -1217,6 +1217,15 @@ Helper function to figure out version control root directory
   :hook (minibuffer-setup . vertico-repeat-save))
 #+end_src
 
+*** Hide completions buffer for ffap-menu
+The command ffap-menu shows the *Completions* buffer by default, which is unnecessary with Vertico.
+#+begin_src emacs-lisp
+(advice-add #'ffap-menu-ask :around (lambda (&rest args)
+                                      (cl-letf (((symbol-function #'minibuffer-completion-help)
+                                                   #'ignore))
+                                          (apply args))))
+#+end_src
+
 *** [[https://github.com/oantolin/orderless][Advanced filtering]]
 #+begin_src emacs-lisp
 (use-package orderless
