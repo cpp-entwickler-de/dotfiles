@@ -3591,7 +3591,17 @@ Use hippie-expand instead of dabbrev
   :config (yas-global-mode 1))
 #+end_src
 
-[[https://joaotavora.github.io/yasnippet/snippet-development.html][Snippet Development Documentation]]
+***** [[github:fbrosda/yasnippet-treesitter-shim][Use yasnippet in treesitter-modes]]
+#+begin_src emacs-lisp
+(use-package yasnippet-treesitter-shim
+  :after yasnippet
+  :straight(yasnippet-treesitter-shim
+            :host github
+            :repo "fbrosda/yasnippet-treesitter-shim"
+            :files ("snippets/*"))
+  :no-require t
+  :config (add-to-list 'yas-snippet-dirs (straight--build-dir "yasnippet-treesitter-shim")))
+#+end_src
 
 ***** Consult integration
 #+begin_src emacs-lisp
