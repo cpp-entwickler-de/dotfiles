@@ -4626,14 +4626,12 @@ Use [[https://editorconfig.org/][EditorConfig]] via [[https://github.com/editorc
   (corfu-history-mode))
 #+end_src
 
-****** [[https://github.com/jdtsmith/kind-icon][Completion icons]]
+****** [[github:LuigiPiucco/nerd-icons-corfu][Completion Icons]]
 #+begin_src emacs-lisp
-(use-package kind-icon
-  :after corfu
-  :custom
-  (kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly
+(use-package nerd-icons-corfu
+  :after (nerd-icons corfu)
   :config
-  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 #+end_src
 
 ****** [[https://github.com/minad/cape][Add more CAPF]]
