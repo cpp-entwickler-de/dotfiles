@@ -4507,8 +4507,10 @@ Handler to close buffer after quitting ccmake.
 Set bug-reference-url-format to open in browser.
 
 #+begin_src emacs-lisp
-(add-hook 'text-mode-hook 'bug-reference-mode)
-(add-hook 'prog-mode-hook 'bug-reference-prog-mode)
+(use-package bug-reference
+  :hook ((text-mode-hook . bug-reference-mode)
+         (prog-mode-hook . bug-reference-prog-mode))
+  :custom (bug-reference-auto-setup-functions 'bug-reference-try-setup-from-vc))
 #+end_src
 
 ***** [[github:liuyinz/consult-todo][List TODOs]]
