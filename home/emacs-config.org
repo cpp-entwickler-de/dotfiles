@@ -1714,33 +1714,25 @@ Indicate recursive minibuffer
 (setq-default cursor-in-non-selected-windows nil)
 #+end_src
 
-** [[https://www.emacswiki.org/emacs/UndoTree][Undo]]
+** [[github:casouri/vundo][Undo]]
 #+begin_src emacs-lisp
-  (use-package undo-tree
-    ;:after popwin
-    :custom
-    (undo-tree-visualizer-timestamps t)
-    (undo-tree-visualizer-diff t)
-    (undo-tree-enable-undo-in-region t)
-    (undo-tree-auto-save-history t)
-    (undo-tree-history-directory-alist `(("." . ,(expand-file-name "~/.cache/emacs-undo"))))
-    :config
-    (global-undo-tree-mode)
-    (push '(" *undo-tree*" :dedicated t :width 60 :position right) popwin:special-display-config))
-#+end_src
-
-*** Keep selection when undoing
-#+begin_src emacs-lisp
-(defadvice undo-tree-undo (around keep-region activate)
-  (if (use-region-p)
-      (let ((mark-position (set-marker (make-marker) (mark)))
-            (point-position (set-marker (make-marker) (point))))
-        ad-do-it
-        (goto-char point-position)
-        (set-mark mark-position)
-        (set-marker point-position nil)
-        (set-marker mark-position nil))
-    ad-do-it))
+(use-package vundo
+  :bind (:map vundo-mode-map
+              (("<right>" . vundo-forward)
+               ("<left>" . vundo-backward)
+               ("<down>" . vundo-next)
+               ("<up>" . vundo-previous)
+               ("a" . vundo-stem-root)
+               ("e" . vundo-stem-end)
+               ("l" . vundo-goto-last-saved)
+               ("q" . vundo-quit)
+               ("C-g" . vundo-quit)
+               ("RET" . vundo-confirm)
+               ("m" . vundo-diff-mark)
+               ("SPC" . vundo-diff-mark)
+               ("u" . vundo-diff-unmark)
+               ("d" . vundo-diff)))
+  :custom (vundo-glyph-alist vundo-unicode-symbols))
 #+end_src
 
 ** Shell
