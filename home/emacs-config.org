@@ -2953,12 +2953,6 @@ https://github.com/purcell/exec-path-from-shell
                             (push '("\/v" . ?↯) prettify-symbols-alist)))
 #+end_src
 
-[[https://github.com/iqbalansari/emacs-emojify][Emojis]]
-#+begin_src emacs-lisp
-(use-package emojify
-  :hook (after-init-hook . global-emojify-mode))
-#+end_src
-
 *** Syntax types
 **** [[https://github.com/sensorflo/adoc-mode][AsciiDoc]]
 #+begin_src emacs-lisp
