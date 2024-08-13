@@ -3234,6 +3234,11 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
   :config (beginend-global-mode))
 #+end_src
 
+*** Subword-navigation in camelCase words
+#+begin_src emacs-lisp
+(global-subword-mode 1)
+#+end_src
+
 *** End sentence with single space
 #+begin_src emacs-lisp
 (setq sentence-end-double-space nil)
