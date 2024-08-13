@@ -3267,12 +3267,6 @@ Use custom regex to ignore color definitions (numbers starting with a # sign)
                         (?t . avy-action-teleport)
                         (?w . avy-action-copy)
                         (?y . avy-action-yank))))
-
-(use-package ace-isearch
-  :custom
-  (ace-isearch-function 'avy-goto-subword-1)
-  (ace-isearch-input-length 2)
-  :config (global-ace-isearch-mode +1))
 #+end_src
 
 *** [[https://github.com/camdez/goto-last-change.el][Jump to last change]]
